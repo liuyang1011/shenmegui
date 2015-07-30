@@ -1,12 +1,11 @@
 package com.dc.esb.servicegov.service.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.dc.esb.servicegov.dao.impl.CategoryWordDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,60 +174,69 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     		}
     	}
     }
+    public String genderHql(Map<String, String[]> values){
+        String hql = "";
+        if(values != null && values.size() > 0){
+            for(String key:values.keySet()){
+                if(key.equals("metadataName") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.metadataName like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("chineseName") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.chineseName like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("metadataId") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.metadataId like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("metadataAlias") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.metadataAlias like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("status") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.status like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("version") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.version like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("startDate") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.optDate >'" + values.get(key)[0] + "' ";
+                    }
+                }
+                if(key.equals("endDate") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.optDate <'" + values.get(key)[0] + "' ";
+                    }
+                }
 
-    public List<Metadata> queryByCondition(Map<String, String[]> values){
+                if(key.equals("categoryWordId") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.categoryWordId ='" + values.get(key)[0] + "' ";
+                    }
+                }
+            }
+        }
+        return hql;
+    }
+    public long queryCount(Map<String, String[]> values){
+        String hql = "select count(*) from Metadata a where 1=1 ";
+        hql += genderHql(values);
+        return metadataDAOImpl.findUnique(hql);
+    }
+    public List<Metadata> queryByCondition(Map<String, String[]> values, Page page){
     	String hql = " from Metadata a where 1=1 ";
-    	if(values != null && values.size() > 0){
-    		for(String key:values.keySet()){
-    			if(key.equals("metadataName") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.metadataName like '%" + values.get(key)[0] + "%' ";
-    				}
-    			}
-    			if(key.equals("chineseName") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.chineseName like '%" + values.get(key)[0] + "%' ";
-    				}
-    			}
-    			if(key.equals("metadataId") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.metadataId like '%" + values.get(key)[0] + "%' ";
-    				}
-    			}
-    			if(key.equals("metadataAlias") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.metadataAlias like '%" + values.get(key)[0] + "%' ";
-    				}
-    			}
-    			if(key.equals("status") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.status like '%" + values.get(key)[0] + "%' ";
-    				}
-    			}
-    			if(key.equals("version") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.version like '%" + values.get(key)[0] + "%' ";
-    				}
-    			}
-    			if(key.equals("startDate") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.optDate >'" + values.get(key)[0] + "' ";
-    				}
-    			}
-    			if(key.equals("endDate") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.optDate <'" + values.get(key)[0] + "' ";
-    				}
-    			}
-    			
-    			if(key.equals("categoryWordId") && values.get(key) != null && values.get(key).length > 0 ){
-    				if(StringUtils.isNotEmpty(values.get(key)[0])){
-    					hql += " and a.categoryWordId ='" + values.get(key)[0] + "' ";
-    				}
-    			}
-    		}
-    	}
-    	return metadataDAOImpl.find(hql);
+        hql += genderHql(values);
+    	return metadataDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
     }
     
     public boolean uniqueValid(String metadataId){

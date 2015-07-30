@@ -14,7 +14,9 @@ $(function(){
 			"startDate" : $("#startDate").datebox("getValue"),
 			"endDate" : $("#endDate").datebox("getValue")
 		};
-		metadataManager.query(params,queryMetadataCallBack);
+		$("#metadataList").datagrid('options').queryParams = params;
+		$("#metadataList").datagrid('reload');
+//		metadataManager.query(params,queryMetadataCallBack);
 	};
 	$("#queryMetadataBtn").click(function(){
 		queryMetadata();

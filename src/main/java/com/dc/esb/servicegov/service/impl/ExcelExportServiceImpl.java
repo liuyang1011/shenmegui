@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.excel.MappingSheetTask;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.util.Counter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.*;
@@ -224,8 +225,9 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
             List<Ida> resListIda = getIdaByParentName(si.getInterfaceId(), "response");
             List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
             List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
+            Counter counter = new Counter(6);
             for (int i = 0; i < reqListSDA.size(); i++) {
-                fillMappRow(sheet, 7+i, reqListSDA.get(i), reqListIda );
+                fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda );
             }
 //        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
 //            for(int i = 0; i < reqListIda.size(); i++){
@@ -233,8 +235,9 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
 //            }
 //        }
            // sheet.createRow(8+reqListSDA.size());
+            counter.increment();
             for (int i = 0; i < resListSDA.size(); i++) {
-                fillMappRow(sheet, 8 + reqListSDA.size()+ reqListIda.size() + i, resListSDA.get(i), resListIda );
+                fillMappRow(sheet, counter, resListSDA.get(i), resListIda );
             }
 //            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
 //                for(int i = 0; i < resListIda.size(); i++){
@@ -249,28 +252,36 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         return true;
     }
 
-    public void fillMappRow(HSSFSheet sheet, int index, SDA sda,  List<Ida> idaList){
+    public void fillMappRow(HSSFSheet sheet, Counter counter, SDA sda,  List<Ida> idaList){
         sheet.createRow(sheet.getLastRowNum() + 1);
-        sheet.shiftRows(index, sheet.getLastRowNum(), 1, true, false); //插入一行
-        fillSDA(sheet, index, sda);
+        counter.increment();
+        sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        fillSDA(sheet, counter.getCount(), sda);
+        Ida ida = judgeMetadataId(idaList, sda.getMetadataId());
+        if (ida != null) {
+            fillIda(sheet, counter.getCount(), ida);
+            idaList.remove(ida);
+        }
+        else{
+            sheet.getRow(counter.getCount()).createCell(5).setCellValue("不映射");;
+        }
         if((!StringUtils.isEmpty(sda.getType()) && (sda.getType().equalsIgnoreCase("array") || sda.getType().equalsIgnoreCase("struct"))) ||
                 (!StringUtils.isEmpty(sda.getLength()) && (sda.getLength().equalsIgnoreCase("array") || sda.getLength().equalsIgnoreCase("struct")))){
             List<SDA> childList = getSDAChildren(sda.getSdaId());
             for(int i = 0; i < childList.size(); i++){
-                fillMappRow(sheet, index + i + 1, childList.get(i), idaList);
+                fillMappRow(sheet, counter, childList.get(i), idaList);
             }
             sheet.createRow(sheet.getLastRowNum() + 1);
-            sheet.shiftRows(index + childList.size() + 1, sheet.getLastRowNum(), 1, true, false); //插入一行
+            counter.increment();
+            sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
             sda.setRemark("end");
-            fillSDA(sheet, index + childList.size() + 1, sda);
-        }
-        Ida ida = judgeMetadataId(idaList, sda.getMetadataId());
-        if (ida != null) {
-            fillIda(sheet, index, ida);
-            idaList.remove(ida);
-        }
-        else{
-            sheet.getRow(index).createCell(5).setCellValue("不映射");;
+            fillSDA(sheet, counter.getCount(), sda);
+            if (ida != null) {
+                fillIda(sheet, counter.getCount(), ida);
+            }
+            else{
+                sheet.getRow(counter.getCount()).createCell(5).setCellValue("不映射");;
+            }
         }
     }
     public void fillSDA(HSSFSheet sheet, int index, SDA sda){
@@ -379,7 +390,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         int counter = 1;
         //查询子分类
         List<ServiceCategory> scList = serviceCategoryDao.findBy("parentId", categoryId);
-        String[] values0 = {sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " "};
+        String[] values0 = {sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
         if(scList.size() == 0){
             HSSFRow row = sheet.createRow(counter);
             setRowValue(row, cellStyle, values0);
@@ -387,7 +398,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         }
         for(ServiceCategory child : scList){
             int start = counter;
-            String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " "};
+            String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " "};
             List<Service> services = serviceDao.findBy("categoryId", child.getCategoryId());
             if(services.size() == 0){
                 HSSFRow row = sheet.createRow(counter);
@@ -409,7 +420,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
                     HSSFRow row = sheet.createRow(counter);
                     counter++;
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
-                            operation.getOperationId(), operation.getOperationName(), " ", " ", operation.getOperationRemark()};
+                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", operation.getOperationRemark()};
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("serviceId", operation.getServiceId());
                     params.put("operationId", operation.getOperationId());
@@ -417,11 +428,16 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
                     List<ServiceInvoke> consumerInvokes = siDao.findBy(params);
                     if(consumerInvokes.size() > 0){
                         values3[6] = consumerInvokes.get(0).getSystem().getSystemChineseName();//服务消费者
+                        if(consumerInvokes.get(0).getInter() != null){
+                            values3[7] = consumerInvokes.get(0).getInter().getInterfaceName();
+                            values3[8] = consumerInvokes.get(0).getInter().getInterfaceId();
+                        }
+
                     }
                     params.put("type", Constants.INVOKE_TYPE_PROVIDER);
                     List<ServiceInvoke> providerInvokes = siDao.findBy(params);
                     if(providerInvokes.size() > 0){
-                        values3[7] = providerInvokes.get(0).getSystem().getSystemChineseName();//服务提供者
+                        values3[9] = providerInvokes.get(0).getSystem().getSystemChineseName();//服务提供者
                     }
                     setRowValue(row, cellStyle, values3);
                 }
