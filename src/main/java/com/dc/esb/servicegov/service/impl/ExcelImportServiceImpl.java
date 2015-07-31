@@ -112,7 +112,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                 type = "0";
             }
             //获取调用关系
-            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint);
+            //TODO 加个interfaceID作为区别
+            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,inter.getInterfaceId());
             //获取消费关系
             //ServiceInvoke cusumer_invoke = serviceInvokeCusumerQuery(service, operation, cusumerSystem);
             //导入接口相关信息
@@ -463,6 +464,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         int start = tranSheet.getFirstRowNum();
         int end = tranSheet.getLastRowNum();
         Interface inter = new Interface();
+        inter.setInterfaceId(tranSheet.getSheetName());
         com.dc.esb.servicegov.entity.Service service = new com.dc.esb.servicegov.entity.Service();
         Operation oper = new Operation();
         for (int j = start; j <= end; j++) {
@@ -677,7 +679,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
         order = 0;
         List<Ida> output = new ArrayList<Ida>();
-        for (int j = outIndex; j < end; j++) {
+        for (int j = outIndex; j <= end; j++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(j);
             Cell cellObj = sheetRow.getCell(0);
@@ -1186,7 +1188,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
         } else {
             inter.setVersion(initVersion);
-            inter.setInterfaceId(inter.getEcode());
+            inter.setInterfaceId(inter.getInterfaceId());
             //建立调用关系
             interfaceDao.save(inter);
             provider_invoke = new ServiceInvoke();
@@ -1208,12 +1210,13 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
 
     //提供系统调用关系
-    protected ServiceInvoke serviceInvokeProviderQuery(com.dc.esb.servicegov.entity.Service service, Operation operation, String systemId, String interfacepoint) {
+    protected ServiceInvoke serviceInvokeProviderQuery(com.dc.esb.servicegov.entity.Service service, Operation operation, String systemId, String interfacepoint,String interfaceId) {
         Map<String, String> paramMap = new HashMap<String, String>();
         //查询提供系统 关系
         paramMap.put("serviceId", service.getServiceId());
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("systemId", systemId);
+        paramMap.put("interfaceId",interfaceId);
         String type = "1";
         if ("Provider".equalsIgnoreCase(interfacepoint)) {
             type = "0";

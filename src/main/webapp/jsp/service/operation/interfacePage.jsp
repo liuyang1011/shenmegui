@@ -164,7 +164,7 @@
                                             <th data-options="field:'text',width:180,editor:'text'">字段名</th>
                                             <th data-options="field:'append1',width:60,align:'right',editor:'text'">字段别名</th>
                                             <th data-options="field:'append2',width:80,editor:'text'">类型</th>
-                                            <th data-options="field:'append3',width:80,editor:'text'">长度</th>
+                                            <%--<th data-options="field:'append3',width:80,editor:'text'">长度</th>--%>
                                             <th data-options="field:'append4',width:80,editor:'text'">元数据</th>
                                         </tr>
                                     </thead>
@@ -208,9 +208,9 @@
                                                                     <th data-options="field:'metadataId',width:50,editor:'text'">
                                                                         元数据ID
                                                                     </th>
-                                                                    <th data-options="field:'scale',width:50,editor:'text'">
+                                                                   <%-- <th data-options="field:'scale',width:50,editor:'text'">
                                                                         精度
-                                                                    </th>
+                                                                    </th>--%>
                                                                     <th data-options="field:'required',width:50,editor:'text'">
                                                                         是否必须
                                                                     </th>
