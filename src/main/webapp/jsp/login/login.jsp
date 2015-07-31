@@ -30,6 +30,12 @@
             if(errMsg != null && errMsg!= ""){
               alert(errMsg);
             }
+            var topFlag = '${topFlag}';
+            if(topFlag){
+                top.location.href="/login/?topFlag=true" ;
+            }
+
+
   </script>
 </head>
 <body class="login-page">

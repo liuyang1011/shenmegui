@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.entity.EnglishWord;
 import com.dc.esb.servicegov.entity.SGUser;
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -38,8 +39,13 @@ public class LoginController {
     @RequestMapping(method = RequestMethod.GET, value = "/", headers = "Accept=application/json")
     public
     @ResponseBody
-    ModelAndView login() {
-        return new ModelAndView("/login/login");
+    ModelAndView login(boolean topFlag) {
+        ModelAndView mv = new ModelAndView("/login/login");
+        if(!topFlag){
+            topFlag = true;
+            mv.addObject("topFlag", topFlag);
+        }
+        return mv;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/")
