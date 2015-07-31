@@ -6,7 +6,7 @@ $(function(){
 		var params = {
 			"metadataId" : $("#metadataId").textbox("getValue"),
 			"metadataName" : $("#metadataName").textbox("getValue"),
-			"chineseName" : $("#chineseName").textbox("getValue"),
+			"chineseName" : encodeURI($("#chineseName").textbox("getValue")),
 			"metadataAlias" : $("#metadataAlias").textbox("getValue"),
 	//		"status" : $("#status").combobox("getValue"),
 			"categoryWordId" : $("#categoryWordId").combobox("getValue"),

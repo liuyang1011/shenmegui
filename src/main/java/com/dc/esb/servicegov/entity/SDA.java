@@ -29,7 +29,7 @@ public class SDA implements Serializable {
 	private String metadataId;
 
 	@Column(name = "SEQ")
-	private int seq = 0;
+	private int seq;
 
 	@Column(name = "PARENT_ID")
 	private String parentId;

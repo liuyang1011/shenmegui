@@ -136,10 +136,10 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         List<SDA> list;
         if (sda.getParentId() == null) {
-            String hql = " from SDA where parentId is null order by seq desc";
+            String hql = " from SDA where parentId is null order by seq asc";
             list = sdaDAO.find(hql);
         } else {
-            String hql = " from SDA where parentId = ? order by seq desc";
+            String hql = " from SDA where parentId = ? order by seq asc";
             list = sdaDAO.find(hql, sda.getParentId());
         }
 
@@ -151,8 +151,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                     } else {
                         SDA beforeSDA = list.get(i - 1);
                         int seq = beforeSDA.getSeq();
-                        seq ++;
-                        sda.setSeq(seq ++);
+                        seq --;
+                        sda.setSeq(seq );
                         sdaDAO.save(sda);
                         return true;
                     }
@@ -167,10 +167,10 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         List<SDA> list;
         if (sda.getParentId() == null) {
-            String hql = " from SDA where parentId is null order by seq desc";
+            String hql = " from SDA where parentId is null order by seq asc";
             list = sdaDAO.find(hql);
         } else {
-            String hql = " from SDA where parentId = ? order by seq desc";
+            String hql = " from SDA where parentId = ? order by seq asc";
             list = sdaDAO.find(hql, sda.getParentId());
         }
 
@@ -182,8 +182,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                     } else {
                         SDA nextSda = list.get(i + 1);
                         int seq = nextSda.getSeq();
-                        seq --;
-                        sda.setSeq(seq);
+                        seq ++;
+                        sda.setSeq(seq );
                         sdaDAO.save(sda);
                         return true;
                     }

@@ -129,9 +129,15 @@ function choseService(id) {
  * 改变table的url
  * 刷新table
  */
-function selectService(listId, dialogId, url) {
+function selectService() {
+      var node = $("#serviceTree").tree("getSelected");
+      if(node.type != "service"){
+      	alert("请选择服务！");
+      	return false;
+      }
     $('#dlg').dialog('close');
-               var node = $("#serviceTree").tree("getSelected");
+                  $("#serviceId").textbox("setValue", node.service.serviceId);
+                  $("#serviceId").textbox("setText", node.service.serviceName);
                $("#operationAuditList").datagrid({
                 url:'/operation/getAudits/'+ node.service.serviceId
                });

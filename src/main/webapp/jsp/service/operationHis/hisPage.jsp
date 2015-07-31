@@ -30,21 +30,11 @@ var formatter = {
 		}
  	}
 }
+
+
 function choseService(){
 	$('#dlg').dialog({
-		title : '场景',
-		width : 500,
-		height : 380,
-		closed : false,
-		cache : false,
-		href : '/jsp/service/serviceList.jsp',
-		modal : true
-	});
-}
-
-function choseService(id){
-	$('#'+id).dialog({
-		title : '场景',
+		title : '服务',
 		width : 500,
 		closed : false,
 		cache : false,
@@ -52,7 +42,18 @@ function choseService(id){
 		modal : true
 	});
 }
+function selectService() {
+ var node = $("#serviceTree").tree("getSelected");
+ if(node.type != "service"){
+ 	alert("请选择服务！");
+ 	return false;
+ }
+    $('#dlg').dialog('close');
+              serviceId = node.id;
+              $("#serviceId").textbox("setValue", serviceId);
+              $("#serviceId").textbox("setText", node.text);
 
+}
 function choseOperation(){
 	$('#dlg').dialog({
 		title : '场景',
@@ -68,7 +69,8 @@ function selectOperation(){
 	var checkedItems = $('#operationList').datagrid('getChecked');
 	if(checkedItems != null && checkedItems.length > 0){
 		operationId = checkedItems[0].operationId;
-		console.log(operationId);
+		$("#operationId").textbox("setValue", operationId);
+		$("#operationId").textbox("setText", checkedItems[0].operationName);
 		$('#dlg').dialog('close');
 		$("#operationHisList").datagrid({
 			url:'/operationHis/getByOS/' + serviceId + '/' + operationId
@@ -127,14 +129,14 @@ function olaList(id){
   <tr>
      <th>服务</th>
     <td >
-    	<input class="easyui-textbox" value="${service.serviceName }" />&nbsp;&nbsp;
+    	<input class="easyui-textbox" id="serviceId" value="${service.serviceName }" />&nbsp;&nbsp;
     	<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="choseService()"  href="javascript:void(0)" >选择服务</a>
     	</td>
      </tr>
   <tr>
      <th>场景</th>
     <td>
-    	<input class="easyui-textbox" value="${operation.operationName }" />&nbsp;&nbsp;
+    	<input class="easyui-textbox" id="operationId" value="${operation.operationName }" />&nbsp;&nbsp;
     	<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="choseOperation()"  href="javascript:void(0)" >选择场景</a>
     	</td>
      </tr>

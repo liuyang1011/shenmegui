@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <tr>
      <th>服务</th>
     <td >
-    	<input class="easyui-textbox" value="${service.serviceName }" />&nbsp;&nbsp;
+    	<input class="easyui-textbox" id="serviceId" value="${service.serviceName }" />&nbsp;&nbsp;
     	<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="choseService('dlg')"  href="javascript:void(0)" >选择服务</a>
     	</td>
      </tr>

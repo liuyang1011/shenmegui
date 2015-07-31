@@ -32,9 +32,10 @@
             <td><input type="text" name="categoryWordId" id="categoryWordId"
                        class="easyui-combobox"
                        data-options="
+                        panelHeight:'auto',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
-				 		 valueField: 'id',
+				 		 valueField: 'englishWord',
 				 		 textField: 'chineseWord',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
@@ -64,8 +65,8 @@
         <th data-options="field:'type'">类型</th>
         <th data-options="field:'length'">长度</th>
         <th data-options="field:'scale'">精度</th>
-        <td data-options="field:'dataCategory'">数据项分类</td>
-        <td data-options="field:'buzzCategory'">业务项分类</td>
+        <th data-options="field:'dataCategory'">数据项分类</th>
+        <th data-options="field:'buzzCategory'">业务项分类</th>
         <th data-options="field:'bussDefine'">业务定义</th>
         <th data-options="field:'bussRule'">业务规则</th>
         <th data-options="field:'dataSource'">数据来源</th>
@@ -73,8 +74,10 @@
         <th data-options="field:'version'">版本号</th>
         <th data-options="field:'optUser'">创建人</th>
         <th data-options="field:'optDate'">创建时间</th>
+        <!--
         <th data-options="field:'  '">审核人</th>
         <th data-options="field:'  '">审核时间</th>
+        -->
     </tr>
     </thead>
 </table>

@@ -112,6 +112,9 @@ var delIds = [];
 		 	return uuid;
 		}
 		function saveSDA(){
+			if (!$("#sdaForm").form('validate')) {
+                return false;
+            }
 			var t = $('#tg');
 			if (editingId != undefined){
 				var editNodes = [];
@@ -223,6 +226,17 @@ var delIds = [];
 			}
 			
 		}
+		$.extend($.fn.validatebox.defaults.rules, {
+                        unique: {
+                            validator: function (value, param) {
+                               if(value != 'root' && value != 'request' && value != 'response'){
+                               		return true;
+                               }
+                                return false;
+                            },
+                            message: '新建节点名称不能为“root、request、response”'
+                        }
+                    });
 </script>
 </head>
 <body >
@@ -243,25 +257,15 @@ var delIds = [];
     <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }" ></td>
      <th>场景号</th>
     <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }" ></td>
+ 	 <th>场景名称</th>
+        <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }" ></td>
   </tr>
-  <tr>
-     <th>场景名称</th>
-    <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }" ></td>
-    <th>关键词</th>
-    <td colspan="3"><input class="easyui-textbox" type="text" name="name" style="width:100%" ></td>
-    </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td align="right"><a href="#" class="easyui-linkbutton"  iconCls="icon-search">搜索</a></td>
-  </tr>
+
 </table>
 
 
 </fieldset>
+<form id="sdaForm">
 	<table title="sda" class="easyui-treegrid" id="tg" style=" width:auto;"
 			data-options="
 				iconCls: 'icon-ok',
@@ -278,7 +282,7 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:180,editor:'text'">字段名</th>
+				<th data-options="field:'text',width:180, editor:'text'" editor="{ type : 'validatebox', options : { required : true, validType:'unique'} } ">字段名</th>
 				<th data-options="field:'append1',width:60,align:'right',editor:'text'">字段别名</th>
 				<th data-options="field:'append2',width:60,editor:'text'">类型</th>
 				<th data-options="field:'append3',width:60,editor:'text'">长度</th>
@@ -302,7 +306,7 @@ var delIds = [];
 			</select></td>
   </tr>
 </table>
-
+</form>
     </div>
   
   </body>
