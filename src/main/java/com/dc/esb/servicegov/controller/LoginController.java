@@ -7,13 +7,13 @@ import com.dc.esb.servicegov.service.impl.UserServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.UnsupportedEncodingException;
@@ -50,6 +50,10 @@ public class LoginController {
         log.info("userName: " + username + "; password: " + password);
         SecurityUtils.getSubject().login(new UsernamePasswordToken(username, password));
         return new ModelAndView("index");
+    }
 
+    @ExceptionHandler({IncorrectCredentialsException.class})
+    public String processUnauthorizedException() {
+        return "/login/login";
     }
 }
