@@ -15,5 +15,12 @@ import com.dc.esb.servicegov.entity.UserRoleRelation;
 @Repository
 @Transactional
 public class UserDAOImpl extends HibernateDAO<SGUser, String> {
-
+	private final static String UPDATE_HQL = "update SG_USER set USER_PASSWORD=? where USER_ID=?";
+	public void passWord(String str1,String str2){
+		Session session = getSession();
+		SQLQuery query = session.createSQLQuery(UPDATE_HQL);
+		query.setParameter(0,str1);
+		query.setParameter(1,str2);
+		query.executeUpdate();	
+	}
 }

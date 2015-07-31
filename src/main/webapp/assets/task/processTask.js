@@ -4,7 +4,7 @@
 //{user}/work/{task}
 $(function () {
 	$('#userProcess').combobox({
-		url:'/user/getAll',
+        url:'/user/getAllUser',
 		method:'get',
 		mode:'remote',
 		valueField:'id',

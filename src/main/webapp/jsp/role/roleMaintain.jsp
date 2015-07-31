@@ -75,63 +75,63 @@
                 url: "roleAdd.jsp"
             })
         }
-    },
-        {
-            text: '修改',
-            iconCls: 'icon-edit',
-            handler: function () {
-                var row = $('#tt').edatagrid('getSelected');
-                uiinit.win({
+    },{
+			text : '修改',
+			iconCls : 'icon-edit',
+			handler : function() {
+			var row = $('#tt').edatagrid('getSelected');
+			var checkedItems = $('#tt').edatagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+				 uiinit.win({
                     w: 370,
                     iconCls: 'icon-edit',
                     title: "修改 角色",
                     url: "/role/getById/" + row.id
                 })
-            }
-        },
+			  }else {
+                alert("请选中要修改的数据！");
+             }
+		   }
+		},
         {
-            text: '删除',
-            iconCls: 'icon-remove',
-            handler: function () {
-                var row = $('#tt').edatagrid('getSelected');
-                var rowIndex = $('#tt').edatagrid('getRowIndex', row);
-                roleManager.deleteById(row.id, function (result) {
+			text : '删除',
+			iconCls : 'icon-remove',
+			handler : function() {
+			var row = $('#tt').edatagrid('getSelected');
+			var rowIndex = $('#tt').edatagrid('getRowIndex', row);
+			var checkedItems = $('#tt').edatagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+				 roleManager.deleteById(row.id, function (result) {
                     if (result) {
                         alert("删除成功");
                     } else {
                         alert("删除失败");
                     }
                 });
-
-                $('#tt').edatagrid('deleteRow', rowIndex);
-            }
-        },
+				$('#tt').edatagrid('deleteRow', rowIndex);
+			  }else {
+                alert("请选中要删除的数据！");
+             }
+		   }
+		},
         {
             text: '权限分配',
             iconCls: 'icon-qxfp',
             handler: function () {
                 var row = $('#tt').datagrid('getSelected');
-                uiinit.win({
-                    w: 400,
-                    iconCls: 'icon-qxfp',
-                    title: "权限分配",
-                    url: "permission.jsp?id=" + row.id
-                })
-            }
-        }, {
-            text: '权限修改',
-            iconCls: 'icon-qxfp',
-            handler: function () {
-                var row = $('#tt').datagrid('getSelected');
-                uiinit.win({
+             var checkedItems = $('#tt').edatagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+				 uiinit.win({
                     w: 400,
                     iconCls: 'icon-qxfp',
                     title: "权限分配",
                     url: "permissionEdit.jsp?id=" + row.id
                 })
-            }
-        }
-
+			  }else {
+                alert("请选中要分配权限的角色！");
+             }
+		   }
+		}
     ];
     $(function () {
         $('#tt').datagrid({
@@ -144,13 +144,20 @@
             pageSize: 10
         });
         $('#search').click(function () {
+        	var id=$('#Id').val();
+			var name= $('#Name').val();
+			var remark= $('#Remark').val();
+			if(id==""&&name==""&&remark=="")
+			{window.location.reload();}
+			else{
             var param = {};
-            param.id = $('#Id').val() ? $('#Id').val() : "itisanuniquevaluethatneverbeexisted";
-            param.name = $('#Name').val() ? $('#Name').val() : "itisanuniquevaluethatneverbeexisted";
-            param.remark = $('#Remark').val() ? $('#Remark').val() : "itisanuniquevaluethatneverbeexisted";
-            roleManager.getByParams(param, function (result) {
-                $('#tt').edatagrid('loadData', result);
-            });
+            param.id = $('#Id').val();
+            param.name = $('#Name').val();
+            param.remark = $('#Remark').val();
+            roleManager.query(param, function(result){
+                 $('#tt').edatagrid('loadData', result);
+             });
+            }
         });
     });
 

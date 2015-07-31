@@ -6,7 +6,7 @@ var params = href.split("&");
 
 $(function () {
 	$('#userAssign').combobox({
-		url:'/user/getAll',
+        url:'/user/getAllUser',
 		method:'get',
 		mode:'remote',
 		valueField:'id',

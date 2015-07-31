@@ -35,6 +35,12 @@ $(function() {
 			var str1 = $('#oldPW').val();
 			var str2 = $('#newPW').val();
 			var str3 = $('#confirmPW').val();
+			var parent=/^[u4E00-u9FA5]+$/;
+  			if(!parent.test(str2))
+  			{
+  				alert("密码不能使用中文");
+  				return false;
+  			}
 // 			alert(str1+"旧"+str2+"新"+str3+"确"+pw+"原")	
 			if(str1!=pw){
 				alert("输入的旧密码有误！");
@@ -48,10 +54,10 @@ $(function() {
 				alert("新密码不能与旧密码一样！");
 				return false;
 			}
-			var data = {};	
-			data.id =userI;
-			data.password=str2;
-   			userManager.passWord(data,function(result) {
+// 			var data = {};	
+// 			data.id =userI;
+// 			data.password=str2;
+   			userManager.passWord(userI,str2,function(result) {
    				if (result) {
    					alert("保存成功");
    					} else {

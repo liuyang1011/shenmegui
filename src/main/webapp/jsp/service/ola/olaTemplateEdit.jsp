@@ -33,7 +33,6 @@
 				
 				var row = $('#olaTemplateTable').edatagrid("getSelected");
 					var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/ola/olaTemplate.jsp?olaTemplateId='+row.olaTemplateId+'&templateName='+row.templateName+'&serviceId='+serviceId+'&operationId='+operationId+'" style="width:100%;height:100%;"></iframe>';
-// 					alert(content);
 					parent.parent.parent.addTab('OLA模板', content);
 					}
 			},
@@ -42,9 +41,19 @@
 				iconCls : 'icon-remove',
 				handler : function() {
 					var row = $('#olaTemplateTable').edatagrid('getSelected');
-					var rowIndex = $('#olaTemplateTable').datagrid(
-							'getRowIndex', row);
+					if(row==""||row==null){
+					alert("请选择一条信息！");
+					return false;
+					}
+					var rowIndex = $('#olaTemplateTable').datagrid('getRowIndex', row);
+					var deleteData = $("#olaTemplateTable").datagrid('getChanges','deleted');	
 					$('#olaTemplateTable').edatagrid('deleteRow', rowIndex);
+					olaTemplateManager.deleteByEntity(deleteData,function(result){
+						if(result){
+							$('#olaTemplateTable').datagrid('reload');
+					alert("删除成功！");
+						}else{alert("删除失败！");}
+					});
 				}
 			},{
 			text : ' 保存',
@@ -54,21 +63,12 @@
 				$("#olaTemplateTable").datagrid('endEdit', editedRows[per]);
 			}
 			var editData = $("#olaTemplateTable").datagrid('getChanges');
-			var deleteData = $("#olaTemplateTable").datagrid('getChanges','deleted');	
-					
 				olaTemplateManager.add(editData,function(result){
 					if(result){
 						$('#olaTemplateTable').datagrid('reload');
-					}
+					alert("保存成功！");
+					}else{alert("保存失败！");}
 				});
-				console.log(deleteData);
-				if(deleteData.length > 0){
-					olaTemplateManager.deleteByEntity(deleteData,function(result){
-						if(result){
-							$('#olaTemplateTable').datagrid('reload');
-						}
-					})
-				}
 				editedRows = [];
 
 			}
@@ -79,6 +79,10 @@
 					var serviceId = "${param.serviceId}";
 					var operationId = "${param.operationId}";
 					var info = $('#olaTemplateTable').edatagrid('getSelected');
+					if(info==""||info==null){
+					alert("请选择一条信息！");
+					return false;
+					}
 					if(info.olaTemplateId){
 					olaManager.getByParams(info.olaTemplateId,function(result){
 						$('#ola').edatagrid('loadData',result);

@@ -56,8 +56,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			iconCls : 'icon-remove',
 			handler : function() {
 				var row = $('#slaTemplate').edatagrid('getSelected');
+				if(row==""||row==null){
+				alert("请选择一条信息！");
+				return false;
+				}
 				var rowIndex = $('#slaTemplate').edatagrid('getRowIndex', row);
+				var deleteData = $("#slaTemplate").datagrid('getChanges','deleted');
 				$('#slaTemplate').edatagrid('deleteRow', rowIndex);
+					slaManager.deleteByEntity(deleteData,function(result){
+						if(result){
+							$('#slaTemplate').datagrid('reload');
+					alert("删除成功！");
+						}else{alert("删除失败！");}
+					});
 			}
 		}, {
 			text : ' 保存',
@@ -67,21 +78,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$("#slaTemplate").datagrid('endEdit', editedRows[per]);
 			}
 			var editData = $("#slaTemplate").datagrid('getChanges');
-			var deleteData = $("#slaTemplate").datagrid('getChanges','deleted');
 			var	slaTid="${param.slaTemplateId}"
 				slaTemplateManager.addTemplate(editData,serviceId,operationId,slaTid,function(result){
 					if(result){
 						$('#slaTemplate').datagrid('reload');
-					}
+					alert("保存成功！");
+					}else{alert("保存失败！");}
 				});
-				console.log(deleteData);
-				if(deleteData.length > 0){
-					slaManager.deleteByEntity(deleteData,function(result){
-						if(result){
-							$('#slaTemplate').datagrid('reload');
-						}
-					})
-				}
 				editedRows = [];
 
 			}

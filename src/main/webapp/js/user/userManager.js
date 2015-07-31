@@ -75,12 +75,13 @@ var userManager = {
             }
         });
     },
-    "passWord": function(data,callBack){
+    "passWord": function(userI,str2,callBack){
+    	
         $.ajax({
             type: "post",
             contentType: "application/json; charset=utf-8",
-            url: "/user/passWord",
-            data: JSON.stringify(data),
+            url: "/user/passWord/"+userI+"/"+str2,
+//            data: JSON.stringify(data),
             dataType: "json",
             success: function(result) {
                 callBack(result);

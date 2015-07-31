@@ -70,6 +70,9 @@
 					<th data-options="field:'systemAb',width:'15%'">
 						系统简称
 					</th>
+					<th data-options="field:'systemChineseName',width:'15%'">
+						系统中文名称
+					</th>
 					<th data-options="field:'protocolName',width:'15%',align:'center'">
                     	系统协议
                     </th>

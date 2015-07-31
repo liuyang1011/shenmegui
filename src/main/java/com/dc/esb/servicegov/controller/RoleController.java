@@ -7,14 +7,15 @@ import java.util.Map;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
-import com.dc.esb.servicegov.entity.SGUser;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import com.dc.esb.servicegov.entity.Role;
 import com.dc.esb.servicegov.service.impl.RoleServiceImpl;
+import com.dc.esb.servicegov.vo.RoleVO;
+
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,20 +67,17 @@ public class RoleController {
         return true;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/get/id/{id}/name/{name}/remark/{remark}", headers = "Accept=application/json")
+    @RequiresRoles({"admin"})
+    @RequestMapping(method = RequestMethod.POST, value = "/query", headers = "Accept=application/json")
     public
     @ResponseBody
-    List<Role> getByName(@PathVariable(value = "id") String id, @PathVariable(value = "name") String name, @PathVariable(value = "remark") String remark) {
-        Map<String, String> params = new HashMap<String, String>();
-        if (!"itisanuniquevaluethatneverbeexisted".equals(id))
-            params.put("id", id);
-        if (!"itisanuniquevaluethatneverbeexisted".equals(name))
-            params.put("name", name);
-        if (!"itisanuniquevaluethatneverbeexisted".equals(remark))
-            params.put("remark", remark);
-
+    List<RoleVO> getByName( @RequestBody Map<String, String> params) {
+        List<RoleVO> roleVOs = new ArrayList<RoleVO>();
         List<Role> roles = roleServiceImpl.findLikeAnyWhere(params);
-        return roles;
+        for(Role role : roles){
+        	roleVOs.add(new RoleVO(role));
+        }
+        return roleVOs;
     }
 
     @RequiresRoles({"admin"})

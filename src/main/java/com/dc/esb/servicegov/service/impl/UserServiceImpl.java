@@ -21,4 +21,8 @@ public class UserServiceImpl extends AbstractBaseService<SGUser, String>{
     public HibernateDAO<SGUser, String> getDAO() {
         return userDAO;
     }
+    
+    public void passWord(String str1,String str2){
+    	userDAO.passWord(str1,str2);
+    }
 }

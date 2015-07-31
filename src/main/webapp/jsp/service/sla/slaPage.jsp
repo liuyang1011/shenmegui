@@ -84,8 +84,19 @@
 			iconCls : 'icon-remove',
 			handler : function() {
 				var row = $('#sla').edatagrid('getSelected');
+				if(row==""||row==null){
+				alert("请选择一条信息！");
+				return false;
+				}
 				var rowIndex = $('#sla').edatagrid('getRowIndex', row);
+				var deleteData = $("#sla").datagrid('getChanges','deleted');
 				$('#sla').edatagrid('deleteRow', rowIndex);
+					slaManager.deleteByEntity(deleteData,function(result){
+						if(result){
+							$('#sla').datagrid('reload');
+							alert("删除成功！");
+						}else{alert("删除失败！");}
+					});
 			}
 		}, {
 			text : ' 保存',
@@ -95,21 +106,13 @@
 				$("#sla").datagrid('endEdit', editedRows[per]);
 			}
 			var editData = $("#sla").datagrid('getChanges');
-			var deleteData = $("#sla").datagrid('getChanges','deleted');	
-					
 				slaManager.add(editData,serviceId,operationId,function(result){
 					if(result){
 						$('#sla').datagrid('reload');
-					}
+						alert("保存成功！");
+					}else{alert("保存失败！");}
 				});
-				console.log(deleteData);
-				if(deleteData.length > 0){
-					slaManager.deleteByEntity(deleteData,function(result){
-						if(result){
-							$('#sla').datagrid('reload');
-						}
-					})
-				}
+				
 				editedRows = [];
 
 			}

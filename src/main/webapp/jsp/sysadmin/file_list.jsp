@@ -58,7 +58,7 @@
 
 
 		</fieldset>
-		<table id="tg" style="width: auto;" data-options="pageSize:5">
+		<table id="tg" style="height:370px;width: auto;" data-options="pageSize:5">
 			<thead>
 				<tr>
 					<th data-options="field:'fileName',width:'15%'">

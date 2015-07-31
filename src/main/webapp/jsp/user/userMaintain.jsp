@@ -97,43 +97,57 @@
 			iconCls : 'icon-edit',
 			handler : function() {
 			var row = $('#tt').edatagrid('getSelected');
- 			uiinit.win({
+			var checkedItems = $('#tt').edatagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+				uiinit.win({
  					w : 900,
  					iconCls : 'icon-edit',
  					title : "修改用户",
 					url : "/user/getById/"+row.id
  				})
-			}
+			  }else {
+                alert("请选中要修改的数据！");
+             }
+		   }
 		},
 		{
 			text : '删除',
 			iconCls : 'icon-remove',
 			handler : function() {
-				var row = $('#tt').edatagrid('getSelected');
-				var rowIndex = $('#tt').edatagrid('getRowIndex', row);
-					userManager.deleteById(row.id,function(result) {
+			var row = $('#tt').edatagrid('getSelected');
+			var rowIndex = $('#tt').edatagrid('getRowIndex', row);
+			var checkedItems = $('#tt').edatagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+				userManager.deleteById(row.id,function(result) {
 								if (result) {
 									alert("删除成功");
 								} else {
 									alert("删除失败");
 								}
 							});
-				
 				$('#tt').edatagrid('deleteRow', rowIndex);
-			}
+			  }else {
+                alert("请选中要删除的数据！");
+             }
+		   }
 		},
 		{
 			text : '重置密码',
 			iconCls : 'icon-qxfp',
 			handler : function() {
 			var row = $('#tt').edatagrid('getSelected');
+			var checkedItems = $('#tt').edatagrid('getChecked');
+			if (checkedItems != null && checkedItems.length > 0) {
  			uiinit.win({
  					w : 370,
  					iconCls : 'icon-qxfp',
  					title : "重置密码",
 					url : "/user/getByPW/"+row.id
  				})
-			}
+		}else {
+                alert("请选中要重置密码的用户！");
+             }
+		   }
 		} 
 		
 	 ];
@@ -145,6 +159,14 @@
 			destroyUrl : '/'
 		});
 		$('#search').click(function(){
+			var id=$('#Id').val();
+			var name= $('#Name').val();
+			var orgId=$('#OrgId').val();
+			var startdate=$('#Startdate').datebox('getValue');
+			var lastdate=$('#Lastdate').datebox('getValue');
+			if(id==""&&name==""&&orgId==""&&startdate==""&&lastdate==""){
+			window.location.reload();
+			}else{
 			var  param = {};
 			param.id = $('#Id').val();
 			param.name = $('#Name').val();
@@ -154,6 +176,7 @@
 			userManager.query(param,function(result){
 				$('#tt').edatagrid('loadData',result);
 			});
+			}
 		});
 	});
 

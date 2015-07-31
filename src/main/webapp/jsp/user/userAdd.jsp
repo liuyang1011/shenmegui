@@ -72,14 +72,24 @@
             url: '/org/getAll',
             method: 'get',
             mode: 'remote',
+            editable:false,
             valueField: 'orgId',
             textField: 'orgName'
         });
     });
     $('#saveBtn').click(function () {
         var isValid = $("#userId").validatebox("isValid");
+        var startdate = $('#startdate').datebox('getValue');
+        var lastdate = $('#lastdate').datebox('getValue');
+        if(startdate>lastdate){
+        alert("生效时间不能晚于失效时间！");
+        return false;
+        }
+         if(startdate==lastdate){
+        alert("生效时间和失效时间不能是同一天！");
+        return false;
+        }
         if(isValid){
-
             var data = {};
             var rows = $("#roleTable").datagrid("getSelections");
             data.id = $('#userId').val();
@@ -89,7 +99,7 @@
             data.userTel = $('#userTel').val();
             data.startdate = $('#startdate').datebox('getValue');
             data.lastdate = $('#lastdate').datebox('getValue');
-            data.orgId = $('#org').combobox('getValue');
+            data.orgId = $('#org').combobox('getText');
             data.remark = $('#remark').val();
             var roles = [];
             for (var i = 0; i < rows.length; i++) {
