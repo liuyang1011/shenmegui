@@ -30,7 +30,7 @@
             <td><input name="userTel" class="easyui-textbox" type="text" id="userTel" value="${user.userTel}"/></td>
             <th>所属机构</th>
             <td><select class="easyui-combobox" style="width:173px;" name="select" id="orgEdit">
-                <option>${user.orgId}</option>
+                <option value="${user.orgId}"></option>
             </select><font color="#FF0000">*</font></td>
         </tr>
         <tr>
@@ -91,7 +91,6 @@
             url: '/org/getAll',
             method: 'get',
             mode: 'remote',
-            editable:false,
             valueField: 'orgId',
             textField: 'orgName',
             onLoadSuccess: function () {
@@ -102,26 +101,30 @@
         });
     });
     $('#saveBtn').click(function () {
-     	var startdate = $('#startdate').datebox('getValue');
-        var lastdate = $('#lastdate').datebox('getValue');
-        if(startdate>lastdate){
-        alert("生效时间不能晚于失效时间！");
-        return false;
-        }
-         if(startdate==lastdate){
-        alert("生效时间和失效时间不能是同一天！");
-        return false;
-        }
+    	var name=$('#userName').val();
+    	var orgEdit=$('#orgEdit').combobox('getValue');
         var data = {};
         var rows = $("#roleEdit").datagrid("getSelections");
+        if(name==null || name == ''){
+			alert("请填写用户名称");
+			return;
+		}
+		if(orgEdit==null || orgEdit == ''){
+			alert("请填选择所属机构");
+			return;
+		}
+		if(rows==null || rows == ''){
+			alert("给用户至少选择一个角色");
+			return;
+		}
         data.id = userI;
-        data.name = $('#userName').val();
+        data.name = name;
         data.password = pasW;
         data.userMobile = $('#userMobile').val();
         data.userTel = $('#userTel').val();
         data.startdate = $('#startdate').datebox('getValue');
         data.lastdate = $('#lastdate').datebox('getValue');
-        data.orgId = $('#orgEdit').combobox('getText');
+        data.orgId = orgEdit;
         data.remark = $('#remark').val();
         var roles = [];
         for (var i = 0; i < rows.length; i++) {
@@ -130,6 +133,7 @@
             userRoleRelation.userId = $('#userId').val();
             roles.push(userRoleRelation);
         }
+//			data.userRoleRelations = roles;
         userManager.modify(data, function (result) {
             if (result) {
                 userManager.assignRoles(roles, function (result) {

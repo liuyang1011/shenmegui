@@ -32,9 +32,14 @@
 <script type="text/javascript" src="/js/role/roleManager.js"></script>
 <script type="text/javascript">
 		$('#saveBtn').click(function(){
+    	var name=$('#roleName').val();
+    	 if(name==null || name == ''){
+			alert("请填写角色名称");
+			return;
+		}
 			var data = {};
 			data.id = $('#roleId').val();
-			data.name =  $('#roleName').val();
+			data.name =  name;
 			data.remark= $('#roleRemark').val();
    			roleManager.add(data, function(result) {
    				if (result) {

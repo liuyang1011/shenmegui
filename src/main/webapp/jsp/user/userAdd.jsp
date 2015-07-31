@@ -72,34 +72,42 @@
             url: '/org/getAll',
             method: 'get',
             mode: 'remote',
-            editable:false,
             valueField: 'orgId',
             textField: 'orgName'
         });
     });
     $('#saveBtn').click(function () {
         var isValid = $("#userId").validatebox("isValid");
-        var startdate = $('#startdate').datebox('getValue');
-        var lastdate = $('#lastdate').datebox('getValue');
-        if(startdate>lastdate){
-        alert("生效时间不能晚于失效时间！");
-        return false;
-        }
-         if(startdate==lastdate){
-        alert("生效时间和失效时间不能是同一天！");
-        return false;
-        }
+        var name=$('#userName').val();
+        var password=$('#password').val();
+        var org=$('#org').combobox('getValue');
         if(isValid){
             var data = {};
             var rows = $("#roleTable").datagrid("getSelections");
+         if(name==null || name == ''){
+			alert("请填写用户名称");
+			return;
+		}
+        if(password==null || password == ''){
+			alert("请填写密码");
+			return;
+		}
+		if(org==null || org == ''){
+			alert("请填选择所属机构");
+			return;
+		}
+		if(rows==null || rows == ''){
+			alert("给用户至少选择一个角色");
+			return;
+		}
             data.id = $('#userId').val();
-            data.name = $('#userName').val();
-            data.password = $('#password').val();
+            data.name = name;
+            data.password = password;
             data.userMobile = $('#userMobile').val();
             data.userTel = $('#userTel').val();
             data.startdate = $('#startdate').datebox('getValue');
             data.lastdate = $('#lastdate').datebox('getValue');
-            data.orgId = $('#org').combobox('getText');
+            data.orgId = org;
             data.remark = $('#remark').val();
             var roles = [];
             for (var i = 0; i < rows.length; i++) {
@@ -133,7 +141,7 @@
 
             $('#w').window('close');
         }else{
-            alert("输入错误！");
+            alert("输入错误！用户代码只能是英文");
         }
     });
 
