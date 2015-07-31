@@ -18,4 +18,7 @@ public class UserRoleRelationServiceImpl extends AbstractBaseService<UserRoleRel
 	public HibernateDAO<UserRoleRelation, String> getDAO() {
 		return userRoleRelationDAO;
 	}
+	 public void deleteRelation(String id){
+		 userRoleRelationDAO.deleteRelation(id);
+	    }
 }

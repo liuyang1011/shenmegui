@@ -241,7 +241,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     public long queryCount(Map<String, String[]> values){
         String hql = "select count(*) from Metadata a where 1=1 ";
         hql += genderHql(values);
-        return metadataDAOImpl.findUnique(hql);
+        return (Long)metadataDAOImpl.findUnique(hql);
     }
     public List<Metadata> queryByCondition(Map<String, String[]> values, Page page){
     	String hql = " from Metadata a where 1=1 ";

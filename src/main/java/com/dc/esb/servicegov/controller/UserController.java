@@ -87,6 +87,7 @@ public class UserController {
     public
     @ResponseBody
     boolean delete(@PathVariable String id) {
+    	userRoleRelationService.deleteRelation(id);
         userServiceImpl.deleteById(id);
         return true;
     }
@@ -115,6 +116,7 @@ public class UserController {
     public
     @ResponseBody
     boolean modify(@RequestBody SGUser SGUser) {
+    	userRoleRelationService.deleteRelation(SGUser.getId());
         userServiceImpl.update(SGUser);
         return true;
     }
@@ -131,11 +133,11 @@ public class UserController {
     }
 
     @RequiresRoles({"admin"})
-    @RequestMapping(method = RequestMethod.POST, value = "/passWord", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/passWord/{id}/{passWord}", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean passWord(@RequestBody SGUser SGUser) {
-        userServiceImpl.save(SGUser);
+    boolean pwEdit(@PathVariable String id,@PathVariable String passWord) {
+        userServiceImpl.passWord(passWord, id);
         return true;
     }
 

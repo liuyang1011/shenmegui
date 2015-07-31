@@ -12,7 +12,7 @@
     <table width="99%" border="0" cellspacing="0" cellpadding="0" id="roleTable">
         <tr>
             <th>角色代码</th>
-            <td><input name="roleId" class="easyui-textbox" type="text" id="roleId"/><font color="#FF0000">*</font></td>
+            <td><input name="roleId" class="easyui-validatebox" type="text" id="roleId" data-options="required:true,validType:'english'" /><font color="#FF0000">*</font></td>
         </tr>
         <tr>
             <th>角色名称</th>
@@ -32,8 +32,11 @@
                                                                                    onclick="$('#w').window('close');">关闭</a>
 </div>
 <script type="text/javascript" src="/js/role/roleManager.js"></script>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
     $('#saveBtn').click(function () {
+    var isValid = $("#roleId").validatebox("isValid");
+        if(isValid){
         var data = {};
         data.id = $('#roleId').val();
         data.name = $('#roleName').val();
@@ -54,6 +57,9 @@
             }
         };
         roleManager.checkUnique(data.id, checkUniqueCallBack);
+        }else{
+            alert("输入错误！");
+        }
     });
 </script>
 </body>

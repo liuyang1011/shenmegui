@@ -42,7 +42,7 @@
         </tr>
         <tr>
             <th>处理人</th>
-            <td><select class="easyui-combobox" style="width:173px;" name="user" id="user" ></td>
+            <td><input style="width:173px;" name="user" id="user" ></td>
         </tr>
         <tr>
             <th>任务描述</th>

@@ -30,7 +30,7 @@
             <td><input name="userTel" class="easyui-textbox" type="text" id="userTel" value="${user.userTel}"/></td>
             <th>所属机构</th>
             <td><select class="easyui-combobox" style="width:173px;" name="select" id="orgEdit">
-                <option value="${user.orgId}"></option>
+                <option>${user.orgId}</option>
             </select><font color="#FF0000">*</font></td>
         </tr>
         <tr>
@@ -91,6 +91,7 @@
             url: '/org/getAll',
             method: 'get',
             mode: 'remote',
+            editable:false,
             valueField: 'orgId',
             textField: 'orgName',
             onLoadSuccess: function () {
@@ -101,6 +102,16 @@
         });
     });
     $('#saveBtn').click(function () {
+     	var startdate = $('#startdate').datebox('getValue');
+        var lastdate = $('#lastdate').datebox('getValue');
+        if(startdate>lastdate){
+        alert("生效时间不能晚于失效时间！");
+        return false;
+        }
+         if(startdate==lastdate){
+        alert("生效时间和失效时间不能是同一天！");
+        return false;
+        }
         var data = {};
         var rows = $("#roleEdit").datagrid("getSelections");
         data.id = userI;
@@ -110,7 +121,7 @@
         data.userTel = $('#userTel').val();
         data.startdate = $('#startdate').datebox('getValue');
         data.lastdate = $('#lastdate').datebox('getValue');
-        data.orgId = $('#orgEdit').combobox('getValue');
+        data.orgId = $('#orgEdit').combobox('getText');
         data.remark = $('#remark').val();
         var roles = [];
         for (var i = 0; i < rows.length; i++) {
@@ -119,7 +130,6 @@
             userRoleRelation.userId = $('#userId').val();
             roles.push(userRoleRelation);
         }
-//			data.userRoleRelations = roles;
         userManager.modify(data, function (result) {
             if (result) {
                 userManager.assignRoles(roles, function (result) {

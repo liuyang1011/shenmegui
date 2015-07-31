@@ -204,7 +204,7 @@ var SYSMENU = {
                 });
 
                 $('.mslinktree').tree({
-                    onContextMenu: function (e, node) {
+                    /*onContextMenu: function (e, node) {
                         e.preventDefault();
                         $(this).tree('select', node.target);
                         if (typeof(node.children) != 'undefined') {//编辑接口
@@ -215,11 +215,11 @@ var SYSMENU = {
 
                         }
 
-                    },
+                    },*/
                     onClick: function (node) {
                         if (typeof(node.children) == 'undefined') {
                             var mid = node.id;
-                            var title = node.text;
+                            var title = node.text + "交易链路";
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
@@ -232,7 +232,7 @@ var SYSMENU = {
                             }
                         } else {
                             var mid = node.id;
-                            var title = node.text;
+                            var title = node.text + "交易链路";
                             console.log(node);
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
@@ -438,7 +438,7 @@ var SYSMENU = {
                 }
             });
             //交易链路
-            $('.mslinktree').tree({
+            /*$('.mslinktree').tree({
                 onContextMenu: function (e, node) {
                     e.preventDefault();
                     $(this).tree('select', node.target);
@@ -480,7 +480,7 @@ var SYSMENU = {
 
                     }
                 }
-            });
+            });*/
 
             $('.mxservicetree').tree({
                 onContextMenu: function (e, node) {

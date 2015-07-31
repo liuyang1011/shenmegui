@@ -3,12 +3,12 @@
  */
 $(function () {
 	$('#user').combobox({
-		url:'/user/getAll',
+		url:'/user/getAllUser',
 		method:'get',
 		mode:'remote',
 		valueField:'id',
 		textField:'name'
-		});
+	});
     $("#createTaskBtn").click(function () {
         var taskType = $("#taskType").val();
         var user =$('#user').combobox('getValue');
