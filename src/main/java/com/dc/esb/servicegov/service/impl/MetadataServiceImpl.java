@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 import com.dc.esb.servicegov.dao.impl.CategoryWordDAOImpl;
@@ -8,6 +10,8 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,7 @@ import com.dc.esb.servicegov.util.DateUtils;
 @Service
 @Transactional
 public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
+    private static final Log log = LogFactory.getLog(MetadataServiceImpl.class);
     @Autowired
     private MetadataDAOImpl metadataDAOImpl;
     @Autowired
@@ -185,7 +190,12 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                 }
                 if(key.equals("chineseName") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.chineseName like '%" + values.get(key)[0] + "%' ";
+                        try {
+                            hql += " and a.chineseName like '%" + URLDecoder.decode(values.get(key)[0], "utf-8") + "%' ";
+                        }catch (UnsupportedEncodingException e) {
+                            log.error(e,e);
+                            log.error("中文名称转码错误！");
+                        }
                     }
                 }
                 if(key.equals("metadataId") && values.get(key) != null && values.get(key).length > 0 ){

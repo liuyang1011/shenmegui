@@ -46,19 +46,16 @@
             <td><input type="text" name="categoryWordId" id="categoryWordId"
                        class="easyui-combobox"
                        data-options="
+                       panelHeight:'auto',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
-				 		 valueField: 'id',
+				 		 valueField: 'englishWord',
 				 		 textField: 'chineseWord',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
 						}
 					"
                     /></td>
-        </tr>
-        <tr>
-            <th>数据格式</th>
-            <td><input class="easyui-textbox" type="text" name="type"></td>
         </tr>
         <tr>
             <th>业务定义</th>
@@ -68,6 +65,23 @@
             <th>业务规则</th>
             <td><input class="easyui-textbox" type="text" name="bussRule"></td>
         </tr>
+	       <tr>
+            				<th>类型</th>
+            				<td><input class="easyui-textbox" type="text" name="length"></td>
+            </tr>
+
+        <tr>
+            <th>长度</th>
+            <td><input class="easyui-textbox" type="text" name="length"></td>
+        </tr>
+        <tr>
+            <th>精度</th>
+            <td><input class="easyui-textbox" type="text" name="scale"></td>
+        </tr>
+        <tr>
+                    <th>数据项分类</th>
+                    <td><input class="easyui-textbox" type="text" name="dataCategory"></td>
+                </tr>
         <tr>
             <th>数据来源</th>
             <td><input class="easyui-textbox" type="text" name="dataSource"></td>

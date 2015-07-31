@@ -43,21 +43,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <th>类别词</th>
 		    <td><input type="text" name="categoryWordId" id="categoryWordId"
 					class="easyui-combobox"
-					 value="${entity.categoryWordId }"
 					data-options="
+						panelHeight:'auto',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
-				 		 valueField: 'id',
+				 		 valueField: 'englishWord',
 				 		 textField: 'chineseWord',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
 						}
 					"
+					value='${entity.categoryWordId }'
 					style="width: 100px; " /></td>
-		  </tr>
-		  <tr>
-		    <th>数据格式</th>
-		    <td><input class="easyui-textbox" type="text" name="type" value="${entity.type }" ></td>
 		  </tr>
 		  <tr>
 		    <th>业务定义</th>
@@ -67,6 +64,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <th>业务规则</th>
 		    <td><input class="easyui-textbox" type="text" name="bussRule" value="${entity.bussRule }" ></td>
 		  </tr>
+			<tr>
+            				<th>类型</th>
+            				<td><input class="easyui-textbox" type="text" name="length" value="${entity.type}"></td>
+            </tr>
+			<tr>
+				<th>长度</th>
+				<td><input class="easyui-textbox" type="text" name="length" value="${entity.length }"></td>
+			</tr>
+			<tr>
+				<th>精度</th>
+				<td><input class="easyui-textbox" type="text" name="SCALE" value="${entity.scale }"></td>
+			</tr>
+			<tr>
+				<th>数据项分类</th>
+				<td><input class="easyui-textbox" type="text" name="dataCategory" value="${entity.dataCategory }" ></td>
+			</tr>
 		  <tr>
 		    <th>数据来源</th>
 		    <td><input class="easyui-textbox" type="text" name="dataSource" value="${entity.dataSource }" ></td>

@@ -25,6 +25,12 @@
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <![endif]-->
+  <script type="text/javascript">
+            var errMsg = '${errMsg}';
+            if(errMsg != null && errMsg!= ""){
+              alert(errMsg);
+            }
+  </script>
 </head>
 <body class="login-page">
 <div class="login-box">
