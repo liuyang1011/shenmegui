@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
+import com.dc.esb.servicegov.service.support.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.io.SAXEventRecorder;
 import org.springframework.stereotype.Repository;
 
@@ -41,5 +43,28 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
         String hql = "select new "+ ServiceInvokeJson.class.getName()+"(s) from "+ ServiceInvoke.class.getName()+" as s where s.serviceId=? and s.operationId=? ";
         List<?> list = super.find(hql, serviceId, operationId );
         return list;
+    }
+    /**
+     * 根据消费者查找提供者，或者根据提供者查找消费者
+     */
+    public ServiceInvoke getByOtherType(String invokeId){
+        ServiceInvoke serviceInvoke = this.findUnique("invokeId", invokeId);
+        if(StringUtils.isNotEmpty(serviceInvoke.getServiceId()) && StringUtils.isNotEmpty(serviceInvoke.getOperationId()) ){
+            String type = serviceInvoke.getType();
+            if(StringUtils.isNotEmpty(type)){
+                if(type.equals(Constants.INVOKE_TYPE_CONSUMER)){
+                    type = Constants.INVOKE_TYPE_PROVIDER;
+                }
+                if(type.equals(Constants.INVOKE_TYPE_PROVIDER)){
+                    type = Constants.INVOKE_TYPE_CONSUMER;
+                }
+                String hql = " from " + ServiceInvoke.class.getName() + " as si where si.type = ? and si.serviceId = ? and si.operationId = ? and si.systemId = ?";
+                List<ServiceInvoke> list = this.find(hql, type, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), serviceInvoke.getSystemId());
+                if(list.size() > 0){
+                    return list.get(0);
+                }
+            }
+        }
+        return null;
     }
 }

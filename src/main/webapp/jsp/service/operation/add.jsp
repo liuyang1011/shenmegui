@@ -18,8 +18,9 @@
     <script src="/newui/plugins/jQueryUI/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
     <script src="/plugin/aehlke-tag-it/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="/resources/js/ui.js"></script>
     <script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/resources/js/ui.js"></script>
+
 
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>

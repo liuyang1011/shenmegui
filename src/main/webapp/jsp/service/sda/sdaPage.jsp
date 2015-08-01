@@ -306,8 +306,9 @@ var delIds = [];
 			</select></td>
   </tr>
 </table>
+</div>
 </form>
-    </div>
+
   
   </body>
 </html>

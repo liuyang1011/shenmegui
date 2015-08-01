@@ -1,6 +1,9 @@
 package com.dc.esb.servicegov.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -143,6 +146,21 @@ public class TreeNode implements Serializable {
 
     public void setClick(String click) {
         this.click = click;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj != null){
+            if(obj instanceof  TreeNode){
+                TreeNode tn = (TreeNode)obj;
+                if(StringUtils.isNotEmpty(tn.id) && tn.id.equals(this.id)){
+                    if(StringUtils.isNotEmpty(tn.text) && tn.text.equals(this.text)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

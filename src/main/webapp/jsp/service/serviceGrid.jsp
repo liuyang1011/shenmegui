@@ -263,7 +263,7 @@
                     }
                     else {
                         if (checkedItems[0].state == "1") {
-                            var urlPath = "/jsp/service/operation/release.jsp?operationName=" + checkedItems[0].operationName + "&versionCode=" + checkedItems[0].version.code + "&operationId=" + checkedItems[0].operationId;
+                            var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version.code) + "&operationId=" + encodeURI(checkedItems[0].operationId);
                             $('#opDialog').dialog({
                                 title: 'SDAHis',
                                 width: 500,
@@ -330,11 +330,10 @@
             }
         }
     ];
-
+    //版本发布
     function releaseOp(desc, operationId) {
         $('#opDialog').dialog('close');
         var urlPath = "/operation/release?serviceId=${entity.serviceId }&operationId=" + operationId + "&versionDesc=" + desc;
-        console.log(urlPath);
         var opeReleaseContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
         selectTab('服务场景', opeReleaseContent);
         parent.k++;

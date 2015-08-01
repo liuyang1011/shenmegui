@@ -333,7 +333,18 @@ public class OperationController {
         return mv;
 	}
     /**
-     * TODO根据元数据ID查询场景列表
+     * 判断元数据是否被服务场景引用
+     * @param metadataId
+     * @return
+     */
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/judgeByMetadataId/{metadataId}")
+    @ResponseBody
+    public boolean judgeByMetadataId(@PathVariable(value = "metadataId") String metadataId){
+        return operationServiceImpl.judgeByMetadataId(metadataId);
+    }
+    /**
+     * 根据元数据ID查询场景列表
      * @param metadataId
      * @return
      */
