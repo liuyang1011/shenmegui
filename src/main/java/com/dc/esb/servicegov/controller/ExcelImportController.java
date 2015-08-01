@@ -147,6 +147,25 @@ public class ExcelImportController {
                         logger.info("===========交易[" + sheetName + "],导入失败=============");
                         continue;
                     }
+                    //TODO 插入标准接口映射
+                    indexDO.getSystemId();
+                    //IS_STANDARD  SERVICE_ID,operation_id systemId,type
+                    String type = indexDO.getInterfacePoint();
+                    String operationId = indexDO.getOperationId();
+                    String cusumerSystem = indexDO.getConsumerSystem();
+                    String providerSystem = indexDO.getProviderSystem();
+                    String invokeSystemId = "";
+                    String isStandard = "0";
+                    String serviceId = indexDO.getServiceId();
+                    if("Provider".equalsIgnoreCase(type)){
+                        type = "1";
+                        invokeSystemId = cusumerSystem;
+                    }else{
+                        type = "0";
+                        invokeSystemId = providerSystem;
+                    }
+                    excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+
                     long useTime = java.lang.System.currentTimeMillis() - time;
                     logger.info("===========交易[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
                 } else {

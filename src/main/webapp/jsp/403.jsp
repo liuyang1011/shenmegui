@@ -38,14 +38,14 @@
               <p>
                 没有操作权限
               </p>
-              <form class='search-form'>
+              <%--<form class='search-form'>
                 <div class='input-group'>
                   <input type="text" name="search" class='form-control' placeholder="Search"/>
                   <div class="input-group-btn">
                     <button type="submit" name="submit" class="btn btn-warning btn-flat"><i class="fa fa-search"></i></button>
                   </div>
                 </div><!-- /.input-group -->
-              </form>
+              </form>--%>
             </div><!-- /.error-content -->
           </div><!-- /.error-page -->
         </section><!-- /.content -->

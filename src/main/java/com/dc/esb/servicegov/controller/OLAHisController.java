@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -29,5 +32,9 @@ public class OLAHisController {
 		result.put("rows", rows);
 		return result;
 		
+	}
+	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+	public String processUnauthorizedException() {
+		return "403";
 	}
 }

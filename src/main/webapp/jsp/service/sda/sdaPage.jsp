@@ -7,6 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
+  	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <base href="<%=basePath%>">
     
     <title>sda信息</title>
@@ -121,7 +122,6 @@ var delIds = [];
 				for(var i=0; i<newIds.length; i++){
 					var editNode = t.treegrid('find', newIds[i]);
 					t.treegrid('endEdit', editNode.id);
-					console.log(editNode);
 					var node = {};
 					node.sdaId = editNode.id;
 					node.structName = editNode.text;
@@ -192,7 +192,6 @@ var delIds = [];
 		
 		function moveUp(){
 			var node = $('#tg').treegrid('getSelected');
-			console.log(node);
 			if(node != null){
 				$.ajax({
 					type:"get",

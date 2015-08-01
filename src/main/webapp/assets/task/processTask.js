@@ -17,7 +17,6 @@ $(function () {
         task.userId = "admin";
         task.name = Global.taskName;
         taskManager.processTask(task,function(){
-            console.log(task.name);
             if(task.name=='创建元数据'){
                 $("#w").window("close");
                 $('#taskTable').datagrid('reload');

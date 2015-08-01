@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.dc.esb.servicegov.util.JSONUtil;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.impl.ServiceInvokeServiceImpl;
@@ -70,5 +69,10 @@ public class ServiceInvokeController {
         result.put("total", rows.size());
         result.put("rows", rows);
         return result;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }

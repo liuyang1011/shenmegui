@@ -24,4 +24,6 @@ public interface ExcelImportService {
 
     public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet);
 
+    public void addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard);
+
 }

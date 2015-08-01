@@ -7,13 +7,17 @@ import java.util.Map;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.dc.esb.servicegov.entity.Role;
+import com.dc.esb.servicegov.entity.UserRoleRelation;
 import com.dc.esb.servicegov.service.impl.RoleServiceImpl;
+import com.dc.esb.servicegov.service.impl.UserRoleRelationServiceImpl;
 import com.dc.esb.servicegov.vo.RoleVO;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 public class RoleController {
 	@Autowired
 	private RoleServiceImpl roleServiceImpl;
+    @Autowired
+    private UserRoleRelationServiceImpl userRoleRelationService;
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody Role role) {
@@ -92,5 +98,13 @@ public class RoleController {
         return true;
     }
 
-
+    @RequestMapping(method = RequestMethod.GET, value = "/getRelation/{id}", headers = "Accept=application/json")
+    public @ResponseBody
+    boolean getRelation(@PathVariable String id) {
+    	List<UserRoleRelation> urr= userRoleRelationService.findBy("roleId", id);
+    	if(urr.size()==0){
+    		 return false;
+    	} 
+        return true;
+    }
 }

@@ -7,6 +7,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
   <base href="<%=basePath%>">
   <title>My JSP 'MyJsp.jsp' starting page</title>
   <meta http-equiv="pragma" content="no-cache">

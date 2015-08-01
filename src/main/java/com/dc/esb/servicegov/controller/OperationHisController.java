@@ -6,9 +6,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -60,5 +63,10 @@ public class OperationHisController {
 		result.put("total", rows.size());
 		result.put("rows", rows);
 		return result;
+	}
+
+	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+	public String processUnauthorizedException() {
+		return "403";
 	}
 }

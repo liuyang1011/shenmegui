@@ -1,24 +1,20 @@
 package com.dc.esb.servicegov.controller;
 
-import com.dc.esb.servicegov.entity.EnglishWord;
-import com.dc.esb.servicegov.entity.SGUser;
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.jboss.seam.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.UnsupportedEncodingException;
+
 
 /**
  * Created by vincentfxz on 15/7/2.
@@ -74,6 +70,10 @@ public class LoginController {
         }
 
         return new ModelAndView("index");
+    }
 
+    @ExceptionHandler({IncorrectCredentialsException.class})
+    public String processUnauthorizedException() {
+        return "/login/login";
     }
 }

@@ -9,6 +9,8 @@ import com.dc.esb.servicegov.service.impl.RoleServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserRoleRelationServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
 import com.dc.esb.servicegov.vo.UserVO;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -151,5 +153,10 @@ public class UserController {
             return false;
         }
         return true;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }

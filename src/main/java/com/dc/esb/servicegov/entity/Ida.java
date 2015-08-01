@@ -34,7 +34,7 @@ public class Ida {
     @Column(name = "LENGTH")
     private String length;
 
-    @Column(name = "REQUIRED")
+    @Column(name = "REQUIRED" ,length=500)
     private String required;
 
     @Column(name = "PARENT_ID",updatable=false,insertable=true)
@@ -55,6 +55,7 @@ public class Ida {
     @Column(name = "VERSION")
     private String version;
 
+    @Column(name = "REMARK",length = 500)
     private String remark;
 
 //    @Column(name = "ARG_TYPE")

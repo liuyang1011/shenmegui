@@ -7,13 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.dc.esb.servicegov.entity.OLA;
 import com.dc.esb.servicegov.entity.OLATemplate;
@@ -95,5 +93,10 @@ public class OLATemplateController {
             olaServiceImpl.save(ola);
    	 }
        return true;
+   }
+
+	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+	public String processUnauthorizedException() {
+		return "403";
    }
 }

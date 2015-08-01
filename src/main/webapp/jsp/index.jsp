@@ -8,8 +8,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <meta charset="UTF-8">
-    <title>服务治理平台 beta1.0</title>
+    <title>服务治理平台</title>
     <link rel="stylesheet" type="text/css"
           href="<%=basePath%>/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css"

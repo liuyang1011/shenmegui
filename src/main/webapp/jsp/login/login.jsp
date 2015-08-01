@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
   <meta charset="UTF-8">
   <title>服务治理平台 | 登录</title>
   <!-- Tell the browser to be responsive to screen width -->
