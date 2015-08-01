@@ -71,6 +71,13 @@ public class UserController {
         return result;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllUser", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<SGUser> getAllUser() {
+        return userServiceImpl.getAll();
+    }
+
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/query", headers = "Accept=application/json")
     public

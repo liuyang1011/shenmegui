@@ -30,10 +30,10 @@ public class PermissionController {
         Map<String, String> resMap = new HashMap<String, String>();
         List<Permission> permissions = permissionDAOImpl.getAll();
         for (Permission p : permissions) {
-            String key = p.getDescription();
-            String val= p.getId()+"&"+ p.getName();
-            if (resMap.containsKey(p.getDescription())) {
-                val= p.getId()+"&"+ p.getName();
+            String key = p.getChineseDescription();
+            String val= p.getId()+"&"+ p.getChineseName();
+            if (resMap.containsKey(p.getChineseDescription())) {
+                val= p.getId()+"&"+ p.getChineseName();
                 resMap.put(key, resMap.get(key) + "," + val);
             } else {
                 resMap.put(key,val);
