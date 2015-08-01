@@ -3,6 +3,8 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.process.impl.JbpmSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
@@ -133,5 +135,10 @@ public class ProcessController {
         modelAndView.addObject(processId);
         modelAndView.addObject(taskId);
         return modelAndView;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }

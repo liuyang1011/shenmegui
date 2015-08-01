@@ -2,6 +2,8 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.entity.Tag;
 import com.dc.esb.servicegov.service.impl.TagServiceImpl;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +51,10 @@ public class TagController {
         return tagService.addTagsForOperation(serviceId, operationId, Arrays.asList(tags));
     }
 
-
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
+    }
 
 
 }

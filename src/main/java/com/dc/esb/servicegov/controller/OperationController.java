@@ -17,6 +17,8 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -343,5 +345,8 @@ public class OperationController {
     public List<TreeNode> getByMetadataId(@PathVariable(value = "metadataId") String metadataId){
         return operationServiceImpl.getTreeByMetadataId(metadataId);
     }
-
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
+    }
 }

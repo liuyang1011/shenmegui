@@ -7,6 +7,8 @@ import com.dc.esb.servicegov.entity.Interface;
 import com.dc.esb.servicegov.service.FileManagerService;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.Utils;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +134,11 @@ public class FileManagerController {
         }
         fileManagerService.delete(fm);
         return true;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 
 }

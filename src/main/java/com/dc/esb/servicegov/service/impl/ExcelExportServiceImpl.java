@@ -116,6 +116,8 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         for(int i= 0; i < siList.size(); i++){
             ServiceInvoke si = siList.get(i);
             HSSFSheet sheet = workbook.cloneSheet(workbook.getSheetIndex(mappingSheet));//复制模板中mapping页
+            //TODO taizhou 标准没有interfaceId
+            if(null == si.getInterfaceId()) continue;
             workbook.setSheetName(workbook.getSheetIndex(sheet), si.getInterfaceId());//修改sheet名称
 //            MappingSheetTask msTask = new MappingSheetTask(sheet, si, this);
 //            pool.execute(msTask);

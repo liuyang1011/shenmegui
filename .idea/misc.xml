@@ -50,7 +50,6 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/../jbpm-6-examples/pom.xml" />
       </list>
     </option>
   </component>

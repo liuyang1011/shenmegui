@@ -75,7 +75,7 @@
     <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
 
 </div>
-<ul class="easyui-tree mxservicetree" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:100%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
 
 <%
     }
@@ -87,7 +87,7 @@
 
 </div>
 
-<ul class="easyui-tree mslinktree" data-options="url:'/system/getTree',method:'get',animate:true"></ul>
+<ul class="easyui-tree mslinktree" style="overflow:scroll;height:100%" data-options="url:'/system/getTree',method:'get',animate:true"></ul>
 <%
     }
     if (mid.equals("6")) {

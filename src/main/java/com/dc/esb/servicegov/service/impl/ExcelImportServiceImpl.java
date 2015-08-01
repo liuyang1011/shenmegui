@@ -29,6 +29,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected Log logger = LogFactory.getLog(getClass());
 
     protected static final int INDEX_SHEET_NAME_COL = 0;
+    protected static final int INDEX_SERVICE_ID_COL = 2;
+    protected static final int INDEX_OPERATION_ID_COL = 3;
     protected static final int INDEX_CONSUMER_COL = 5;
     protected static final int INDEX_PROVIDER_COL = 6;
     protected static final int INDEX_INTERFACE_POINT_COL = 7;
@@ -152,6 +154,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             //接口方向
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
+            String operationId = getCell(row, INDEX_OPERATION_ID_COL);
+            String serviceId = getCell(row,INDEX_SERVICE_ID_COL).split("[()]+")[1];
             String systemId = consumerSystem;
             if ("Provider".equalsIgnoreCase(interfacePoint)) {
                 systemId = providerSystem;
@@ -163,6 +167,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             indexDO.setProviderSystem(providerSystem);
             indexDO.setSystemId(systemId);
             indexDO.setInterfacePoint(interfacePoint);
+            indexDO.setOperationId(operationId);
+            indexDO.setServiceId(serviceId);
             indexDOs.add(indexDO);
         }
         return indexDOs;
@@ -759,6 +765,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String interfacePoint;
         private String interfaceHead;
         private String systemId;
+        private String operationId;
+        private String serviceId;
 
         public String getSheetName() {
             return sheetName;
@@ -807,6 +815,23 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         public void setConsumerSystem(String consumerSystem) {
             this.consumerSystem = consumerSystem;
         }
+
+        public String getOperationId() {
+            return operationId;
+        }
+
+        public void setOperationId(String operationId) {
+            this.operationId = operationId;
+        }
+
+        public String getServiceId() {
+            return serviceId;
+        }
+
+        public void setServiceId(String serviceId) {
+            this.serviceId = serviceId;
+        }
+
     }
 
     public void insertInterfaceHead(boolean exists, Interface inter, Map<String, Object> headMap) {
@@ -1376,5 +1401,28 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     @Override
     public HibernateDAO getDAO() {
         return null;
+    }
+    @Override
+    public void addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard){
+        //先检查是否有映射记录
+
+        Map<String, String> paramMap = new HashMap<String, String>();
+        //查询提供系统 关系
+        paramMap.put("serviceId", serviceId);
+        paramMap.put("operationId", operationId);
+        paramMap.put("systemId", invokeSystemId);
+        paramMap.put("type", type);
+        paramMap.put("isStandard", isStandard);
+        ServiceInvoke invoke = serviceInvokeDAO.findUniqureBy(paramMap);
+        if(null != invoke){
+            return;
+        }
+        invoke = new ServiceInvoke();
+        invoke.setServiceId(serviceId);
+        invoke.setOperationId(operationId);
+        invoke.setSystemId(invokeSystemId);
+        invoke.setType(type);
+        invoke.setIsStandard(isStandard);
+        serviceInvokeDAO.insert(invoke);
     }
 }

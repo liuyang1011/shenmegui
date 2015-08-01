@@ -69,9 +69,15 @@ public class MetadataXlsxParserImpl implements IResourceParser {
         metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
         metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
         String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
-        String type = getTypeFromFormula(dataFormula);
-        String length = getLengthFromFormula(dataFormula);
-        String scale = getScaleFromFormula(dataFormula);
+        //TODO 本地化修改
+        String[] str = dataFormula.split("[()]+");
+        String type = getTypeFromFormula(str[0]);
+        String length = "";
+        String scale = "";
+        if(str.length>1){
+            length = getLengthFromFormula(str[1].replaceAll("，",","));
+            scale = getScaleFromFormula(str[1].replaceAll("，",","));
+        }
         metadata.setType(type);
         metadata.setLength(length);
         metadata.setScale(scale);
@@ -82,20 +88,24 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     }
 
     public static String getTypeFromFormula(String formula) {
-        String type = "String";
+       /* String type = "String";
         if (null != formula) {
             if (StringUtils.containsIgnoreCase(formula, "a")) {
                 type = "String";
             } else if (StringUtils.containsIgnoreCase(formula, "n")) {
                 type = "Number";
             }
-        }
-        return type;
+        }*/
+        return formula;
     }
 
     public static String getLengthFromFormula(String formula) {
         String length = "";
-        if (null != formula) {
+        if(null != formula){
+            String str[] = formula.split(",");
+            length = str[0];
+        }
+        /*if (null != formula) {
             int indexOfSeparator = formula.indexOf("!");
             if (indexOfSeparator < 0) {
                 indexOfSeparator = formula.indexOf("n");
@@ -106,13 +116,21 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                     length = lengthStr;
                 }
             }
-        }
+        }*/
         return length;
     }
 
     public static String getScaleFromFormula(String formula) {
         String scale = "";
-        if (null != formula) {
+
+        if(null != formula){
+            String str[] = formula.split(",");
+            if(str.length>1){
+                scale = str[1];
+            }
+        }
+
+        /*if (null != formula) {
             int startOfScale = formula.indexOf("(");
             int endOfScale = formula.indexOf(")");
             if (startOfScale > 0 && endOfScale > 0 && endOfScale > startOfScale) {
@@ -121,7 +139,7 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                     scale = tmp;
                 }
             }
-        }
+        }*/
         return scale;
     }
 
