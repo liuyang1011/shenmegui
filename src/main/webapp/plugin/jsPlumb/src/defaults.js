@@ -608,9 +608,7 @@
         };
 
         var dumpSegmentsToConsole = function () {
-            console.log("SEGMENTS:");
             for (var i = 0; i < segments.length; i++) {
-                console.log(segments[i].type, segments[i].getLength(), segmentProportions[i]);
             }
         };
 

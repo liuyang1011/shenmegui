@@ -71,7 +71,6 @@ function save(formId, operation) {
 
                 var serviceId = $("#serviceId").attr("value");
                 var operationId = $("#operationId").textbox("getValue");
-                console.log(serviceId);
                 $.ajax({
                     type: "post",
                     async: false,
@@ -200,7 +199,6 @@ function loadSystem(id, items, valueField, textField) {
 function loadSelect(id, items) {
     if (items.length > 0) {
         $.each(items, function (index, item) {
-            console.log(item);
             var text = item["system"]["systemChineseName"];
             if (null != item["inter"]) {
                 text = text + "::" + item["inter"]["interfaceName"];
@@ -214,7 +212,6 @@ function chooseInterface(oldListId, newListId) {
     $('#' + oldListId + ' option:selected').each(function () {
         var value = $(this).val();
         var text = this.text;
-//		console.log(value);
         $.ajax({
             type: "get",
             async: false,
@@ -227,7 +224,6 @@ function chooseInterface(oldListId, newListId) {
                 if (!data) {
 //		     		$("#"+oldListId+" option[value="+value+"]").remove();
                     var exsit = $("#" + newListId + " option[value='" + value + "']");
-                    console.log(length);
                     if (exsit.length > 0) {
                         alert("应经被选中！");
                     } else {
@@ -266,7 +262,6 @@ function selectInterface(listId) {
     var checkedItems = $('#intefaceList').datagrid('getChecked');
     if (checkedItems != null && checkedItems.length > 0) {
         $.each(checkedItems, function (index, item) {
-        	console.log(item);
             var exsit = $("#" + listId + " option[value='__invoke__" + item.invokeId + "']");
             if (exsit.length > 0) {
                 alert("该接口已经被选中！");

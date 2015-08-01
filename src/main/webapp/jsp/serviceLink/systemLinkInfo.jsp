@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
@@ -94,7 +95,6 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        console.log(checkedItem);
                         var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('预览', content);
                         selectTab('预览', content);
@@ -120,7 +120,6 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        console.log(checkedItem);
                         var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('血缘分析', content);
                         selectTab('血缘分析', content);

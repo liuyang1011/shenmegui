@@ -117,9 +117,7 @@ var SYSMENU = {
                         e.preventDefault();
                         $(this).tree('select', node.target);
                         if (typeof(node.children) != 'undefined') {//编辑接口
-                           // console.log(node);
                             if(node.click == 'system') {
-                               // console.log($('#mm-mxsystemtree'));
                                 $('#mm-mxsystemtree').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
@@ -233,12 +231,9 @@ var SYSMENU = {
                         } else {
                             var mid = node.id;
                             var title = node.text + "交易链路";
-                            console.log(node);
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                console.log(node);
-                                console.log(node.id);
                                 var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId='+node.id+'" style="width:100%;height:100%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
@@ -295,7 +290,6 @@ var SYSMENU = {
         });
     },
     changeLeftMenu: function (mid) {
-        console.log("refresh left Menu");
         $("#west-menu").load(LOAD_URL.LEFTMENU, 'mid=' + mid, function () {
             $('#mxsysadmintreefilter').searchbox({
                 searcher: function (value, name) {
@@ -466,7 +460,6 @@ var SYSMENU = {
                     } else {
                         var mid = node.id;
                         var title = node.text + "交易链路";
-                        console.log(title);
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {

@@ -12,7 +12,6 @@
             <%--url: "/resourceImport/import",//文件上传地址，当然也可以直接写在input的data-url属性内--%>
 <%--//        formData: {param1: "p1", param2: "p2"},//如果需要额外添加参数可以在这里添加--%>
             <%--done: function (e, result) {--%>
-                <%--console.log(hehehe);--%>
             <%--}--%>
         <%--});--%>
     <%--});--%>

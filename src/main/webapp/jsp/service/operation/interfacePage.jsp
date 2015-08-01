@@ -8,6 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>列表页</title>
 <link rel="stylesheet" type="text/css"
@@ -37,7 +38,6 @@
          //根据已选中的sda的元数据替换“接口映射”区域中对应选中接口的元数据。
          function replaceMetadataId(){
             var sda = $("#sda").treegrid("getSelected");
-            console.log(sda);
             if(sda != null){
                 if(sda.text == "root" || sda.text == "request"|| sda.text == "response"){
                     alert("请选择其他节点!");

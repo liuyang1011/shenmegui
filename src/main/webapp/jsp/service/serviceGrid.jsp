@@ -9,6 +9,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css"
@@ -334,7 +335,6 @@
     function releaseOp(desc, operationId) {
         $('#opDialog').dialog('close');
         var urlPath = "/operation/release?serviceId=${entity.serviceId }&operationId=" + operationId + "&versionDesc=" + desc;
-        console.log(urlPath);
         var opeReleaseContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
         selectTab('服务场景', opeReleaseContent);
         parent.k++;
@@ -350,7 +350,6 @@
          */
         var initTags = function initTags(result){
             result.forEach(function(tag){
-                console.log(tag);
                 $("#tags").append("<li>" + tag.tagName + "</li>");
             });
             $("#tags").tagit();

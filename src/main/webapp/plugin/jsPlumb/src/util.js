@@ -320,7 +320,6 @@
             if (exports.logEnabled && typeof console != "undefined") {
                 try {
                     var msg = arguments[arguments.length - 1];
-                    console.log(msg);
                 }
                 catch (e) {
                 }

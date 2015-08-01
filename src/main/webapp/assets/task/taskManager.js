@@ -5,8 +5,6 @@ var taskManager = {
     "createTask": function createTask(task, params, callBack) {
         //{user}/create/{type}
         var url = "/process/" + task.userId + "/create/" + task.taskType;
-        console.log(task.userId);
-        console.log(url);
         $.ajax({
             "type": "POST",
             "contentType": "application/json;charset=utf-8",
@@ -63,7 +61,6 @@ var taskManager = {
     "auditMetadata" : function (task,callBack){
         //"/audit/process/{processId}"
         var url = "/metadata/audit/process/" + task.processId;
-        console.log(url);
         $.ajax({
             "type": "GET",
             "contentType": "application/json;charset=utf-8",

@@ -3,7 +3,6 @@
  */
 
 $(function(){
-    console.log("hehehe");
     var node = $('.mxservicetree').tree('getSelected');
     $('#serviceName').val(node.service.serviceName);
     $('#discription').val(node.service.desc);
