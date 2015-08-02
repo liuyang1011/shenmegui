@@ -5,6 +5,5 @@
     <mapping directory="$PROJECT_DIR$/../jbpm" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../jbpm-6-examples" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../ld" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>
