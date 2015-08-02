@@ -48,7 +48,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
      * 根据消费者查找提供者，或者根据提供者查找消费者
      */
     public ServiceInvoke getByOtherType(String invokeId){
-        ServiceInvoke serviceInvoke = this.findUnique("invokeId", invokeId);
+        ServiceInvoke serviceInvoke = this.findUniqueBy("invokeId", invokeId);
         if(StringUtils.isNotEmpty(serviceInvoke.getServiceId()) && StringUtils.isNotEmpty(serviceInvoke.getOperationId()) ){
             String type = serviceInvoke.getType();
             if(StringUtils.isNotEmpty(type)){

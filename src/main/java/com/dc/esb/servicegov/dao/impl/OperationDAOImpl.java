@@ -53,7 +53,7 @@ public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
 	}
 	public long getByMetadataIdCount(String metadataId){
 		String hql = "select count(*) from Operation as o, SDA s where o.operationId = s.operationId and o.serviceId = s.serviceId and s.metadataId = ? ";
-		long count = this.findUnique(hql, metadataId);
+		Long count = this.findUnique(hql, metadataId);
 		return count;
 	}
 	public List<Operation> getByMetadataId(String metadataId){

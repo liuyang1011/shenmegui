@@ -32,7 +32,9 @@ public class ServiceInvokeViewBean {
         this.desc = si.getDesc();
         this.remark = si.getRemark();
         this.protocolId = si.getProtocolId();
-        this.interfaceName = si.getInter().getInterfaceName();
+        if(null != si.getInter()){
+            this.interfaceName = si.getInter().getInterfaceName();
+        }
         this.systemName = si.getSystem().getSystemAb();
     }
 
