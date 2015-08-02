@@ -1,5 +1,6 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*, java.net.URLDecoder" pageEncoding="utf-8"%>
 <%
+
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
@@ -16,7 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	<table width="100%">
     		<tr>
     			<td width="100%">
-    				场景名称：${param.operationName }<br/>
+    				场景名称：<%=URLDecoder.decode(request.getParameter("operationName"), "utf-8") %><br/>
     				版本号：${param.versionCode }
     			</td>
     		</tr>

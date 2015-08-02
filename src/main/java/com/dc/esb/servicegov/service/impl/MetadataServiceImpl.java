@@ -12,6 +12,7 @@ import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -157,6 +158,8 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     }
 
     public boolean addMetadata(Metadata metadata) {
+        String userName = (String) SecurityUtils.getSubject().getPrincipal();
+        metadata.setOptUser(userName);
 		metadata.setOptDate(DateUtils.format(new Date()));
         metadataDAOImpl.save(metadata);
         return true;

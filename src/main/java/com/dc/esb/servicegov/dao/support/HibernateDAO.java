@@ -400,6 +400,15 @@ public class HibernateDAO<T, PK extends Serializable> {
     public List<T> find(final String hql, final Object... values) {
         return createQuery(hql, values).list();
     }
+    /**
+     * 按HQL查询对象列表.
+     *
+     * @param values 数量可变的参数,按顺序绑定.
+     */
+    @Transactional
+    public List<T> find(final String hql, Page page,  final Object... values) {
+        return createQuery(hql, page, values).list();
+    }
 
     /**
      * 按HQL查询对象列表.
@@ -469,6 +478,20 @@ public class HibernateDAO<T, PK extends Serializable> {
         }
         return query;
     }
+
+    public Query createQuery(final String queryString, Page page, final Object... values) {
+        Assert.hasText(queryString, "queryString不能为空");
+        Query query = getSession().createQuery(queryString);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                query.setParameter(i, values[i]);
+            }
+        }
+        query.setMaxResults(page.getPageSize());
+        query.setFirstResult(page.getFirstItemPos());
+        return query;
+    }
+
 
     /**
      * 根据查询HQL与参数列表创建Query对象.

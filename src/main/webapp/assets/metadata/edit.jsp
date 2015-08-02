@@ -39,6 +39,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <th>英文名称</th>
 		    <td><input class="easyui-textbox" type="text" name="metadataName" value="${entity.metadataName }" ></td>
 		  </tr>
+        <tr>
+            <th>别名</th>
+            <td><input class="easyui-textbox" type="text" name="metadataAlias" value="${entity.metadataAlias}"></td>
+        </tr>
 		  <tr>
 		    <th>类别词</th>
 		    <td><input type="text" name="categoryWordId" id="categoryWordId"

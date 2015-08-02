@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,13 +14,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dc.esb.servicegov.entity.VersionHis;
 import com.dc.esb.servicegov.service.impl.VersionHisServiceImpl;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/versionHis")
 public class VersionHisController {
 	@Autowired
 	private VersionHisServiceImpl versionHisServiceImpl;
-	
+	@Autowired
+	private OperationServiceImpl operationService;
+
+
 	@RequestMapping("/hisVersionList")
 	@ResponseBody
 	public Map<String, Object> hisVersionList(String keyValue) {
@@ -28,5 +35,16 @@ public class VersionHisController {
 		result.put("total", rows.size());
 		result.put("rows", rows);
 		return result;
+	}
+
+//	@RequiresPermissions({"version-get"})
+	@RequestMapping("/hisDetailPage")
+	public ModelAndView hisDetailPage(String serviceId, String operationId) {
+		ModelAndView mv = new ModelAndView("version/versionHisDetail");
+		Operation operation = operationService.getOperation(serviceId, operationId);
+		if(operation != null){
+			mv.addObject("operation", operation);
+		}
+		return mv;
 	}
 }

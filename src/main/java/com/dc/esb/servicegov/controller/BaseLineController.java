@@ -32,16 +32,6 @@ public class BaseLineController {
     @Autowired
     private ServiceInvokeServiceImpl serviceInvokeServiceImpl;
 
-    @RequiresPermissions({"version-get"})
-    @RequestMapping("/operationList")
-    @ResponseBody
-    public Map<String, Object> operationList() {
-        Map<String, Object> result = new HashMap<String, Object>();
-        List<?> rows = baseLineServiceImpl.operationList();
-        result.put("total", rows.size());
-        result.put("rows", rows);
-        return result;
-    }
 
     @RequiresPermissions({"version-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/release", headers = "Accept=application/json")

@@ -44,6 +44,10 @@
 				return false;
 			}
 			var opItems = $('#operationList').datagrid('getChecked');
+			if(opItems == null || opItems.length == 0){
+				alert("不能发布空数据！");
+				return false;
+			}
 		//	var pcItems = $('#pcList').datagrid('getChecked');
 			var operations = new Array();
 			$.each(opItems, function(index, item) {
@@ -98,7 +102,7 @@
 		data-options="
 				rownumbers:true,
 				singleSelect:false,
-				url:'/baseLine/operationList',
+				url:'/version/operationList',
 				method:'get',
 				toolbar:toolbar,
 				pagination:true,

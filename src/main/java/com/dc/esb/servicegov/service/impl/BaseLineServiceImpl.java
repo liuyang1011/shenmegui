@@ -40,17 +40,6 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
     @Autowired
     private ServiceInvokeServiceImpl serviceInvokeServiceImpl;
 
-    // 查询已通过审核但未发布的场景列表
-
-    /**
-     *  TODO 这个方法未什么在这里
-     * @return
-     */
-    public List<?> operationList() {
-        return operationServiceImpl.getReleased();
-    }
-
-
     public boolean release(HttpServletRequest req, String code, String blDesc, String versionHisIds) {
         //新建基线
         BaseLine bl = new BaseLine();
