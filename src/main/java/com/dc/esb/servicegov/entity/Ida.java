@@ -55,6 +55,7 @@ public class Ida {
     @Column(name = "VERSION")
     private String version;
 
+    @Column(name = "REMARK",length = 500)
     private String remark;
 
 //    @Column(name = "ARG_TYPE")

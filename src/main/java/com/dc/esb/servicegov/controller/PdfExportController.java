@@ -3,8 +3,11 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.service.impl.PdfServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -99,5 +102,10 @@ public class PdfExportController {
             log.error("删除临时文件[" + file.getAbsolutePath() + "]失败！");
         }
         return deleteResult;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }

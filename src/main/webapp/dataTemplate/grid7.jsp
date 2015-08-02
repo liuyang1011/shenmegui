@@ -141,12 +141,25 @@
                             return false;
                        }
                        else{
+                              $.ajax({
+                                  type: "get",
+                                  async: false,
+                                  url: "/operation/judgeByMetadataId/"+checkedItems[0].metadataId,
+                                  dataType: "json",
+                                  success: function (data) {
+                                      if(data){
                                         uiinit.win({
                                             w: 600,
                                             iconCls: 'icon-cfp',
                                             title: "关联服务场景",
                                             url: "/jsp/service/operation/list.jsp?metadataId="+checkedItems[0].metadataId
                                         });
+                                      }
+                                      else{
+                                        alert("元数据["+checkedItems[0].chineseName+"]没有关联任何服务场景");
+                                      }
+                                  }
+                              });
                        }
                   }
                   else {
@@ -201,6 +214,7 @@
 
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="/resources/js/ui.js"></script>
 <script type="text/javascript" src="/assets/metadata/metadataManager.js"></script>
 <script type="text/javascript" src="/assets/metadata/metadata.js"></script>

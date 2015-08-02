@@ -16,7 +16,7 @@ $(function () {
         var task = {};
         task.taskId = Global.taskId;
         task.targetUserId = $('#userAssign').combobox('getValue');
-        task.userId = "admin";
+        task.userId = $("#userId").text();
         taskManager.assignTask(task, function () {
             alert("任务已经分派！");
             $("#w").window("close");

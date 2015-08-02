@@ -8,6 +8,8 @@ import com.dc.esb.servicegov.service.ProtocolService;
 import com.dc.esb.servicegov.service.SystemProtocolService;
 import com.dc.esb.servicegov.service.SystemService;
 import com.dc.esb.servicegov.util.TreeNode;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -329,5 +331,10 @@ public class SystemController {
             systemTree.add(systemTreeNode);
         }
         return systemTree;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }

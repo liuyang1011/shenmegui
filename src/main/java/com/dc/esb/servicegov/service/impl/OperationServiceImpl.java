@@ -14,9 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
-import sun.reflect.generics.tree.Tree;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 @Service
@@ -243,14 +244,15 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         Operation operation = getOperation(serviceId, operationId);
         if (operation != null) {
             //备份操作基本信息
+            if(StringUtils.isNotEmpty(versionDesc)){
+                try {
+                    versionDesc = URLDecoder.decode(versionDesc, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
             OperationHis operationHis = backUpOperation(serviceId, operationId, versionDesc);
             String operationHisAutoId = operationHis.getAutoId();
-//            //更新版本信息
-//            String versionHisId = versionServiceImpl.releaseVersion(operation.getVersionId(), operationHisAutoId, versionDesc);
-//            //更新 operationHis 中的versionId
-//            operationHis.setVersionHisId(versionHisId);
-//            operationHisService.save(operationHis);
-            //备份SDA
             sdaService.backUpSdaByCondition(params, operationHisAutoId);
             //备份SLA
             slaService.backUpSLAByCondition(params, operationHisAutoId);
@@ -267,7 +269,14 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public List<Operation> getReleased(){
     	return operationDAOImpl.getReleased();
     }
-
+    public boolean judgeByMetadataId(String metadataId){
+        //查找场景列表
+        long count = operationDAOImpl.getByMetadataIdCount(metadataId);
+        if(count > 0){
+            return true;
+        }
+        return false;
+    }
     /**
      * TODO 根据metadataId查询operation树
      * @param metadataId

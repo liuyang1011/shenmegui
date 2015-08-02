@@ -18,6 +18,13 @@ import org.springframework.util.Assert;
 
 @Repository
 public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
+	public Operation getBySO(String serviceId, String operationId){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("serviceId", serviceId);
+		params.put("operatioId", operationId);
+		Operation operation = this.findUniqureBy(params);
+		return operation;
+	}
 	public boolean auditOperation(String state, String[] operationIds) {
 		if (operationIds != null && operationIds.length > 0) {
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -44,7 +51,11 @@ public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
 		entity.setOptUser(userName);
 		super.save(entity);
 	}
-
+	public long getByMetadataIdCount(String metadataId){
+		String hql = "select count(*) from Operation as o, SDA s where o.operationId = s.operationId and o.serviceId = s.serviceId and s.metadataId = ? ";
+		Long count = this.findUnique(hql, metadataId);
+		return count;
+	}
 	public List<Operation> getByMetadataId(String metadataId){
 		String hql = "select o from Operation as o, SDA s where o.operationId = s.operationId and o.serviceId = s.serviceId and s.metadataId = ? ";
 		List<Operation> list = this.find(hql, metadataId);

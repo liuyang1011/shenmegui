@@ -1,3 +1,4 @@
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -46,7 +47,7 @@
 </head>
 
 <body>
-
+<div id="userId" style="display: none"><shiro:principal/></div>
 <div class="easyui-tabs" style="width:100%;height:auto">
     <div title="未完成任务" style="padding:0px">
         <table class="easyui-datagrid" id="taskTable"
@@ -196,9 +197,9 @@
                             var task = {};
                             task.processInstanceId = Global.processInstanceId;
                             task.taskId = Global.taskId;
-                            task.userId = "admin";
+                            task.userId = $("#userId").text();;
                             task.name = Global.taskName;
-                            taskManager.processTask(task,function(){
+                            taskManager.processTask(task,function(result){
                                 if(task.name=='创建元数据'){
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
@@ -240,7 +241,7 @@
                         alert("请选中要修改的数据！");
                     }
                 }
-            },
+            }/*,
             {
                 text: '挂起',
                 iconCls: 'icon-guaqi',
@@ -253,7 +254,7 @@
                 handler: function () {
                     alert('挂起')
                 }
-            }
+            }*/
         ];
     </script>
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>

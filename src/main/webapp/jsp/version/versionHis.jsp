@@ -55,7 +55,7 @@
 								dataType : "json",
 								data : {"autoId" : row.targetId},
 								success : function(data) {
-									var urlPath = "/operation/detailPage?serviceId="+data.serviceId+"&operationId="+data.operationId;
+									var urlPath = "/versionHis/hisDetailPage?serviceId="+data.serviceId+"&operationId="+data.operationId;
 									$('#versionDlg').dialog({
 										title : 'His',
 										width : 700,

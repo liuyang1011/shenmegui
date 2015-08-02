@@ -14,7 +14,7 @@ $(function () {
         var task = {};
         task.processInstanceId = Global.processInstanceId;
         task.taskId = Global.taskId;
-        task.userId = "admin";
+        task.userId = $("#userId").text();
         task.name = Global.taskName;
         taskManager.processTask(task,function(){
             if(task.name=='创建元数据'){

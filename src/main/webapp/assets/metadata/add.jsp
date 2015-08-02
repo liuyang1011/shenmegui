@@ -31,7 +31,7 @@
         <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataId"
-                       data-options="required:true, validType:'unique'"></td>
+                       data-options="required:true, validType:['unique','english']"></td>
         </tr>
         <tr>
             <th>中文名称</th>
@@ -40,6 +40,10 @@
         <tr>
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataName"></td>
+        </tr>
+        <tr>
+            <th>别名</th>
+            <td><input class="easyui-textbox" type="text" name="metadataAlias"></td>
         </tr>
         <tr>
             <th>类别词</th>
@@ -117,7 +121,13 @@
                 return result;
             },
             message: '元数据名称已存在'
-        }
+        },
+                english : {// 验证英语
+                        validator : function(value) {
+                            return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                        },
+                        message : '请输入英文或数组字符'
+                    }
     });
     if(typeof(processId) != 'undefined'){
         $('#taskIdInput').val(processId);

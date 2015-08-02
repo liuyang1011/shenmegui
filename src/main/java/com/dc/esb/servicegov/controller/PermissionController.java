@@ -2,12 +2,11 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.impl.PermissionDAOImpl;
 import com.dc.esb.servicegov.entity.Permission;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -31,10 +30,10 @@ public class PermissionController {
         Map<String, String> resMap = new HashMap<String, String>();
         List<Permission> permissions = permissionDAOImpl.getAll();
         for (Permission p : permissions) {
-            String key = p.getDescription();
-            String val= p.getId()+"&"+ p.getName();
-            if (resMap.containsKey(p.getDescription())) {
-                val= p.getId()+"&"+ p.getName();
+            String key = p.getChineseDescription();
+            String val= p.getId()+"&"+ p.getChineseName();
+            if (resMap.containsKey(p.getChineseDescription())) {
+                val= p.getId()+"&"+ p.getChineseName();
                 resMap.put(key, resMap.get(key) + "," + val);
             } else {
                 resMap.put(key,val);
@@ -43,5 +42,8 @@ public class PermissionController {
         return resMap;
     }
 
-
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
+    }
 }
