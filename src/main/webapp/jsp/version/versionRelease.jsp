@@ -102,7 +102,7 @@
 		data-options="
 				rownumbers:true,
 				singleSelect:false,
-				url:'/baseLine/operationList',
+				url:'/version/operationList',
 				method:'get',
 				toolbar:toolbar,
 				pagination:true,

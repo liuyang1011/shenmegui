@@ -58,8 +58,8 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
                 if(type.equals(Constants.INVOKE_TYPE_PROVIDER)){
                     type = Constants.INVOKE_TYPE_CONSUMER;
                 }
-                String hql = " from " + ServiceInvoke.class.getName() + " as si where si.type = ? and si.serviceId = ? and si.operationId = ? and si.systemId = ?";
-                List<ServiceInvoke> list = this.find(hql, type, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), serviceInvoke.getSystemId());
+                String hql = " from " + ServiceInvoke.class.getName() + " as si where si.type = ? and si.serviceId = ? and si.operationId = ?";
+                List<ServiceInvoke> list = this.find(hql, type, serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
                 if(list.size() > 0){
                     return list.get(0);
                 }

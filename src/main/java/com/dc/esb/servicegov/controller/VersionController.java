@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -15,6 +16,8 @@ import java.util.Map;
 /**
  * Created by Administrator on 2015/8/1.
  */
+@Controller
+@RequestMapping("/version")
 public class VersionController {
     @Autowired
     private VersionServiceImpl versionService;

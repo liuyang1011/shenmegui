@@ -301,8 +301,7 @@ var delIds = [];
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
     </td>
-    <td align="right"><select class="easyui-combobox" panelHeight="auto" style="width:200px">
-			</select></td>
+    <td align="right"></td>
   </tr>
 </table>
 </div>
