@@ -14,7 +14,7 @@ $(function () {
         var user =$('#user').combobox('getValue');
         var description = $("#description").val();
         var task = {};
-        task.userId = user;
+        task.userId = $("#userId").text();
         task.taskType = taskType;
         var params = {};
         params.commentInput = description;

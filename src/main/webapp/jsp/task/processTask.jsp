@@ -18,6 +18,7 @@
 
 </head>
 <body>
+    <script type="text/javascript" src="/assets/task/taskManager.js"></script>
 	<script type="text/javascript" src="/assets/task/processTask.js"></script>
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">
     <table border="0" cellspacing="0" cellpadding="0">

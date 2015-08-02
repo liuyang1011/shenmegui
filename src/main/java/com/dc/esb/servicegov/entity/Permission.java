@@ -20,6 +20,11 @@ public class Permission {
     private String description;
     @Column(name="TEMP")
     private String temp;
+    @Column(name="CHINESE_NAME")
+    private String chineseName;
+    @Column(name="CHINESE_DESCRIPTION")
+    private String chineseDescription;
+
 
     public String getId() {
         return Id;
@@ -51,5 +56,21 @@ public class Permission {
 
     public void setTemp(String temp) {
         this.temp = temp;
+    }
+
+    public String getChineseDescription() {
+        return chineseDescription;
+    }
+
+    public void setChineseDescription(String chineseDescription) {
+        this.chineseDescription = chineseDescription;
+    }
+
+    public String getChineseName() {
+        return chineseName;
+    }
+
+    public void setChineseName(String chineseName) {
+        this.chineseName = chineseName;
     }
 }
