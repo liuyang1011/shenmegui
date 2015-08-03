@@ -156,7 +156,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
                     ServiceInvoke serviceInvoke = siDao.getByOtherType(si.getInvokeId());
                     if(serviceInvoke != null){
                         row.createCell(5).setCellValue(serviceInvoke.getSystem().getSystemAb());//调用方
-                        row.createCell(14).setCellValue(si.getSystem().getSystemChineseName());
+                        row.createCell(14).setCellValue(serviceInvoke.getSystem().getSystemChineseName());
                     }
 
                 }

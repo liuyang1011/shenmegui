@@ -114,9 +114,9 @@ public class ExcelImportController {
                 boolean exists = excelImportService.existSystem(indexDO.getSystemId());
                 //系统不存在该行跳过，继续下一行解析
                 if (!exists) {
-                    logger.error("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemId() + "系统不存在");
-                    logInfoService.saveLog("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemId() + "系统不存在", "导入");
-                    msg.append("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemId() + "系统不存在，");
+                    logger.error("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemAb() + "系统不存在");
+                    logInfoService.saveLog("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemAb() + "系统不存在", "导入");
+                    msg.append("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemAb() + "系统不存在，");
                     continue;
                 }
                 //开始解析每一个页面
@@ -153,16 +153,18 @@ public class ExcelImportController {
                     String type = indexDO.getInterfacePoint();
                     String operationId = indexDO.getOperationId();
                     String cusumerSystem = indexDO.getConsumerSystem();
+                    String cusumerSystemId = indexDO.getConsumerSystemId();
                     String providerSystem = indexDO.getProviderSystem();
+                    String providerSystemId = indexDO.getProviderSystemId();
                     String invokeSystemId = "";
                     String isStandard = "0";
                     String serviceId = indexDO.getServiceId();
                     if("Provider".equalsIgnoreCase(type)){
                         type = "1";
-                        invokeSystemId = cusumerSystem;
+                        invokeSystemId = cusumerSystemId;
                     }else{
                         type = "0";
-                        invokeSystemId = providerSystem;
+                        invokeSystemId = providerSystemId;
                     }
                     excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
 
