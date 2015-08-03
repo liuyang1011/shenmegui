@@ -124,9 +124,10 @@
         },
                 english : {// 验证英语
                         validator : function(value) {
-                            return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                           // return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                           return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
                         },
-                        message : '请输入英文或数组字符'
+                        message : '请输入英文字母、下划线或数字'
                     }
     });
     if(typeof(processId) != 'undefined'){

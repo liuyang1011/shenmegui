@@ -23,7 +23,7 @@
         <!--  nodes  -->
         <!--  创建原数据节点  -->
         <startEvent id="_1" name="Start"/>
-        <userTask id="_2" name="创建新增元数据任务">
+        <userTask id="_2" name=" 创建新增元数据任务 ">
             <ioSpecification>
                 <dataInput id="_2_ContentInput" name="Content"/>
                 <dataInput id="_2_CommentInput" name="Comment"/>
@@ -72,7 +72,7 @@
             <dataInputAssociation>
                 <targetRef>_2_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression">创建元数据</from>
+                    <from xsi:type="tFormalExpression"> 创建元数据 </from>
                     <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -105,7 +105,7 @@
             </potentialOwner>
         </userTask>
         <!--  审核元数据节点  -->
-        <userTask id="_3" name="创建新增元数据审核任务">
+        <userTask id="_3" name=" 创建新增元数据审核任务 ">
             <ioSpecification>
                 <dataInput id="_3_ContentInput" name="Content"/>
                 <dataInput id="_3_CommentInput" name="Comment"/>
@@ -136,7 +136,7 @@
             <dataInputAssociation>
                 <targetRef>_3_CommentInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression">元数据审核</from>
+                    <from xsi:type="tFormalExpression"> 元数据审核 </from>
                     <to xsi:type="tFormalExpression">_3_CommentInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -157,7 +157,7 @@
             <dataInputAssociation>
                 <targetRef>_3_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression">元数据审核</from>
+                    <from xsi:type="tFormalExpression"> 元数据审核 </from>
                     <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -222,7 +222,7 @@
         <!--  nodes  -->
         <!--  创建原数据节点  -->
         <startEvent id="_1" name="Start"/>
-        <userTask id="_2" name="创建新增元数据任务">
+        <userTask id="_2" name=" 创建新增元数据任务 ">
             <ioSpecification>
                 <dataInput id="_2_ContentInput" name="Content"/>
                 <dataInput id="_2_CommentInput" name="Comment"/>
@@ -271,7 +271,7 @@
             <dataInputAssociation>
                 <targetRef>_2_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression">服务定义</from>
+                    <from xsi:type="tFormalExpression"> 服务定义 </from>
                     <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -304,7 +304,7 @@
             </potentialOwner>
         </userTask>
         <!-- 审核元数据节点 -->
-        <userTask id="_3" name="创建新增元数据审核任务">
+        <userTask id="_3" name=" 创建新增元数据审核任务 ">
             <ioSpecification>
                 <dataInput id="_3_ContentInput" name="Content"/>
                 <dataInput id="_3_CommentInput" name="Comment"/>
@@ -335,7 +335,7 @@
             <dataInputAssociation>
                 <targetRef>_3_CommentInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression">服务审核</from>
+                    <from xsi:type="tFormalExpression"> 服务审核 </from>
                     <to xsi:type="tFormalExpression">_3_CommentInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -356,7 +356,7 @@
             <dataInputAssociation>
                 <targetRef>_3_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression">元数据审核</from>
+                    <from xsi:type="tFormalExpression"> 元数据审核 </from>
                     <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -421,7 +421,7 @@
     	<!--  nodes  -->
     	<!--  创建原数据节点  -->
     	<startEvent id="_1" name="Start"/>
-    	<userTask id="_2" name="创建新增公共代码任务">
+    	<userTask id="_2" name=" 创建新增公共代码任务 ">
     		<ioSpecification>
     			<dataInput id="_2_ContentInput" name="Content"/>
     			<dataInput id="_2_CommentInput" name="Comment"/>
@@ -470,7 +470,7 @@
     		<dataInputAssociation>
     			<targetRef>_2_TaskNameInput</targetRef>
     			<assignment>
-    				<from xsi:type="tFormalExpression">创建公共代码</from>
+    				<from xsi:type="tFormalExpression"> 创建公共代码 </from>
     				<to xsi:type="tFormalExpression">_2_TaskNameInput</to>
     			</assignment>
     		</dataInputAssociation>
@@ -503,7 +503,7 @@
     		</potentialOwner>
     	</userTask>
     	<!--  审核公共代码节点  -->
-    	<userTask id="_3" name="创建新增公共代码审核任务">
+    	<userTask id="_3" name=" 创建新增公共代码审核任务 ">
     		<ioSpecification>
     			<dataInput id="_3_ContentInput" name="Content"/>
     			<dataInput id="_3_CommentInput" name="Comment"/>
@@ -534,7 +534,7 @@
     		<dataInputAssociation>
     			<targetRef>_3_CommentInput</targetRef>
     			<assignment>
-    				<from xsi:type="tFormalExpression" >公共代码审核</from>
+    				<from xsi:type="tFormalExpression" > 公共代码审核 </from>
     				<to xsi:type="tFormalExpression">_3_CommentInput</to>
     			</assignment>
     		</dataInputAssociation>
@@ -555,7 +555,7 @@
     		<dataInputAssociation>
     			<targetRef>_3_TaskNameInput</targetRef>
     			<assignment>
-    				<from xsi:type="tFormalExpression">公共代码审核</from>
+    				<from xsi:type="tFormalExpression"> 公共代码审核 </from>
     				<to xsi:type="tFormalExpression">_3_TaskNameInput</to>
     			</assignment>
     		</dataInputAssociation>
