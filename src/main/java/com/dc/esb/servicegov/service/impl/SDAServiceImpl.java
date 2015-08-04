@@ -103,6 +103,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         fields.put("append3", "length");
         fields.put("append4", "metadataId");
         fields.put("append5", "required");
+        fields.put("append6", "remark");
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
 

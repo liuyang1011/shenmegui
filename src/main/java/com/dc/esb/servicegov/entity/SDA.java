@@ -49,7 +49,7 @@ public class SDA implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String desc;
 
-	@Column(name = "REMARK")
+	@Column(name = "REMARK",length=500)
 	private String remark;
 
 	@Column(name = "HEAD_ID")
@@ -64,7 +64,7 @@ public class SDA implements Serializable {
 	@Column(name = "LENGTH")
 	private String length;
 
-	@Column(name = "REQUIRED",length=500)
+	@Column(name = "REQUIRED")
 	private String required;
 
 	@Column(name = "ARG_TYPE")

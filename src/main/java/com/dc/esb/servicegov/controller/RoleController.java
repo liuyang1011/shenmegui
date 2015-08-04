@@ -31,13 +31,15 @@ public class RoleController {
 	private RoleServiceImpl roleServiceImpl;
     @Autowired
     private UserRoleRelationServiceImpl userRoleRelationService;
+    @RequiresRoles({"admin"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody Role role) {
 		roleServiceImpl.save(role);
 		return true;
 	}
-	
+
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public @ResponseBody
     Map<String,Object> getAll(String operationId,HttpServletRequest req) {
@@ -54,6 +56,7 @@ public class RoleController {
         return resMap;
     }
 
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getById/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -65,6 +68,7 @@ public class RoleController {
         return model;
     }
 
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -98,6 +102,7 @@ public class RoleController {
         return true;
     }
 
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getRelation/{id}", headers = "Accept=application/json")
     public @ResponseBody
     boolean getRelation(@PathVariable String id) {
@@ -106,5 +111,10 @@ public class RoleController {
     		 return false;
     	} 
         return true;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }

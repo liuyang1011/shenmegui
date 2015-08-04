@@ -100,7 +100,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String cusumerSystem = publicMap.get("cusumerSystem");
             //接口方向
             String interfacepoint = publicMap.get("interfacepoint");
-            //TODO excel传入的是简称，转化为id
+            //TODO excel传入的是简称，已经转化为id
             HashMap<String,String> param = new HashMap<String, String>();
             param.put("systemAb",cusumerSystem);
             System system = systemDao.findUniqureBy(param);
@@ -149,26 +149,40 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String sheetName = getCell(row, INDEX_SHEET_NAME_COL);
             //接口消费方
             String consumerSystem = getCell(row, INDEX_CONSUMER_COL);
+            HashMap<String,String> param = new HashMap<String, String>();
+            param.put("systemAb",consumerSystem);
+            System system = systemDao.findUniqureBy(param);
+            String consumerSystemId = system.getSystemId();
             //接口提供方
             String providerSystem = getCell(row, INDEX_PROVIDER_COL);
+            param = new HashMap<String, String>();
+            param.put("systemAb",providerSystem);
+            system = systemDao.findUniqureBy(param);
+            String providerSystemId = system.getSystemId();
             //接口方向
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
             String operationId = getCell(row, INDEX_OPERATION_ID_COL);
-            String serviceId = getCell(row,INDEX_SERVICE_ID_COL).split("[()]+")[1];
-            String systemId = consumerSystem;
+            String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
+            String serviceId = temp.split("[()]+")[1];
+            String systemId = consumerSystemId;
+            String systemAb = consumerSystem;
             if ("Provider".equalsIgnoreCase(interfacePoint)) {
-                systemId = providerSystem;
+                systemId = providerSystemId;
+                systemAb = providerSystem;
             }
             IndexDO indexDO = new IndexDO();
             indexDO.setConsumerSystem(consumerSystem);
+            indexDO.setConsumerSystemId(consumerSystemId);
             indexDO.setSheetName(sheetName);
             indexDO.setInterfaceHead(interfaceHead);
             indexDO.setProviderSystem(providerSystem);
+            indexDO.setProviderSystemId(providerSystemId);
             indexDO.setSystemId(systemId);
             indexDO.setInterfacePoint(interfacePoint);
             indexDO.setOperationId(operationId);
             indexDO.setServiceId(serviceId);
+            indexDO.setSystemAb(systemAb);
             indexDOs.add(indexDO);
         }
         return indexDOs;
@@ -530,7 +544,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                         }
 
                         break;
-                    } else if ("交易名称".equals(cell)) {
+                    } else if ("交易名称".equals(cell) && k==0) {
                         tranName = sheetRow.getCell(k + 1).getStringCellValue();
                         if (tranName == null || "".equals(tranName)) {
                             logger.error(tranSheet.getSheetName()
@@ -761,12 +775,15 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     public static class IndexDO {
         private String sheetName;
         private String consumerSystem;
+        private String consumerSystemId;
         private String providerSystem;
+        private String providerSystemId;
         private String interfacePoint;
         private String interfaceHead;
         private String systemId;
         private String operationId;
         private String serviceId;
+        private String systemAb;
 
         public String getSheetName() {
             return sheetName;
@@ -816,6 +833,22 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             this.consumerSystem = consumerSystem;
         }
 
+        public String getConsumerSystemId() {
+            return consumerSystemId;
+        }
+
+        public void setConsumerSystemId(String consumerSystemId) {
+            this.consumerSystemId = consumerSystemId;
+        }
+
+        public String getProviderSystemId() {
+            return providerSystemId;
+        }
+
+        public void setProviderSystemId(String providerSystemId) {
+            this.providerSystemId = providerSystemId;
+        }
+
         public String getOperationId() {
             return operationId;
         }
@@ -830,6 +863,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
         public void setServiceId(String serviceId) {
             this.serviceId = serviceId;
+        }
+
+        public String getSystemAb() {
+            return systemAb;
+        }
+
+        public void setSystemAb(String systemAb) {
+            this.systemAb = systemAb;
         }
 
     }
@@ -1376,7 +1417,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     @Override
     public boolean existSystem(String systemId) {
         Map<String, String> paramMap = new HashMap<String, String>();
-        paramMap.put("systemAb", systemId);
+        paramMap.put("systemId", systemId);
 
         System system = systemDao.findUniqureBy(paramMap);//systemDao.getEntity(systemId);
         if (system != null) {

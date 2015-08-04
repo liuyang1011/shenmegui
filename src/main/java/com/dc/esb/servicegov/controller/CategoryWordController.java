@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.service.impl.CategoryWordServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
+import org.springframework.web.portlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -222,7 +223,10 @@ public class CategoryWordController {
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
-        return "403";
+//        ModelAndView mv = new ModelAndView("login/login");
+//        return mv;
+        return "forward:/jsp/403.jsp";
+//        return "403";
     }
 
 }
