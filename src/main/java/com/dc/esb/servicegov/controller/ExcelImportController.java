@@ -51,8 +51,8 @@ public class ExcelImportController {
 
     protected Log logger = LogFactory.getLog(getClass());
 
-//    @Qualifier("TaizhouExcelImportService")
-    @Qualifier("BaseExcelImportService")
+    @Qualifier("TaizhouExcelImportService")
+//    @Qualifier("BaseExcelImportService")
     @Autowired
     ExcelImportService excelImportService;
 

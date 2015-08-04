@@ -329,6 +329,32 @@
                 form.submit();//表单提交
 
             }
+        },
+        {
+            text: '导出',
+            iconCls: 'icon-qxfp',
+            handler: function () {
+
+                var checkedItems = $('#operationList').datagrid('getChecked');
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (checkedItems.length > 1) {
+                        alert("请只选中一个要导出的场景！");
+                        return false;
+                    } else {
+                        uiinit.win({
+                            w: 500,
+                            iconCls: 'icon-add',
+                            title: "配置导出",
+                            modal: true,
+                            url: "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId
+                        });
+
+                    }
+                } else {
+                    alert("请选中要导出的场景！");
+                }
+
+            }
         }
     ];
     //版本发布

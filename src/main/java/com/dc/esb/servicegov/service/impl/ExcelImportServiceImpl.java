@@ -163,7 +163,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
             String operationId = getCell(row, INDEX_OPERATION_ID_COL);
-            String temp = getCell(row,INDEX_SERVICE_ID_COL);
+            String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
             String serviceId = temp.split("[()]+")[1];
             String systemId = consumerSystemId;
             String systemAb = consumerSystem;
@@ -544,7 +544,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                         }
 
                         break;
-                    } else if ("交易名称".equals(cell)) {
+                    } else if ("交易名称".equals(cell) && k==0) {
                         tranName = sheetRow.getCell(k + 1).getStringCellValue();
                         if (tranName == null || "".equals(tranName)) {
                             logger.error(tranSheet.getSheetName()

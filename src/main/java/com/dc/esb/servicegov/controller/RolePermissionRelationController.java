@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.entity.RolePermissionRelation;
 import com.dc.esb.servicegov.service.impl.RolePermissionRelationServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
 public class RolePermissionRelationController {
     @Autowired
     private RolePermissionRelationServiceImpl rolePermissionRelationService;
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/save", headers = "Accept=application/json")
     public @ResponseBody
     boolean add(@RequestBody RolePermissionRelation[] rprs) {
@@ -33,6 +35,7 @@ public class RolePermissionRelationController {
         return true;
     }
 
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getById/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -43,6 +46,7 @@ public class RolePermissionRelationController {
         return temp;
     }
 
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/modify", headers = "Accept=application/json")
     public @ResponseBody
     boolean modify(@RequestBody RolePermissionRelation[] rprs) {
@@ -56,6 +60,7 @@ public class RolePermissionRelationController {
         return true;
     }
 
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
