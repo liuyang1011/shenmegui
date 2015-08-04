@@ -304,7 +304,10 @@ public class ConfigExportController {
         for (ServiceInvoke system : invokes) {
             map = new HashMap<String, String>();
             map.put("id", system.getInterfaceId());
-            map.put("text", system.getInter().getInterfaceName());
+            Interface inter = new Interface();
+            if(null == inter) continue;
+            inter = system.getInter();
+            map.put("text",inter.getInterfaceName());
             resList.add(map);
         }
         return resList;
