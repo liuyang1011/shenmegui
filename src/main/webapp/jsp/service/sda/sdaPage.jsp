@@ -287,7 +287,7 @@ var delIds = [];
 				<th data-options="field:'append3',width:60,editor:'text'">长度</th>
 				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataName'}}">元数据</th>
                 <th data-options="field:'append5',width:60,editor:'text'">是否必输</th>
-               	<th data-options="field:'id',width:80,formatter:formatConsole">操作</th>
+               	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
 			</tr>
 		</thead>
 	</table>
