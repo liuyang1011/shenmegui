@@ -3,6 +3,7 @@ package com.dc.esb.servicegov.dao.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
@@ -10,9 +11,6 @@ import org.dom4j.io.SAXEventRecorder;
 import org.springframework.stereotype.Repository;
 
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
-import com.dc.esb.servicegov.entity.BaseLineVersionHisMapping;
-import com.dc.esb.servicegov.entity.OperationHis;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
 
 @Repository
 public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
@@ -41,7 +39,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
 //                " from "+ ServiceInvoke.class.getName()+" as s " +
 //                "where s.serviceId=? and s.operationId=? ";
         String hql = "select new "+ ServiceInvokeJson.class.getName()+"(s) from "+ ServiceInvoke.class.getName()+" as s where s.serviceId=? and s.operationId=? ";
-        List<?> list = super.find(hql, serviceId, operationId );
+        List<?> list = super.find(hql, serviceId, operationId);
         return list;
     }
     /**
@@ -66,5 +64,38 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
             }
         }
         return null;
+    }
+    /**
+     * 根据二级服务分类id
+     */
+    public List<ServiceInvoke> getByServiceCagegoryId2(String categoryId){
+        String hql = "select si from " + ServiceInvoke.class.getName() + " as si, " + Service.class.getName()
+                + " as s where si.serviceId = s.serviceId  and s.categoryId = ?";
+        List<ServiceInvoke> list = this.find(hql, categoryId);
+        return list;
+    }
+    /**
+     * 根据一级服务分类Id
+     */
+    public List<ServiceInvoke> getByServiceCagegoryId1(String categoryId){
+        String hql = "select si from " + ServiceInvoke.class.getName() + " as si, " + Service.class.getName()
+                + " as s, " + ServiceCategory.class.getName() + " sc where si.serviceId = s.serviceId  and s.categoryId = sc.categoryId and sc.parentId = ?";
+        List<ServiceInvoke> list = this.find(hql , categoryId);
+        return list;
+    }
+    /**
+     * 根据所有服务分类
+     */
+    public List<ServiceInvoke> getByServiceCagegoryId0(){
+        String hql = "select si from " + ServiceInvoke.class.getName() + " as si, " + Service.class.getName()
+                + " as s, " + ServiceCategory.class.getName() + " sc where si.serviceId = s.serviceId  and s.categoryId = sc.categoryId";
+        List<ServiceInvoke> list = this.find(hql);
+        return list;
+    }
+
+    public List<ServiceInvoke> getByOperationAndType(Operation operation, String type){
+        String hql = " from "+ ServiceInvoke.class.getName() + " as si where si.serviceId = ? and si.operationId = ? and si.type = ?";
+        List<ServiceInvoke> list = this.find(hql, operation.getServiceId(), operation.getOperationId(), type);
+        return list;
     }
 }

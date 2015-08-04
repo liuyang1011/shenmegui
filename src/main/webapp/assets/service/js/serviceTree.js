@@ -29,4 +29,7 @@ $(function(){
             $("#servicePdf").click(function(){
                 serviceUIHelper.exportPdf();
             });
+             $("#serviceExcel").click(function(){
+                            serviceUIHelper.exportExcel();
+            });
 });

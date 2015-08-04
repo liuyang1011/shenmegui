@@ -47,9 +47,10 @@ public class ExcelExportController {
             // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
             // 产生工作簿对象
             HSSFWorkbook workbook = excelExportServiceImpl.genderExcel(id, type);
-
             fOut = response.getOutputStream();
-            workbook.write(fOut);
+            if(workbook != null){
+                workbook.write(fOut);
+            }
         }
         catch (UnsupportedEncodingException e1)
         {}

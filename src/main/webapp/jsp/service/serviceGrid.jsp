@@ -320,7 +320,7 @@
                 var input2=$("<input>");
                 input2.attr("type","hidden");
                 input2.attr("name","type");
-                input2.attr("value","SERVICE");
+                input2.attr("value","service");
 
                 $("body").append(form);//将表单放置在web中
                 form.append(input1);
