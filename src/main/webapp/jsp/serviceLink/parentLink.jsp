@@ -88,7 +88,7 @@
 
 <!--  demo code -->
 <!--<script src="demo.js"></script>-->
-<script src="/newui/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script src="/newui/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="/newui/plugins/select2/select2.full.min.js" type="text/javascript"></script>
 <script src="/assets/serviceLink/serviceLinkManager.js" type="text/javascript"></script>
