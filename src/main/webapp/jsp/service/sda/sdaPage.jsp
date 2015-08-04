@@ -135,6 +135,7 @@ var delIds = [];
 					node.length = editNode.append3;
 					node.metadataId = editNode.append4;
 					node.required = editNode.append5;
+					node.remark = editNode.append6;
 
 					editNodes.push(node);
 				}
@@ -287,7 +288,10 @@ var delIds = [];
 				<th data-options="field:'append3',width:60,editor:'text'">长度</th>
 				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataName'}}">元数据</th>
                 <th data-options="field:'append5',width:60,editor:'text'">是否必输</th>
+                <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
+               	-->
+               	<th data-options="field:'append6',width:80,editor:'text'">备注</th>
 			</tr>
 		</thead>
 	</table>
