@@ -37,6 +37,11 @@ import static com.dc.esb.servicegov.excel.support.Constants.SERVICE_FILE_TYPE;
 public class ExcelExportServiceImpl  extends AbstractBaseService {
     protected Log logger = LogFactory.getLog(getClass());
 
+    private static final String serviceType = "service";
+    private static final String serviceCategoryType0 = "root";
+    private static final String serviceCategoryType1 = "serviceCategory1";
+    private static final String serviceCategoryType2 = "serviceCategory2";
+
     @Autowired
     private ServiceInvokeDAOImpl siDao;
     @Autowired
@@ -59,11 +64,16 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
     public HSSFWorkbook genderExcel(String id, String type){
         if(MAPPING_FILE_TYPE.equals(type)){
 //			return new MappingGeneraterTask();
-        }else if(SERVICE_FILE_TYPE.equals(type)){
+        }else if(serviceType.equals(type)){
             return genderServiceExcel(id);
-        }else if(INTERFACE_FILE_TYPE.equals(type)){
-//			return new InterfaceGeneaterTask();
-        }else{
+        }else if(serviceCategoryType0.equals(type)){
+			return genderServiceCagegoryRootExcel();
+        }else if(serviceCategoryType1.equals(type)){
+			return genderServiceCagegory1Excel(id);
+        }else if(serviceCategoryType2.equals(type)){
+            return genderServiceCagegory2Excel(id);
+        }
+        else{
             String errorMsg = "暂时不支持类型为["+type+"]的文档导出！";
             logger.error(errorMsg);
         }
@@ -93,21 +103,48 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         }
         return wb;
     }
+
+    /**
+     * 根据“服务类”生成excel
+     */
+    public HSSFWorkbook genderServiceCagegoryRootExcel(){
+        List<ServiceInvoke> siList = siDao.getByServiceCagegoryId0();
+        HSSFWorkbook workbook = fillExcel(siList);
+        return workbook;
+    }
+    /**
+    *根据服务类别生成excel
+     */
+    public HSSFWorkbook genderServiceCagegory1Excel(String serviceCategoryId){
+        List<ServiceInvoke> siList = siDao.getByServiceCagegoryId1(serviceCategoryId);
+        HSSFWorkbook workbook = fillExcel(siList);
+        return workbook;
+    }
+    public HSSFWorkbook genderServiceCagegory2Excel(String serviceCategoryId){
+        List<ServiceInvoke> siList = siDao.getByServiceCagegoryId2(serviceCategoryId);
+        HSSFWorkbook workbook = fillExcel(siList);
+        return workbook;
+    }
     /**
      * TODO根据服务id生成excel
      * @param serviceId
      * @return
      */
     public HSSFWorkbook genderServiceExcel(String serviceId){
-        HSSFWorkbook workbook =  getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE);
         List<ServiceInvoke> siList = siDao.findBy("serviceId", serviceId);
-
-        fillIndex(workbook, siList);
-        fillMapings(workbook, siList);
-        //List<InterfaceHeadVO> ihvList = getByInterfaceHeadVOServiceId(serviceId);
-        //fillHeads(workbook, ihvList);
-
+        HSSFWorkbook workbook = fillExcel(siList);
         return workbook;
+    }
+    public HSSFWorkbook fillExcel(List<ServiceInvoke> siList){
+        if(siList.size() > 0){
+            HSSFWorkbook workbook =  getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE);
+            fillIndex(workbook, siList);
+            fillMapings(workbook, siList);
+            //List<InterfaceHeadVO> ihvList = getByInterfaceHeadVOServiceId(serviceId);
+            //fillHeads(workbook, ihvList);
+            return workbook;
+        }
+        return null;
     }
     /**
      * TODO 填充index页
@@ -121,6 +158,8 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
                 HSSFRow row = sheet.createRow(i + 1);
                 if (si.getInterfaceId() != null) {
                     row.createCell(0).setCellValue(si.getInter().getEcode());//交易码
+                }else{
+                    continue;
                 }
                 if (si.getInter() != null) {
                     row.createCell(1).setCellValue(si.getInter().getInterfaceName());//交易名称

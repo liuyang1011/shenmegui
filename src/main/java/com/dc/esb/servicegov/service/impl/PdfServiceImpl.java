@@ -1,16 +1,15 @@
 package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.*;
-import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.SDA;
-import com.dc.esb.servicegov.entity.ServiceCategory;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.PdfUtils;
 import com.dc.esb.servicegov.vo.SDAVO;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,8 @@ public class PdfServiceImpl {
     @Autowired
     private OperationDAOImpl operationDAO;
     @Autowired
+    private ServiceInvokeDAOImpl serviceInvokeDAO;
+    @Autowired
     private MetadataDAOImpl metadataDAO;
     @Autowired
     private SDADAOImpl sdadao;
@@ -59,10 +60,10 @@ public class PdfServiceImpl {
             genderPdfByServiceCategoryRoot(id, document);
         }
         if(serviceCategoryType1.equals(type)){
-            genderPdfByServiceCategory(id, document,"");
+            genderPdfByServiceCategory(id, document,"1");
         }
         if(serviceType.equals(type)){
-            genderPdfByService(id, document);
+            genderPdfByService(id, document,"1");
         }
         document.close();
         return pdfFile;
@@ -75,8 +76,9 @@ public class PdfServiceImpl {
     public void genderPdfByServiceCategoryRoot(String serviceCategoryId, Document document) throws Exception {
         List<ServiceCategory> children = serviceCategoryDAO.find(" from ServiceCategory where parentId is null");
         if(children.size() > 0){
-            for(ServiceCategory child : children){
-                genderPdfByServiceCategory(child.getCategoryId(), document, "");
+            for(int i = 0; i< children.size(); i++){
+                ServiceCategory child = children.get(i);
+                genderPdfByServiceCategory(child.getCategoryId(), document, String.valueOf(i+1));
             }
         }
     }
@@ -90,29 +92,42 @@ public class PdfServiceImpl {
     public void genderPdfByServiceCategory(String serviceCategoryId, Document document, String tab) throws Exception{
         ServiceCategory sc = serviceCategoryDAO.findUniqueBy("categoryId", serviceCategoryId);
 
-        Phrase opDescPhrase = new Phrase(tab + "|--"+sc.getCategoryName(), PdfUtils.ST_SONG_BIG_FONT);
+        Phrase opDescPhrase = new Phrase(tab + "  "+sc.getCategoryName(), PdfUtils.ST_SONG_BIG_FONT);
         document.add(opDescPhrase);
         document.add(Chunk.NEWLINE);
         List<ServiceCategory> children = serviceCategoryDAO.findBy("parentId", serviceCategoryId);
         if(children.size() > 0){
-            for(ServiceCategory child : children){
-                genderPdfByServiceCategory(child.getCategoryId(), document, "|--");
+            for(int i = 0; i< children.size(); i++){
+                ServiceCategory child = children.get(i);
+                genderPdfByServiceCategory(child.getCategoryId(), document, tab+"."+(i+1));
             }
         }
         else{
             List<com.dc.esb.servicegov.entity.Service> services = serviceDAO.findBy("categoryId", serviceCategoryId);
             if(services.size() > 0){
-                for(com.dc.esb.servicegov.entity.Service service : services){
-                    genderPdfByService(service.getServiceId(), document);
+                for(int i = 0; i < services.size(); i++){
+                    com.dc.esb.servicegov.entity.Service service = services.get(i);
+                    genderPdfByService(service.getServiceId(), document, tab +"."+ (i+1));
                 }
             }
         }
     }
-    public void genderPdfByService(String serviceId, Document document) throws Exception{
-        com.dc.esb.servicegov.entity.Service servie = serviceDAO.findUniqueBy("serviceId", serviceId);
-        Phrase opDescPhrase = new Phrase("              "+servie.getServiceName(), PdfUtils.ST_SONG_BIG_FONT);
-        document.add(opDescPhrase);
+    public void genderPdfByService(String serviceId, Document document, String tab) throws Exception{
+        com.dc.esb.servicegov.entity.Service service = serviceDAO.findUniqueBy("serviceId", serviceId);
+        Phrase servicePhrase = new Phrase(tab, PdfUtils.ST_SONG_BIG_BOLD_FONT);
+        servicePhrase.add("  "+service.getServiceName());
+        servicePhrase.add("("+service.getServiceId()+")");
+        document.add(servicePhrase);
         document.add(Chunk.NEWLINE);
+
+        Phrase descPhrase = new Phrase("              功能描述："+service.getDesc(), PdfUtils.ST_SONG_MIDDLE_FONT);
+        document.add(descPhrase);
+        document.add(Chunk.NEWLINE);
+
+        Phrase opPhrase = new Phrase("              本服务有以下场景：", PdfUtils.ST_SONG_MIDDLE_FONT);
+        document.add(opPhrase);
+        document.add(Chunk.NEWLINE);
+
         List<Operation> operations = operationDAO.findBy("serviceId", serviceId);
         genderService(operations, document);
     }
@@ -122,6 +137,24 @@ public class PdfServiceImpl {
             int i=0;
             for (Operation operation : operations) {
                 try {
+                    Phrase opPhrase = new Phrase("              "+operation.getOperationId()+": "+operation.getOperationName(), PdfUtils.ST_SONG_MIDDLE_BOLD_FONT);
+                    document.add(opPhrase);
+                    document.add(Chunk.NEWLINE);
+                    //场景描述
+                    Phrase opDescPhrase = new Phrase("              场景描述："+operation.getOperationDesc(), PdfUtils.ST_SONG_MIDDLE_BOLD_FONT);
+                    document.add(opDescPhrase);
+                    document.add(Chunk.NEWLINE);
+                    //服务提供者
+                    List<ServiceInvoke> providers = serviceInvokeDAO.getByOperationAndType(operation, Constants.INVOKE_TYPE_PROVIDER);
+                    Phrase opConsumerPhrase = new Phrase("              服务提供者："+ joinBy(providers), PdfUtils.ST_SONG_MIDDLE_BOLD_FONT);
+                    document.add(opConsumerPhrase);
+                    document.add(Chunk.NEWLINE);
+                    //服务消费者
+                    List<ServiceInvoke> consumers = serviceInvokeDAO.getByOperationAndType(operation, Constants.INVOKE_TYPE_CONSUMER);
+                    Phrase opProviderPhrase = new Phrase("              服务消费者："+joinBy(consumers), PdfUtils.ST_SONG_MIDDLE_BOLD_FONT);
+                    document.add(opProviderPhrase);
+                    document.add(Chunk.NEWLINE);
+
                     Phrase operationPhrase = new Phrase(operation.getOperationName(), PdfUtils.ST_SONG_BIG_BOLD_FONT);
                     Paragraph operationParagraph = new Paragraph(operationPhrase);
                     Chapter chapter = new Chapter(operationParagraph, i++);
@@ -389,5 +422,23 @@ public class PdfServiceImpl {
         }
         sdavo.setChildNode(children);
         return sdavo;
+    }
+
+    public String joinBy(List<ServiceInvoke> serviceInvokes){
+        String result = "";
+        for(int i = 0; i < serviceInvokes.size(); i++){
+            ServiceInvoke serviceInvoke = serviceInvokes.get(i);
+            if(serviceInvoke.getSystem() != null){
+                if(StringUtils.isNotEmpty(serviceInvoke.getSystem().getSystemChineseName())){
+                    if(i == 0){
+                        result += serviceInvoke.getSystem().getSystemChineseName();
+                    }else{
+                        result += ", "+ serviceInvoke.getSystem().getSystemChineseName();
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 }
