@@ -87,7 +87,7 @@ public class ExcelExportController {
     public
     @ResponseBody
     boolean exportServiceView(HttpServletRequest request, HttpServletResponse response,
-                          String categoryId) {
+            String type, String categoryId) {
         String codedFileName = null;
         OutputStream fOut = null;
         try
@@ -98,7 +98,7 @@ public class ExcelExportController {
             response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
             // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
             // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderServiceView(categoryId);
+            HSSFWorkbook workbook = excelExportServiceImpl.genderServiceView(type, categoryId);
 
             fOut = response.getOutputStream();
             workbook.write(fOut);

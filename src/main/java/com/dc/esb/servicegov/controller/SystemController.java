@@ -292,6 +292,7 @@ public class SystemController {
             map = new HashMap<String, Object>();
             map.put("id",system.getSystemId());
             map.put("text",system.getSystemAb());
+            map.put("chineseName",system.getSystemChineseName());
             resList.add(map);
         }
         return resList;

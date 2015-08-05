@@ -136,6 +136,7 @@ var delIds = [];
 					node.metadataId = editNode.append4;
 					node.required = editNode.append5;
 					node.remark = editNode.append6;
+					node.seq = editNode.attributes;
 
 					editNodes.push(node);
 				}
