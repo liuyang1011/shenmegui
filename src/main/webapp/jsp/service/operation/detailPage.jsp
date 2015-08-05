@@ -65,7 +65,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <th>最后更新时间</th>
    		 <td>${operation.optDate }</td>
    	 <th>最后更新用户</th>
-    <td></td>
+    <td>${operation.optUser }</td>
      <th></th>
     <td> </td>
    </tr>

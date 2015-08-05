@@ -225,8 +225,8 @@ public class CategoryWordController {
     public String processUnauthorizedException() {
 //        ModelAndView mv = new ModelAndView("login/login");
 //        return mv;
-        return "forward:/jsp/403.jsp";
-//        return "403";
+//        return "forward:/jsp/403.jsp";
+        return "403";
     }
 
 }

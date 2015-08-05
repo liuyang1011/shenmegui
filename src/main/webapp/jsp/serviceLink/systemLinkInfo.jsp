@@ -18,31 +18,29 @@
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
             <th>接口ID</th>
-            <td><input class="easyui-textbox" type="text" name="interfaceId"></td>
+            <td><input class="easyui-textbox" type="text" name="interfaceId" id="interfaceId"></td>
             <th>接口名称</th>
-            <td><input class="easyui-textbox" type="text" name="interfaceName"></td>
+            <td><input class="easyui-textbox" type="text" name="interfaceName" id="interfaceName"></td>
             <th>服务代码</th>
-            <td><input class="easyui-textbox" type="text" name="serviceId"></td>
+            <td><input class="easyui-textbox" type="text" name="serviceId" id="serviceId"></td>
             <th>服务名称</th>
-            <td><input class="easyui-textbox" type="text" name="serviceName"></td>
+            <td><input class="easyui-textbox" type="text" name="serviceName" id="serviceName"></td>
         </tr>
         <tr>
-            <th>交易属性标识</th>
-            <td><input class="easyui-textbox" type="text" name="attribute"></td>
+            <%--<th>交易属性标识</th>
+            <td><input class="easyui-textbox" type="text" name="attribute" id="attribute"></td>
             <th>节点状态</th>
-            <td><input class="easyui-textbox" type="text" name="status"></td>
+            <td><input class="easyui-textbox" type="text" name="status" id="status"></td>
             <th>版本号</th>
-            <td><input class="easyui-textbox" type="text" name="status"></td>
+            <td><input class="easyui-textbox" type="text" name="status" id=""></td>--%>
             <th></th>
-            <td align="right"><a href="#" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
+            <td align="right"><a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
         </tr>
     </table>
 
 
 </fieldset>
-<table class="easyui-datagrid" title="交易节点" id="invokeLinkeTable"
-       data-options="rownumbers:true,singleSelect:false,url:'/serviceLink/getServiceLink/system/<%=request.getParameter("systemId") %>',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10" style="height:370px; width:auto;">
+<table title="交易节点" id="invokeLinkeTable" style="height:370px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
@@ -63,6 +61,34 @@
 
 </div>
 <script type="text/javascript">
+    $(function (){
+        $('#invokeLinkeTable').datagrid({
+            rownumbers:true,
+            singleSelect:true,
+            url:'/serviceLink/getServiceLink/system/<%=request.getParameter("systemId") %>',
+            method:'get',
+            toolbar:toolbar,
+            pagination:true,
+            pageSize:10
+        });
+    });
+    $("#search").click(function(){
+        var queryParams = $('#invokeLinkeTable').datagrid('options').queryParams;
+        queryParams.interfaceId = $("#interfaceId").textbox("getValue");
+        queryParams.interfaceName = encodeURI($("#interfaceName").textbox("getValue"));
+        queryParams.serviceId = $("#serviceId").textbox("getValue");
+        queryParams.serviceName = $("#serviceName").textbox("getValue");
+        if (queryParams.englishWord || queryParams.chineseWord || queryParams.esglisgAb || queryParams.remark) {
+            $("#invokeLinkeTable").datagrid('options').queryParams = queryParams;//传递值
+            $("#invokeLinkeTable").datagrid('reload');//重新加载table
+//                categoryWordManager.query(param, function (result) {
+//                    $('#tt').edatagrid('loadData', result);
+//                });
+        } else {
+            $("#invokeLinkeTable").datagrid('reload');
+            //alert("请输入查询条件");
+        }
+    });
     function selectTab(title, content) {
         var exsit = parent.$('#subtab').tabs('getTab', title);
         if (exsit == null) {

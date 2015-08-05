@@ -73,7 +73,7 @@
 <script src="/plugin/jsPlumb/src/connectors-statemachine.js"></script>
 <!-- flowchart connectors -->
 <script src="/plugin/jsPlumb/src/connectors-flowchart.js"></script>
-<script src="/plugin/jsPlumb/src/connector-editors.js"></script>
+<%--<script src="/plugin/jsPlumb/src/connector-editors.js"></script>--%>
 <!-- SVG renderer -->
 <script src="/plugin/jsPlumb/src/renderers-svg.js"></script>
 
@@ -127,8 +127,10 @@
     var initPosX = 100;
     var initPosY = 100;
 
+    var instance;
+
     $(function () {
-        var instance;
+//        var instance;
 
 
         /**
@@ -164,8 +166,15 @@
             var serviceId = row.serviceId;
             var systemId = row.systemName;
             var invokeId = row.invokeId;
+            var operationId = row.operationId;
+            var type = row.type;
+            if(type=="0"){
+                type = "提供方";
+            }else if(type=="1"){
+                type = "消费方";
+            }
 
-            context += '<div class="w" id="' + invokeId + '">' + interfaceId + interfaceName
+            context += '<div class="w" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + interfaceId + interfaceName
             + '<div class="ep"></div>'
             + '<div>'
             + '<div class="btn-group">'
@@ -175,13 +184,16 @@
             + '<span class="sr-only">Toggle Dropdown</span>'
             + '</button>'
             + '<ul class="dropdown-menu" role="menu">'
-            + '<li><a>系统:' + serviceId + '</a></li>'
-            + '<li><a>服务:' + systemId + '</a></li>'
+            + '<li><a>系统:' + systemId + '</a></li>'
+            + '<li><a>服务:' + serviceId + '</a></li>'
+            + '<li><a>场景:' + operationId + '</a></li>'
+            + '<li><a>接口方向:' + type + '</a></li>'
             + '</ul>'
             + '</div>'
             + '</div>'
             + '</div>';
         };
+
         /**
          * 初始化块链接数据
          * @param result
@@ -289,6 +301,12 @@
         * 添加按钮的事件
          */
         $("#add").click(function () {
+            context = "";
+            serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
+            var addInterfaceIds = $(".select2").val();
+            if(null == addInterfaceIds){
+                return;
+            }
             if (instance) {
                 $.each(instance.getConnections(), function (idx, connection) {
                     connections.push({
@@ -306,7 +324,6 @@
                     });
                 });
             }
-            var addInterfaceIds = $(".select2").val();
             for (var i = 0; i < addInterfaceIds.length; i++) {
                 var row = data[addInterfaceIds[i]];
                 constructBlock(row);
@@ -406,6 +423,20 @@
             serviceLinkManager.delConnections(connectionsToDel, delConnectionCallBack);
         });
     });
+    /**
+     * 双击block事件
+     * @param e
+     */
+    function dblEvent(e) {
+        var o = e.srcElement || e.target;
+
+        var my = document.getElementById(o.id);
+        if (o != null){
+            o.type = "1";
+            o.parentNode.removeChild(o);
+        }
+
+    }
 </script>
 </body>
 </html>
