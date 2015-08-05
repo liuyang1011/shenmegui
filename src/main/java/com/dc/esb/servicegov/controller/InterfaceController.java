@@ -4,7 +4,9 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
+import net.sf.json.JSONArray;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -388,5 +390,12 @@ public class InterfaceController {
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
+    }
+
+    @RequestMapping("/getInterfaceJson")
+    @ResponseBody
+    public Object getInterfaceJson(String systemId) {
+        List<Interface> rows = interfaceService.getBySystemId(systemId);
+        return JSONUtil.getInterface().convert(rows, Interface.simpleFields());
     }
 }

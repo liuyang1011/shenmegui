@@ -15,11 +15,29 @@
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript">
             function exportServiceView(){
-            	var value = $("#categoryId").combobox("getValue");
-            	if(value == null || value == ''){
-            		alert("请选择要导出的大类！");
+				var t = $('#categoryId').combotree('tree');	// get the tree object
+                var node = t.tree('getSelected');		// get selected node
+            	if(node == null || node == ''){
+            		alert("请选择服务！");
             		return false;
             	}
+            	var id = node.id;
+            	if(node.domId == '_easyui_tree_1'){
+            		type = "root";
+            	}
+            	if(node.domId == '_easyui_tree_2'){
+                  	type = "serviceCategory1";
+                }
+                if(node.domId == '_easyui_tree_3'){
+                    type = "serviceCategory1";
+                    var parent = t.tree('getParent', node.target);
+                    id = parent.id;
+                }
+                if(node.domId == '_easyui_tree_4'){
+                    type = "serviceCategory1";
+                    parent = t.tree('getParent', node.target);
+					id = t.tree('getParent', parent.target).id;
+                }
                                                 var form=$("<form>");//定义一个form表单
                                                 form.attr("style","display:none");
                                                 form.attr("target","");
@@ -28,10 +46,16 @@
                                                 var input1=$("<input>");
                                                 input1.attr("type","hidden");
                                                 input1.attr("name","categoryId");
-                                                input1.attr("value",$("#categoryId").combobox("getValue"));
+                                                input1.attr("value",id);
+
+ 												 var input2=$("<input>");
+                                                 input2.attr("type","hidden");
+                                                 input2.attr("name","type");
+                                                 input2.attr("value",type);
 
                                                 $("body").append(form);//将表单放置在web中
                                                 form.append(input1);
+                                                form.append(input2);
 
                                                 form.submit();//表单提交
 
@@ -45,13 +69,13 @@
 		<form id="baseForm">
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<th>大类：</th>
+					<th>服务：</th>
 					<td>
                         <input type="text" name="categoryId" id="categoryId"
-                                               class="easyui-combobox"
+                                               class="easyui-combotree"
                                                data-options="
                                                panelHeight:'auto',
-                        						url:'/service/serviceCategorys',
+                        						url:'/service/getTree',
                         				 		 method:'get',
                         				 		 valueField: 'categoryId',
                         				 		 textField: 'categoryName',

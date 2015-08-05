@@ -10,15 +10,16 @@ import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
 import com.dc.esb.servicegov.vo.InterfaceHeadVO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.CellRangeAddress;
-import org.drools.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -479,12 +480,23 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
      * @param categoryId
      * @return
      */
-    public HSSFWorkbook genderServiceView(String categoryId){
+    public HSSFWorkbook genderServiceView(String type, String categoryId){
         try{
             HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE_VIEW);
             HSSFCellStyle cellStyle = commonStyle(wb);
-            //填充view
-            fillView(wb, categoryId, cellStyle);
+            if(type.equals(serviceCategoryType0)){
+                String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
+                List<ServiceCategory> list = serviceCategoryDao.find(hql);
+                if(list.size() > 0){
+                    for(ServiceCategory sc : list){
+                        fillView(wb, sc.getCategoryId(), cellStyle);
+                    }
+                }
+            }
+            else if(type.equals(serviceCategoryType1)){
+                //填充view
+                fillView(wb, categoryId, cellStyle);
+            }
             //填充system页
             fillSystem(wb.getSheet("APP-ID"), cellStyle);
             //删除view页
@@ -506,7 +518,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         int counter = 1;
         //查询子分类
         List<ServiceCategory> scList = serviceCategoryDao.findBy("parentId", categoryId);
-        String[] values0 = {sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
+        String[] values0 = {sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
         if(scList.size() == 0){
             HSSFRow row = sheet.createRow(counter);
             setRowValue(row, cellStyle, values0);
@@ -514,7 +526,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         }
         for(ServiceCategory child : scList){
             int start = counter;
-            String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " "};
+            String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
             List<Service> services = serviceDao.findBy("categoryId", child.getCategoryId());
             if(services.size() == 0){
                 HSSFRow row = sheet.createRow(counter);
@@ -523,7 +535,7 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
                 continue;
             }
             for(Service service : services){
-                String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " "};
+                String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
 
                 List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());
                 if(operations.size() == 0){
@@ -536,24 +548,30 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
                     HSSFRow row = sheet.createRow(counter);
                     counter++;
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
-                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", operation.getOperationRemark()};
+                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", " ", operation.getOperationRemark()};
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("serviceId", operation.getServiceId());
                     params.put("operationId", operation.getOperationId());
                     params.put("type", Constants.INVOKE_TYPE_CONSUMER);
                     List<ServiceInvoke> consumerInvokes = siDao.findBy(params);
                     if(consumerInvokes.size() > 0){
-                        values3[6] = consumerInvokes.get(0).getSystem().getSystemChineseName();//服务消费者
-                        if(consumerInvokes.get(0).getInter() != null){
-                            values3[7] = consumerInvokes.get(0).getInter().getInterfaceName();
-                            values3[8] = consumerInvokes.get(0).getInter().getInterfaceId();
+                        values3[6] = joinBy(consumerInvokes).get("sysNames");//服务消费者
+                        if(StringUtils.isNotEmpty(joinBy(consumerInvokes).get("interIds"))){
+                            values3[7] = joinBy(consumerInvokes).get("interIds");
+                            values3[8] = joinBy(consumerInvokes).get("interNames");
                         }
 
                     }
                     params.put("type", Constants.INVOKE_TYPE_PROVIDER);
                     List<ServiceInvoke> providerInvokes = siDao.findBy(params);
                     if(providerInvokes.size() > 0){
-                        values3[9] = providerInvokes.get(0).getSystem().getSystemChineseName();//服务提供者
+                        values3[9] = joinBy(providerInvokes).get("sysNames");//服务提供者
+                        if(StringUtils.isEmpty(values3[7])){
+                            if(StringUtils.isNotEmpty(joinBy(providerInvokes).get("interIds"))){
+                                values3[7] = joinBy(providerInvokes).get("interIds");
+                                values3[8] = joinBy(providerInvokes).get("interNames");
+                            }
+                        }
                     }
                     setRowValue(row, cellStyle, values3);
                 }
@@ -635,5 +653,43 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
     @Override
     public HibernateDAO getDAO() {
         return null;
+    }
+    //按系统名称连接成一个字符串
+    public Map<String, String> joinBy(List<ServiceInvoke> serviceInvokes){
+        Map<String, String> result = new HashMap<String ,String>();
+        String sysNames = "";
+        List<Interface> interList = new ArrayList<Interface>();
+        String interIds = "";
+        String interNames = "";
+        for(int i = 0; i < serviceInvokes.size(); i++){
+            ServiceInvoke serviceInvoke = serviceInvokes.get(i);
+            if(serviceInvoke.getSystem() != null){
+                if(org.apache.commons.lang.StringUtils.isNotEmpty(serviceInvoke.getSystem().getSystemChineseName())){
+                    if(i == 0){
+                        sysNames += serviceInvoke.getSystem().getSystemChineseName();
+                    }else{
+                        sysNames += ", "+ serviceInvoke.getSystem().getSystemChineseName();
+                    }
+                }
+            }
+            if(serviceInvoke.getInter() != null){
+                if(!interList.contains(serviceInvoke.getInter())){
+                    interList.add(serviceInvoke.getInter());
+                }
+            }
+        }
+
+        for(int i = 0; i < interList.size(); i++){
+            Interface inter = interList.get(i);
+            String interId = (i == 0)?inter.getInterfaceId() : (","+inter.getInterfaceId());
+            String interName = (i == 0)?inter.getInterfaceName() : (","+inter.getInterfaceName());
+            interIds += interId;
+            interNames += interName;
+
+        }
+        result.put("sysNames", sysNames);
+        result.put("interIds", interIds);
+        result.put("interNames", interNames);
+        return result;
     }
 }

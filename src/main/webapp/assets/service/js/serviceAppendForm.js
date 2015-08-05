@@ -23,6 +23,9 @@ $(function(){
      * 服务新增保持按钮事件
      */
     var saveService = function saveService(){
+        if (!$("#serviceForm").form('validate')) {
+            return false;
+        }
         var service = {};
         service.serviceId = $('#serviceId').val();
         service.serviceName = $('#serviceName').val();
