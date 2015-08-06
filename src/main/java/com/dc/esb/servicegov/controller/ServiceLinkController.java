@@ -127,6 +127,7 @@ public class ServiceLinkController {
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceId", sourceId);
             params.put("targetId", targetId);
+            if(sourceId.equals(targetId)) return false;
             List<InvokeConnection> existedConnections = invokeConnectionService.findBy(params);
             if(null == existedConnections){
                 invokeConnectionService.save(connection);

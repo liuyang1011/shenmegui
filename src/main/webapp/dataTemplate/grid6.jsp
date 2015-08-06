@@ -91,7 +91,6 @@
                 var editData = $("#tt").datagrid('getChanges');
                 categoryWordManager.saveCategoryWord(editData, function (result) {
                     if (result) {
-                        console.log(result);
                         $('#tt').datagrid('reload');
                     }
                 });

@@ -414,8 +414,12 @@
                     targetType: ""
                 });
             });
-            var saveConnectionCallBack = function saveConnectionCallBack(){
-                alert("保存成功");
+            var saveConnectionCallBack = function saveConnectionCallBack(result){
+                if(result){
+                    alert("保存成功");
+                }else{
+                    alert("不能调用自己");
+                }
             }
             var delConnectionCallBack = function delConnectionCallBack(){
                 serviceLinkManager.saveConnections(connectionsToSave, saveConnectionCallBack);

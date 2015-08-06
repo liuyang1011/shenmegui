@@ -88,7 +88,11 @@ public class InterfaceController {
 
             rootList.add(rootinterface);
         }
-
+        for (TreeNode node : rootList){
+            if(null != node.getChildren() && node.getChildren().size() > 0){
+                node.setState("closed");
+            }
+        }
         root.setChildren(rootList);
         resList.add(root);
         return resList;

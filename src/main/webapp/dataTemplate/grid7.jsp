@@ -30,19 +30,7 @@
         </tr>
         <tr>
             <th>类别词</th>
-            <td><input type="text" name="categoryWordId" id="categoryWordId"
-                       class="easyui-combobox"
-                       data-options="
-                        panelHeight:'auto',
-						url:'/metadata/categoryWord',
-				 		 method:'get',
-				 		 valueField: 'englishWord',
-				 		 textField: 'chineseWord',
-				 		 onChange:function(newValue, oldValue){
-							this.value=newValue;
-						}
-					"
-                       style="width: 100px; "/></td>
+            <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px; "/></td>
             <th> 创建人</th>
             <td><input class="easyui-textbox" style="width:100px" type="text" name="name"></td>
             <th> 创建起始日期</th>
@@ -55,7 +43,7 @@
 </fieldset>
 <table id="metadataList" class="easyui-datagrid" title="元数据管理"
        data-options="rownumbers:true,singleSelect:false,url:'/metadata/query',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10,fitColumns:'false'" style="height:370px; width:auto;">
+				pageSize:10,fitColumns:'false'" style="height:400px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -166,14 +154,14 @@
                                   alert("请先选中一个元数据！");
                        }
             }
-        },
+        }/*,
         {
             text: '公共代码',
             iconCls: 'icon-cfp',
             handler: function () {
                 alert('移出')
             }
-        }, '-',
+        }*/, '-',
         {
             text: '导入',
             iconCls: 'icon-cfp',
@@ -226,6 +214,16 @@
 <script type="text/javascript">
     $(function () {
         $(".datagrid-cell-group").width("auto");
+        $("#categoryWordId").combobox({
+            panelHeight:'130px',
+            url:'/metadata/categoryWord',
+            method:'get',
+            valueField: 'englishWord',
+            textField: 'chineseWord',
+            onChange:function(newValue, oldValue){
+                this.value=newValue;
+            }
+        });
     })
 </script>
 </body>

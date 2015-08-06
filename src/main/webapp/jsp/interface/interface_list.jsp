@@ -127,18 +127,18 @@
 		<script type="text/javascript">
 		 $(document).ready(function(){ 
 			  $('#tg').datagrid({ 
-	        title:'基本信息维护', 
+	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: 'auto', 
-	        height: '380px', 
+	        height: '390px',
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
 	        singleSelect:true,//是否单选 
 	        pagination:true,//分页控件 
-	        pageSize: 5,//每页显示的记录条数，默认为10
-		    pageList: [5,10,15,20],//可以设置每页记录条数的列表
-	        rownumbers:false,//行号 
+	        pageSize: 10,//每页显示的记录条数，默认为10
+		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'新增',
 					iconCls:'icon-add',
@@ -187,9 +187,10 @@
 
 					 	}
 					 }
-				]
+				],
+			onDblClickRow : dbClick
 	   		});  
-			
+
 			var p = $('#tg').treegrid('getPager');  
 			
 			$(p).pagination({ 
@@ -215,6 +216,22 @@
 				textField:'text'
 			});
 		 })
+		 var url = '/jsp/interface/interface_define.jsp';
+		 var dbClick = function(index,field,value){
+			 var title = "";
+			 title = field.interfaceName+"("+field.interfaceId+")";
+			 var mainTabs = parent.$('#mainContentTabs');
+			 if (mainTabs.tabs('exists', title)) {
+				 mainTabs.tabs('select', title);
+			 } else {
+				 var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'?interfaceId='+field.interfaceId+'" style="width:100%;height:100%;"></iframe>';
+				 mainTabs.tabs('add', {
+					 title: title,
+					 content: content,
+					 closable: true
+				 });
+			 }
+		 }
 		 
 		 function searchData(){
 		 
