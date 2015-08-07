@@ -544,14 +544,17 @@
         <th data-options="field:'length',width:80,editor:'text'">
             长度
         </th>
-        <th data-options="field:'metadataId',width:100,editor:'text'">
+        <%--<th data-options="field:'metadataId',width:100,editor:'text'">
             元数据ID
-        </th>
-        <th data-options="field:'scale',width:100,editor:'text'">
+        </th>--%>
+        <%--<th data-options="field:'scale',width:100,editor:'text'">
             精度
-        </th>
+        </th>--%>
         <th data-options="field:'required',width:50,editor:'text'">
             是否必须
+        </th>
+        <th data-options="field:'remark',width:100,editor:'text'">
+            备注
         </th>
         <th data-options="field:'seq',width:50,hidden:true">
             排序

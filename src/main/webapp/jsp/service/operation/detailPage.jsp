@@ -65,7 +65,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <th>最后更新时间</th>
    		 <td>${operation.optDate }</td>
    	 <th>最后更新用户</th>
-    <td></td>
+    <td>${operation.optUser }</td>
      <th></th>
     <td> </td>
    </tr>
@@ -73,113 +73,113 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 
 </fieldset>
-<fieldset>
- <legend>SDA列表</legend>
- 	<table title="sda" class="easyui-treegrid" style=" width:auto;"
-			data-options="
-				iconCls: 'icon-ok',
-				rownumbers: true,
-				animate: true,
-				collapsible: true,
-				collapsed:true,
-				fitColumns: true,
-				url: '/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }',
-				method: 'get',
-				idField: 'id',
-				treeField: 'text'
-                "
-                >
-		<thead>
-			<tr>
-				<th data-options="field:'text',width:180,editor:'text'">字段名</th>
-				<th data-options="field:'append1',width:60,align:'right',editor:'text'">中文名称</th>
-				<th data-options="field:'append2',width:80,editor:'text'">功能描述</th>
-				<th data-options="field:'append3',width:80,editor:'text'">备注</th>
-			</tr>
-		</thead>
-	</table>
-</fieldset>
-<fieldset>
- <legend>SLA列表</legend>
- 	<table id="sla" style="width:auto;" title="SLA" class="easyui-datagrid"
-		data-options="
-			iconCls: 'icon-ok',
-			rownumbers:true,
-			collapsible: true,
-			collapsed:true,
-			singleSelect:true,
-			url:'/sla/getAll/${service.serviceId }/${operation.operationId }',
-			method:'get',
-			pagination:true,
-			pageSize:10">
-		<thead>
-			<tr>
-				<th field="slaId" width="100" editor="text"
-					data-options="hidden:true">ID</th>
-				<th field="slaName" width="100" editor="text" align="center">SLA指标</th>
-				<th field="slaValue" width="150" align="center" editor="text">取值范围</th>
-				<th field="slaDesc" width="150" align="center" editor="text">描
-					述</th>
-				<th field="slaRemark" width="150" align="center" editor="text">备
-					注</th>
-			</tr>
-		</thead>
-	</table>
-</fieldset>
-<fieldset>
- <legend>OLA列表</legend>
- <table style="width:auto" title="OLA" class="easyui-datagrid"
-		data-options="
-				iconCls: 'icon-ok',
-				rownumbers:true,
-				collapsible: true,
-				collapsed:true,
-				singleSelect:true,
-				url:'/ola/getAll/${service.serviceId }/${operation.operationId }',
-				method:'get',
-				pagination:true">
-		<thead>
-			<tr>
-				<th field="olaId" width="100" editor="text"
-					data-options="hidden:true">ID</th>
-				<th field="olaName" width="100" editor="text" align="center">OLA指标</th>
-				<th field="olaValue" width="150" align="center" editor="text">取值范围</th>
-				<th field="olaDesc" width="150" align="center" editor="text">描
-					述</th>
-				<th field="olaRemark" width="150" align="center" editor="text">备
-					注</th>
-			</tr>
-		</thead>
-	</table>
-</fieldset>
-<fieldset>
- <legend>接口列表</legend>
- <table style="width:auto" title="接口" class="easyui-datagrid"
-		data-options="
-				iconCls: 'icon-ok',
-				rownumbers:true,
-				collapsible: true,
-				collapsed:true,
-				singleSelect:true,
-				url:'/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }',
-				method:'get',
-				pagination:true">
-		<thead>
-			<tr>
-				<th data-options="field:'systemId', width:50">系统id</th>
-						<th data-options="field:'systemChineseName', width:150">系统名称</th>
-						<th data-options="field:'isStandard', width:50"
-							formatter='ff.isStandardText'>标准</th>
-						<th data-options="field:'interfaceId', width:50">接口id</th>
-						<th data-options="field:'interfaceName', width:150">接口名称</th>
-						<th data-options="field:'type', width:50"
-							formatter='ff.typeText'>类型</th>
-						<th data-options="field:'desc', width:100">描述</th>
-						<th data-options="field:'remark', width:100">备注</th>
-			</tr>
-		</thead>
-	</table>
-</fieldset>
+	<%--<fieldset>
+     <legend>SDA列表</legend>
+         <table title="sda" class="easyui-treegrid" style=" width:auto;"
+                data-options="
+                    iconCls: 'icon-ok',
+                    rownumbers: true,
+                    animate: true,
+                    collapsible: true,
+                    collapsed:true,
+                    fitColumns: true,
+                    url: '/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }',
+                    method: 'get',
+                    idField: 'id',
+                    treeField: 'text'
+                    "
+                    >
+            <thead>
+                <tr>
+                    <th data-options="field:'text',width:180,editor:'text'">字段名</th>
+                    <th data-options="field:'append1',width:60,align:'right',editor:'text'">中文名称</th>
+                    <th data-options="field:'append2',width:80,editor:'text'">功能描述</th>
+                    <th data-options="field:'append3',width:80,editor:'text'">备注</th>
+                </tr>
+            </thead>
+        </table>
+    </fieldset>
+    <fieldset>
+     <legend>SLA列表</legend>
+         <table id="sla" style="width:auto;" title="SLA" class="easyui-datagrid"
+            data-options="
+                iconCls: 'icon-ok',
+                rownumbers:true,
+                collapsible: true,
+                collapsed:true,
+                singleSelect:true,
+                url:'/sla/getAll/${service.serviceId }/${operation.operationId }',
+                method:'get',
+                pagination:true,
+                pageSize:10">
+            <thead>
+                <tr>
+                    <th field="slaId" width="100" editor="text"
+                        data-options="hidden:true">ID</th>
+                    <th field="slaName" width="100" editor="text" align="center">SLA指标</th>
+                    <th field="slaValue" width="150" align="center" editor="text">取值范围</th>
+                    <th field="slaDesc" width="150" align="center" editor="text">描
+                        述</th>
+                    <th field="slaRemark" width="150" align="center" editor="text">备
+                        注</th>
+                </tr>
+            </thead>
+        </table>
+    </fieldset>
+    <fieldset>
+     <legend>OLA列表</legend>
+     <table style="width:auto" title="OLA" class="easyui-datagrid"
+            data-options="
+                    iconCls: 'icon-ok',
+                    rownumbers:true,
+                    collapsible: true,
+                    collapsed:true,
+                    singleSelect:true,
+                    url:'/ola/getAll/${service.serviceId }/${operation.operationId }',
+                    method:'get',
+                    pagination:true">
+            <thead>
+                <tr>
+                    <th field="olaId" width="100" editor="text"
+                        data-options="hidden:true">ID</th>
+                    <th field="olaName" width="100" editor="text" align="center">OLA指标</th>
+                    <th field="olaValue" width="150" align="center" editor="text">取值范围</th>
+                    <th field="olaDesc" width="150" align="center" editor="text">描
+                        述</th>
+                    <th field="olaRemark" width="150" align="center" editor="text">备
+                        注</th>
+                </tr>
+            </thead>
+        </table>
+    </fieldset>
+    <fieldset>
+     <legend>接口列表</legend>
+     <table style="width:auto" title="接口" class="easyui-datagrid"
+            data-options="
+                    iconCls: 'icon-ok',
+                    rownumbers:true,
+                    collapsible: true,
+                    collapsed:true,
+                    singleSelect:true,
+                    url:'/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }',
+                    method:'get',
+                    pagination:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'systemId', width:50">系统id</th>
+                            <th data-options="field:'systemChineseName', width:150">系统名称</th>
+                            <th data-options="field:'isStandard', width:50"
+                                formatter='ff.isStandardText'>标准</th>
+                            <th data-options="field:'interfaceId', width:50">接口id</th>
+                            <th data-options="field:'interfaceName', width:150">接口名称</th>
+                            <th data-options="field:'type', width:50"
+                                formatter='ff.typeText'>类型</th>
+                            <th data-options="field:'desc', width:100">描述</th>
+                            <th data-options="field:'remark', width:100">备注</th>
+                </tr>
+            </thead>
+        </table>
+    </fieldset>--%>
 
     </div>
   

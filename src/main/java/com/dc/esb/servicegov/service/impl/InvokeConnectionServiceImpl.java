@@ -33,6 +33,7 @@ public class InvokeConnectionServiceImpl extends AbstractBaseService<InvokeConne
      * @param sourceId
      * @return
      */
+    //TODO 调用自己死循环
     public List<InvokeConnection> getConnectionsStartWith(String sourceId) {
         List<InvokeConnection> connections = new ArrayList<InvokeConnection>();
         List<InvokeConnection> startConnections = getDAO().findBy("sourceId", sourceId);

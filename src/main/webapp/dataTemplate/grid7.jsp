@@ -55,7 +55,7 @@
 </fieldset>
 <table id="metadataList" class="easyui-datagrid" title="元数据管理"
        data-options="rownumbers:true,singleSelect:false,url:'/metadata/query',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10,fitColumns:'false'" style="height:370px; width:auto;">
+				pageSize:10,fitColumns:'false'" style="height:400px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -166,14 +166,14 @@
                                   alert("请先选中一个元数据！");
                        }
             }
-        },
+        }/*,
         {
             text: '公共代码',
             iconCls: 'icon-cfp',
             handler: function () {
                 alert('移出')
             }
-        }, '-',
+        }*/, '-',
         {
             text: '导入',
             iconCls: 'icon-cfp',
@@ -226,6 +226,16 @@
 <script type="text/javascript">
     $(function () {
         $(".datagrid-cell-group").width("auto");
+        $("#categoryWordId").combobox({
+            panelHeight:'130px',
+            url:'/metadata/categoryWord',
+            method:'get',
+            valueField: 'englishWord',
+            textField: 'chineseWord',
+            onChange:function(newValue, oldValue){
+                this.value=newValue;
+            }
+        });
     })
 </script>
 </body>

@@ -107,10 +107,27 @@ public class ExcelImportController {
                 outPutError(writer);
                 return;
             }
+            //TODO parse的时候不存在系统
             // 从第一行开始读，获取所有交易行
-            List<ExcelImportServiceImpl.IndexDO> indexDOs = excelImportService.parseIndexSheet(indexSheet);
+            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)excelImportService.parseIndexSheet(indexSheet).get(0);
+            msg.append(excelImportService.parseIndexSheet(indexSheet).get(1));
             for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
-                //判断系统是否存在
+                //TODO 提供和消费系统都要判断
+                boolean consumerExists = excelImportService.existSystem(indexDO.getConsumerSystemId());
+                if (!consumerExists) {
+                    logger.error("交易[" + indexDO.getSheetName() + "]," + indexDO.getConsumerSystem() + "系统不存在");
+                    logInfoService.saveLog("交易[" + indexDO.getSheetName() + "]," + indexDO.getConsumerSystem() + "系统不存在", "导入");
+                    msg.append("交易[" + indexDO.getSheetName() + "]," + indexDO.getConsumerSystem() + "系统不存在，");
+                    continue;
+                }
+                boolean providerExists = excelImportService.existSystem(indexDO.getProviderSystemId());
+                if (!providerExists) {
+                    logger.error("交易[" + indexDO.getSheetName() + "]," + indexDO.getProviderSystem() + "系统不存在");
+                    logInfoService.saveLog("交易[" + indexDO.getSheetName() + "]," + indexDO.getProviderSystem() + "系统不存在", "导入");
+                    msg.append("交易[" + indexDO.getSheetName() + "]," + indexDO.getProviderSystem() + "系统不存在，");
+                    continue;
+                }
+                /*//判断系统是否存在
                 boolean exists = excelImportService.existSystem(indexDO.getSystemId());
                 //系统不存在该行跳过，继续下一行解析
                 if (!exists) {
@@ -118,7 +135,7 @@ public class ExcelImportController {
                     logInfoService.saveLog("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemAb() + "系统不存在", "导入");
                     msg.append("交易[" + indexDO.getSheetName() + "]," + indexDO.getSystemAb() + "系统不存在，");
                     continue;
-                }
+                }*/
                 //开始解析每一个页面
                 String sheetName = indexDO.getSheetName();
                 if (sheetName != null && !"".equals(sheetName)) {

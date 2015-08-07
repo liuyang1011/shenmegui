@@ -107,9 +107,9 @@
 	        url:'/system/getAll',
 	        singleSelect:true,//是否单选 
 	        pagination:true,//分页控件 
-	        pageSize: 5,//每页显示的记录条数，默认为10
-		    pageList: [5,10,15,20],//可以设置每页记录条数的列表
-	        rownumbers:false,//行号 
+	        pageSize: 10,//每页显示的记录条数，默认为10
+		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'导出',
 					iconCls:'icon-add',

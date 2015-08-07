@@ -112,6 +112,7 @@ var SYSMENU = {
                 });
 
                 //接口管理
+                var loadFlag = false;
                 $('.msinterfacetree').tree({
                     onContextMenu: function (e, node) {
                         e.preventDefault();
@@ -198,8 +199,25 @@ var SYSMENU = {
                          });
                          }
                          }  */
-                    }
+                    }/*,
+                    onLoadSuccess : function(node, data){
+
+                        var children = data[0].children;
+                        $.each(children,function(index,child){
+                            if(null != child.children && child.children.length > 0){
+                                child.state='closed';
+                            }
+                        });
+
+                        console.log(data[0].children);
+                        if(!loadFlag){
+                            $(this).tree('loadData',data);
+                            loadFlag = true;
+                        }
+                    }*/
                 });
+
+                $('.msinterfacetree').tree('collapseAll');
 
                 $('.mslinktree').tree({
                     /*onContextMenu: function (e, node) {

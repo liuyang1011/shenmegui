@@ -140,9 +140,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      * @return
      */
     @Override
-    public List<IndexDO> parseIndexSheet(Sheet indexSheet) {
+    public List parseIndexSheet(Sheet indexSheet) {
         List<IndexDO> indexDOs = new ArrayList<IndexDO>();
         int endRow = indexSheet.getLastRowNum();
+        StringBuffer msg = new StringBuffer();
         for (int i = 1; i <= endRow; i++) {
             Row row = indexSheet.getRow(i);
             // 读取每一行第一列，获取每个交易sheet名称
@@ -152,12 +153,25 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             HashMap<String,String> param = new HashMap<String, String>();
             param.put("systemAb",consumerSystem);
             System system = systemDao.findUniqureBy(param);
+
+            if (null == system) {
+                logger.error("" + consumerSystem + "系统不存在");
+                logInfoService.saveLog("" + consumerSystem + "系统不存在", "导入");
+                msg.append("" + consumerSystem + "系统不存在");
+                continue;
+            }
             String consumerSystemId = system.getSystemId();
             //接口提供方
             String providerSystem = getCell(row, INDEX_PROVIDER_COL);
             param = new HashMap<String, String>();
             param.put("systemAb",providerSystem);
             system = systemDao.findUniqureBy(param);
+            if (null == system) {
+                logger.error("" + providerSystem + "系统不存在");
+                logInfoService.saveLog("" + providerSystem + "系统不存在", "导入");
+                msg.append("" + providerSystem + "系统不存在");
+                continue;
+            }
             String providerSystemId = system.getSystemId();
             //接口方向
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
@@ -185,7 +199,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             indexDO.setSystemAb(systemAb);
             indexDOs.add(indexDO);
         }
-        return indexDOs;
+        List list = new ArrayList();
+        list.add(indexDOs);
+        list.add(msg);
+        return list;
     }
 
     @Override
@@ -507,7 +524,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
                     String cell = ExcelTool.getInstance().getCellContent(
                             cellObj);
-                    if ("交易码".equals(cell)) {
+                    if ("交易码".equals(cell) && k==0) {
                         //TODO 类型报错
                         sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
                         tranCode = sheetRow.getCell(k + 1).getStringCellValue();
@@ -897,7 +914,11 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
         if (headDB != null) {
             if (GlobalImport.operateFlag) {
-                interfaceHeadDAO.delete(headDB.getHeadId());
+                //TODO null != headDB是更新不是删除吧？删除后以前的Interface_Head_Relate也没了
+                //删除老的Ida
+                String hql = "delete from Ida t where t.headId = '"+headDB.getHeadId()+"' ";
+                idaDao.exeHql(hql);
+//                interfaceHeadDAO.delete(headDB.getHeadId());
             } else {
                 if (exists) {
                     return;
@@ -912,16 +933,16 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
         }
 
-        InterfaceHead head = new InterfaceHead();
-        head.setHeadName(headName);
-        head.setHeadDesc(headName);
-        interfaceHeadDAO.save(head);
+//        InterfaceHead head = new InterfaceHead();
+        headDB.setHeadName(headName);
+        headDB.setHeadDesc(headName);
+        interfaceHeadDAO.save(headDB);
 
         InterfaceHeadRelate relate = new InterfaceHeadRelate();
-        relate.setHeadId(head.getHeadId());
+        relate.setHeadId(headDB.getHeadId());
         relate.setInterfaceId(inter.getInterfaceId());
         interfaceHeadRelateDAO.save(relate);
-        String idaheadId = head.getHeadId();
+        String idaheadId = headDB.getHeadId();
 
 
         //添加IDA
@@ -970,7 +991,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             idaDao.save(ida);
         }
         //将本次导入的报文头缓存到map,导入有可能是同一个报文头
-        GlobalImport.headMap.put(headName, head);
+        GlobalImport.headMap.put(headName, headDB);
     }
 
     protected void insertIDA(boolean exists, Interface inter, List<Ida> idainput, List<Ida> idaoutput) {

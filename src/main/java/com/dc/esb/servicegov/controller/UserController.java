@@ -3,8 +3,10 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.Metadata;
+import com.dc.esb.servicegov.entity.Organization;
 import com.dc.esb.servicegov.entity.SGUser;
 import com.dc.esb.servicegov.entity.UserRoleRelation;
+import com.dc.esb.servicegov.service.impl.OrgServiceImpl;
 import com.dc.esb.servicegov.service.impl.RoleServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserRoleRelationServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
@@ -32,6 +34,8 @@ public class UserController {
     private UserRoleRelationServiceImpl userRoleRelationService;
     @Autowired
     private RoleServiceImpl roleService;
+    @Autowired
+    private OrgServiceImpl orgService;
 
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
@@ -63,6 +67,11 @@ public class UserController {
         page.setPage(pageNo);
         List<SGUser> rows = userServiceImpl.getAll(page);
         for(SGUser user : rows){
+            String orgId = user.getOrgId();
+            Organization org = orgService.getById(orgId);
+            if(null != org){
+                user.setOrgId(org.getOrgName());
+            }
             userVOs.add(new UserVO(user));
         }
         Map<String, Object> result = new HashMap<String, Object>();
