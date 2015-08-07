@@ -1,4 +1,4 @@
-
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <fieldset>
     <legend>导入元数据文档(Excel)</legend>
     <form id="uploadimg-form" action="/resourceImport/import" method="post" enctype="multipart/form-data">

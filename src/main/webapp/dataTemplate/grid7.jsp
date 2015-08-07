@@ -13,7 +13,7 @@
 <body>
 <fieldset>
     <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
         <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
@@ -33,7 +33,7 @@
             <td><input type="text" name="categoryWordId" id="categoryWordId"
                        class="easyui-combobox"
                        data-options="
-                        panelHeight:'auto',
+                        panelHeight:'300',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
 				 		 valueField: 'englishWord',

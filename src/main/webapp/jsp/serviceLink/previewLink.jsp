@@ -174,7 +174,7 @@
             + '<span class="caret"></span>'
             + '<span class="sr-only">Toggle Dropdown</span>'
             + '</button>'
-            + '<ul class="dropdown-menu" role="menu">'
+            + '<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">'
             + '<li><a>系统:' + serviceId + '</a></li>'
             + '<li><a>服务:' + systemId + '</a></li>'
             + '</ul>'

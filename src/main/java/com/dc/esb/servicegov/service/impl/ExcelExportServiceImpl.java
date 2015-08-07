@@ -527,7 +527,8 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
         for(ServiceCategory child : scList){
             int start = counter;
             String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
-            List<Service> services = serviceDao.findBy("categoryId", child.getCategoryId());
+            String hql = " from "+ Service.class.getName() + " where categoryId = ? order by serviceId asc";
+            List<Service> services = serviceDao.find(hql, child.getCategoryId());
             if(services.size() == 0){
                 HSSFRow row = sheet.createRow(counter);
                 counter++;
