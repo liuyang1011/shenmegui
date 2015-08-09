@@ -138,7 +138,58 @@ public class ExcelImportController {
                 }*/
                 //开始解析每一个页面
                 String sheetName = indexDO.getSheetName();
-                if (sheetName != null && !"".equals(sheetName)) {
+                //------------------------------------
+                //TODO 标准接口导入（没ida）
+                if(null != sheetName && !"".equals(sheetName) && sheetName.startsWith("BZ_")){
+                    // 读取每个交易sheet页
+                    logger.debug("开始获取" + sheetName + "交易信息=========================");
+                    Sheet sheet = workbook.getSheet(sheetName);
+                    //服务、场景信息
+                    Map<String, Object> infoMap = excelImportService.getServiceInfo(sheet);
+                    //获取 服务 输入 参数
+                    Map<String, Object> inputMap = excelImportService.getStandardInputArg(sheet);
+                    //获取接口、服务 输出 参数
+                    Map<String, Object> outMap = excelImportService.getStandardOutputArg(sheet);
+                    //获取接口头
+                    Map<String, Object> headMap = excelImportService.getInterfaceHead(indexDO, workbook);
+                    //获取公共信息
+                    Map<String, String> publicMap = excelImportService.getPublicHead(indexDO);
+                    if (infoMap == null || inputMap == null || outMap == null) {
+                        msg.append(sheetName + "导入失败，");
+                        continue;
+                    }
+                    logger.info("===========交易[" + sheetName + "],开始导入字段映射信息=============");
+                    long time = java.lang.System.currentTimeMillis();
+                    boolean result = excelImportService.executeStandardImport(infoMap, inputMap, outMap, publicMap, headMap);
+
+                    if (!result) {
+                        logger.info("===========交易[" + sheetName + "],导入失败=============");
+                        continue;
+                    }
+                    //TODO 插入标准接口映射
+                    indexDO.getSystemId();
+                    //IS_STANDARD  SERVICE_ID,operation_id systemId,type
+                    String type = indexDO.getInterfacePoint();
+                    String operationId = indexDO.getOperationId();
+                    String cusumerSystem = indexDO.getConsumerSystem();
+                    String cusumerSystemId = indexDO.getConsumerSystemId();
+                    String providerSystem = indexDO.getProviderSystem();
+                    String providerSystemId = indexDO.getProviderSystemId();
+                    String invokeSystemId = "";
+                    String isStandard = "0";
+                    String serviceId = indexDO.getServiceId();
+                    if("Provider".equalsIgnoreCase(type)){
+                        type = "1";
+                        invokeSystemId = cusumerSystemId;
+                    }else{
+                        type = "0";
+                        invokeSystemId = providerSystemId;
+                    }
+                    excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+
+                    long useTime = java.lang.System.currentTimeMillis() - time;
+                    logger.info("===========交易[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
+                }else if (sheetName != null && !"".equals(sheetName)) {
                     // 读取每个交易sheet页
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);

@@ -95,6 +95,13 @@ function save(formId, operation) {
                 alert("保存出现异常 ，操作失败！");
             }
 
+        },
+        complete:function(responce){
+            var resText = responce.responseText;
+            if(resText.toString().charAt(0) == "<"){
+                alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+            }
         }
     });
 }

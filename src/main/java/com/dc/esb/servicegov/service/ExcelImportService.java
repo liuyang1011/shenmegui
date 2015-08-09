@@ -26,4 +26,10 @@ public interface ExcelImportService {
 
     public void addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard);
 
+    public Map<String, Object> getServiceInfo(Sheet tranSheet);
+    public  Map<String, Object> getStandardInputArg(Sheet sheet);
+    public Map<String, Object> getStandardOutputArg(Sheet sheet);
+    public boolean executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap);
+
+
 }

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.portlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +50,7 @@ public class ServiceLinkController {
         String interfaceId = req.getParameter("interfaceId");
 //        String interfaceName = req.getParameter("interfaceName");
         String serviceId = req.getParameter("serviceId");
-//        String serviceName = req.getParameter("serviceName");
+        String serviceName = req.getParameter("serviceName");
         String _systemId = systemId;
 
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
@@ -61,6 +63,7 @@ public class ServiceLinkController {
             hql.append(" and serviceId like ?");
             searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
         }
+
 
 //        Page page = serviceInvokeService.getAll(rowCount);
         Page page = serviceInvokeService.findPage(hql.toString(),rowCount,searchConds);
@@ -81,7 +84,18 @@ public class ServiceLinkController {
                 serviceInvokeInfoVO.setServiceName(service.getServiceName());
                 serviceInvokeInfoVO.setOperationName(operation.getOperationName());
             }
-            serviceInvokeInfoVOs.add(serviceInvokeInfoVO);
+            if (null != serviceName && !"".equals(serviceName)) {
+                try {
+                    serviceName = URLDecoder.decode(serviceName, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if(serviceInvokeInfoVO.getServiceName().indexOf(serviceName) >= 0){
+                    serviceInvokeInfoVOs.add(serviceInvokeInfoVO);
+                }
+            }else{
+                serviceInvokeInfoVOs.add(serviceInvokeInfoVO);
+            }
         }
 
         HashMap<String,Object> map = new HashMap<String, Object>();

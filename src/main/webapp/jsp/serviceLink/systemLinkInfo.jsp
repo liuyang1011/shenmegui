@@ -17,11 +17,12 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>接口ID</th>
+            <%--<th>接口ID</th>--%>
+            <th>交易码</th>
             <td><input class="easyui-textbox" type="text" name="interfaceId" id="interfaceId"></td>
-            <th>接口名称</th>
+            <th>交易名称</th>
             <td><input class="easyui-textbox" type="text" name="interfaceName" id="interfaceName"></td>
-            <th>服务代码</th>
+            <th>服务码</th>
             <td><input class="easyui-textbox" type="text" name="serviceId" id="serviceId"></td>
             <th>服务名称</th>
             <td><input class="easyui-textbox" type="text" name="serviceName" id="serviceName"></td>
@@ -69,7 +70,25 @@
             method:'get',
             toolbar:toolbar,
             pagination:true,
-            pageSize:10
+            pageSize:10,
+            onLoadSuccess:function(data){
+                $.each(data.rows, function (index, item) {
+                    var invokeType = item.invokeType;
+                    console.log(item);
+                    if(invokeType == '0'){
+                        item.invokeType = '提供者';
+                    }else if(invokeType == '1'){
+                        item.invokeType = '消费者';
+                    }
+                });
+            },
+            onLoadError: function (responce) {
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+//                    alert("没有权限！");
+                    window.location.href = "/jsp/403.jsp";
+                }
+            }
         });
     });
     $("#search").click(function(){
@@ -77,7 +96,7 @@
         queryParams.interfaceId = $("#interfaceId").textbox("getValue");
         queryParams.interfaceName = encodeURI($("#interfaceName").textbox("getValue"));
         queryParams.serviceId = $("#serviceId").textbox("getValue");
-        queryParams.serviceName = $("#serviceName").textbox("getValue");
+        queryParams.serviceName = encodeURI($("#serviceName").textbox("getValue"));
         if (queryParams.englishWord || queryParams.chineseWord || queryParams.esglisgAb || queryParams.remark) {
             $("#invokeLinkeTable").datagrid('options').queryParams = queryParams;//传递值
             $("#invokeLinkeTable").datagrid('reload');//重新加载table

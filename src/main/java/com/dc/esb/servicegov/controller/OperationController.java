@@ -242,11 +242,6 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.POST, value = "/deletes", headers = "Accept=application/json")
     @ResponseBody
     public boolean deletes(@RequestBody OperationPK[] operationPks) {
-        //TODO 删场景的时候要删除service_invoke
-        for (OperationPK operationPK : operationPks) {
-            serviceInvokeService.deleteByOperationId(operationPK.getOperationId());
-        }
-
         operationServiceImpl.deleteOperations(operationPks);
         return true;
     }

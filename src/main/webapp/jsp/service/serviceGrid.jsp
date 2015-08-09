@@ -69,6 +69,7 @@
        data-options="
 			rownumbers:true,
 			singleSelect:false,
+			fitColumns:true,
 			url:'/operation/getOperationByServiceId/${entity.serviceId }',
 			method:'get',toolbar:toolbar,
 			pagination:true,
@@ -77,8 +78,6 @@
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
-
-
         <th data-options="field:'operationId'">服务场景</th>
         <th data-options="field:'operationName'">场景名称</th>
         <th data-options="field:'operationDesc'">功能描述</th>

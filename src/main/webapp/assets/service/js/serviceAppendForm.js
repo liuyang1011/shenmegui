@@ -37,6 +37,9 @@ $(function(){
             service.processId = PROCESS_INFO.processId;
         }
         serviceManager.add(service,function(result){
+            if(!result){
+                alert("存在相同服务码");
+            }
             $('#w').window('close');
             $('.mxservicetree').tree('reload');
         });

@@ -23,8 +23,8 @@
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataName" id="metadataName">
             </td>
-            <th style="text-align:right">别名</th>
-            <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
+            <%--<th style="text-align:right">别名</th>--%>
+            <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
             </td>
 
         </tr>

@@ -1,7 +1,9 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.Service;
 import com.dc.esb.servicegov.entity.ServiceCategory;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceCategoryServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -13,10 +15,12 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +52,15 @@ public class ServiceController {
     public
     @ResponseBody
     boolean addService(@RequestBody Service service) {
-        serviceServiceImpl.save(service);
+        //TODO 新增相同id就被覆盖了
+        try {
+            serviceServiceImpl.insert(service);
+        }catch (DataIntegrityViolationException e){
+            e.printStackTrace();
+        //java.sql.BatchUpdateException
+            return false;
+        }
+
         return true;
     }
 

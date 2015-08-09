@@ -148,7 +148,14 @@
             method: 'get',
             toolbar: toolbar,
             pagination: true,
-            pageSize: 10
+            pageSize: 10,
+            onLoadError: function (responce) {
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+//                    alert("没有权限！");
+                    window.location.href = "/jsp/403.jsp";
+                }
+            }
         });
         $('#search').click(function () {
         	var id=$('#Id').val();

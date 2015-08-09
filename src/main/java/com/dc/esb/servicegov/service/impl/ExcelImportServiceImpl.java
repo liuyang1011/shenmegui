@@ -77,6 +77,19 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      * @return
      */
     @Override
+    public boolean executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+        return false;
+    }
+    /**
+     * 执行入库
+     * @param infoMap
+     * @param inputMap
+     * @param outMap
+     * @param publicMap
+     * @param headMap
+     * @return
+     */
+    @Override
     public boolean executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
         com.dc.esb.servicegov.entity.Service service = (com.dc.esb.servicegov.entity.Service) infoMap.get("service");
         Operation operation = (Operation) infoMap.get("operation");
@@ -238,6 +251,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return headMap;
     }
 
+    public  Map<String, Object> getStandardInputArg(Sheet sheet) {
+        return null;
+    }
+
     public  Map<String, Object> getInputArg(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -363,6 +380,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
+    public Map<String, Object> getStandardOutputArg(Sheet sheet) {
+        return null;
+    }
     public Map<String, Object> getOutputArg(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -490,6 +510,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
+    public Map<String, Object> getServiceInfo(Sheet tranSheet) {
+
+        return null;
+    }
     /**
      * 获取交易、服务、场景信息
      *
@@ -1232,6 +1256,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }
     }
 
+    protected boolean insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+        return false;
+    }
 
     protected boolean insertInterface(Interface inter, com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
         Map<String, String> paramMap = new HashMap<String, String>();

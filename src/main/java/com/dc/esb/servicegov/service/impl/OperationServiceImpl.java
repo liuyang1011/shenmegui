@@ -133,6 +133,10 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     }
 
     public void deleteOperations(OperationPK[] operationPks) {
+        //TODO 删场景的时候要删除service_invoke
+        for (OperationPK operationPK : operationPks) {
+            serviceInvokeService.deleteByOperationId(operationPK.getOperationId());
+        }
         if (operationPks != null && operationPks.length > 0) {
             for (OperationPK operationPK : operationPks) {
                 operationDAOImpl.delete(operationPK);
@@ -345,5 +349,18 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
 
         return EasyUiTreeUtil.getInstance().convertTree(tree, null);
+    }
+
+    /**
+     * 删除场景要删除service_invoke
+     * @param list
+     * @return
+     */
+    public boolean deleteList(List<Operation> list){
+        for (Operation per : list){
+            serviceInvokeService.deleteByOperationId(per.getOperationId());
+            delete(per);
+        }
+        return true;
     }
 }

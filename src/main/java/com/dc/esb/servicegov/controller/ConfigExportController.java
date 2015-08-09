@@ -305,8 +305,8 @@ public class ConfigExportController {
             map = new HashMap<String, String>();
             map.put("id", system.getInterfaceId());
             Interface inter = new Interface();
-            if(null == inter) continue;
             inter = system.getInter();
+            if(null == inter) continue;
             map.put("text",inter.getInterfaceName());
             resList.add(map);
         }

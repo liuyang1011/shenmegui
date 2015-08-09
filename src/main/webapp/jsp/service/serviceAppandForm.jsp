@@ -16,7 +16,7 @@ $(document).ready(function () {
 <form id="serviceForm" class="formui">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <th>服务ID</th>
+    <th>服务码</th>
     <td><input class="easyui-textbox" data-options="required:true, validType:['english']" type="text" id="serviceId" ></td>
   </tr>
   <tr>

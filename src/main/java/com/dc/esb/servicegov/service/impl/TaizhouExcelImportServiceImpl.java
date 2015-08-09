@@ -1,9 +1,9 @@
 package com.dc.esb.servicegov.service.impl;
 
-import com.dc.esb.servicegov.entity.Ida;
-import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.SDA;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.util.ExcelTool;
+import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,6 +21,327 @@ import java.util.Map;
 @Service("TaizhouExcelImportService")
 @Transactional
 public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
+    /**
+     * 获取服务,场景信息
+     * @param tranSheet
+     * @return
+     */
+    @Override
+    public Map<String, Object> getServiceInfo(Sheet tranSheet) {
+        boolean flag = true;
+        // 读取每个sheet页服务信息
+        int start = tranSheet.getFirstRowNum();
+        int end = tranSheet.getLastRowNum();
+        com.dc.esb.servicegov.entity.Service service = new com.dc.esb.servicegov.entity.Service();
+        Operation oper = new Operation();
+        for (int j = start; j <= end; j++) {
+            Row sheetRow = tranSheet.getRow(j);
+            String serviceName = "";
+            String serviceId = "";
+            String operId = "";
+            String operName = "";
+            String serviceDesc = "";
+            String operDesc = "";
+            int cellStart = sheetRow.getFirstCellNum();
+            int cellEnd = sheetRow.getLastCellNum();
+
+            for (int k = cellStart; k < cellEnd; k++) {
+
+                Cell cellObj = sheetRow.getCell(k);
+                if (cellObj != null) {
+
+                    String cell = ExcelTool.getInstance().getCellContent(
+                            cellObj);
+                    if ("服务名称".equals(cell)) {
+                        serviceName = sheetRow.getCell(k + 1)
+                                .getStringCellValue();
+                        if (serviceName == null || "".equals(serviceName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，服务名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务名称为空", "导入");
+                            flag = false;
+                        }
+
+                        try {
+                            String[] req = getContext(serviceName);
+                            serviceName = req[0];
+                            serviceId = req[1];
+                            service.setServiceName(serviceName);
+                            service.setServiceId(serviceId);
+                        } catch (Exception e) {
+                            logger.error("服务名称格式不正确，格式应为为：服务名称(服务ID)");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务名称格式不正确，格式应为为：服务名称(服务ID)", "导入");
+                            flag = false;
+                        }
+
+                        break;
+                    } else if ("服务操作名称".equals(cell)) {
+                        operName = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (operName == null || "".equals(operName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，服务操作名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务操作名称为空", "导入");
+                            flag = false;
+                        }
+
+                        try {
+                            String[] req = getContext(operName);
+                            operName = req[0];
+                            operId = req[1];
+                            oper.setOperationId(operId);
+                            oper.setOperationName(operName);
+                        } catch (Exception e) {
+                            logger.error("服务操作名称格式不正确，格式应为为：服务操作名称(操作ID)");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务操作名称格式不正确，格式应为为：服务操作名称(操作ID)", "导入");
+                            flag = false;
+                        }
+                        break;
+                    } else if ("服务描述".equals(cell)) {
+                        serviceDesc = sheetRow.getCell(k + 1)
+                                .getStringCellValue();
+                        if (serviceDesc == null || "".equals(serviceDesc)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，服务描述为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务描述为空", "导入");
+                            flag = false;
+                        }
+                        service.setDesc(serviceDesc);
+                        break;
+                    } else if ("服务操作描述".equals(cell)) {
+                        operDesc = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (operDesc == null || "".equals(operDesc)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，服务操作描述为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务操作描述为空", "导入");
+                            flag = false;
+                        }
+                        oper.setOperationDesc(operDesc);
+                        break;
+                    } else if ("原始接口".equals(cell)) {
+                        // 将表头跳过,获取接口字段信息
+                        readline = j += 3;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //信息不正确返回空
+        if (!flag) {
+            return null;
+        }
+        Map<String, Object> resMap = new HashMap<String, Object>();
+
+        resMap.put("service", service);
+        resMap.put("operation", oper);
+
+        return resMap;
+    }
+
+    @Override
+    public  Map<String, Object> getStandardInputArg(Sheet sheet) {
+        boolean flag = true;
+        StringBuffer msg = new StringBuffer();
+        List<SDA> sdas = new ArrayList<SDA>();
+        ExcelTool tools = ExcelTool.getInstance();
+        int start = readline;
+        int end = sheet.getLastRowNum();
+
+        int order = 0;
+        for (int j = start; j <= end; j++) {
+            SDA sda = new SDA();
+            Row sheetRow = sheet.getRow(j);
+
+            Cell cellObj = sheetRow.getCell(0);
+
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                if ("输出".equals(cell)) {
+                    readline = j++;
+                    break;
+                }
+
+            }
+
+            cellObj = sheetRow.getCell(7);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setMetadataId(isNull(cell));
+                sda.setStructName(isNull(cell));
+
+            }
+
+            cellObj = sheetRow.getCell(8);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setStructAlias(isNull(cell));
+            }
+
+            //TODO 本地化修改(第九个类型和长度合并)
+            cellObj = sheetRow.getCell(9);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                cell = isNull(cell).replaceAll("，",",");
+                String[] str = cell.split("[()]+");
+                if(str.length>1){
+                    //DOUBLE(16,2) STRING(6)
+                    String len = str[1];
+                    sda.setType(str[0]);
+                    String[] lenArr = len.split(",");
+                    sda.setLength(lenArr[0]);
+
+                }else{
+                    //STRUCT
+                    sda.setType(isNull(cell));
+                    sda.setLength(isNull(cell));
+                }
+            }
+
+            cellObj = sheetRow.getCell(11);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setRequired(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(12);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                String remark = isNull(cell);
+                if("start".equalsIgnoreCase(remark)) {
+                    sda.setMetadataId("");
+                }
+                sda.setRemark(remark);
+            }
+
+            if(null != sda.getMetadataId() && !"".equals(sda.getMetadataId()) && !"start".equalsIgnoreCase(sda.getRemark()) && !"end".equalsIgnoreCase(sda.getRemark())){
+                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+                if(metadata==null){
+                    logger.error(sheet.getSheetName()+"页,元数据["+sda.getMetadataId()+"]未配置，导入失败...");
+                    msg.append(sda.getMetadataId()).append(",");
+                    flag = false;
+                }
+            }
+            sda.setSeq(order);
+
+            sdas.add(sda);
+            order++;
+
+        }
+
+        if(!flag){
+            logInfoService.saveLog(sheet.getSheetName()+"页,元数据["+msg.toString()+"]未配置，导入失败...","导入(输入)");
+            return null;
+        }
+        Map<String, Object> resMap = new HashMap<String, Object>();
+
+        resMap.put("sdas", sdas);
+
+        return resMap;
+    }
+
+    @Override
+    public Map<String, Object> getStandardOutputArg(Sheet sheet){
+        boolean flag = true;
+        StringBuffer msg = new StringBuffer();
+        List<SDA> sdas = new ArrayList<SDA>();
+        ExcelTool tools = ExcelTool.getInstance();
+        int start = readline;
+        int end = sheet.getLastRowNum();
+        int order = 0;
+        for (int j = start; j <= end; j++) {
+            SDA sda = new SDA();
+            Row sheetRow = sheet.getRow(j);
+
+            Cell cellObj = sheetRow.getCell(0);
+
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                if ("输出".equals(cell)) {
+                    continue;
+                }
+            }
+
+            cellObj = sheetRow.getCell(7);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setStructName(isNull(cell));
+                sda.setMetadataId(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(8);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setStructAlias(isNull(cell));
+            }
+
+            //TODO 本地化修改(第九个类型和长度合并)
+            cellObj = sheetRow.getCell(9);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                cell = isNull(cell).replaceAll("，",",");
+                String[] str = cell.split("[()]+");
+                if(str.length>1){
+                    //DOUBLE(16,2) STRING(6)
+                    String len = str[1];
+                    sda.setType(str[0]);
+                    String[] lenArr = len.split(",");
+                    sda.setLength(lenArr[0]);
+
+                }else{
+                    //STRUCT
+                    sda.setType(isNull(cell));
+                    sda.setLength(isNull(cell));
+                }
+            }
+            cellObj = sheetRow.getCell(11);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setRequired(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(12);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                String remark = isNull(cell);
+                if ("start".equalsIgnoreCase(cell)) {
+                    sda.setMetadataId("");
+                }
+                sda.setRemark(remark);
+            }
+
+            if (sda.getMetadataId() != null && !"".equals(sda.getMetadataId()) && !"start".equalsIgnoreCase(sda.getRemark()) && !"end".equalsIgnoreCase(sda.getRemark())) {
+                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+                if (metadata == null) {
+                    logger.error(sheet.getSheetName() + "页,元数据[" + sda.getMetadataId() + "]未配置，导入失败...");
+                    msg.append(sda.getMetadataId()).append(",");
+                    flag = false;
+                }
+            }
+//e
+
+            sda.setSeq(order);
+
+            sdas.add(sda);
+            order++;
+
+        }
+
+        if (!flag) {
+            logInfoService.saveLog(sheet.getSheetName() + "页,元数据[" + msg.toString() + "]未配置，导入失败...", "导入(输出)");
+            return null;
+        }
+
+        Map<String, Object> resMap = new HashMap<String, Object>();
+
+        resMap.put("sdas", sdas);
+
+        return resMap;
+    }
+
     @Override
     public Map<String, Object> getInputArg(Sheet sheet) {
         boolean flag = true;
@@ -443,5 +764,86 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         resMap.put("output", output);
 
         return resMap;
+    }
+    @Override
+    public boolean executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+        com.dc.esb.servicegov.entity.Service service = (com.dc.esb.servicegov.entity.Service) infoMap.get("service");
+        Operation operation = (Operation) infoMap.get("operation");
+
+        List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
+        List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
+
+        //导入服务定义相关信息
+        logger.info("导入服务定义信息...");
+        if (insertService(service)) {
+            //导入服务场景相关信息
+            logger.info("导入服务场景信息...");
+            boolean existsOper = insertOperation(service, operation);
+            //维护调用关系
+            //接口提供方 service_invoke 中 type=0
+            String providerSystem = publicMap.get("providerSystem");
+            //接口消费方 service_invoke 中 type=1
+            String cusumerSystem = publicMap.get("cusumerSystem");
+            //接口方向
+            String interfacepoint = publicMap.get("interfacepoint");
+            //TODO excel传入的是简称，已经转化为id
+            HashMap<String,String> param = new HashMap<String, String>();
+            param.put("systemAb",cusumerSystem);
+            System system = systemDao.findUniqureBy(param);
+            String systemId = system.getSystemId();
+            String type = "1";
+            if ("Provider".equalsIgnoreCase(interfacepoint)) {
+                param = new HashMap<String, String>();
+                param.put("systemAb",providerSystem);
+                system = systemDao.findUniqureBy(param);
+                systemId = system.getSystemId();
+                type = "0";
+            }
+            //获取调用关系
+            //TODO 接口id为null
+            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,null);
+            //获取消费关系
+            //ServiceInvoke cusumer_invoke = serviceInvokeCusumerQuery(service, operation, cusumerSystem);
+            //导入接口相关信息
+            logger.info("导入接口定义信息...");
+            boolean exists = insertStrandardInvoke(service, operation, provider_invoke, systemId, type);
+            insertSDA(existsOper, operation, service, sdainput, sdaoutput);
+            //处理业务报文头
+            //TODO 标准不管报文头
+//            if (headMap != null && headMap.size()>0) {
+//                insertInterfaceHead(exists, inter, headMap);
+//            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+        Map<String, String> paramMap = new HashMap<String, String>();
+        boolean exists = false;
+        //已存在提供系统关系
+        if (provider_invoke != null) {
+            exists = true;
+            provider_invoke.setIsStandard("0");
+            serviceInvokeDAO.save(provider_invoke);
+        } else {
+            //建立调用关系
+            provider_invoke = new ServiceInvoke();
+            //TODO 已经改为id格式
+//			paramMap.put("systemAb", providerSystem);
+//			System system = systemDao.findUniqureBy(paramMap);
+            provider_invoke.setSystemId(providerSystem);
+            provider_invoke.setServiceId(service.getServiceId());
+            provider_invoke.setOperationId(operation.getOperationId());
+            provider_invoke.setType(type);
+            provider_invoke.setIsStandard("0");
+            //添加协议==================
+            // provider_invoke.setProtocolId("");
+            serviceInvokeDAO.save(provider_invoke);
+        }
+
+        return exists;
     }
 }
