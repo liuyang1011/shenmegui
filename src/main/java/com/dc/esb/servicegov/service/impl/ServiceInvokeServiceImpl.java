@@ -122,6 +122,7 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 	}
 
 	public boolean deleteByOperationId(String OperationId){
+		//TODO 还要加service_id
 		String hql = "delete from ServiceInvoke t where t.operationId = '"+OperationId+"'";
 		return serviceInvokeDAOImpl.exeHql(hql);
 	}
