@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.NonUniqueObjectException;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,7 +91,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      * @return
      */
     @Override
-    public boolean executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+    public List executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
         com.dc.esb.servicegov.entity.Service service = (com.dc.esb.servicegov.entity.Service) infoMap.get("service");
         Operation operation = (Operation) infoMap.get("operation");
         Interface inter = (Interface) infoMap.get("interface");
@@ -100,6 +101,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
         List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
 
+        ServiceInvoke provider_invoke = null;
+        List list = new ArrayList();
         //导入服务定义相关信息
         logger.info("导入服务定义信息...");
         if (insertService(service)) {
@@ -128,22 +131,27 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
             //获取调用关系
             //TODO 加个interfaceID作为区别
-            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,inter.getInterfaceId());
+            provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,inter.getInterfaceId());
             //获取消费关系
             //ServiceInvoke cusumer_invoke = serviceInvokeCusumerQuery(service, operation, cusumerSystem);
             //导入接口相关信息
             logger.info("导入接口定义信息...");
-            boolean exists = insertInterface(inter, service, operation, provider_invoke, systemId, type);
+            List list1 = insertInterface(inter, service, operation, provider_invoke, systemId, type);
+            boolean exists = (Boolean)list1.get(0);
+            provider_invoke = (ServiceInvoke)list1.get(1);
             insertIDA(exists, inter, idainput, idaoutput);
             insertSDA(existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             if (headMap != null && headMap.size()>0) {
                 insertInterfaceHead(exists, inter, headMap);
             }
+            list.add("true");
+            list.add(provider_invoke);
         } else {
-            return false;
+            list.add("false");
+            return list;
         }
-        return true;
+        return list;
     }
 
 
@@ -930,7 +938,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             InterfaceHeadRelate relate = new InterfaceHeadRelate();
             relate.setHeadId(interfaceHead.getHeadId());
             relate.setInterfaceId(inter.getInterfaceId());
-            interfaceHeadRelateDAO.save(relate);
+            //同一个session插入相同主键
+            try {
+                interfaceHeadRelateDAO.save(relate);
+            }catch (NonUniqueObjectException e){
+//                e.printStackTrace();
+                return ;
+            }
+//            interfaceHeadRelateDAO.save(relate);
             return;
         }
 
@@ -1260,9 +1275,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return false;
     }
 
-    protected boolean insertInterface(Interface inter, com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+    protected List insertInterface(Interface inter, com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
         Map<String, String> paramMap = new HashMap<String, String>();
         boolean exists = false;
+        List list = new ArrayList();
         //已存在提供系统关系
         if (provider_invoke != null) {
             String interfaceId = provider_invoke.getInterfaceId();
@@ -1318,8 +1334,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             provider_invoke.setInterfaceId(inter.getInterfaceId());
             serviceInvokeDAO.save(provider_invoke);
         }
-
-        return exists;
+        list.add(exists);
+        list.add(provider_invoke);
+        return list;
     }
 
 
@@ -1492,7 +1509,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return null;
     }
     @Override
-    public void addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard){
+    public ServiceInvoke addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard){
         //先检查是否有映射记录
 
         Map<String, String> paramMap = new HashMap<String, String>();
@@ -1504,7 +1521,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         paramMap.put("isStandard", isStandard);
         ServiceInvoke invoke = serviceInvokeDAO.findUniqureBy(paramMap);
         if(null != invoke){
-            return;
+            return invoke;
         }
         invoke = new ServiceInvoke();
         invoke.setServiceId(serviceId);
@@ -1513,5 +1530,6 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         invoke.setType(type);
         invoke.setIsStandard(isStandard);
         serviceInvokeDAO.insert(invoke);
+        return invoke;
     }
 }

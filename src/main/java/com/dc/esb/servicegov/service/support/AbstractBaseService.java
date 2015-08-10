@@ -32,6 +32,15 @@ public abstract class AbstractBaseService<T, PK extends Serializable> {
     }
 
     /**
+     * 返回所有对象
+     *
+     * @return
+     */
+    public List<T> getAll(String orderByProperty, boolean isAsc) {
+        return (List<T>) getDAO().getAll(orderByProperty,isAsc);
+    }
+
+    /**
      * 根据id获取对象
      *
      * @param id

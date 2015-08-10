@@ -846,4 +846,79 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         return exists;
     }
+
+    /**
+     * 解析Index页,获取IndexDO对象
+     * @param indexSheet
+     * @return
+     */
+    @Override
+    public List parseIndexSheet(Sheet indexSheet) {
+        List<IndexDO> indexDOs = new ArrayList<IndexDO>();
+        int endRow = indexSheet.getLastRowNum();
+        StringBuffer msg = new StringBuffer();
+        for (int i = 1; i <= endRow; i++) {
+            Row row = indexSheet.getRow(i);
+            // 读取每一行第一列，获取每个交易sheet名称
+            String sheetName = getCell(row, INDEX_SHEET_NAME_COL);
+            //接口消费方
+//            String consumerSystem = getCell(row, INDEX_CONSUMER_COL);
+            //形式：name,name
+            String consumerSystem[] = getCell(row, INDEX_CONSUMER_COL).replaceAll("，",",").split(",");
+            for (int j = 0; j < consumerSystem.length; j++) {
+                HashMap<String,String> param = new HashMap<String, String>();
+                param.put("systemAb",consumerSystem[j]);
+                System system = systemDao.findUniqureBy(param);
+
+                if (null == system) {
+                    logger.error("" + consumerSystem[j] + "系统不存在");
+                    logInfoService.saveLog("" + consumerSystem[j] + "系统不存在", "导入");
+                    msg.append("" + consumerSystem[j] + "系统不存在");
+                    continue;
+                }
+                String consumerSystemId = system.getSystemId();
+                //接口提供方
+                String providerSystem = getCell(row, INDEX_PROVIDER_COL);
+                param = new HashMap<String, String>();
+                param.put("systemAb",providerSystem);
+                system = systemDao.findUniqureBy(param);
+                if (null == system) {
+                    logger.error("" + providerSystem + "系统不存在");
+                    logInfoService.saveLog("" + providerSystem + "系统不存在", "导入");
+                    msg.append("" + providerSystem + "系统不存在");
+                    continue;
+                }
+                String providerSystemId = system.getSystemId();
+                //接口方向
+                String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
+                String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
+                String operationId = getCell(row, INDEX_OPERATION_ID_COL);
+                String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
+                String serviceId = temp.split("[()]+")[1];
+                String systemId = consumerSystemId;
+                String systemAb = consumerSystem[j];
+                if ("Provider".equalsIgnoreCase(interfacePoint)) {
+                    systemId = providerSystemId;
+                    systemAb = providerSystem;
+                }
+                IndexDO indexDO = new IndexDO();
+                indexDO.setConsumerSystem(consumerSystem[j]);
+                indexDO.setConsumerSystemId(consumerSystemId);
+                indexDO.setSheetName(sheetName);
+                indexDO.setInterfaceHead(interfaceHead);
+                indexDO.setProviderSystem(providerSystem);
+                indexDO.setProviderSystemId(providerSystemId);
+                indexDO.setSystemId(systemId);
+                indexDO.setInterfacePoint(interfacePoint);
+                indexDO.setOperationId(operationId);
+                indexDO.setServiceId(serviceId);
+                indexDO.setSystemAb(systemAb);
+                indexDOs.add(indexDO);
+            }
+        }
+        List list = new ArrayList();
+        list.add(indexDOs);
+        list.add(msg);
+        return list;
+    }
 }

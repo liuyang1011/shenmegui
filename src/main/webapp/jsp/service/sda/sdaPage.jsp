@@ -194,6 +194,7 @@ var delIds = [];
 		
 		function moveUp(){
 			var node = $('#tg').treegrid('getSelected');
+			alert(node.id);
 			if(node != null){
 				$.ajax({
 					type:"get",
@@ -274,7 +275,7 @@ var delIds = [];
 				animate: true,
 				collapsible: true,
 				fitColumns: true,
-				url: '/sda/sdaTree?serviceId=${service.serviceId }&operationId='+encodeURI(encodeURI('${operation.operationId }')),
+				url: '/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime(),
 				method: 'get',
 				idField: 'id',
 				treeField: 'text',

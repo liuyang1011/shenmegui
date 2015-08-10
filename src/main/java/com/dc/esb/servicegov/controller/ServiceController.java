@@ -43,7 +43,7 @@ public class ServiceController {
     @ResponseBody
     List<ServiceTreeViewBean> getAllTreeBean() {
         List<ServiceCategory> serviceCategoryList = serviceCategoryServiceImpl.getAll();
-        List<Service> serviceList = serviceServiceImpl.getAll();
+        List<Service> serviceList = serviceServiceImpl.getAll("serviceId",true);
         return getTreeJson(serviceCategoryList, serviceList);
     }
 
@@ -173,7 +173,7 @@ public class ServiceController {
                 if (per.getId().equals(service.getCategoryId())) {
                     ServiceTreeViewBean treeViewBean = new ServiceTreeViewBean();
                     treeViewBean.setId(service.getServiceId());
-                    treeViewBean.setText(service.getServiceName());
+                    treeViewBean.setText(service.getServiceId().substring(service.getServiceId().length()-3,service.getServiceId().length())+ service.getServiceName());
                     treeViewBean.setType("service");
                     treeViewBean.setService(service);
                     List<ServiceTreeViewBean> children = per.getChildren();

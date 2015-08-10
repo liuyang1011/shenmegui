@@ -375,36 +375,49 @@ public class PdfServiceImpl {
         if (null != indexColor) {
             idCell.setBackgroundColor(indexColor);
         }
-        table.addCell(idCell);
 
         PdfPCell typeCell = new PdfPCell();
         PdfUtils.renderLatinTableData(sdaNodeType, typeCell);
-        table.addCell(typeCell);
 
         PdfPCell cnCell = new PdfPCell();
         PdfUtils.renderChineseTableData(sdaNodeChineseName, cnCell);
-        table.addCell(cnCell);
 
         PdfPCell requiredCell = new PdfPCell();
         PdfUtils.renderLatinTableData(sdaNodeRequired, requiredCell);
-        table.addCell(requiredCell);
 
         PdfPCell resistCell = new PdfPCell();
         PdfUtils.renderChineseTableData(sdaNodeResist, requiredCell);
-        table.addCell(resistCell);
 
         PdfPCell remarkCell = new PdfPCell();
-        PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
-        table.addCell(remarkCell);
 
         List<SDAVO> childSDAs = sda.getChildNode();
-        if (null != childSDAs) {
+        if (null != childSDAs && childSDAs.size() > 0) {
+            idCell.setBackgroundColor(Color.yellow);
+//          o
+            PdfUtils.renderChineseTableData("start", remarkCell);
+        }else{
+            PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
+        }
+
+        table.addCell(idCell);
+        table.addCell(typeCell);
+        table.addCell(cnCell);
+        table.addCell(requiredCell);
+        table.addCell(resistCell);
+        table.addCell(remarkCell);
+
+        if (null != childSDAs && childSDAs.size() > 0) {
             int childOffSet = offset + 10;
             for (SDAVO childSDA : childSDAs) {
                 renderSDANode(childSDA, table, childOffSet, indexColor);
             }
+            SDAVO endVO = new SDAVO();
+            SDA voValue = sda.getValue();
+            voValue.setRemark("end");
+            endVO.setValue(voValue);
+            renderSDANode(endVO, table, offset, Color.yellow);
         }
-    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
 
     public SDAVO getSDAofService(Operation operation){
         SDA sda = sdadao.findRootByOperation(operation);

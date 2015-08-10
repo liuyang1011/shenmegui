@@ -213,4 +213,13 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     public HibernateDAO<SDA, String> getDAO() {
         return sdaDAO;
     }
+
+    public boolean deleteByOperationId(String OperationId,String serviceId){
+        Map map = new HashMap();
+        map.put("operationId",OperationId);
+        map.put("serviceId",serviceId);
+        List<SDA> list = sdaDAO.findBy(map);
+        sdaDAO.delete(list);
+        return true;
+    }
 }

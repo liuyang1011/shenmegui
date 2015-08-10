@@ -1,12 +1,11 @@
 package com.dc.esb.servicegov.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.InterfaceInvoke;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.ServiceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
@@ -23,6 +22,8 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	@Autowired
 	private ServiceInvokeDAOImpl serviceInvokeDAOImpl;
+	@Autowired
+	private InterfaceInvokeDAOImpl interfaceInvokeDAO;
 
 	@Override
 	public HibernateDAO<ServiceInvoke, String> getDAO() {
@@ -121,10 +122,33 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		return list;
 	}
 
-	public boolean deleteByOperationId(String OperationId){
+	public boolean deleteByOperationId(String OperationId,String serviceId){
 		//TODO 还要加service_id
-		String hql = "delete from ServiceInvoke t where t.operationId = '"+OperationId+"'";
-		return serviceInvokeDAOImpl.exeHql(hql);
+		Map map = new HashMap();
+		map.put("operationId",OperationId);
+		map.put("serviceId",serviceId);
+
+		List<ServiceInvoke> list = serviceInvokeDAOImpl.findBy(map);
+
+		for (ServiceInvoke invoke : list){
+			serviceInvokeDAOImpl.delete(invoke);
+			//删除interface_invoke表。（调用关系）
+			map = new HashMap();
+			map.put("providerInvokeId",invoke.getInvokeId());
+			List<InterfaceInvoke> list2 = interfaceInvokeDAO.findBy(map);
+			map = new HashMap();
+			map.put("consumerInvokeId",invoke.getInvokeId());
+			List<InterfaceInvoke> list3 = interfaceInvokeDAO.findBy(map);
+			if(list2.size()>0){
+				interfaceInvokeDAO.delete(list2);
+			}
+			if(list3.size()>0){
+				interfaceInvokeDAO.delete(list3);
+			}
+		}
+		return true;
+//		String hql = "delete from ServiceInvoke t where t.operationId = '"+OperationId+"' and t.serviceId = '"+serviceId+"'";
+//		return serviceInvokeDAOImpl.exeHql(hql);
 	}
 
 }

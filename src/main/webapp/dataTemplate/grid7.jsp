@@ -13,7 +13,7 @@
 <body>
 <fieldset>
     <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
         <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
@@ -30,7 +30,19 @@
         </tr>
         <tr>
             <th>类别词</th>
-            <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px; "/></td>
+            <td><input type="text" name="categoryWordId" id="categoryWordId"
+                       class="easyui-combobox"
+                       data-options="
+                        panelHeight:'300',
+						url:'/metadata/categoryWord',
+				 		 method:'get',
+				 		 valueField: 'englishWord',
+				 		 textField: 'chineseWord',
+				 		 onChange:function(newValue, oldValue){
+							this.value=newValue;
+						}
+					"
+                       style="width: 100px; "/></td>
             <th> 创建人</th>
             <td><input class="easyui-textbox" style="width:100px" type="text" name="name"></td>
             <th> 创建起始日期</th>

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.MetadataService;
 import com.dc.esb.servicegov.service.impl.ExcelImportServiceImpl;
+import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.util.GlobalImport;
@@ -61,6 +62,9 @@ public class ExcelImportController {
 
     @Autowired
     LogInfoServiceImpl logInfoService;
+
+    @Autowired
+    InterfaceInvokeServiceImpl interfaceInvokeService;
     /**
      * Excel 2003
      */
@@ -209,9 +213,9 @@ public class ExcelImportController {
                     }
                     logger.info("===========交易[" + sheetName + "],开始导入字段映射信息=============");
                     long time = java.lang.System.currentTimeMillis();
-                    boolean result = excelImportService.executeImport(infoMap, inputMap, outMap, publicMap, headMap);
+                    List result = excelImportService.executeImport(infoMap, inputMap, outMap, publicMap, headMap);
 
-                    if (!result) {
+                    if (!result.get(0).equals("true")) {
                         logger.info("===========交易[" + sheetName + "],导入失败=============");
                         continue;
                     }
@@ -234,7 +238,32 @@ public class ExcelImportController {
                         type = "0";
                         invokeSystemId = providerSystemId;
                     }
-                    excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+                    ServiceInvoke invoke = excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+                    //增加调用关系
+                    ServiceInvoke provider_invoke = (ServiceInvoke)result.get(1);
+                    if(null != invoke){
+                        String providerInvokeId = "";
+                        String consumerInvokeId = "";
+                        if(provider_invoke.getType().equals("0")){
+                            providerInvokeId = provider_invoke.getInvokeId();
+                            consumerInvokeId = invoke.getInvokeId();
+                        }else{
+                            consumerInvokeId = provider_invoke.getInvokeId();
+                            providerInvokeId = invoke.getInvokeId();
+                        }
+                        //判断是否存在调用关系
+                        Map map = new HashMap();
+                        map.put("providerInvokeId",providerInvokeId);
+                        map.put("consumerInvokeId",consumerInvokeId);
+                        List<InterfaceInvoke> invokeList = interfaceInvokeService.findBy(map);
+                        if(invokeList.size()==0){
+                            InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
+                            interfaceInvoke.setConsumerInvokeId(consumerInvokeId);
+                            interfaceInvoke.setProviderInvokeId(providerInvokeId);
+                            interfaceInvokeService.insert(interfaceInvoke);
+                        }
+
+                    }
 
                     long useTime = java.lang.System.currentTimeMillis() - time;
                     logger.info("===========交易[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");

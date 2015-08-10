@@ -162,7 +162,12 @@ public class InterfaceController {
     @ResponseBody
     boolean delete(@PathVariable
                    String interfaceId) {
+        //TODO 删除接口要删除ida
         interfaceService.deleteById(interfaceId);
+        Map map = new HashMap();
+        map.put("interfaceId",interfaceId);
+        List<Ida> list = idaService.findBy(map);
+        idaService.deleteList(list);
         return true;
     }
 

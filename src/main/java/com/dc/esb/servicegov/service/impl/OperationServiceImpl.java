@@ -134,8 +134,10 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     public void deleteOperations(OperationPK[] operationPks) {
         //TODO 删场景的时候要删除service_invoke
+        //TODO 删除场景的时候删除sda
         for (OperationPK operationPK : operationPks) {
-            serviceInvokeService.deleteByOperationId(operationPK.getOperationId());
+            serviceInvokeService.deleteByOperationId(operationPK.getOperationId(),operationPK.getServiceId());
+            sdaService.deleteByOperationId(operationPK.getOperationId(),operationPK.getServiceId());
         }
         if (operationPks != null && operationPks.length > 0) {
             for (OperationPK operationPK : operationPks) {
@@ -352,13 +354,14 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     }
 
     /**
-     * 删除场景要删除service_invoke
+     * 删除场景要删除service_invoke  SDA
      * @param list
      * @return
      */
     public boolean deleteList(List<Operation> list){
         for (Operation per : list){
-            serviceInvokeService.deleteByOperationId(per.getOperationId());
+            serviceInvokeService.deleteByOperationId(per.getOperationId(),per.getServiceId());
+            sdaService.deleteByOperationId(per.getOperationId(), per.getServiceId());
             delete(per);
         }
         return true;

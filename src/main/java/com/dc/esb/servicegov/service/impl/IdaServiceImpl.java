@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements IdaService{
@@ -39,4 +41,9 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
         idaDAOImpl.batchExecute(hql, metadataId, id);
         return true;
     }
+
+	public boolean deleteList(List<Ida> list){
+		idaDAOImpl.delete(list);
+		return true;
+	}
 }
