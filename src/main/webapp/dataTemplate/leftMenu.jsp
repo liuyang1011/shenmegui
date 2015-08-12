@@ -28,6 +28,7 @@
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.2">导入</a></li>
             <li><a href="javascript:;" class="openable" mid="9.3">导出</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
             <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
         </ul>
     </li>

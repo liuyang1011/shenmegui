@@ -37,6 +37,11 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected static final int INDEX_INTERFACE_POINT_COL = 7;
     protected static final int INDEX_INTERFACE_HEAD_COL = 18;
 
+    protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
+    protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
+
+
+
     @Autowired
     InterfaceDAOImpl interfaceDao;
     @Autowired
@@ -78,9 +83,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      * @return
      */
     @Override
-    public boolean executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
-        return false;
+    public List executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+        return null;
     }
+
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap){
+        return null;
+    }
+
     /**
      * 执行入库
      * @param infoMap
@@ -154,6 +164,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return list;
     }
 
+    public List parseInterfaceIndexSheet(Sheet indexSheet) {
+        return null;
+    }
 
     /**
      * 解析Index页,获取IndexDO对象
@@ -260,6 +273,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     }
 
     public  Map<String, Object> getStandardInputArg(Sheet sheet) {
+        return null;
+    }
+
+    public Map<String, Object> getInterfaceInputArg(Sheet sheet){
         return null;
     }
 
@@ -391,6 +408,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     public Map<String, Object> getStandardOutputArg(Sheet sheet) {
         return null;
     }
+
+    public Map<String, Object> getInterfaceOutputArg(Sheet sheet){
+        return null;
+    }
     public Map<String, Object> getOutputArg(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -520,6 +541,15 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
     public Map<String, Object> getServiceInfo(Sheet tranSheet) {
 
+        return null;
+    }
+
+    /**
+     * 获取接口信息
+     * @param tranSheet
+     * @return
+     */
+    public Map<String, Object> getInterfaceInfo(Sheet tranSheet){
         return null;
     }
     /**
@@ -1271,8 +1301,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }
     }
 
-    protected boolean insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
-        return false;
+    protected List insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+        return null;
     }
 
     protected List insertInterface(Interface inter, com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
@@ -1347,7 +1377,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         paramMap.put("serviceId", service.getServiceId());
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("systemId", systemId);
-        paramMap.put("interfaceId",interfaceId);
+        if(null != interfaceId){
+            paramMap.put("interfaceId",interfaceId);
+        }
         String type = "1";
         if ("Provider".equalsIgnoreCase(interfacepoint)) {
             type = "0";
@@ -1532,4 +1564,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         serviceInvokeDAO.insert(invoke);
         return invoke;
     }
+
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,String systemId){
+        return null;
+    }
+
 }

@@ -15,6 +15,7 @@ public class Constants {
 
 	public static final String EXCEL_TEMPLATE_SERVICE =Constants.class.getResource("/").getPath() +"/template/excel_service_template.xls";
 	public static final String EXCEL_TEMPLATE_SERVICE_VIEW =Constants.class.getResource("/").getPath() +"/template/excel_service_view_template.xls";
+	public static final String EXCEL_TEMPLATE_INTERFACE =Constants.class.getResource("/").getPath() +"/template/excel_interface_template.xls";
 
     public static class Operation{
     	public static final String OPT_STATE_UNAUDIT = "0";  //0：未审核（正常）， 1：审核通过，2：审核不通过,

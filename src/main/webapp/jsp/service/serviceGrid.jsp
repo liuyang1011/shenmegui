@@ -330,6 +330,26 @@
             }
         },
         {
+            text: '导出配置文件',
+            iconCls: 'icon-qxfp',
+            handler: function () {
+
+                var checkedItems = $('#operationList').datagrid('getChecked');
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (checkedItems.length > 1) {
+                        alert("请只选中一个要导出的场景！");
+                        return false;
+                    } else {
+                        var url = "/export/";
+
+                    }
+                } else {
+                    alert("请选中要导出的场景！");
+                }
+
+            }
+        }/*,
+        {
             text: '导出',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -354,7 +374,7 @@
                 }
 
             }
-        }
+        }*/
     ];
     //版本发布
     function releaseOp(desc, operationId) {

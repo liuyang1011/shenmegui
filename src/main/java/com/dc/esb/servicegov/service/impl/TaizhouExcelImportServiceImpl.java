@@ -343,6 +343,70 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
     }
 
     @Override
+    public Map<String, Object> getInterfaceInputArg(Sheet sheet){
+        boolean flag = true;
+        StringBuffer msg = new StringBuffer();
+        List<Ida> idas = new ArrayList<Ida>();
+        ExcelTool tools = ExcelTool.getInstance();
+        int start = readline;
+        int end = sheet.getLastRowNum();
+
+        int order = 0;
+        for (int j = start; j <= end; j++) {
+            Ida ida = new Ida();
+            Row sheetRow = sheet.getRow(j);
+
+            Cell cellObj = sheetRow.getCell(0);
+
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                if ("输出".equals(cell)) {
+                    readline = j++;
+                    break;
+                }
+
+                ida.setStructName(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(1);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setStructAlias(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(2);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setType(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(3);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setLength(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(4);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setRequired(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(5);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                String remark = isNull(cell);
+                ida.setRemark(remark);
+            }
+            ida.setSeq(order);
+            idas.add(ida);
+            order++;
+        }
+
+        Map<String, Object> resMap = new HashMap<String, Object>();
+        resMap.put("idas", idas);
+        return resMap;
+    }
+
+    @Override
     public Map<String, Object> getInputArg(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -479,6 +543,65 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         resMap.put("idas", idas);
         resMap.put("sdas", sdas);
 
+        return resMap;
+    }
+
+    public Map<String, Object> getInterfaceOutputArg(Sheet sheet){
+        boolean flag = true;
+        StringBuffer msg = new StringBuffer();
+        List<Ida> idas = new ArrayList<Ida>();
+        ExcelTool tools = ExcelTool.getInstance();
+        int start = readline;
+        int end = sheet.getLastRowNum();
+        int order = 0;
+        for (int j = start; j <= end; j++) {
+            Ida ida = new Ida();
+            Row sheetRow = sheet.getRow(j);
+
+            Cell cellObj = sheetRow.getCell(0);
+
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                if ("输出".equals(cell)) {
+                    continue;
+                }
+                ida.setStructName(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(1);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setStructAlias(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(2);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setType(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(3);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setLength(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(4);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                ida.setRequired(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(5);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                String remark = isNull(cell);
+                ida.setRemark(remark);
+            }
+            ida.setSeq(order);
+            idas.add(ida);
+            order++;
+        }
+
+        Map<String, Object> resMap = new HashMap<String, Object>();
+        resMap.put("idas", idas);
         return resMap;
     }
 
@@ -766,7 +889,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         return resMap;
     }
     @Override
-    public boolean executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+    public List executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
         com.dc.esb.servicegov.entity.Service service = (com.dc.esb.servicegov.entity.Service) infoMap.get("service");
         Operation operation = (Operation) infoMap.get("operation");
 
@@ -775,6 +898,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         //导入服务定义相关信息
         logger.info("导入服务定义信息...");
+        List list = new ArrayList();
         if (insertService(service)) {
             //导入服务场景相关信息
             logger.info("导入服务场景信息...");
@@ -806,23 +930,31 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             //ServiceInvoke cusumer_invoke = serviceInvokeCusumerQuery(service, operation, cusumerSystem);
             //导入接口相关信息
             logger.info("导入接口定义信息...");
-            boolean exists = insertStrandardInvoke(service, operation, provider_invoke, systemId, type);
+            List list1 = insertStrandardInvoke(service, operation, provider_invoke, systemId, type);
+            boolean exists = (Boolean)list1.get(0);
+            provider_invoke = (ServiceInvoke)list1.get(1);
+
+
             insertSDA(existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             //TODO 标准不管报文头
 //            if (headMap != null && headMap.size()>0) {
 //                insertInterfaceHead(exists, inter, headMap);
 //            }
+            list.add(true);
+            list.add(provider_invoke);
         } else {
-            return false;
+            list.add(false);
+            return list;
         }
-        return true;
+        return list;
     }
 
     @Override
-    protected boolean insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+    protected List insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
         Map<String, String> paramMap = new HashMap<String, String>();
         boolean exists = false;
+        List list = new ArrayList();
         //已存在提供系统关系
         if (provider_invoke != null) {
             exists = true;
@@ -844,7 +976,49 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             serviceInvokeDAO.save(provider_invoke);
         }
 
-        return exists;
+        list.add(exists);
+        list.add(provider_invoke);
+
+        return list;
+    }
+
+    /**
+     * 解析Index页,获取IndexDO对象
+     * @param indexSheet
+     * @return
+     */
+    @Override
+    public List parseInterfaceIndexSheet(Sheet indexSheet) {
+        List<IndexDO> indexDOs = new ArrayList<IndexDO>();
+        int endRow = indexSheet.getLastRowNum();
+        StringBuffer msg = new StringBuffer();
+        for (int i = 1; i <= endRow; i++) {
+            Row row = indexSheet.getRow(i);
+            // 读取每一行第一列，获取每个交易sheet名称
+            String sheetName = getCell(row, INTERFACE_INDEX_SHEET_NAME_COL);
+            //读取系统名称
+            String systemAb = getCell(row, INTERFACE_SYSTEM_NAME_COL);
+
+            HashMap<String,String> param = new HashMap<String, String>();
+            param.put("systemAb",systemAb);
+            System system = systemDao.findUniqureBy(param);
+            if (null == system) {
+                logger.error("" + systemAb + "系统不存在");
+                logInfoService.saveLog("" + systemAb + "系统不存在", "导入");
+                msg.append("" + systemAb + "系统不存在");
+                continue;
+            }
+
+            IndexDO indexDO = new IndexDO();
+            indexDO.setSheetName(sheetName);
+            indexDO.setSystemAb(systemAb);
+            indexDO.setSystemId(system.getSystemId());
+            indexDOs.add(indexDO);
+        }
+        List list = new ArrayList();
+        list.add(indexDOs);
+        list.add(msg);
+        return list;
     }
 
     /**
@@ -920,5 +1094,203 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         list.add(indexDOs);
         list.add(msg);
         return list;
+    }
+
+    /**
+     * 获取接口信息
+     * @param tranSheet
+     * @return
+     */
+    @Override
+    public Map<String, Object> getInterfaceInfo(Sheet tranSheet){
+        boolean flag = true;
+        // 读取每个sheet页交易信息与服务信息
+        int start = tranSheet.getFirstRowNum();
+        int end = tranSheet.getLastRowNum();
+        Interface inter = new Interface();
+        inter.setInterfaceId(tranSheet.getSheetName());
+        for (int j = start; j <= end; j++) {
+            Row sheetRow = tranSheet.getRow(j);
+            String tranCode = "";
+            String tranName = "";
+            String interfaceDesc = "";
+            int cellStart = sheetRow.getFirstCellNum();
+            int cellEnd = sheetRow.getLastCellNum();
+
+            for (int k = cellStart; k < cellEnd; k++) {
+
+                Cell cellObj = sheetRow.getCell(k);
+                if (cellObj != null) {
+
+                    String cell = ExcelTool.getInstance().getCellContent(
+                            cellObj);
+                    if ("交易码".equals(cell) && k==0) {
+                        //TODO 类型报错
+                        sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
+                        tranCode = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (tranCode == null || "".equals(tranCode)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，交易码为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，交易码为空", "导入");
+                            flag = false;
+                        }
+                        inter.setEcode(tranCode);
+                    } else if ("交易名称".equals(cell) && k==0) {
+                        tranName = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (tranName == null || "".equals(tranName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，交易名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，交易名称为空", "导入");
+                            flag = false;
+                        }
+                        inter.setInterfaceName(tranName);
+                    } else if ("接口功能描述".equals(cell)) {
+                        interfaceDesc = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (interfaceDesc == null || "".equals(interfaceDesc)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，接口功能描述为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，接口功能描述为空", "导入");
+                            flag = false;
+                        }
+                        inter.setDesc(interfaceDesc);
+                        break;
+                    } else if ("原始接口".equals(cell)) {
+                        // 将表头跳过,获取接口字段信息
+                        readline = j += 3;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //信息不正确返回空
+        if (!flag) {
+            return null;
+        }
+        Map<String, Object> resMap = new HashMap<String, Object>();
+
+        resMap.put("interface", inter);
+
+        return resMap;
+    }
+
+    protected boolean insertInterface(Interface inter,String systemId) {
+        Map<String, String> paramMap = new HashMap<String, String>();
+        boolean exists = false;
+        Interface temp = interfaceDao.get(inter.getInterfaceId());
+        exists = null!=temp;
+        if(!exists){
+            interfaceDao.save(inter);
+            //添加serviceInvoke记录
+            ServiceInvoke invoke = new ServiceInvoke();
+            invoke.setSystemId(systemId);
+            invoke.setInterfaceId(inter.getInterfaceId());
+            serviceInvokeDAO.save(invoke);
+        }
+        return exists;
+    }
+
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap,String systemId){
+        Interface inter = (Interface) infoMap.get("interface");
+        List<Ida> idainput = (List<Ida>) inputMap.get("idas");
+        List<Ida> idaoutput = (List<Ida>) outMap.get("idas");
+        logger.info("导入接口定义信息...");
+        StringBuffer msg = new StringBuffer();
+        boolean exists = insertInterface(inter,systemId);
+        if(!exists){
+            insertIDA(inter, idainput, idaoutput);
+        }else{
+            msg.append(""+inter.getInterfaceId()+"接口已经存在!");
+        }
+        List list = new ArrayList();
+        list.add(exists);
+        list.add(msg);
+
+        return list;
+    }
+
+    protected void insertIDA(Interface inter, List<Ida> idainput, List<Ida> idaoutput) {
+        //添加报文，自动生成固定报文头<root><request><response>
+        //root
+        Ida ida = new Ida();
+        String rootId = "", requestId = "", responseId = "";
+        //先删除
+        String hql = "delete from Ida where interfaceId=?";
+        idaDao.exeHql(hql, inter.getInterfaceId());
+
+        ida.setInterfaceId(inter.getInterfaceId());
+        ida.set_parentId(null);
+        ida.setStructName("root");
+        ida.setStructAlias("根节点");
+        idaDao.save(ida);
+        rootId = ida.getId();
+
+        ida = new Ida();
+        ida.setInterfaceId(inter.getInterfaceId());
+        ida.set_parentId(rootId);
+        ida.setStructName("request");
+        ida.setStructAlias("请求头");
+        ida.setSeq(0);
+        idaDao.save(ida);
+        requestId = ida.getId();
+
+        ida = new Ida();
+        ida.setInterfaceId(inter.getInterfaceId());
+        ida.set_parentId(rootId);
+        ida.setSeq(1);
+        ida.setStructName("response");
+        ida.setStructAlias("响应头");
+        idaDao.save(ida);
+        responseId = ida.getId();
+
+        String parentId = null;
+        for (int i = 0; i < idainput.size(); i++) {
+            ida = idainput.get(i);
+            ida.setInterfaceId(inter.getInterfaceId());
+            ida.set_parentId(requestId);
+            if (parentId != null) {
+                ida.set_parentId(parentId);
+            }
+
+            //包含bug，当节点end后，下一节点 不在request 或 response下 就会出现问题，
+            if ("end".equalsIgnoreCase(ida.getRemark()) || "不映射".equalsIgnoreCase(ida.getRemark()) || ida.getStructName() == null || "".equals(ida.getStructName())) {
+                if ("end".equalsIgnoreCase(ida.getRemark())) {
+                    parentId = null;
+                }
+                continue;
+            }
+            //ida.setArgType("input");
+            idaDao.save(ida);
+            //包含子节点
+            if ("start".equalsIgnoreCase(ida.getRemark())) {
+                parentId = ida.getId();
+            }
+        }
+
+        parentId = null;
+        for (int i = 0; i < idaoutput.size(); i++) {
+            ida = idaoutput.get(i);
+            ida.setInterfaceId(inter.getInterfaceId());
+            ida.set_parentId(responseId);
+            if (parentId != null) {
+                ida.set_parentId(parentId);
+            }
+
+            if ("end".equalsIgnoreCase(ida.getRemark()) || "不映射".equalsIgnoreCase(ida.getRemark()) || ida.getStructName() == null || "".equals(ida.getStructName())) {
+                if ("end".equalsIgnoreCase(ida.getRemark())) {
+                    parentId = null;
+                }
+                continue;
+            }
+            idaDao.save(ida);
+            //包含子节点
+            if ("start".equalsIgnoreCase(ida.getRemark())) {
+                parentId = ida.getId();
+            }
+        }
+
     }
 }
