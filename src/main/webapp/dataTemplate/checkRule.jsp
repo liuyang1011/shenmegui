@@ -100,6 +100,16 @@
 	}
 	
 %>
+
+<%
+	if(mid.equals("9.4")){
+%>
+{"success":true,"url":"/jsp/sysadmin/interface_import.jsp","title":"原始接口导入"}
+<%
+	}
+
+%>
+
 <%
 	if(mid.equals("4.2")){
 %>
@@ -112,14 +122,9 @@
 {"success":true,"url":"/jsp/export/list.jsp","title":"文件导出"}
 <%
 	}
-%><%
-	if(mid.equals("9.4")){
 %>
-{"success":true,"url":"/jsp/sysadmin/file_list.jsp","title":"文件管理"}
-<%
-	}
 
-%><%
+<%
 	if(mid.equals("5.2")){
 %>
 {"success":true,"url":"/jsp/role/roleMaintain.jsp","title":"角色维护"}

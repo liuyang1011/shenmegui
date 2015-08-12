@@ -99,6 +99,9 @@
 					<th data-options="field:'interfaceName',width:'15%'">
 						交易名称
 					</th>
+					<th data-options="field:'desc',width:'15%'">
+						接口功能描述
+					</th>
 					<th data-options="field:'headName',width:'15%'">
 						报文头
 					</th>
@@ -144,7 +147,7 @@
 					text:'新增',
 					iconCls:'icon-add',
 					handler:function(){
-					    
+
 							interfaceManager.append("${param.systemId}");
 						}
 					},{
@@ -187,7 +190,64 @@
 							}
 
 					 	}
-					 }
+					 },{
+						text:'导入',
+						iconCls:'icon-save',
+						handler:function(){
+							var row = $("#tg").treegrid("getSelected");
+							if(row){
+								var interfaceId = row.interfaceId;
+								uiinit.win({
+									w:500,
+									iconCls:'icon-add',
+									title:"导入接口",
+									url : "/jsp/interface/interface_import.jsp"
+								});
+							}else{
+								alert("请选择要关联的行");
+							}
+
+						}
+					},{
+						text:'导出',
+						iconCls:'icon-save',
+						handler:function(){
+							var row = $("#tg").treegrid("getSelected");
+							var systemId = ${param.systemId };
+							alert(systemId);
+							if(row){
+								var form=$("<form>");//定义一个form表单
+								form.attr("style","display:none");
+								form.attr("target","");
+								form.attr("method","post");
+								form.attr("action","/excelExporter/exportInterface");
+								var input1=$("<input>");
+								input1.attr("type","hidden");
+								input1.attr("name","id");
+								input1.attr("value",row.interfaceId);
+								var input2=$("<input>");
+								input2.attr("type","hidden");
+								input2.attr("name","type");
+								input2.attr("value","interface");
+								var input3=$("<input>");
+								input3.attr("type","hidden");
+								input3.attr("name","systemId");
+								input3.attr("value",systemId);
+
+
+								$("body").append(form);//将表单放置在web中
+								form.append(input1);
+								form.append(input2);
+								form.append(input3);
+
+								form.submit();//表单提交
+
+							}else{
+								alert("请选择要关联的行");
+							}
+
+						}
+					}
 				],
 			onDblClickRow : dbClick
 	   		});  
@@ -238,12 +298,12 @@
 		 
 		  	 var ecode = $("#ecode").val();
 		 	 var interfaceName = $("#interfaceName").val();
-		 	 var remark = $("#remarkSearch").val();
+		 	 var desc = $("#remarkSearch").val();
 		 	 var status = $("#statusSearch").combobox('getValue');
 		 	 var queryParams = $('#tg').datagrid('options').queryParams;
              queryParams.ecode = ecode;
              queryParams.interfaceName = interfaceName;
-             queryParams.remark = remark;
+             queryParams.desc = encodeURI(desc);
              queryParams.status = status;
              queryParams.protocolId = $("#protocolIdSearch").combobox('getValue');
              queryParams.headId = $("#headIdSearch").combobox('getValue');

@@ -74,6 +74,100 @@ public class ExcelImportController {
      */
     private final static String XLSX = "xlsx";
 
+    @RequiresPermissions({"system-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport")
+    public void importInterfaceField(@RequestParam("file") MultipartFile file, HttpServletResponse response){
+        response.setContentType("text/html");
+        response.setCharacterEncoding("GB2312");
+        Workbook workbook = null;
+        String extensionName = FilenameUtils.getExtension(file.getOriginalFilename());
+        InputStream is = null;
+        java.io.PrintWriter writer = null;
+        StringBuffer msg = new StringBuffer();
+        try {
+            writer = response.getWriter();
+            is = file.getInputStream();
+            if (extensionName.toLowerCase().equals(XLS)) {
+                workbook = new HSSFWorkbook(is);
+            } else if (extensionName.toLowerCase().equals(XLSX)) {
+                workbook = new XSSFWorkbook(is);
+            } else {
+                outPutError(writer);
+                return;
+            }
+            // 读取交易索引Sheet页
+            Sheet indexSheet = workbook.getSheet("INDEX");
+            if (indexSheet == null) {
+                logger.error("缺少INDEX sheet页");
+                logInfoService.saveLog("缺少INDEX sheet页", "导入");
+                outPutError(writer);
+                return;
+            }
+            // 从第一行开始读，获取所有接口行
+            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)excelImportService.parseInterfaceIndexSheet(indexSheet).get(0);
+            msg.append(excelImportService.parseIndexSheet(indexSheet).get(1));
+
+            for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
+                //开始解析每一个页面
+                String sheetName = indexDO.getSheetName();
+                if (sheetName != null && !"".equals(sheetName)) {
+                    // 读取每个交易sheet页
+                    logger.debug("开始获取" + sheetName + "交易信息=========================");
+                    Sheet sheet = workbook.getSheet(sheetName);
+                    if(null == sheet){
+                        msg.append(sheetName + "导入失败，sheet页不存在");
+                        continue;
+                    }
+                    //获取接口,系统信息
+                    Map<String, Object> infoMap = excelImportService.getInterfaceInfo(sheet);
+                    //获取接口 输入 参数
+                    Map<String, Object> inputMap = excelImportService.getInterfaceInputArg(sheet);
+                    //获取接口 输出 参数
+                    Map<String, Object> outMap = excelImportService.getInterfaceOutputArg(sheet);
+
+                    if (infoMap == null || inputMap == null || outMap == null) {
+                        msg.append(sheetName + "导入失败，");
+                        continue;
+                    }
+                    logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
+                    long time = java.lang.System.currentTimeMillis();
+                    List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO.getSystemId());
+                    if ((Boolean)result.get(0)) {
+                        logger.info("===========接口[" + sheetName + "],导入失败=============");
+                        msg.append(result.get(1).toString());
+                        logInfoService.saveLog(result.get(1).toString(), "导入");
+                        continue;
+                    }
+                    long useTime = java.lang.System.currentTimeMillis() - time;
+                    logger.info("===========接口[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
+                } else {
+                    logger.error("交易代码为空。");
+                    logInfoService.saveLog("第交易代码为空。", "导入");
+                }
+
+            }
+            //组织返回
+            outPut(writer, msg);
+        } catch (IOException e) {
+            logger.error("导入出现异常:异常信息：" + e.getMessage());
+            logInfoService.saveLog("导入出现异常:异常信息：" + e.getMessage(), "导入");
+            writer.println("alert('导入失败，请查看日志!');");
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (Exception e) {
+
+                }
+            }
+        }
+//        GlobalImport.headMap.clear();//清空本次导入的业务报文头
+        writer.println("window.location='/jsp/sysadmin/interface_import.jsp'");
+        writer.println("</script>");
+        writer.flush();
+        writer.close();
+    }
+
     @RequiresPermissions({"service-add", "system-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/fieldimport")
     public void importFieldMapping(@RequestParam("file")
@@ -164,9 +258,9 @@ public class ExcelImportController {
                     }
                     logger.info("===========交易[" + sheetName + "],开始导入字段映射信息=============");
                     long time = java.lang.System.currentTimeMillis();
-                    boolean result = excelImportService.executeStandardImport(infoMap, inputMap, outMap, publicMap, headMap);
+                    List result = excelImportService.executeStandardImport(infoMap, inputMap, outMap, publicMap, headMap);
 
-                    if (!result) {
+                    if (!(Boolean)result.get(0)) {
                         logger.info("===========交易[" + sheetName + "],导入失败=============");
                         continue;
                     }
@@ -189,7 +283,32 @@ public class ExcelImportController {
                         type = "0";
                         invokeSystemId = providerSystemId;
                     }
-                    excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+                    ServiceInvoke invoke = excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+                    //增加调用关系
+                    ServiceInvoke provider_invoke = (ServiceInvoke)result.get(1);
+                    if(null != invoke){
+                        String providerInvokeId = "";
+                        String consumerInvokeId = "";
+                        if(provider_invoke.getType().equals("0")){
+                            providerInvokeId = provider_invoke.getInvokeId();
+                            consumerInvokeId = invoke.getInvokeId();
+                        }else{
+                            consumerInvokeId = provider_invoke.getInvokeId();
+                            providerInvokeId = invoke.getInvokeId();
+                        }
+                        //判断是否存在调用关系
+                        Map map = new HashMap();
+                        map.put("providerInvokeId",providerInvokeId);
+                        map.put("consumerInvokeId",consumerInvokeId);
+                        List<InterfaceInvoke> invokeList = interfaceInvokeService.findBy(map);
+                        if(invokeList.size()==0){
+                            InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
+                            interfaceInvoke.setConsumerInvokeId(consumerInvokeId);
+                            interfaceInvoke.setProviderInvokeId(providerInvokeId);
+                            interfaceInvokeService.insert(interfaceInvoke);
+                        }
+
+                    }
 
                     long useTime = java.lang.System.currentTimeMillis() - time;
                     logger.info("===========交易[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
@@ -256,7 +375,7 @@ public class ExcelImportController {
                         map.put("providerInvokeId",providerInvokeId);
                         map.put("consumerInvokeId",consumerInvokeId);
                         List<InterfaceInvoke> invokeList = interfaceInvokeService.findBy(map);
-                        if(invokeList.size()==0){
+                        if(null == invokeList || invokeList.size()==0){
                             InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
                             interfaceInvoke.setConsumerInvokeId(consumerInvokeId);
                             interfaceInvoke.setProviderInvokeId(providerInvokeId);

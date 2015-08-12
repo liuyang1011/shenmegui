@@ -119,6 +119,7 @@ var interfaceManager = {
             dataType: "json",
             success: function(result) {
                 if(result){
+                    $("#tg").datagrid("reload");
                 	treeObj.tree("reload");
                 	tabObj.tabs("close",tit);
                 }

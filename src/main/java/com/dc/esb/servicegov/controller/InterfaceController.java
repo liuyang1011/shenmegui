@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 @Controller
@@ -64,9 +66,20 @@ public class InterfaceController {
             try {
                 List<ServiceInvoke> serviceIns = s.getServiceInvokes();
                 List<TreeNode> childList = new ArrayList<TreeNode>();
+                int i = 0;
+                String name = "";
+                if(s.getSystemId().equals("6864")){
+                    i++;
+                    name = s.getSystemAb();
+                }else{
+                    name = s.getSystemAb();
+                }
                 for (ServiceInvoke si : serviceIns) {
 
                     TreeNode child = new TreeNode();
+                    if(null == si.getInter()){
+                        continue;
+                    }
                     child.setId(si.getInter().getInterfaceId());
                     child.setText(si.getInter().getInterfaceName() + "(" + si.getInter().getInterfaceId() + ")");
                     if (!contains(childList, child)) {
@@ -84,6 +97,7 @@ public class InterfaceController {
                 });
                 rootinterface.setChildren(childList);
             } catch (Exception e) {
+                e.printStackTrace();
             }
 
             rootList.add(rootinterface);
@@ -231,10 +245,17 @@ public class InterfaceController {
 
         String ecode = req.getParameter("ecode");
         String interfaceName = req.getParameter("interfaceName");
-        String remark = req.getParameter("remark");
+        String desc = req.getParameter("desc");
+        try{
+            if (null != desc)
+                desc = URLDecoder.decode(desc,"utf-8");
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
         String status = req.getParameter("status");
         String protocolId = req.getParameter("protocolId");
         String headId = req.getParameter("headId");
+
 
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
 
@@ -248,25 +269,25 @@ public class InterfaceController {
         searchConds.add(searchCond);
         if (ecode != null && !"".equals(ecode)) {
             searchCond = new SearchCondition();
-            hql.append(" and t1.ecode=?");
+            hql.append(" and t1.ecode like ?");
             searchCond.setField("ecode");
-            searchCond.setFieldValue(ecode);
+            searchCond.setFieldValue("%"+ ecode +"%");
             searchConds.add(searchCond);
         }
         if (interfaceName != null && !"".equals(interfaceName)) {
             searchCond = new SearchCondition();
-            hql.append(" and t1.interfaceName=?");
+            hql.append(" and t1.interfaceName like ?");
             searchCond = new SearchCondition();
             searchCond.setField("interfaceName");
-            searchCond.setFieldValue(interfaceName);
+            searchCond.setFieldValue("%" + interfaceName + "%");
             searchConds.add(searchCond);
         }
-        if (remark != null && !"".equals(remark)) {
+        if (desc != null && !"".equals(desc)) {
             searchCond = new SearchCondition();
-            hql.append(" and t1.remark like ?");
+            hql.append(" and t1.desc like ?");
             searchCond = new SearchCondition();
-            searchCond.setField("remark");
-            searchCond.setFieldValue("%" + remark + "%");
+            searchCond.setField("desc");
+            searchCond.setFieldValue("%" + desc + "%");
             searchConds.add(searchCond);
         }
         if (status != null && !"".equals(status)) {
