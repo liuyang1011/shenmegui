@@ -154,7 +154,8 @@ var delIds = [];
 			        	 if(data){
 			        	 	newIds = [];
 			        	 	alert("保存成功");
-			        	 	t.treegrid('reload');
+							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+			        	 	//t.treegrid('reload');
 			        	 }
 			            }
 				 });

@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
 import com.dc.esb.servicegov.vo.InterfaceHeadVO;
+import com.dc.esb.servicegov.vo.OperationPKVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,6 +80,19 @@ public class ExcelExportServiceImpl  extends AbstractBaseService {
             logger.error(errorMsg);
         }
         return null;
+    }
+
+    public HSSFWorkbook genderExcelByOperation(OperationPKVO pkvo){
+        List<ServiceInvoke> siList = new ArrayList<ServiceInvoke>();
+        List<OperationPK> pks = pkvo.getPks();
+        for(int i = 0; i < pks.size(); i++){
+            List<ServiceInvoke> opSiList = siDao.getByOperationPK(pks.get(i));
+            for(ServiceInvoke si : opSiList){
+                siList.add(si);
+            }
+        }
+        HSSFWorkbook workbook = fillExcel(siList);
+        return workbook;
     }
 
     /**

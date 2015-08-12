@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.Ida;
 import com.dc.esb.servicegov.service.IdaService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import org.drools.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,9 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	@Override
 	public void saveOrUpdate(Ida[] idas) {
 		for(Ida ida:idas){
+			if(StringUtils.isEmpty(ida.getHeadId())){
+				ida.setHeadId(null);
+			}
 			idaDAOImpl.save(ida);
 		}
 	}

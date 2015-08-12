@@ -6,12 +6,15 @@ import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
+import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
+import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.ServiceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.vo.RelationVO;
+import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,12 +95,13 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	}
 
-	public List<ServiceInvoke> getDistinctInter(String systemId){
+	public List<ServiceInvokeJson> getDistinctInter(String systemId){
 		List<ServiceInvoke> list = this.findBy("systemId", systemId);
-		List<ServiceInvoke> tempList = new ArrayList<ServiceInvoke>();
+		List<ServiceInvokeJson> voList = new ArrayList<ServiceInvokeJson>();
 
 		for(int i = 0; i < list.size(); i++){
 			ServiceInvoke si = list.get(i);
+
 			if(si != null){
 				for(int j = 0; j < list.size(); j++){
 					ServiceInvoke sj = list.get(j);
@@ -107,7 +111,6 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 								if(i != j){
 									sj = null;
 									list.set(j, sj);
-									tempList.add(sj);
 								}
 							}
 						}
@@ -116,10 +119,12 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 			}
 
 		}
-		for(int i = 0; i < tempList.size(); i++){
-			list.remove(tempList.get(i));
+		list.remove(null);
+		for(int i = 0; i < list.size(); i++){
+			ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
+			voList.add(svo);
 		}
-		return list;
+		return voList;
 	}
 
 	public boolean deleteByOperationId(String OperationId,String serviceId){
@@ -150,5 +155,7 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 //		String hql = "delete from ServiceInvoke t where t.operationId = '"+OperationId+"' and t.serviceId = '"+serviceId+"'";
 //		return serviceInvokeDAOImpl.exeHql(hql);
 	}
-
+	public List<ServiceInvoke> getByOperationAndType(Operation operation, String type){
+		return serviceInvokeDAOImpl.getByOperationAndType(operation,type);
+	}
 }

@@ -9,8 +9,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.util.TreeNode;
+import com.dc.esb.servicegov.vo.OperationExpVO;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -359,5 +361,20 @@ public class OperationController {
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
+    }
+
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/query")
+    @ResponseBody
+    public Map<String, Object> query(HttpServletRequest req) {
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        Page page = new Page(operationServiceImpl.queryCount(req.getParameterMap()), rowCount);
+        page.setPage(pageNo);
+        List<OperationExpVO> rows = operationServiceImpl.queryByCondition(req.getParameterMap(), page);
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("total", page.getResultCount());
+        result.put("rows", rows);
+        return result;
     }
 }

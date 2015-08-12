@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.PdfUtils;
+import com.dc.esb.servicegov.vo.OperationPKVO;
 import com.dc.esb.servicegov.vo.SDAVO;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
@@ -20,6 +21,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.List;
 
@@ -65,6 +67,21 @@ public class PdfServiceImpl {
         if(serviceType.equals(type)){
             genderPdfByService(id, document,"1");
         }
+        document.close();
+        return pdfFile;
+    }
+    public File genderServicePdf(OperationPKVO pkvo) throws Exception{
+        File pdfFile = createFdfFile("operation_" + new Date().getTime());
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(pdfFile))
+                .setInitialLeading(16);
+        document.open();
+        List<Operation> operations = new ArrayList<Operation>();
+        for(OperationPK pk : pkvo.getPks()){
+            Operation operation = operationDAO.getBySO(pk.getServiceId(), pk.getOperationId());
+            operations.add(operation);
+        }
+        genderService(operations, document);
         document.close();
         return pdfFile;
     }

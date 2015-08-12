@@ -98,4 +98,10 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
         List<ServiceInvoke> list = this.find(hql, operation.getServiceId(), operation.getOperationId(), type);
         return list;
     }
+
+    public List<ServiceInvoke> getByOperationPK(OperationPK pk){
+        String hql = " from "+ ServiceInvoke.class.getName() + " as si where si.serviceId = ? and si.operationId = ?";
+        List<ServiceInvoke> list = this.find(hql, pk.getServiceId(), pk.getOperationId());
+        return list;
+    }
 }

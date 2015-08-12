@@ -638,7 +638,7 @@ public class HibernateDAO<T, PK extends Serializable> {
         return criteria.list();
     }
 
-    public List<T> findBy(String hql, Page page, List<SearchCondition> searchConds) {
+    public List findBy(String hql, Page page, List<SearchCondition> searchConds) {
 
         // 创建查询
         Query query = getSession().createQuery(hql);
