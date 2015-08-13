@@ -40,6 +40,9 @@
         <li>
             <a href="javascript:;" mid="5">交易链路管理</a>
         </li>
+        <li>
+            <a href="javascript:;" mid="11">统计报表</a>
+        </li>
     </ul>
     <div id="header_toolsbar">
         <a href="javascript:;" class="login_user"><shiro:principal/></a>
