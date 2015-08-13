@@ -583,16 +583,16 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
                             operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", " ", operation.getOperationRemark()};
 
-                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
+//                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
 
-                    if (interfaceInvokes.size() == 0) {
+                     List<Object[]> strs = interfaceInvokeDAO.getVOBySO(operation.getServiceId(), operation.getOperationId());
+                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId(), strs);
+                    if (interfaceInvokeVOs.size() == 0) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
                         setRowValue(row, cellStyle, values3);
                         continue;
                     }
-                     List<Object[]> strs = interfaceInvokeDAO.getVOBySO(operation.getServiceId(), operation.getOperationId());
-                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId(), strs);
                     for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
