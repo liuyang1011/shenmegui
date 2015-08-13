@@ -273,7 +273,7 @@ function selectInterface(listId) {
             if (exsit.length > 0) {
                 alert("该接口已经被选中！");
             } else {
-                $("#" + listId).append("<option value='__invoke__" + item.invokeId + "'>" + item.system.systemChineseName + "::" + item.inter.interfaceName + "</option>");
+                $("#" + listId).append("<option value='__invoke__" + item.invokeId + "'>" + item.systemChineseName + "::" + item.interfaceName + "</option>");
             }
 
         });

@@ -3,12 +3,15 @@ package com.dc.esb.servicegov.service.impl;
 import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceCategoryDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.TreeNode;
+import com.dc.esb.servicegov.vo.OperationExpVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -365,5 +368,106 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             delete(per);
         }
         return true;
+    }
+
+    public String genderQueryHql(Map<String, String[]> values) {
+        String hql = "";
+        if (values != null && values.size() > 0) {
+            for (String key : values.keySet()) {
+                if (key.equals("serviceId") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.serviceId like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("serviceName") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.service.serviceName like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("serviceDesc") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.service.desc like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("serviceState") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.service.state like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+
+                if (key.equals("operationId") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.operationId like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("operationName") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.operationName like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("operationDesc") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.operationDesc like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("operationState") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.state like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+
+                if (key.equals("systemId") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and si.systemId like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if (key.equals("systemType") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and si.type like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+
+            }
+        }
+        return hql;
+    }
+    public long queryCount(Map<String, String[]> values){
+        String hql = "select count(*) from Operation a where 1=1 ";
+        hql += genderQueryHql(values);
+        return (Long)operationDAOImpl.findUnique(hql);
+    }
+    public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page){
+        String hql = "select new " + OperationExpVO.class.getName() + "( a) from " + Operation.class.getName() +" as a where 1=1";
+        hql += genderQueryHql(values);
+        List<OperationExpVO> voList =  operationDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
+        for(OperationExpVO vo : voList){
+            Operation operation = getOperation(vo.getServiceId(), vo.getOperationId());
+            List<ServiceInvoke> consumerList = serviceInvokeService.getByOperationAndType(operation, Constants.INVOKE_TYPE_CONSUMER);
+            String cunsumers = getSystemNames(consumerList);
+            vo.setConsumers(cunsumers);
+
+            List<ServiceInvoke> providerList = serviceInvokeService.getByOperationAndType(operation, Constants.INVOKE_TYPE_PROVIDER);
+            String providers = getSystemNames(providerList);
+            vo.setProviders(providers);
+
+            if(operation.getVersion() != null){
+                vo.setVersion(operation.getVersion().getCode());
+            }
+        }
+        return voList;
+    }
+
+    public String getSystemNames(List<ServiceInvoke> serviceInvokes){
+        String consumer = "";
+        for(int i = 0; i < serviceInvokes.size(); i++){
+            ServiceInvoke si = serviceInvokes.get(i);
+            if(si.getSystem() != null){
+                if(i != 0){
+                    consumer += ", ";
+                }
+                consumer += si.getSystem().getSystemChineseName();
+            }
+        }
+        return consumer;
     }
 }

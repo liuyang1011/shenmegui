@@ -45,6 +45,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
     /**
      * 根据消费者查找提供者，或者根据提供者查找消费者
      */
+    @Deprecated
     public ServiceInvoke getByOtherType(String invokeId){
         ServiceInvoke serviceInvoke = this.findUniqueBy("invokeId", invokeId);
         if(StringUtils.isNotEmpty(serviceInvoke.getServiceId()) && StringUtils.isNotEmpty(serviceInvoke.getOperationId()) ){
@@ -64,6 +65,13 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
             }
         }
         return null;
+    }
+    public List<ServiceInvoke> getByOtherType(ServiceInvoke si){
+        String hql = " select si from " + ServiceInvoke.class.getName() + " as si, " +
+                InterfaceInvoke.class.getName() + " as ii where si.invokeId = ii.invokeId ";
+        String extend = Constants.INVOKE_TYPE_CONSUMER.equals(si.getType())? " and ii.providerId = ? " :" and ii.consumerId = ?";
+        List<ServiceInvoke> list = this.find(hql+extend, si.getInvokeId());
+        return list;
     }
     /**
      * 根据二级服务分类id
@@ -96,6 +104,12 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
     public List<ServiceInvoke> getByOperationAndType(Operation operation, String type){
         String hql = " from "+ ServiceInvoke.class.getName() + " as si where si.serviceId = ? and si.operationId = ? and si.type = ?";
         List<ServiceInvoke> list = this.find(hql, operation.getServiceId(), operation.getOperationId(), type);
+        return list;
+    }
+
+    public List<ServiceInvoke> getByOperationPK(OperationPK pk){
+        String hql = " from "+ ServiceInvoke.class.getName() + " as si where si.serviceId = ? and si.operationId = ?";
+        List<ServiceInvoke> list = this.find(hql, pk.getServiceId(), pk.getOperationId());
         return list;
     }
 }

@@ -129,7 +129,8 @@
                 sysManager.addIDA(reqAry, function (result) {
                     if (result) {
                         alert("保存成功");
-                        $('#tg').treegrid('reload');
+                        $('#tg').treegrid({url: '/ida/getInterfaces/${param.interfaceId}?_t=' + new Date().getTime()});
+                       // $('#tg').treegrid('reload');
                     } else {
                         alert("保存失败");
                     }
@@ -381,7 +382,7 @@
         function loadData() {
             var interfaceId = "${param.interfaceId}"
             $('#tg').treegrid({
-                url: '/ida/getInterfaces/' + interfaceId,
+                url: '/ida/getInterfaces/' + interfaceId + '?_t=' + new Date().getTime(),
                 singleSelect: true,//是否单选
                 onAfterEdit: function (row, changes) {
                     //alert(row.name);

@@ -38,6 +38,11 @@
     </div>
     <div title="服务接口映射" style="padding:0px;">
     </div>
+    <div title="服务检索" style="padding:0px;">
+        <iframe id="services" name="services" scrolling="auto" frameborder="0"
+                src="jsp/service/search.jsp"
+                style="width:100%;height:100%;"></iframe>
+    </div>
 </div>
 
 <script type="text/javascript">

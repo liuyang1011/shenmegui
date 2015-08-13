@@ -1002,7 +1002,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
         }
 
-//        InterfaceHead head = new InterfaceHead();
+        headDB = new InterfaceHead();
         headDB.setHeadName(headName);
         headDB.setHeadDesc(headName);
         interfaceHeadDAO.save(headDB);

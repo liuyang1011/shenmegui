@@ -21,7 +21,7 @@ public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
 	public Operation getBySO(String serviceId, String operationId){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("serviceId", serviceId);
-		params.put("operatioId", operationId);
+		params.put("operationId", operationId);
 		Operation operation = this.findUniqureBy(params);
 		return operation;
 	}
