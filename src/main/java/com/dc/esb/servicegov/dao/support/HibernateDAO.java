@@ -400,6 +400,10 @@ public class HibernateDAO<T, PK extends Serializable> {
     public List<T> find(final String hql, final Object... values) {
         return createQuery(hql, values).list();
     }
+    @Transactional
+    public <T> List<T> findFree(final String hql, final Object... values) {
+        return createQuery(hql, values).list();
+    }
     /**
      * 按HQL查询对象列表.
      *

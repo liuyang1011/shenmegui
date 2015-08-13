@@ -437,14 +437,37 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return (Long)operationDAOImpl.findUnique(hql);
     }
     public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page){
-        String hql = "select new " + OperationExpVO.class.getName() + "( a) from " + Operation.class.getName() + " as a where 1=1";
+        String hql = "select new " + OperationExpVO.class.getName() + "( a) from " + Operation.class.getName() +" as a where 1=1";
         hql += genderQueryHql(values);
         List<OperationExpVO> voList =  operationDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
         for(OperationExpVO vo : voList){
             Operation operation = getOperation(vo.getServiceId(), vo.getOperationId());
             List<ServiceInvoke> consumerList = serviceInvokeService.getByOperationAndType(operation, Constants.INVOKE_TYPE_CONSUMER);
+            String cunsumers = getSystemNames(consumerList);
+            vo.setConsumers(cunsumers);
 
+            List<ServiceInvoke> providerList = serviceInvokeService.getByOperationAndType(operation, Constants.INVOKE_TYPE_PROVIDER);
+            String providers = getSystemNames(providerList);
+            vo.setProviders(providers);
+
+            if(operation.getVersion() != null){
+                vo.setVersion(operation.getVersion().getCode());
+            }
         }
         return voList;
+    }
+
+    public String getSystemNames(List<ServiceInvoke> serviceInvokes){
+        String consumer = "";
+        for(int i = 0; i < serviceInvokes.size(); i++){
+            ServiceInvoke si = serviceInvokes.get(i);
+            if(si.getSystem() != null){
+                if(i != 0){
+                    consumer += ", ";
+                }
+                consumer += si.getSystem().getSystemChineseName();
+            }
+        }
+        return consumer;
     }
 }

@@ -24,12 +24,15 @@ $(function(){
         serviceUIHelper.deleteServiceFormTree();
     });
     /**
-             * 服务树右键菜单编辑按钮事件
-             */
-            $("#servicePdf").click(function(){
-                serviceUIHelper.exportPdf();
-            });
-             $("#serviceExcel").click(function(){
-                            serviceUIHelper.exportExcel();
-            });
+     * 服务树右键菜单编辑按钮事件
+     */
+    $("#servicePdf").click(function(){
+        serviceUIHelper.exportPdf();
+    });
+    $("#serviceExcel").click(function(){
+        serviceUIHelper.exportExcel();
+    });
+    $("#serviceView").click(function(){
+        serviceUIHelper.exportView();
+    });
 });

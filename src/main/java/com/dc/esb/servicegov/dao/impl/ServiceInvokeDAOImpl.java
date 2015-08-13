@@ -45,6 +45,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
     /**
      * 根据消费者查找提供者，或者根据提供者查找消费者
      */
+    @Deprecated
     public ServiceInvoke getByOtherType(String invokeId){
         ServiceInvoke serviceInvoke = this.findUniqueBy("invokeId", invokeId);
         if(StringUtils.isNotEmpty(serviceInvoke.getServiceId()) && StringUtils.isNotEmpty(serviceInvoke.getOperationId()) ){
@@ -64,6 +65,13 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
             }
         }
         return null;
+    }
+    public List<ServiceInvoke> getByOtherType(ServiceInvoke si){
+        String hql = " select si from " + ServiceInvoke.class.getName() + " as si, " +
+                InterfaceInvoke.class.getName() + " as ii where si.invokeId = ii.invokeId ";
+        String extend = Constants.INVOKE_TYPE_CONSUMER.equals(si.getType())? " and ii.providerId = ? " :" and ii.consumerId = ?";
+        List<ServiceInvoke> list = this.find(hql+extend, si.getInvokeId());
+        return list;
     }
     /**
      * 根据二级服务分类id

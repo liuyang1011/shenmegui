@@ -84,6 +84,7 @@
     <div id="serviceTreeDeleteBtn" data-options="iconCls:'icon-remove'">删除</div>
     <div id="servicePdf" data-options="iconCls:'icon-excel-export'">导出白皮书PDF</div>
     <div id="serviceExcel" data-options="iconCls:'icon-excel-export'">导出字段映射Excel</div>
+    <div id="serviceView" data-options="iconCls:'icon-excel-export'">导出服务视图Excel</div>
 </div>
 
 <div id="mm-mslinktree" class="easyui-menu" style="width: 120px;">

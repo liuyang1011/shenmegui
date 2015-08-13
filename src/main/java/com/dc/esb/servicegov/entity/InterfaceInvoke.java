@@ -23,6 +23,15 @@ public class InterfaceInvoke {
     @Column(name = "CONSUMER_INVOKE_ID")
     private String consumerInvokeId;
 
+    @ManyToOne
+    @JoinColumn(name="PROVIDER_INVOKE_ID", insertable = false, updatable = false)
+    private ServiceInvoke provider;
+
+    @ManyToOne
+    @JoinColumn(name="CONSUMER_INVOKE_ID", insertable = false, updatable = false)
+    private ServiceInvoke consumer;
+
+
     public String getId() {
         return id;
     }
@@ -45,5 +54,21 @@ public class InterfaceInvoke {
 
     public void setProviderInvokeId(String providerInvokeId) {
         this.providerInvokeId = providerInvokeId;
+    }
+
+    public ServiceInvoke getProvider() {
+        return provider;
+    }
+
+    public void setProvider(ServiceInvoke provider) {
+        this.provider = provider;
+    }
+
+    public ServiceInvoke getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(ServiceInvoke consumer) {
+        this.consumer = consumer;
     }
 }

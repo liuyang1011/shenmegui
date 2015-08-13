@@ -38,26 +38,27 @@
                     parent = t.tree('getParent', node.target);
 					id = t.tree('getParent', parent.target).id;
                 }
-                                                var form=$("<form>");//定义一个form表单
-                                                form.attr("style","display:none");
-                                                form.attr("target","");
-                                                form.attr("method","post");
-                                                form.attr("action","/excelExporter/exportServiceView");
-                                                var input1=$("<input>");
-                                                input1.attr("type","hidden");
-                                                input1.attr("name","categoryId");
-                                                input1.attr("value",id);
 
- 												 var input2=$("<input>");
-                                                 input2.attr("type","hidden");
-                                                 input2.attr("name","type");
-                                                 input2.attr("value",type);
+				var form=$("<form>");//定义一个form表单
+				form.attr("style","display:none");
+				form.attr("target","");
+				form.attr("method","post");
+				form.attr("action","/excelExporter/exportServiceView");
+				var input1=$("<input>");
+				input1.attr("type","hidden");
+				input1.attr("name","categoryId");
+				input1.attr("value",id);
 
-                                                $("body").append(form);//将表单放置在web中
-                                                form.append(input1);
-                                                form.append(input2);
+				var input2=$("<input>");
+				input2.attr("type","hidden");
+				input2.attr("name","type");
+				input2.attr("value",type);
 
-                                                form.submit();//表单提交
+				$("body").append(form);//将表单放置在web中
+				form.append(input1);
+				form.append(input2);
+
+				form.submit();//表单提交
 
             }
 	</script>
