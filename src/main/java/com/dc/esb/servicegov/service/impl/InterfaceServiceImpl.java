@@ -49,4 +49,13 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
 		List<Interface> list = interfaceDAOImpl.find(hql, systemId);
 		return list;
 	}
+	public List<Interface> findByConditions(String condition){
+		condition = "%" + condition + "%";
+		StringBuffer hql = new StringBuffer("select t from Interface t where t.interfaceId like ?");
+		hql.append(" or t.desc like ?");
+		hql.append(" or t.interfaceName like ?");
+		hql.append(" or t.ecode like ?");
+		List<Interface> list = interfaceDAOImpl.find(hql.toString(), condition, condition, condition,condition);
+		return list;
+	}
 }

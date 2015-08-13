@@ -119,7 +119,7 @@
 			<table id="invokeList" style="height:200px; width:100%;">
 				<thead>
 					<tr>
-						<th data-options="field:'invokeId',checkbox:true"></th>
+						<%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
 						<th data-options="field:'systemId', width:50">系统id</th>
 						<th data-options="field:'systemChineseName', width:150">系统名称</th>
 						<th data-options="field:'isStandard', width:50"

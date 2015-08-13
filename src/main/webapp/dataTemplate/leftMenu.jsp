@@ -99,5 +99,5 @@
 </div>
 
 <ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:100%"
-    data-options="url:'/interface/getLeftTree',method:'get',animate:true" style="overflow:auto;"></ul>
+    data-options="url:'/interface/getLeftTree/all',method:'get',animate:true" style="overflow:auto;"></ul>
 <%}%>

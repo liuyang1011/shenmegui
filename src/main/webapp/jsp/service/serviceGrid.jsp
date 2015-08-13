@@ -35,21 +35,21 @@
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
             <th>服务代码</th>
-            <td><input class="easyui-textbox" readonly="true"
+            <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceId" value="${entity.serviceId }">
             </td>
             <th>服务名称</th>
-            <td><input class="easyui-textbox" readonly="true"
+            <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceName" value="${entity.serviceName }">
             </td>
             <th>服务功能描述</th>
-            <td><input class="easyui-textbox" readonly="true" style="width: 400px"
+            <td><input class="easyui-textbox" disabled="true" style="width: 400px"
                        type="text" name="desc" value="${entity.desc }">
             </td>
         </tr>
         <tr>
             <th>服务备注</th>
-            <td><input class="easyui-textbox" readonly="true"
+            <td><input class="easyui-textbox" disabled="true"
                        type="text" name="remark" value="${entity.remark }">
             </td>
             <th>服务标签</th>
@@ -219,7 +219,7 @@
             }
         }
     }, '-',
-        {
+        /*{
             text: '场景明细',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -236,7 +236,7 @@
                     alert("请只选中场景后再查看！");
                 }
             }
-        },
+        },*/
         {
             text: '历史版本',
             iconCls: 'icon-qxfp',

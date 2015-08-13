@@ -104,8 +104,9 @@ public class ExcelImportController {
                 return;
             }
             // 从第一行开始读，获取所有接口行
-            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)excelImportService.parseInterfaceIndexSheet(indexSheet).get(0);
-            msg.append(excelImportService.parseIndexSheet(indexSheet).get(1));
+            List list = excelImportService.parseInterfaceIndexSheet(indexSheet);
+            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)list.get(0);
+            msg.append(list.get(1));
 
             for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
                 //开始解析每一个页面
@@ -207,8 +208,9 @@ public class ExcelImportController {
             }
             //TODO parse的时候不存在系统
             // 从第一行开始读，获取所有交易行
-            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)excelImportService.parseIndexSheet(indexSheet).get(0);
-            msg.append(excelImportService.parseIndexSheet(indexSheet).get(1));
+            List list = excelImportService.parseIndexSheet(indexSheet);
+            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)list.get(0);
+            msg.append(list.get(1));
             for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
                 //TODO 提供和消费系统都要判断
                 boolean consumerExists = excelImportService.existSystem(indexDO.getConsumerSystemId());

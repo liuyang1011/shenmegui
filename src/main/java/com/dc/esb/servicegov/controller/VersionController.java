@@ -2,9 +2,12 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -36,6 +39,11 @@ public class VersionController {
         result.put("total", list.size());
         result.put("rows", list);
         return result;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 
 }

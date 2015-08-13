@@ -95,6 +95,25 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public List<TreeNode> genderSDATree(String serviceId, String operationId) {
         List<SDA> list = getSDAListBySO(serviceId, operationId);
+        /*List<SdaTreeBean> list1 = new ArrayList<SdaTreeBean>();
+        for(SDA per : list){
+            SdaTreeBean sda = new SdaTreeBean();
+            sda.setSdaId(per.getSdaId());
+            sda.setStructName(per.getStructName());
+            sda.setStructAlias(per.getStructAlias());
+            String type = per.getType();
+            if(null != type && !"ARRAY".equals(type)){
+                sda.setType(type + "(" + per.getLength() + ")");
+            }else{
+                sda.setType(type);
+            }
+            sda.setLength(per.getLength());
+            sda.setMetadataId(per.getMetadataId());
+            sda.setRequired(per.getRequired());
+            sda.setRemark(per.getRemark());
+            sda.setSeq(per.getSeq());
+            list1.add(sda);
+        }*/
         Map<String, String> fields = new HashMap<String, String>();
         fields.put("id", "sdaId");
         fields.put("text", "structName");
@@ -108,8 +127,111 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
 
-        return eUtil.convertTree(list, fields);
+        List<TreeNode> nodeList = eUtil.convertTree(list, fields);
+        return nodeList;
 
+    }
+
+    public static class SdaTreeBean {
+        private String sdaId;
+        private String structName;
+        private String structAlias;
+        private String type;
+        private String length;
+        private String metadataId;
+        private String required;
+        private String remark;
+        private int seq;
+        private String parentId;
+        private String operationId;
+
+        public String getParentId() {
+            return parentId;
+        }
+
+        public void setParentId(String parentId) {
+            this.parentId = parentId;
+        }
+
+        public String getOperationId() {
+            return operationId;
+        }
+
+        public void setOperationId(String operationId) {
+            this.operationId = operationId;
+        }
+
+        public String getLength() {
+            return length;
+        }
+
+        public void setLength(String length) {
+            this.length = length;
+        }
+
+        public String getSdaId() {
+            return sdaId;
+        }
+
+        public void setSdaId(String sdaId) {
+            this.sdaId = sdaId;
+        }
+
+        public String getStructName() {
+            return structName;
+        }
+
+        public void setStructName(String structName) {
+            this.structName = structName;
+        }
+
+        public String getStructAlias() {
+            return structAlias;
+        }
+
+        public void setStructAlias(String structAlias) {
+            this.structAlias = structAlias;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getMetadataId() {
+            return metadataId;
+        }
+
+        public void setMetadataId(String metadataId) {
+            this.metadataId = metadataId;
+        }
+
+        public String getRequired() {
+            return required;
+        }
+
+        public void setRequired(String required) {
+            this.required = required;
+        }
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
+        }
+
+        public int getSeq() {
+            return seq;
+        }
+
+        public void setSeq(int seq) {
+            this.seq = seq;
+        }
     }
 
     public boolean save(SDA[] sdas) {

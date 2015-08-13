@@ -39,9 +39,18 @@ var SYSMENU = {
                 });
                 $('#mxinterfacetreefilter').searchbox({
                     searcher: function (value, name) {
-                        $('.msinterfacetree').tree('doFilter', value);
+                        if(value == ""){
+                            value = "all";
+                        }
+                        //$('.msinterfacetree').tree('doFilter', value);
+                        //重新查询
+                        $('.msinterfacetree').tree({
+                            url:'/interface/getLeftTree/'+encodeURI(encodeURI(value)),
+                            method:'get',
+                            animate:true
+                        });
                     },
-                    prompt: '请输入关键词'
+                    prompt: '请输入关键词2'
                 });
                 $('#mxinterfaceheadtreefilter').searchbox({
                     searcher: function (value, name) {

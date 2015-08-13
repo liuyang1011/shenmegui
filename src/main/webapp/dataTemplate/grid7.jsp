@@ -53,9 +53,8 @@
         </tr>
     </table>
 </fieldset>
-<table id="metadataList" class="easyui-datagrid" title="元数据管理"
-       data-options="rownumbers:true,singleSelect:false,url:'/metadata/query',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10,fitColumns:'false'" style="height:400px; width:auto;">
+<table id="metadataList" title="元数据管理"
+        style="height:400px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -86,7 +85,34 @@
      style="width:500px;height:200px;padding:10px;">
 
 </div>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/resources/js/ui.js"></script>
+<script type="text/javascript" src="/assets/metadata/metadataManager.js"></script>
+<script type="text/javascript" src="/assets/metadata/metadata.js"></script>
+<scirpt type="text/javascript" src="/resources/js/jquery.fileupload.js"></scirpt>
+<script type="text/javascript" src="/resources/js/jquery.fileDownload.js"></script>
 <script type="text/javascript">
+    $(function(){
+        $("#metadataList").datagrid({
+            rownumbers:true,
+            singleSelect:false,
+            url:'/metadata/query',
+            method:'get',
+            toolbar:toolbar,
+            pagination:true,
+            pageSize:10,
+            fitColumns:'false',
+            onLoadError: function (responce) {
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+//                    alert("没有权限！");
+                    window.location.href = "/jsp/403.jsp";
+                }
+            }
+        });
+    })
     var toolbar = [{
         text: '新增',
         iconCls: 'icon-add',
@@ -211,16 +237,6 @@
             }
         }];
 </script>
-
-<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
-<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript" src="/resources/js/ui.js"></script>
-<script type="text/javascript" src="/assets/metadata/metadataManager.js"></script>
-<script type="text/javascript" src="/assets/metadata/metadata.js"></script>
-<scirpt type="text/javascript" src="/resources/js/jquery.fileupload.js"></scirpt>
-<script type="text/javascript" src="/resources/js/jquery.fileDownload.js"></script>
-
 
 
 <script type="text/javascript">

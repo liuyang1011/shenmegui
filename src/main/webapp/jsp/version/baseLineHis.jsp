@@ -30,7 +30,6 @@
 		var row = $("#baseLineList").datagrid("getSelected");
 		if(row){
 			//根据基线id获取基线版本中服务信息
-			alert(row.baseId);
 			$.ajax({
 				type : "get",
 				async : false,
@@ -116,7 +115,7 @@
 			data-options="
 			rownumbers:true,
 			singleSelect:false,
-			url:'datagrid_data1.json',
+			url:'',
 			collapsible: true,
 			collapsed:true,
 			method:'get',
@@ -150,7 +149,7 @@
 				singleSelect:false,
 				collapsible: true,
 				collapsed:true,
-				url:'datagrid_data1.json',
+				url:'',
 				method:'get',
 				pagination:true,
 				pageSize:10,
@@ -182,7 +181,7 @@
 				singleSelect:false,
 				collapsible: true,
 				collapsed:true,
-				url:'datagrid_data1.json',
+				url:'',
 				method:'get',
 				pagination:true,
 				pageSize:10" style="height:365px; width:auto;">

@@ -503,6 +503,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 }
             }
 
+            //约束条件
+            cellObj = sheetRow.getCell(10);
+            if(cellObj != null){
+                String cell = tools.getCellContent(cellObj);
+                sda.setConstraint(isNull(cell));
+            }
+
             cellObj = sheetRow.getCell(11);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -694,6 +701,14 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     sda.setLength(isNull(cell));
                 }
             }
+
+            //约束条件
+            cellObj = sheetRow.getCell(10);
+            if(cellObj != null){
+                String cell = tools.getCellContent(cellObj);
+                sda.setConstraint(isNull(cell));
+            }
+
             cellObj = sheetRow.getCell(11);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -1148,13 +1163,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                         inter.setInterfaceName(tranName);
                     } else if ("接口功能描述".equals(cell)) {
                         interfaceDesc = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (interfaceDesc == null || "".equals(interfaceDesc)) {
-                            logger.error(tranSheet.getSheetName()
-                                    + "sheet页，接口功能描述为空");
-                            logInfoService.saveLog(tranSheet.getSheetName()
-                                    + "sheet页，接口功能描述为空", "导入");
-                            flag = false;
-                        }
+//                        if (interfaceDesc == null || "".equals(interfaceDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，接口功能描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，接口功能描述为空", "导入");
+//                            flag = false;
+//                        }
                         inter.setDesc(interfaceDesc);
                         break;
                     } else if ("原始接口".equals(cell)) {

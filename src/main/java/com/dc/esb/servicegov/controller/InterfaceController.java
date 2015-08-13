@@ -3,6 +3,7 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -43,11 +44,15 @@ public class InterfaceController {
     ProtocolService protocolService;
 
     @RequiresPermissions({"system-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{condition}", headers = "Accept=application/json")
     public
     @ResponseBody
-    List<TreeNode> getLeftTree() {
-
+    List<TreeNode> getLeftTree(@PathVariable(value = "condition") String condition) {
+        try {
+            condition = URLDecoder.decode(condition, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         List<TreeNode> resList = new ArrayList<TreeNode>();
         TreeNode root = new TreeNode();
         root.setId("root");
@@ -55,8 +60,20 @@ public class InterfaceController {
         root.setClick("system");
 
         List<TreeNode> rootList = new ArrayList<TreeNode>();
-        List<com.dc.esb.servicegov.entity.System> systems = systemService
-                .getAll();
+        List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
+        List<Interface> interList = new ArrayList<Interface>();
+        if(null != condition && !"".equals(condition) && !"all".equals(condition)){
+            interList = interfaceService.findByConditions(condition);
+            for (int i = 0; i < interList.size(); i++) {
+                String systemId = interList.get(i).getServiceInvoke().get(0).getSystemId();
+                System s = systemService.findUniqueBy("systemId", systemId);
+                if(systems.indexOf(s) < 0){
+                    systems.add(s);
+                }
+            }
+        }else {
+            systems = systemService.getAll();
+        }
 
         for (com.dc.esb.servicegov.entity.System s : systems) {
             TreeNode rootinterface = new TreeNode();
@@ -66,18 +83,13 @@ public class InterfaceController {
             try {
                 List<ServiceInvoke> serviceIns = s.getServiceInvokes();
                 List<TreeNode> childList = new ArrayList<TreeNode>();
-                int i = 0;
-                String name = "";
-                if(s.getSystemId().equals("6864")){
-                    i++;
-                    name = s.getSystemAb();
-                }else{
-                    name = s.getSystemAb();
-                }
                 for (ServiceInvoke si : serviceIns) {
 
                     TreeNode child = new TreeNode();
                     if(null == si.getInter()){
+                        continue;
+                    }
+                    if(interList.size()>0 && interList.indexOf(si.getInter())<0){
                         continue;
                     }
                     child.setId(si.getInter().getInterfaceId());
