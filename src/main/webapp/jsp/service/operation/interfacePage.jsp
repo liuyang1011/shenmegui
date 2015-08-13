@@ -212,7 +212,7 @@
                                                                     <th data-options="field:'length',width:50,editor:'text'">
                                                                         长度
                                                                     </th>
-                                                                    <th data-options="field:'metadataId',width:50,editor:'text'">
+                                                                    <th data-options="field:'metadataId',width:150,editor:'text'">
                                                                         元数据ID
                                                                     </th>
                                                                    <%-- <th data-options="field:'scale',width:50,editor:'text'">
