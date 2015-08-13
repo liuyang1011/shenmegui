@@ -41,7 +41,14 @@ function save(formId){
         	 $("#w").window("close");
         	 $('#metadataList').datagrid('reload');
         	 //刷新查询列表 
-            }
+            },
+		 complete:function(responce){
+			 var resText = responce.responseText;
+			 if(resText.toString().charAt(0) == "<"){
+				 alert("没有权限！");
+//                                window.location.href = "/jsp/403.jsp";
+			 }
+		 }
 	 	});
 }
 

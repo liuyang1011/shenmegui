@@ -1,3 +1,4 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -98,6 +99,9 @@
 					<th data-options="field:'interfaceName',width:'15%'">
 						交易名称
 					</th>
+					<th data-options="field:'desc',width:'15%'">
+						接口功能描述
+					</th>
 					<th data-options="field:'headName',width:'15%'">
 						报文头
 					</th>
@@ -127,23 +131,23 @@
 		<script type="text/javascript">
 		 $(document).ready(function(){ 
 			  $('#tg').datagrid({ 
-	        title:'基本信息维护', 
+	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: 'auto', 
-	        height: '380px', 
+	        height: '390px',
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
 	        singleSelect:true,//是否单选 
 	        pagination:true,//分页控件 
-	        pageSize: 5,//每页显示的记录条数，默认为10
-		    pageList: [5,10,15,20],//可以设置每页记录条数的列表
-	        rownumbers:false,//行号 
+	        pageSize: 10,//每页显示的记录条数，默认为10
+		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'新增',
 					iconCls:'icon-add',
 					handler:function(){
-					    
+
 							interfaceManager.append("${param.systemId}");
 						}
 					},{
@@ -186,10 +190,68 @@
 							}
 
 					 	}
-					 }
-				]
+					 },{
+						text:'导入',
+						iconCls:'icon-save',
+						handler:function(){
+							var row = $("#tg").treegrid("getSelected");
+							if(row){
+								var interfaceId = row.interfaceId;
+								uiinit.win({
+									w:500,
+									iconCls:'icon-add',
+									title:"导入接口",
+									url : "/jsp/interface/interface_import.jsp"
+								});
+							}else{
+								alert("请选择要关联的行");
+							}
+
+						}
+					},{
+						text:'导出',
+						iconCls:'icon-save',
+						handler:function(){
+							var row = $("#tg").treegrid("getSelected");
+							var systemId = ${param.systemId };
+							alert(systemId);
+							if(row){
+								var form=$("<form>");//定义一个form表单
+								form.attr("style","display:none");
+								form.attr("target","");
+								form.attr("method","post");
+								form.attr("action","/excelExporter/exportInterface");
+								var input1=$("<input>");
+								input1.attr("type","hidden");
+								input1.attr("name","id");
+								input1.attr("value",row.interfaceId);
+								var input2=$("<input>");
+								input2.attr("type","hidden");
+								input2.attr("name","type");
+								input2.attr("value","interface");
+								var input3=$("<input>");
+								input3.attr("type","hidden");
+								input3.attr("name","systemId");
+								input3.attr("value",systemId);
+
+
+								$("body").append(form);//将表单放置在web中
+								form.append(input1);
+								form.append(input2);
+								form.append(input3);
+
+								form.submit();//表单提交
+
+							}else{
+								alert("请选择要关联的行");
+							}
+
+						}
+					}
+				],
+			onDblClickRow : dbClick
 	   		});  
-			
+
 			var p = $('#tg').treegrid('getPager');  
 			
 			$(p).pagination({ 
@@ -215,17 +277,33 @@
 				textField:'text'
 			});
 		 })
+		 var url = '/jsp/interface/interface_define.jsp';
+		 var dbClick = function(index,field,value){
+			 var title = "";
+			 title = field.interfaceName+"("+field.interfaceId+")";
+			 var mainTabs = parent.$('#mainContentTabs');
+			 if (mainTabs.tabs('exists', title)) {
+				 mainTabs.tabs('select', title);
+			 } else {
+				 var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'?interfaceId='+field.interfaceId+'" style="width:100%;height:100%;"></iframe>';
+				 mainTabs.tabs('add', {
+					 title: title,
+					 content: content,
+					 closable: true
+				 });
+			 }
+		 }
 		 
 		 function searchData(){
 		 
 		  	 var ecode = $("#ecode").val();
 		 	 var interfaceName = $("#interfaceName").val();
-		 	 var remark = $("#remarkSearch").val();
+		 	 var desc = $("#remarkSearch").val();
 		 	 var status = $("#statusSearch").combobox('getValue');
 		 	 var queryParams = $('#tg').datagrid('options').queryParams;
              queryParams.ecode = ecode;
              queryParams.interfaceName = interfaceName;
-             queryParams.remark = remark;
+             queryParams.desc = encodeURI(desc);
              queryParams.status = status;
              queryParams.protocolId = $("#protocolIdSearch").combobox('getValue');
              queryParams.headId = $("#headIdSearch").combobox('getValue');

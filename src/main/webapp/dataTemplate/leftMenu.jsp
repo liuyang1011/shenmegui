@@ -28,6 +28,7 @@
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.2">导入</a></li>
             <li><a href="javascript:;" class="openable" mid="9.3">导出</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
             <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
         </ul>
     </li>
@@ -46,10 +47,10 @@
 <ul id="menu-tree">
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
-            <li><a href="javascript:;" class="openable" mid="3.2">英文单词及缩写管理</a></li>
+            <li><a href="javascript:;" class="openable" mid="3.2" style="display: none">英文单词及缩写管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
-            <li><a href="javascript:;" class="openable" mid="3.5">数据类型映射</a></li>
+            <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>

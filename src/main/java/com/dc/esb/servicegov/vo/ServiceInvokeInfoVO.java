@@ -22,10 +22,18 @@ public class ServiceInvokeInfoVO {
         this.interfaceId = serviceInvoke.getInterfaceId();
         this.serviceId = serviceInvoke.getServiceId();
         this.interfaceId = serviceInvoke.getInterfaceId();
-        this.interfaceName = serviceInvoke.getInter().getInterfaceName();
+        if(null != serviceInvoke.getInter()){
+            this.interfaceName = serviceInvoke.getInter().getInterfaceName();
+        }
         this.operationId = serviceInvoke.getOperationId();
         this.id = serviceInvoke.getInvokeId();
-        this.invokeType = serviceInvoke.getType();
+        if(serviceInvoke.getType().equals("0")){
+            this.invokeType = "提供者";
+        }else if(serviceInvoke.getType().equals("1")){
+            this.invokeType = "消费者";
+        }else{
+            this.invokeType = serviceInvoke.getType();
+        }
     }
 
     public String getInterfaceId() {

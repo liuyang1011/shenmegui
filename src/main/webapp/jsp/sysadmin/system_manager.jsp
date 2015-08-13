@@ -120,15 +120,15 @@
 	        title:'系统基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: 'auto', 
-	        height: '320px',
+	        height: '390px',
 	        collapsible: true,
 	        method:'post',
 	        url:'/system/getAll',
 	        singleSelect:true,//是否单选 
 	        pagination:true,//分页控件 
-	        pageSize: 5,//每页显示的记录条数，默认为10
-		    pageList: [5,10,15,20],//可以设置每页记录条数的列表
-	        rownumbers:false,//行号 
+	        pageSize: 10,//每页显示的记录条数，默认为10
+		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'新增',
 					iconCls:'icon-add',
@@ -168,7 +168,14 @@
 										dataType: "json",
 										success: function(result) {
 											$('#tg').datagrid("reload");
-										}
+										},
+										 complete:function(responce){
+											 var resText = responce.responseText;
+											 if(resText.toString().charAt(0) == "<"){
+												 alert("没有权限！");
+	//                              window.location.href = "/jsp/403.jsp";
+											 }
+										 }
 									});
 							}else{
 								alert("请选择要删除的行");
@@ -225,7 +232,14 @@
 						}
 
 					}
-				]
+				],
+				onLoadError: function (responce) {
+					var resText = responce.responseText;
+					if(resText.toString().charAt(0) == "<"){
+//                    alert("没有权限！");
+						window.location.href = "/jsp/403.jsp";
+					}
+				}
 	   		});
 			
 			var p = $('#tg').datagrid('getPager');

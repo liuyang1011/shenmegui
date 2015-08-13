@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.util.JSONUtil;
+import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +49,11 @@ public class ServiceInvokeController {
     @RequestMapping("/getInterface")
     @ResponseBody
     public Map<String, Object> getInterface(String systemId) {
-        List<ServiceInvoke> rows = serviceInvokeService.getDistinctInter( systemId);
+        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter( systemId);
 
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", rows.size());
-        result.put("rows", JSONUtil.getInterface().convert(rows, ServiceInvoke.simpleFields()));
+        result.put("rows", rows);
         return result;
     }
 

@@ -38,6 +38,11 @@
     </div>
     <div title="服务接口映射" style="padding:0px;">
     </div>
+    <div title="服务检索" style="padding:0px;">
+        <iframe id="services" name="services" scrolling="auto" frameborder="0"
+                src="jsp/service/search.jsp"
+                style="width:100%;height:100%;"></iframe>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -56,25 +61,30 @@
         height: $("body").height(),
         onSelect: function (title, index) {
             if (index == 1 && k == 0) {
-                k++;
-                var urlPath = "/operation/addPage/<%=request.getParameter("serviceId") %>";
-                var currTab = $('#subtab').tabs('getSelected');
-                $('#subtab').tabs('update', {
-                    tab: currTab,
-                    options: {
-                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
-                    }
-                });
+                var opId = serviceInfo.getSelected();
+                if (opId != null) {
+                    var urlPath = "/operation/editPage?serviceId=${param.serviceId}&operationId=" + opId;
+                                var currTab = $('#subtab').tabs('getSelected');
+                                $('#subtab').tabs('update', {
+                                    tab: currTab,
+                                    options: {
+                                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                                    }
+                                });
+                }else {
+                                     alert("请选则一个场景！");
+                                     $('#subtab').tabs('select', '服务基本信息');
+                                 }
             }
             if (index == 2) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
-                    var urlPath = "/sda/sdaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId;
+                    var urlPath = "/sda/sdaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&t="+ new Date().getTime();
                     var currTab = $('#subtab').tabs('getSelected');
                     $('#subtab').tabs('update', {
                         tab: currTab,
                         options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
+                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
                         }
                     });
                 } else {

@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.NonUniqueObjectException;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,11 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected static final int INDEX_PROVIDER_COL = 6;
     protected static final int INDEX_INTERFACE_POINT_COL = 7;
     protected static final int INDEX_INTERFACE_HEAD_COL = 18;
+
+    protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
+    protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
+
+
 
     @Autowired
     InterfaceDAOImpl interfaceDao;
@@ -77,7 +83,25 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      * @return
      */
     @Override
-    public boolean executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+    public List executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
+        return null;
+    }
+
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap){
+        return null;
+    }
+
+    /**
+     * 执行入库
+     * @param infoMap
+     * @param inputMap
+     * @param outMap
+     * @param publicMap
+     * @param headMap
+     * @return
+     */
+    @Override
+    public List executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
         com.dc.esb.servicegov.entity.Service service = (com.dc.esb.servicegov.entity.Service) infoMap.get("service");
         Operation operation = (Operation) infoMap.get("operation");
         Interface inter = (Interface) infoMap.get("interface");
@@ -87,6 +111,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
         List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
 
+        ServiceInvoke provider_invoke = null;
+        List list = new ArrayList();
         //导入服务定义相关信息
         logger.info("导入服务定义信息...");
         if (insertService(service)) {
@@ -100,7 +126,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String cusumerSystem = publicMap.get("cusumerSystem");
             //接口方向
             String interfacepoint = publicMap.get("interfacepoint");
-            //TODO excel传入的是简称，转化为id
+            //TODO excel传入的是简称，已经转化为id
             HashMap<String,String> param = new HashMap<String, String>();
             param.put("systemAb",cusumerSystem);
             System system = systemDao.findUniqureBy(param);
@@ -115,24 +141,32 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
             //获取调用关系
             //TODO 加个interfaceID作为区别
-            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,inter.getInterfaceId());
+            provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,inter.getInterfaceId());
             //获取消费关系
             //ServiceInvoke cusumer_invoke = serviceInvokeCusumerQuery(service, operation, cusumerSystem);
             //导入接口相关信息
             logger.info("导入接口定义信息...");
-            boolean exists = insertInterface(inter, service, operation, provider_invoke, systemId, type);
+            List list1 = insertInterface(inter, service, operation, provider_invoke, systemId, type);
+            boolean exists = (Boolean)list1.get(0);
+            provider_invoke = (ServiceInvoke)list1.get(1);
             insertIDA(exists, inter, idainput, idaoutput);
             insertSDA(existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             if (headMap != null && headMap.size()>0) {
                 insertInterfaceHead(exists, inter, headMap);
             }
+            list.add("true");
+            list.add(provider_invoke);
         } else {
-            return false;
+            list.add("false");
+            return list;
         }
-        return true;
+        return list;
     }
 
+    public List parseInterfaceIndexSheet(Sheet indexSheet) {
+        return null;
+    }
 
     /**
      * 解析Index页,获取IndexDO对象
@@ -140,38 +174,69 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      * @return
      */
     @Override
-    public List<IndexDO> parseIndexSheet(Sheet indexSheet) {
+    public List parseIndexSheet(Sheet indexSheet) {
         List<IndexDO> indexDOs = new ArrayList<IndexDO>();
         int endRow = indexSheet.getLastRowNum();
+        StringBuffer msg = new StringBuffer();
         for (int i = 1; i <= endRow; i++) {
             Row row = indexSheet.getRow(i);
             // 读取每一行第一列，获取每个交易sheet名称
             String sheetName = getCell(row, INDEX_SHEET_NAME_COL);
             //接口消费方
             String consumerSystem = getCell(row, INDEX_CONSUMER_COL);
+            HashMap<String,String> param = new HashMap<String, String>();
+            param.put("systemAb",consumerSystem);
+            System system = systemDao.findUniqureBy(param);
+
+            if (null == system) {
+                logger.error("" + consumerSystem + "系统不存在");
+                logInfoService.saveLog("" + consumerSystem + "系统不存在", "导入");
+                msg.append("" + consumerSystem + "系统不存在");
+                continue;
+            }
+            String consumerSystemId = system.getSystemId();
             //接口提供方
             String providerSystem = getCell(row, INDEX_PROVIDER_COL);
+            param = new HashMap<String, String>();
+            param.put("systemAb",providerSystem);
+            system = systemDao.findUniqureBy(param);
+            if (null == system) {
+                logger.error("" + providerSystem + "系统不存在");
+                logInfoService.saveLog("" + providerSystem + "系统不存在", "导入");
+                msg.append("" + providerSystem + "系统不存在");
+                continue;
+            }
+            String providerSystemId = system.getSystemId();
             //接口方向
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
             String operationId = getCell(row, INDEX_OPERATION_ID_COL);
-            String serviceId = getCell(row,INDEX_SERVICE_ID_COL).split("[()]+")[1];
-            String systemId = consumerSystem;
+            String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
+            String serviceId = temp.split("[()]+")[1];
+            String systemId = consumerSystemId;
+            String systemAb = consumerSystem;
             if ("Provider".equalsIgnoreCase(interfacePoint)) {
-                systemId = providerSystem;
+                systemId = providerSystemId;
+                systemAb = providerSystem;
             }
             IndexDO indexDO = new IndexDO();
             indexDO.setConsumerSystem(consumerSystem);
+            indexDO.setConsumerSystemId(consumerSystemId);
             indexDO.setSheetName(sheetName);
             indexDO.setInterfaceHead(interfaceHead);
             indexDO.setProviderSystem(providerSystem);
+            indexDO.setProviderSystemId(providerSystemId);
             indexDO.setSystemId(systemId);
             indexDO.setInterfacePoint(interfacePoint);
             indexDO.setOperationId(operationId);
             indexDO.setServiceId(serviceId);
+            indexDO.setSystemAb(systemAb);
             indexDOs.add(indexDO);
         }
-        return indexDOs;
+        List list = new ArrayList();
+        list.add(indexDOs);
+        list.add(msg);
+        return list;
     }
 
     @Override
@@ -205,6 +270,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
         }
         return headMap;
+    }
+
+    public  Map<String, Object> getStandardInputArg(Sheet sheet) {
+        return null;
+    }
+
+    public Map<String, Object> getInterfaceInputArg(Sheet sheet){
+        return null;
     }
 
     public  Map<String, Object> getInputArg(Sheet sheet) {
@@ -332,6 +405,13 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
+    public Map<String, Object> getStandardOutputArg(Sheet sheet) {
+        return null;
+    }
+
+    public Map<String, Object> getInterfaceOutputArg(Sheet sheet){
+        return null;
+    }
     public Map<String, Object> getOutputArg(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -459,6 +539,19 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
+    public Map<String, Object> getServiceInfo(Sheet tranSheet) {
+
+        return null;
+    }
+
+    /**
+     * 获取接口信息
+     * @param tranSheet
+     * @return
+     */
+    public Map<String, Object> getInterfaceInfo(Sheet tranSheet){
+        return null;
+    }
     /**
      * 获取交易、服务、场景信息
      *
@@ -493,7 +586,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
                     String cell = ExcelTool.getInstance().getCellContent(
                             cellObj);
-                    if ("交易码".equals(cell)) {
+                    if ("交易码".equals(cell) && k==0) {
                         //TODO 类型报错
                         sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
                         tranCode = sheetRow.getCell(k + 1).getStringCellValue();
@@ -530,7 +623,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                         }
 
                         break;
-                    } else if ("交易名称".equals(cell)) {
+                    } else if ("交易名称".equals(cell) && k==0) {
                         tranName = sheetRow.getCell(k + 1).getStringCellValue();
                         if (tranName == null || "".equals(tranName)) {
                             logger.error(tranSheet.getSheetName()
@@ -761,12 +854,15 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     public static class IndexDO {
         private String sheetName;
         private String consumerSystem;
+        private String consumerSystemId;
         private String providerSystem;
+        private String providerSystemId;
         private String interfacePoint;
         private String interfaceHead;
         private String systemId;
         private String operationId;
         private String serviceId;
+        private String systemAb;
 
         public String getSheetName() {
             return sheetName;
@@ -816,6 +912,22 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             this.consumerSystem = consumerSystem;
         }
 
+        public String getConsumerSystemId() {
+            return consumerSystemId;
+        }
+
+        public void setConsumerSystemId(String consumerSystemId) {
+            this.consumerSystemId = consumerSystemId;
+        }
+
+        public String getProviderSystemId() {
+            return providerSystemId;
+        }
+
+        public void setProviderSystemId(String providerSystemId) {
+            this.providerSystemId = providerSystemId;
+        }
+
         public String getOperationId() {
             return operationId;
         }
@@ -830,6 +942,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
         public void setServiceId(String serviceId) {
             this.serviceId = serviceId;
+        }
+
+        public String getSystemAb() {
+            return systemAb;
+        }
+
+        public void setSystemAb(String systemAb) {
+            this.systemAb = systemAb;
         }
 
     }
@@ -848,7 +968,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             InterfaceHeadRelate relate = new InterfaceHeadRelate();
             relate.setHeadId(interfaceHead.getHeadId());
             relate.setInterfaceId(inter.getInterfaceId());
-            interfaceHeadRelateDAO.save(relate);
+            //同一个session插入相同主键
+            try {
+                interfaceHeadRelateDAO.save(relate);
+            }catch (NonUniqueObjectException e){
+//                e.printStackTrace();
+                return ;
+            }
+//            interfaceHeadRelateDAO.save(relate);
             return;
         }
 
@@ -856,7 +983,11 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
         if (headDB != null) {
             if (GlobalImport.operateFlag) {
-                interfaceHeadDAO.delete(headDB.getHeadId());
+                //TODO null != headDB是更新不是删除吧？删除后以前的Interface_Head_Relate也没了
+                //删除老的Ida
+                String hql = "delete from Ida t where t.headId = '"+headDB.getHeadId()+"' ";
+                idaDao.exeHql(hql);
+//                interfaceHeadDAO.delete(headDB.getHeadId());
             } else {
                 if (exists) {
                     return;
@@ -871,16 +1002,16 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
         }
 
-        InterfaceHead head = new InterfaceHead();
-        head.setHeadName(headName);
-        head.setHeadDesc(headName);
-        interfaceHeadDAO.save(head);
+        headDB = new InterfaceHead();
+        headDB.setHeadName(headName);
+        headDB.setHeadDesc(headName);
+        interfaceHeadDAO.save(headDB);
 
         InterfaceHeadRelate relate = new InterfaceHeadRelate();
-        relate.setHeadId(head.getHeadId());
+        relate.setHeadId(headDB.getHeadId());
         relate.setInterfaceId(inter.getInterfaceId());
         interfaceHeadRelateDAO.save(relate);
-        String idaheadId = head.getHeadId();
+        String idaheadId = headDB.getHeadId();
 
 
         //添加IDA
@@ -929,7 +1060,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             idaDao.save(ida);
         }
         //将本次导入的报文头缓存到map,导入有可能是同一个报文头
-        GlobalImport.headMap.put(headName, head);
+        GlobalImport.headMap.put(headName, headDB);
     }
 
     protected void insertIDA(boolean exists, Interface inter, List<Ida> idainput, List<Ida> idaoutput) {
@@ -1170,10 +1301,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }
     }
 
+    protected List insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+        return null;
+    }
 
-    protected boolean insertInterface(Interface inter, com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+    protected List insertInterface(Interface inter, com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
         Map<String, String> paramMap = new HashMap<String, String>();
         boolean exists = false;
+        List list = new ArrayList();
         //已存在提供系统关系
         if (provider_invoke != null) {
             String interfaceId = provider_invoke.getInterfaceId();
@@ -1229,8 +1364,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             provider_invoke.setInterfaceId(inter.getInterfaceId());
             serviceInvokeDAO.save(provider_invoke);
         }
-
-        return exists;
+        list.add(exists);
+        list.add(provider_invoke);
+        return list;
     }
 
 
@@ -1241,7 +1377,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         paramMap.put("serviceId", service.getServiceId());
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("systemId", systemId);
-        paramMap.put("interfaceId",interfaceId);
+        if(null != interfaceId){
+            paramMap.put("interfaceId",interfaceId);
+        }
         String type = "1";
         if ("Provider".equalsIgnoreCase(interfacepoint)) {
             type = "0";
@@ -1376,7 +1514,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     @Override
     public boolean existSystem(String systemId) {
         Map<String, String> paramMap = new HashMap<String, String>();
-        paramMap.put("systemAb", systemId);
+        paramMap.put("systemId", systemId);
 
         System system = systemDao.findUniqureBy(paramMap);//systemDao.getEntity(systemId);
         if (system != null) {
@@ -1403,7 +1541,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return null;
     }
     @Override
-    public void addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard){
+    public ServiceInvoke addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard){
         //先检查是否有映射记录
 
         Map<String, String> paramMap = new HashMap<String, String>();
@@ -1415,7 +1553,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         paramMap.put("isStandard", isStandard);
         ServiceInvoke invoke = serviceInvokeDAO.findUniqureBy(paramMap);
         if(null != invoke){
-            return;
+            return invoke;
         }
         invoke = new ServiceInvoke();
         invoke.setServiceId(serviceId);
@@ -1424,5 +1562,11 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         invoke.setType(type);
         invoke.setIsStandard(isStandard);
         serviceInvokeDAO.insert(invoke);
+        return invoke;
     }
+
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,String systemId){
+        return null;
+    }
+
 }

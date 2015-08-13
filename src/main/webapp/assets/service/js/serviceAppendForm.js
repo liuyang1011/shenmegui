@@ -23,6 +23,9 @@ $(function(){
      * 服务新增保持按钮事件
      */
     var saveService = function saveService(){
+        if (!$("#serviceForm").form('validate')) {
+            return false;
+        }
         var service = {};
         service.serviceId = $('#serviceId').val();
         service.serviceName = $('#serviceName').val();
@@ -34,6 +37,9 @@ $(function(){
             service.processId = PROCESS_INFO.processId;
         }
         serviceManager.add(service,function(result){
+            if(!result){
+                alert("存在相同服务码");
+            }
             $('#w').window('close');
             $('.mxservicetree').tree('reload');
         });

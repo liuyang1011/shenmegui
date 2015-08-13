@@ -1,13 +1,28 @@
+<%@ page language="java" pageEncoding="utf-8" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript">
-
+$(document).ready(function () {
+            $.extend($.fn.validatebox.defaults.rules, {
+                english : {// 验证英语
+                        validator : function(value) {
+                            //return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                            return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
+                        },
+                        message : '请输入英文字母、下划线或数字'
+                    }
+            });
+        });
 </script>
-<form class="formui">
+<form id="serviceForm" class="formui">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <th>服务ID</th>
-    <td><input class="easyui-textbox" type="text" id="serviceId" ></td>
+    <th>服务码</th>
+    <td><input class="easyui-textbox" data-options="required:true, validType:['english']" type="text" id="serviceId" ></td>
   </tr>
   <tr>
     <th>服务名</th>

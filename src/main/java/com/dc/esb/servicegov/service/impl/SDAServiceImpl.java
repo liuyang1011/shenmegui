@@ -103,6 +103,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         fields.put("append3", "length");
         fields.put("append4", "metadataId");
         fields.put("append5", "required");
+        fields.put("append6", "remark");
+        fields.put("attributes", "seq");
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
 
@@ -210,5 +212,14 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     @Override
     public HibernateDAO<SDA, String> getDAO() {
         return sdaDAO;
+    }
+
+    public boolean deleteByOperationId(String OperationId,String serviceId){
+        Map map = new HashMap();
+        map.put("operationId",OperationId);
+        map.put("serviceId",serviceId);
+        List<SDA> list = sdaDAO.findBy(map);
+        sdaDAO.delete(list);
+        return true;
     }
 }

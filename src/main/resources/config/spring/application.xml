@@ -184,4 +184,6 @@
             </drools:jpa-persistence>
         </drools:configuration>
     </drools:ksession>
+
+    <aop:aspectj-autoproxy/>
 </beans>

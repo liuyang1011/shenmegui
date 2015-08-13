@@ -13,7 +13,7 @@
 <body>
 <fieldset>
     <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
         <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
@@ -23,8 +23,8 @@
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataName" id="metadataName">
             </td>
-            <th style="text-align:right">别名</th>
-            <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
+            <%--<th style="text-align:right">别名</th>--%>
+            <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
             </td>
 
         </tr>
@@ -33,7 +33,7 @@
             <td><input type="text" name="categoryWordId" id="categoryWordId"
                        class="easyui-combobox"
                        data-options="
-                        panelHeight:'auto',
+                        panelHeight:'300',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
 				 		 valueField: 'englishWord',
@@ -55,7 +55,7 @@
 </fieldset>
 <table id="metadataList" class="easyui-datagrid" title="元数据管理"
        data-options="rownumbers:true,singleSelect:false,url:'/metadata/query',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10,fitColumns:'false'" style="height:370px; width:auto;">
+				pageSize:10,fitColumns:'false'" style="height:400px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -166,14 +166,14 @@
                                   alert("请先选中一个元数据！");
                        }
             }
-        },
+        }/*,
         {
             text: '公共代码',
             iconCls: 'icon-cfp',
             handler: function () {
                 alert('移出')
             }
-        }, '-',
+        }*/, '-',
         {
             text: '导入',
             iconCls: 'icon-cfp',
@@ -226,6 +226,16 @@
 <script type="text/javascript">
     $(function () {
         $(".datagrid-cell-group").width("auto");
+        $("#categoryWordId").combobox({
+            panelHeight:'130px',
+            url:'/metadata/categoryWord',
+            method:'get',
+            valueField: 'englishWord',
+            textField: 'chineseWord',
+            onChange:function(newValue, oldValue){
+                this.value=newValue;
+            }
+        });
     })
 </script>
 </body>

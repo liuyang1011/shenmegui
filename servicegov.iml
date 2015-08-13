@@ -68,8 +68,6 @@
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-web:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-aspectj:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.6.12" level="project" />
-    <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.6.12" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-cas:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.jasig.cas.client:cas-client-core:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-ehcache:1.2.0" level="project" />
@@ -140,5 +138,11 @@
     <orderEntry type="library" name="Maven: org.jbpm:jbpm-bam:5.2.0.Final" level="project" />
     <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:jdk15:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-commons:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-tree:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-util:3.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.8.3" level="project" />
+    <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.6.11" level="project" />
   </component>
 </module>

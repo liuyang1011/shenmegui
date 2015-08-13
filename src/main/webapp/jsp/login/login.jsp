@@ -56,14 +56,7 @@
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
-        <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
-              <input type="checkbox"> 记住密码
-            </label>
-          </div>
-        </div><!-- /.col -->
-        <div class="col-xs-4">
+        <div class="col-xs-4" style="width:100%">
           <button type="submit" class="btn btn-primary btn-block btn-flat">登 录</button>
         </div><!-- /.col -->
       </div>
@@ -71,7 +64,9 @@
 
     <div class="social-auth-links text-center">
       <p>- OR -</p>
+      <!--
       <a href="#" class="btn btn-block btn-social  btn-flat"><i class="fa"></i> 游客登录 </a>
+      -->
     </div><!-- /.social-auth-links -->
 
   </div><!-- /.login-box-body -->

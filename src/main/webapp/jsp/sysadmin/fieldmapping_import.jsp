@@ -5,6 +5,9 @@
 <head>
 	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <title>字段映射导入</title>
+    <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
+    <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -20,6 +23,74 @@
         </form>
 
     </div>
+    <table id="tt" style="height:370px; width:auto;"
+           title="导入日志">
+        <thead>
+        <tr>
+            <th data-options="field:'',checkbox:true"></th>
+            <th field="type" width="20%" align="left">日志类型</th>
+            <th field="detail" width="60%">日志描述</th>
+            <th field="time" width="20%">日志日期</th>
+        </tr>
+        </thead>
+    </table>
+    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tt').datagrid({
+                rownumbers:true,
+                singleSelect:false,
+                url: '/log/getAll',
+                method: 'get',
+                pagination: true,
+                pageSize: 10,
+                toolbar:toolbar
+            });
+        })
+
+        var toolbar = [{
+            text: '删除',
+            iconCls: 'icon-remove',
+            handler: function () {
+                deleteObj();
+            }
+        }]
+
+        function deleteObj(){
+            var checkedItems = $('#tt').datagrid('getChecked');
+            if(checkedItems != null && checkedItems.length > 0){
+                if(confirm("确定要删除已选中的"+checkedItems.length+"项吗？一旦删除无法恢复！")){
+                    var logInfos = [];
+                    $.each(checkedItems, function(index, item) {
+                        logInfos.push(item.id);
+                    });
+                    var a = $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: "/log/delete",
+                        dataType: "json",
+                        data: {"logInfos":logInfos.join(",")},
+                        success: function(data){
+                            alert("操作成功");
+                            $('#tt').datagrid('reload');
+                        },
+                        complete:function(responce){
+                            var resText = responce.responseText;
+                            if(resText.toString().charAt(0) == "<"){
+                                alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+                            }
+                        }
+                    });
+//                    console.log(eval(a).responseText);
+                }
+            }else{
+                alert("没有选中项！");
+            }
+        }
+
+    </script>
 
    
 </body>

@@ -35,21 +35,21 @@
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
             <th>服务代码</th>
-            <td><input class="easyui-textbox" disabled="disabled"
+            <td><input class="easyui-textbox" readonly="true"
                        type="text" name="serviceId" value="${entity.serviceId }">
             </td>
             <th>服务名称</th>
-            <td><input class="easyui-textbox" disabled="disabled"
+            <td><input class="easyui-textbox" readonly="true"
                        type="text" name="serviceName" value="${entity.serviceName }">
             </td>
             <th>服务功能描述</th>
-            <td><input class="easyui-textbox" disabled="disabled"
+            <td><input class="easyui-textbox" readonly="true" style="width: 400px"
                        type="text" name="desc" value="${entity.desc }">
             </td>
         </tr>
         <tr>
             <th>服务备注</th>
-            <td><input class="easyui-textbox" disabled="disabled"
+            <td><input class="easyui-textbox" readonly="true"
                        type="text" name="remark" value="${entity.remark }">
             </td>
             <th>服务标签</th>
@@ -69,6 +69,7 @@
        data-options="
 			rownumbers:true,
 			singleSelect:false,
+			fitColumns:true,
 			url:'/operation/getOperationByServiceId/${entity.serviceId }',
 			method:'get',toolbar:toolbar,
 			pagination:true,
@@ -77,8 +78,6 @@
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
-
-
         <th data-options="field:'operationId'">服务场景</th>
         <th data-options="field:'operationName'">场景名称</th>
         <th data-options="field:'operationDesc'">功能描述</th>
@@ -320,7 +319,7 @@
                 var input2=$("<input>");
                 input2.attr("type","hidden");
                 input2.attr("name","type");
-                input2.attr("value","SERVICE");
+                input2.attr("value","service");
 
                 $("body").append(form);//将表单放置在web中
                 form.append(input1);
@@ -329,7 +328,53 @@
                 form.submit();//表单提交
 
             }
-        }
+        },
+        {
+            text: '导出配置文件',
+            iconCls: 'icon-qxfp',
+            handler: function () {
+
+                var checkedItems = $('#operationList').datagrid('getChecked');
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (checkedItems.length > 1) {
+                        alert("请只选中一个要导出的场景！");
+                        return false;
+                    } else {
+                        var url = "/export/";
+
+                    }
+                } else {
+                    alert("请选中要导出的场景！");
+                }
+
+            }
+        }/*,
+        {
+            text: '导出',
+            iconCls: 'icon-qxfp',
+            handler: function () {
+
+                var checkedItems = $('#operationList').datagrid('getChecked');
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (checkedItems.length > 1) {
+                        alert("请只选中一个要导出的场景！");
+                        return false;
+                    } else {
+                        uiinit.win({
+                            w: 500,
+                            iconCls: 'icon-add',
+                            title: "配置导出",
+                            modal: true,
+                            url: "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId
+                        });
+
+                    }
+                } else {
+                    alert("请选中要导出的场景！");
+                }
+
+            }
+        }*/
     ];
     //版本发布
     function releaseOp(desc, operationId) {

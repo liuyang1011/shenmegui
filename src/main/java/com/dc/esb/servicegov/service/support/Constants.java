@@ -15,11 +15,18 @@ public class Constants {
 
 	public static final String EXCEL_TEMPLATE_SERVICE =Constants.class.getResource("/").getPath() +"/template/excel_service_template.xls";
 	public static final String EXCEL_TEMPLATE_SERVICE_VIEW =Constants.class.getResource("/").getPath() +"/template/excel_service_view_template.xls";
+	public static final String EXCEL_TEMPLATE_INTERFACE =Constants.class.getResource("/").getPath() +"/template/excel_interface_template.xls";
 
     public static class Operation{
-    	public static final String OPT_STATE_UNAUDIT = "0";  //0：未审核， 1：审核通过，2：审核不通过
+    	public static final String OPT_STATE_UNAUDIT = "0";  //0：未审核（正常）， 1：审核通过，2：审核不通过,
     	public static final String OPT_STATE_PASS = "1";
     	public static final String OPT_STATE_UNPASS = "2";
+    	public static final String LIFE_CYCLE_STATE_TEST = "3";//测试
+    	public static final String LIFE_CYCLE_STATE_STOP = "4";//停止
+    	public static final String LIFE_CYCLE_STATE_MATAIN = "5";//维护
+    	public static final String LIFE_CYCLE_STATE_BASELINE = "6";//基线
+    	public static final String LIFE_CYCLESTATE_EXPIRE = "7";//失效
+//    	public static final String OPT_STATE_UNPASS = "8";
 
     	
     }

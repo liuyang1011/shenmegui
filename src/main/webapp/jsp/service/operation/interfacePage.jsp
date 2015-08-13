@@ -20,6 +20,23 @@
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
 	<script type="text/javascript">
+        $(function(){
+            var url = '/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }';
+            $("#invokeList").datagrid({
+                rownumbers:true,
+                singleSelect:true,
+                fixed:false,
+                url:url,
+                method:'get',
+                pagination:true,
+                toolbar: '#tb',
+                striped: true,
+                pageSize:10,
+                onClickRow : function(){
+                    relateInterface();
+                }
+            });
+        })
 	    //根据已选中的接口关系在“接口映射”区域更新接口信息
         function relateInterface(){
                     var item = $('#invokeList').treegrid('getSelected');
@@ -99,17 +116,7 @@
 			</table>
 		</div>
 		<div>
-			<table id="invokeList" class="easyui-datagrid"
-				data-options="	rownumbers:true,
-								singleSelect:true,
-								fixed:false,
-								url:'/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }',
-								method:'get',
-								pagination:true,
-								toolbar: '#tb',
-								striped: true,
-								pageSize:10"
-				style="height:200px; width:100%;">
+			<table id="invokeList" style="height:200px; width:100%;">
 				<thead>
 					<tr>
 						<th data-options="field:'invokeId',checkbox:true"></th>
@@ -128,9 +135,9 @@
 			</table>
 
 		</div>
-			<div id="tb" style="padding:5px;height:auto">
+			<%--<div id="tb" style="padding:5px;height:auto">
         			<a href="javascript:void(0);" onclick="relateInterface()" class="easyui-linkbutton" iconCls="icon-save" plain="true">关联映射结果</a>
-        	</div>
+        	</div>--%>
 	</fieldset>
 	<fieldset>
 	    <div>

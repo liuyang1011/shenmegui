@@ -42,6 +42,11 @@ public class Interface {
 
 	private String protocolName;
 
+	public static String[] simpleFields(){
+		String[] fields = {"interfaceId", "interfaceName"};
+		return fields;
+	}
+
 	@OneToMany(mappedBy = "relateInters",cascade = CascadeType.ALL)
 	private List<InterfaceHeadRelate> headRelates ;
 

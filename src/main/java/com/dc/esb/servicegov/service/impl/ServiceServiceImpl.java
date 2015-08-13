@@ -32,6 +32,9 @@ public class ServiceServiceImpl extends AbstractBaseService<com.dc.esb.servicego
     private OperationDAOImpl operationDAOImpl;
 
     @Autowired
+    private OperationServiceImpl operationServiceImpl;
+
+    @Autowired
     private SDADAOImpl sdaDAO;
 
     @Override
@@ -101,6 +104,15 @@ public class ServiceServiceImpl extends AbstractBaseService<com.dc.esb.servicego
             sdaMap = null;
         }
         return root;
+    }
+    @Override
+    public void deleteById(String id){
+        //TODO 删除服务前要删除场景
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("serviceId",id);
+        List<Operation> list = operationServiceImpl.findBy(map);
+        operationServiceImpl.deleteList(list);
+        super.deleteById(id);
     }
 
 }

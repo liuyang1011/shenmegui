@@ -12,6 +12,13 @@ var userManager = {
             dataType: "json",
             success: function(result) {
                 callBack(result);
+            },
+            complete:function(responce){
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+                    alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+                }
             }
         });
     },
@@ -47,6 +54,13 @@ var userManager = {
             "dataType" : "json",
             "success" : function(result) {
                 callBack(result);
+            },
+            "complete":function(responce){
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+                    alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+                }
             }
         });
     },
@@ -72,6 +86,13 @@ var userManager = {
             dataType: "json",
             success: function(result) {
                 callBack(result);
+            },
+            complete:function(responce){
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+                    alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+                }
             }
         });
     },
@@ -85,6 +106,13 @@ var userManager = {
             dataType: "json",
             success: function(result) {
                 callBack(result);
+            },
+            complete:function(responce){
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+                    alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+                }
             }
         });
     },

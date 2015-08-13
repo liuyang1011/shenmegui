@@ -33,6 +33,9 @@ public class Operation implements Serializable{
 	@Column(name = "STATE")
 	private String state;
 
+	@Column(name = "LIFE_CYCLE_STATE")
+	private String lifeCyscleState;
+
 	@Column(name = "OPT_USER")
 	private String optUser;
 
@@ -158,5 +161,11 @@ public class Operation implements Serializable{
 		this.deleted = deleted;
 	}
 
+	public String getLifeCyscleState() {
+		return lifeCyscleState;
+	}
 
+	public void setLifeCyscleState(String lifeCyscleState) {
+		this.lifeCyscleState = lifeCyscleState;
+	}
 }

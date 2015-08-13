@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.service.impl.PdfServiceImpl;
+import com.dc.esb.servicegov.vo.OperationPKVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -86,7 +87,63 @@ public class PdfExportController {
         deleteFile(pdfDir);
         return true;
     }
-
+    @RequestMapping(method = RequestMethod.POST, value = "/exportOperation", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
+        InputStream in = null;
+        OutputStream out = null;
+        File pdfDir = new File("tmppdf");
+        try {
+            File pdfFile = pfdServiceImpl.genderServicePdf(pkvo);
+            if (null != pdfFile && pdfFile.exists()) {
+                try {
+                    response.setContentType("application/pdf");
+                    response.addHeader(
+                            "Content-Disposition",
+                            "attachment;filename="
+                                    + new String(pdfFile.getName().getBytes(
+                                    "gbk"), "iso-8859-1"));
+                    in = new BufferedInputStream(
+                            new FileInputStream(pdfFile));
+                    out = new BufferedOutputStream(response.getOutputStream());
+                    long fileLength = pdfFile.length();
+                    byte[] cache = null;
+                    if (fileLength > Integer.MAX_VALUE) {
+                        cache = new byte[Integer.MAX_VALUE];
+                    } else {
+                        cache = new byte[(int) fileLength];
+                    }
+                    int i = 0;
+                    while ((i = in.read(cache)) > 0) {
+                        out.write(cache, 0, i);
+                    }
+                    out.flush();
+                } catch (Exception e) {
+                    log.error(e, e);
+                } finally {
+                    if (null != in) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            log.error(e, e);
+                        }
+                    }
+                    if (null != out) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            log.error(e, e);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error(e, e);
+        }
+        deleteFile(pdfDir);
+        return true;
+    }
     public boolean deleteFile(File file) {
         boolean deleteResult = true;
         if (file.isDirectory()) {
