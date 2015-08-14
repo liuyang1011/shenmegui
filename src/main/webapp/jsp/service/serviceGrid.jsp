@@ -43,7 +43,7 @@
                        type="text" name="serviceName" value="${entity.serviceName }">
             </td>
             <th>服务功能描述</th>
-            <td><input class="easyui-textbox" disabled="true" style="width: 400px"
+            <td><input class="easyui-textbox" disabled="true" style="width:300px;height: 50px"
                        type="text" name="desc" value="${entity.desc }">
             </td>
         </tr>

@@ -642,6 +642,20 @@ public class HibernateDAO<T, PK extends Serializable> {
         return criteria.list();
     }
 
+    public List findBy(String hql, Page page, final Object... values) {
+        // 创建查询
+        Query query = getSession().createQuery(hql);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                query.setParameter(i, values[i]);
+            }
+        }
+        query.setFirstResult(page.getFirstItemPos());
+        query.setMaxResults(page.getPageSize());
+        List list = query.list();
+        return list;
+    }
+
     public List findBy(String hql, Page page, List<SearchCondition> searchConds) {
 
         // 创建查询

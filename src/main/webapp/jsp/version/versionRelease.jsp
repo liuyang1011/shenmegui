@@ -15,6 +15,27 @@
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/jsp/version/version.js"></script>
 	<script type="text/javascript">
+		$(function(){
+			$('#operationList').datagrid({
+				rownumbers:true,
+				singleSelect:false,
+				url:'/version/operationList',
+				method:'get',
+				toolbar:toolbar,
+				pagination:true,
+				pageSize:10
+			});
+		});
+		$.extend($.fn.validatebox.defaults.rules, {
+			length : {
+				validator : function(value) {
+
+					return value.length >= 10;
+				},
+				message : '长度不少于十个字'
+			}
+		});
+
 		var toolbar = [ {
 			text : '移出',
 			iconCls : 'icon-cancel',
@@ -89,7 +110,7 @@
 					 -->
 					<th>版本描述</th>
 					<td><input class="easyui-textbox" type="text" id="desc" name="desc"
-						data-options="required:true">
+						data-options="required:true,validType:['length']">
 					</td>
 					<td><a href="javascript:void(0)" onclick="releaseBatch()" class="easyui-linkbutton" plain="true"
 						iconCls="icon-save">发布</a>
@@ -98,16 +119,7 @@
 		</table>
 		</form>
 	</fieldset>
-	<table id="operationList" class="easyui-datagrid" title="工作项发布清单(服务定义)"
-		data-options="
-				rownumbers:true,
-				singleSelect:false,
-				url:'/version/operationList',
-				method:'get',
-				toolbar:toolbar,
-				pagination:true,
-				pageSize:10"
-		style="height:365px; width:auto;">
+	<table id="operationList" class="easyui-datagrid" title="工作项发布清单(服务定义)" style="height:365px; width:auto;">
 		<thead>
 			<tr>
 				<th data-options="field:'productid',checkbox:true"></th>

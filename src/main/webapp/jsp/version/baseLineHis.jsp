@@ -9,7 +9,37 @@
 <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
 <link href="/resources/css/css.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="/jsp/version/version.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/resources/js/ui.js"></script>
 <script>
+	$(function(){
+		$("#baseLineList").datagrid({
+			rownumbers:true,
+			singleSelect:true,
+			url:'/baseLine/getBaseLine',
+			method:'get',
+			pagination:true,
+			pageSize:10,
+			onClickRow : function(){
+				var row = $("#baseLineList").datagrid("getSelected");
+				if(row){
+					//根据基线id获取基线版本中服务信息
+					$.ajax({
+						type : "get",
+						async : false,
+						url : "/baseLine/getBLOperationHiss",
+						dataType : "json",
+						data : {"baseId" : row.baseId},
+						success : function(data) {
+							$("#operationList").datagrid("loadData", data);
+						}
+					});
+
+				}
+			}
+		});
+	})
 	function getBaseLine(){
 		var code = $("#code").textbox("getValue");
 		var blDesc = $("#blDesc").textbox("getValue");
@@ -91,14 +121,7 @@
 	 </table>
 	</div>
 	<div>
-		<table id="baseLineList" class="easyui-datagrid"
-				data-options="	rownumbers:true,
-								singleSelect:true,
-								url:'/baseLine/getBaseLine',
-								method:'get',
-								pagination:true,
-								pageSize:10"
-				style="height:200px; width:100%;">
+		<table id="baseLineList" style="height:200px; width:100%;">
 				<thead>
 					<tr>
 						<th data-options="field:'id',checkbox:true"></th>
@@ -224,9 +247,6 @@
 				});	
 		}
 	</script> 
-<script type="text/javascript" src="/resources/js/jquery.min.js"></script> 
-<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/resources/js/ui.js"></script>
 
 </body>
 </html>

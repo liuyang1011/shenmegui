@@ -504,11 +504,11 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             }
 
             //约束条件
-            cellObj = sheetRow.getCell(10);
+            /*cellObj = sheetRow.getCell(10);
             if(cellObj != null){
                 String cell = tools.getCellContent(cellObj);
                 sda.setConstraint(isNull(cell));
-            }
+            }*/
 
             cellObj = sheetRow.getCell(11);
             if (cellObj != null) {
@@ -702,12 +702,12 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 }
             }
 
-            //约束条件
+            /*//约束条件
             cellObj = sheetRow.getCell(10);
             if(cellObj != null){
                 String cell = tools.getCellContent(cellObj);
                 sda.setConstraint(isNull(cell));
-            }
+            }*/
 
             cellObj = sheetRow.getCell(11);
             if (cellObj != null) {

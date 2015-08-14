@@ -275,8 +275,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return operationDAOImpl.auditOperation(state, operationIds);
     }
     
-    public List<Operation> getReleased(){
-    	return operationDAOImpl.getReleased();
+    public List<Operation> getReleased(Page page){
+    	return operationDAOImpl.getReleased(page);
     }
     public boolean judgeByMetadataId(String metadataId){
         //查找场景列表
