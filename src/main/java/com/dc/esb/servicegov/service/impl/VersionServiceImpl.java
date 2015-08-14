@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +85,9 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 		
 		ov.setCode(releaseVersionCode(ov.getCode()));
 		ov.setOptType(Constants.Version.OPT_TYPE_RELEASE);
+		ov.setOptDate(DateUtils.format(new Date()));
+		String userName = (String) SecurityUtils.getSubject().getPrincipal();
+		ov.setOptUser(userName);
 		daoImpl.save(ov);
 		
 		return nv.getAutoId();

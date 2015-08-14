@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.dc.esb.servicegov.util.DateUtils;
+import org.apache.shiro.SecurityUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -74,8 +77,9 @@ public class OperationHis implements Serializable{
 		this.operationId = operation.getOperationId();
 		this.operationName = operation.getOperationName();
 		this.operationRemark = operation.getOperationRemark();
-		this.optDate = operation.getOptDate();
-		this.optUser = operation.getOptUser();
+		this.optDate = DateUtils.format(new Date());
+		String userName = (String) SecurityUtils.getSubject().getPrincipal();
+		this.optUser = userName;
 		this.serviceId = operation.getServiceId();
 		this.state = operation.getState();
 	}
