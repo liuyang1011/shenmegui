@@ -8,4 +8,5 @@ import java.util.List;
 public interface InterfaceService  extends BaseService<Interface, String> {
     public Interface getInterfaceById(String hql,String interfaceId);
     public List<Interface> getBySystemId(String systemId);
+    public List<Interface> findByConditions(String condition);
 }

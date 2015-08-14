@@ -119,7 +119,7 @@
 			<table id="invokeList" style="height:200px; width:100%;">
 				<thead>
 					<tr>
-						<th data-options="field:'invokeId',checkbox:true"></th>
+						<%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
 						<th data-options="field:'systemId', width:50">系统id</th>
 						<th data-options="field:'systemChineseName', width:150">系统名称</th>
 						<th data-options="field:'isStandard', width:50"
@@ -152,7 +152,7 @@
                 </tr>
                 <tr>
                     <td colspan=2 width="100%">
-                        <div style="width:45%;padding:1px; margin-top:0; float:left">
+                        <div style="width:40%;padding:1px; margin-top:0; float:left">
                             <table id="sda" title="sda" class="easyui-treegrid" id="tg" style=" width:auto;"
                                  data-options="
                                 iconCls: 'icon-ok',
@@ -169,10 +169,10 @@
                                         <tr>
                                             <th data-options="field:'id',checkbox:true"></th>
                                             <th data-options="field:'text',width:180,editor:'text'">字段名</th>
-                                            <th data-options="field:'append1',width:60,align:'right',editor:'text'">字段别名</th>
+                                            <th data-options="field:'append1',width:130,align:'right',editor:'text'">字段别名</th>
                                             <th data-options="field:'append2',width:80,editor:'text'">类型</th>
-                                            <%--<th data-options="field:'append3',width:80,editor:'text'">长度</th>--%>
-                                            <th data-options="field:'append4',width:80,editor:'text'">元数据</th>
+                                            <%--<th data-options="field:'append3',width:80,editor:'text'">长度</th>
+                                            <th data-options="field:'append4',width:80,editor:'text'">元数据</th>--%>
                                         </tr>
                                     </thead>
                             </table>
@@ -182,7 +182,7 @@
                              <tr><td> <a href="#" title="元数据关联" class="easyui-linkbutton"  iconCls="icon-select-add" onClick="replaceMetadataId()"></a></td></tr>
                             </table>
                         </div>
-                        <div style="width:50%;padding:1px; margin-top:0; float:right">
+                        <div style="width:55%;padding:1px; margin-top:0; float:right">
                                                     <table title="接口定义信息" id="ida"
                                                             class="easyui-treegrid"
                                                             data-options="

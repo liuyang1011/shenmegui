@@ -57,7 +57,7 @@ public class SDAHis implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String desc;
 	
-	@Column(name = "REMARK")
+	@Column(name = "REMARK", length = 500)
 	private String remark;
 	
 	@Column(name = "HEAD_ID")

@@ -15,6 +15,15 @@
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/jsp/version/version.js"></script>
 	<script type="text/javascript">
+		$.extend($.fn.validatebox.defaults.rules, {
+			length : {
+				validator : function(value) {
+
+					return value.length >= 10;
+				},
+				message : '长度不少于十个字'
+			}
+		});
 		var toolbar = [ {
 			text : '移出',
 			iconCls : 'icon-cancel',
@@ -80,7 +89,7 @@
 					</td>
 					<th>版本描述</th>
 					<td><input class="easyui-textbox" type="text" id="blDesc" name="blDesc"
-						data-options="required:true">
+						data-options="required:true,validType:['length']">
 					</td>
 					<td><a href="javascript:void(0)" onclick="release()" class="easyui-linkbutton" plain="true"
 						iconCls="icon-save">发布</a>

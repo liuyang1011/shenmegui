@@ -61,9 +61,14 @@ public class ExcelExportController {
             }
         }
         catch (UnsupportedEncodingException e1)
-        {}
+        {
+            e1.printStackTrace();
+        }
         catch (Exception e)
-        {}
+        {
+            //TODO catch后没做任何处理，也没print，抛错后找不到地方
+            e.printStackTrace();
+        }
         finally
         {
             try
@@ -103,9 +108,13 @@ public class ExcelExportController {
             }
         }
         catch (UnsupportedEncodingException e1)
-        {}
+        {
+            e1.printStackTrace();
+        }
         catch (Exception e)
-        {}
+        {
+            e.printStackTrace();
+        }
         finally
         {
             try
@@ -184,18 +193,19 @@ public class ExcelExportController {
     public
     @ResponseBody
     boolean exportInterface(HttpServletRequest request, HttpServletResponse response,
-                          String id, String type,String systemId) {
+                          String ids, String type,String systemId) {
         String codedFileName = null;
         OutputStream fOut = null;
         try
         {
             // 进行转码，使其支持中文文件名
             response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode(type+"_"+id, "UTF-8");
+            codedFileName = java.net.URLEncoder.encode(type, "UTF-8");
+            String[] interfaceIds = ids.split(",");
             response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
             // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
             // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportInterfaceImpl.genderExcel(id, type, systemId);
+            HSSFWorkbook workbook = excelExportInterfaceImpl.genderExcel(interfaceIds, type, systemId);
             fOut = response.getOutputStream();
             if(workbook != null){
                 workbook.write(fOut);
@@ -292,10 +302,14 @@ public class ExcelExportController {
                 workbook.write(fOut);
             }
         }
-        catch (UnsupportedEncodingException e1)
-        {}
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
         catch (Exception e)
-        {}
+        {
+            e.printStackTrace();
+        }
         finally
         {
             try

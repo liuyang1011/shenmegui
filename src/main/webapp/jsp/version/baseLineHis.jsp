@@ -9,7 +9,53 @@
 <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
 <link href="/resources/css/css.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="/jsp/version/version.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/resources/js/ui.js"></script>
 <script>
+	var operationflag = false;
+	var invokeflag = false;
+	$(function(){
+		$("#baseLineList").datagrid({
+			rownumbers:true,
+			singleSelect:true,
+			url:'/baseLine/getBaseLine',
+			method:'get',
+			pagination:true,
+			pageSize:10,
+			onClickRow : function(){
+				var row = $("#baseLineList").datagrid("getSelected");
+				if(row && operationflag){
+					//根据基线id获取基线版本中服务信息
+					$.ajax({
+						type : "get",
+						async : false,
+						url : "/baseLine/getBLOperationHiss",
+						dataType : "json",
+						data : {"baseId" : row.baseId},
+						success : function(data) {
+							$("#operationList").datagrid("loadData", data);
+						}
+					});
+
+				}
+				if(row && invokeflag){
+					//根据基线id获取基线版本中服务信息
+					$.ajax({
+						type : "get",
+						async : false,
+						url : "/baseLine/getBLInvoke",
+						dataType : "json",
+						data : {"baseId" : row.baseId},
+						success : function(data) {
+							$("#invokeList").datagrid("loadData", data);
+						}
+					});
+
+				}
+			}
+		});
+	})
 	function getBaseLine(){
 		var code = $("#code").textbox("getValue");
 		var blDesc = $("#blDesc").textbox("getValue");
@@ -27,10 +73,10 @@
 	}
 	//服务场景列表展开事件
 	function operationExpand(){
+		operationflag = true;
 		var row = $("#baseLineList").datagrid("getSelected");
 		if(row){
 			//根据基线id获取基线版本中服务信息
-			alert(row.baseId);
 			$.ajax({
 				type : "get",
 				async : false,
@@ -50,6 +96,7 @@
 	}
 	
 	function invokeExpand(){
+		invokeflag = true;
 		var row = $("#baseLineList").datagrid("getSelected");
 		if(row){
 			//根据基线id获取基线版本中服务信息
@@ -92,14 +139,7 @@
 	 </table>
 	</div>
 	<div>
-		<table id="baseLineList" class="easyui-datagrid"
-				data-options="	rownumbers:true,
-								singleSelect:true,
-								url:'/baseLine/getBaseLine',
-								method:'get',
-								pagination:true,
-								pageSize:10"
-				style="height:200px; width:100%;">
+		<table id="baseLineList" style="height:200px; width:100%;">
 				<thead>
 					<tr>
 						<th data-options="field:'id',checkbox:true"></th>
@@ -116,7 +156,7 @@
 			data-options="
 			rownumbers:true,
 			singleSelect:false,
-			url:'datagrid_data1.json',
+			url:'',
 			collapsible: true,
 			collapsed:true,
 			method:'get',
@@ -124,6 +164,9 @@
 				pageSize:10,
 				onExpand:function(){
 					operationExpand();
+				},
+				onCollapse:function(){
+					operationflag = false;
 				}
 				" style="height:365px; width:auto;">
   <thead>
@@ -150,12 +193,15 @@
 				singleSelect:false,
 				collapsible: true,
 				collapsed:true,
-				url:'datagrid_data1.json',
+				url:'',
 				method:'get',
 				pagination:true,
 				pageSize:10,
 				onExpand:function(){
 					invokeExpand();
+				},
+				onCollapse:function(){
+					invokeflag = false;
 				}
 				" style="height:365px; width:auto;">
   <thead>
@@ -182,7 +228,7 @@
 				singleSelect:false,
 				collapsible: true,
 				collapsed:true,
-				url:'datagrid_data1.json',
+				url:'',
 				method:'get',
 				pagination:true,
 				pageSize:10" style="height:365px; width:auto;">
@@ -225,9 +271,6 @@
 				});	
 		}
 	</script> 
-<script type="text/javascript" src="/resources/js/jquery.min.js"></script> 
-<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/resources/js/ui.js"></script>
 
 </body>
 </html>

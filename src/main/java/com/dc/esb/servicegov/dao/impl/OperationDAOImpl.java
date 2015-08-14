@@ -1,11 +1,10 @@
 package com.dc.esb.servicegov.dao.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.entity.ServiceCategory;
 import com.dc.esb.servicegov.util.DateUtils;
@@ -38,9 +37,9 @@ public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
 		return false;
 	}
 
-	public List<Operation> getReleased() {
-		String hql = " from Operation a where a.state=? and a.version.optType !=?";
-		List<Operation> list = find(hql, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE);
+	public List<Operation> getReleased(Page page) {
+		String hql = "select a from Operation a where a.state=? and a.version.optType !=?";
+		List<Operation> list = findBy(hql.toString(), page,Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE);
 		return list;
 	}
 

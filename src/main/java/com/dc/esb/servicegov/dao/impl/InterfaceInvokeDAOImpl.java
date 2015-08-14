@@ -26,6 +26,7 @@ public class InterfaceInvokeDAOImpl extends HibernateDAO<InterfaceInvoke, String
     }
     public List<Object[]> getVOBySO(String serviceId, String operationId){
         String hql =  " select si.type, si.interfaceId from " +
+//                ServiceInvoke.class.getName() + " as si where si.serviceId= ? and si.operationId=? and si.interfaceId is not null and si.interfaceId != '' group by si.interfaceId, si.type";
                 ServiceInvoke.class.getName() + " as si where si.serviceId= ? and si.operationId=? and si.interfaceId is not null group by si.interfaceId, si.type";
         List<Object[]> list = this.findFree(hql, serviceId, operationId);
 

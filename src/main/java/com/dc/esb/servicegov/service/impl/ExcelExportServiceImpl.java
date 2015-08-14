@@ -189,8 +189,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 row.createCell(2).setCellValue(operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
                 row.createCell(3).setCellValue(operation.getOperationId());//场景id
                 row.createCell(4).setCellValue(operation.getOperationName());//场景名称
-                row.createCell(5).setCellValue(vo.getConsumerIds());//调用方
-                row.createCell(6).setCellValue(vo.getProviderIds());//提供者
+                row.createCell(5).setCellValue(vo.getConsumers());//调用方
+                row.createCell(6).setCellValue(vo.getProviders());//提供者
                 String systemAb = Constants.INVOKE_TYPE_CONSUMER.equals(vo.getType())? "Consumer" : "Provider";
                 row.createCell(7).setCellValue(systemAb);//接口方向
                 row.createCell(8).setCellValue(vo.getProviderIds());//接口提供系统ID
@@ -597,6 +597,11 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 continue;
             }
             for (Service service : services) {
+                //debug 测试
+                int i = 0;
+                if(service.getServiceName().equals("存款信息查询")){
+                    i++;
+                }
                 String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
 
                 List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());
@@ -841,6 +846,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * @return
      */
     public List<InterfaceInvokeVO> getVOList(String serviceId, String operationId){
+        //TODO 提供方和调用方全是标准接口的场景怎么办？
+
         List<Object[]> list = interfaceInvokeDAO.getVOBySO(serviceId, operationId);
         List<InterfaceInvokeVO> result = new ArrayList<InterfaceInvokeVO>();
         for(Object[] strs : list){
