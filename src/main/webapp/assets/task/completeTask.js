@@ -11,7 +11,9 @@ $(function () {
 });
     $("#completeTaskBtn").click(function () {
         var task = {};
-        task.taskId = taskId;
+
+        task.taskId = parent.PROCESS_INFO.taskId;
+
         var nextUser = $("#nextUser").combobox('getValue');
         task.userId = "admin";
         var params = {};

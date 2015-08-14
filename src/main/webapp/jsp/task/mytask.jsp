@@ -191,7 +191,6 @@
                         else {
                             checkedItem = checkedItems[0];
                             Global.taskId = checkedItem.id;
-                            parent.PROCESS_INFO.processId = checkedItem.id;
                             Global.processInstanceId = checkedItem.processInstanceId;
                             Global.taskName = checkedItem.name;
                             var task = {};
@@ -199,6 +198,11 @@
                             task.taskId = Global.taskId;
                             task.userId = $("#userId").text();;
                             task.name = Global.taskName;
+                            task.name = task.name.replace(/(^\s*)|(\s$)/g,'');
+                            parent.PROCESS_INFO.processId = checkedItem.id;
+                            parent.PROCESS_INFO.taskName = task.name;
+                            parent.PROCESS_INFO.taskId = task.taskId;
+                            parent.changeTaskName();
                             taskManager.processTask(task,function(result){
                                 if(task.name=='创建元数据'){
                                     $("#w").window("close");
@@ -216,6 +220,7 @@
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(4);
+                                    alert("请在右侧服务目录菜单中新增服务。");
                                 }
                                 if(task.name=="创建公共代码"){
                                     var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/task/common.jsp?processId='+task.processInstanceId+'&taskId='+task.taskId+'" style="width:100%;height:100%;"></iframe>';
@@ -226,6 +231,20 @@
                                     $('#taskTable').datagrid('reload');
                                     var content = '<iframe scrolling="auto" frameborder="0"  src="/process/sgenum/sgenumAuditByTask/process/'+task.processInstanceId+'/task/'+task.taskId+'" style="width:100%;height:100%;"></iframe>';
                                     parent.addTab("创建公共代码", content);
+                                }
+                                if(task.name=="接口需求上传"){
+                                    $("#w").window("close");
+                                    $('#taskTable').datagrid('reload');
+                                    parent.SYSMENU.changeLeftMenu(6);
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp" style="width:100%;height:100%;"></iframe>';
+                                    parent.addTab("接口需求文件上传", content);
+                                    alert("请上传接口需求文档。");
+                                }
+                                if(task.name=="接口定义"){
+                                    $("#w").window("close");
+                                    $('#taskTable').datagrid('reload');
+                                    parent.SYSMENU.changeLeftMenu(6);
+                                    alert("请在右侧系统菜单中右键新增接口。");
                                 }
 
                             });

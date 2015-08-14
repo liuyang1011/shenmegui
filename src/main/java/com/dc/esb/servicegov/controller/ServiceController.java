@@ -43,7 +43,7 @@ public class ServiceController {
     @ResponseBody
     List<ServiceTreeViewBean> getAllTreeBean() {
         List<ServiceCategory> serviceCategoryList = serviceCategoryServiceImpl.getAll();
-        List<Service> serviceList = serviceServiceImpl.getAll("serviceId",true);
+        List<Service> serviceList = serviceServiceImpl.getAll("serviceId", true);
         return getTreeJson(serviceCategoryList, serviceList);
     }
 
@@ -55,9 +55,9 @@ public class ServiceController {
         //TODO 新增相同id就被覆盖了
         try {
             serviceServiceImpl.insert(service);
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
-        //java.sql.BatchUpdateException
+            //java.sql.BatchUpdateException
             return false;
         }
 
@@ -173,7 +173,12 @@ public class ServiceController {
                 if (per.getId().equals(service.getCategoryId())) {
                     ServiceTreeViewBean treeViewBean = new ServiceTreeViewBean();
                     treeViewBean.setId(service.getServiceId());
-                    treeViewBean.setText(service.getServiceId().substring(service.getServiceId().length()-3,service.getServiceId().length())+ service.getServiceName());
+                    String serviceId = service.getServiceId();
+                    if (serviceId.length() > 3) {
+                        treeViewBean.setText(service.getServiceId().substring(service.getServiceId().length() - 3, service.getServiceId().length()) + service.getServiceName());
+                    }else{
+                        treeViewBean.setText(service.getServiceName());
+                    }
                     treeViewBean.setType("service");
                     treeViewBean.setService(service);
                     List<ServiceTreeViewBean> children = per.getChildren();
@@ -256,7 +261,7 @@ public class ServiceController {
         String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
         List<ServiceCategory> list = serviceCategoryServiceImpl.find(hql);
         return list;
-}
+    }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
