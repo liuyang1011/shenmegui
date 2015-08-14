@@ -150,6 +150,7 @@ var serviceUIHelper = {
             alert("请选择服务！");
             return false;
         }
+        var type;
         var id = node.id;
         if(node.domId == '_easyui_tree_1'){
             type = "root";

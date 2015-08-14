@@ -76,7 +76,7 @@
     <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
 
 </div>
-<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:100%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
 
 <%
     }
@@ -98,6 +98,18 @@
 
 </div>
 
-<ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:100%"
+<ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:90%"
     data-options="url:'/interface/getLeftTree/all',method:'get',animate:true" style="overflow:auto;"></ul>
+
+<%
+    }
+    if (mid.equals("11")) {
+%>
+<ul id="menu-tree" style="overflow:scroll;height:100%">
+    <li><a href="javascript:;" mid="11.1">统计报表</a>
+        <ul>
+            <li><a href="javascript:;" class="openable" mid="11.2">版本发布</a></li>
+        </ul>
+    </li>
+</ul>
 <%}%>

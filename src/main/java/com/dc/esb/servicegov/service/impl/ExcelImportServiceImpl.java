@@ -1000,9 +1000,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                 return;
 
             }
+        }else{
+            headDB = new InterfaceHead();
         }
 
-        headDB = new InterfaceHead();
         headDB.setHeadName(headName);
         headDB.setHeadDesc(headName);
         interfaceHeadDAO.save(headDB);
@@ -1011,6 +1012,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         relate.setHeadId(headDB.getHeadId());
         relate.setInterfaceId(inter.getInterfaceId());
         interfaceHeadRelateDAO.save(relate);
+
         String idaheadId = headDB.getHeadId();
 
 

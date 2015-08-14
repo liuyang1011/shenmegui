@@ -95,25 +95,15 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public List<TreeNode> genderSDATree(String serviceId, String operationId) {
         List<SDA> list = getSDAListBySO(serviceId, operationId);
-        /*List<SdaTreeBean> list1 = new ArrayList<SdaTreeBean>();
+        List<SDABean> tempList = new ArrayList<SDABean>();
+        //TODO 台行  类型和长度合并显示
         for(SDA per : list){
-            SdaTreeBean sda = new SdaTreeBean();
-            sda.setSdaId(per.getSdaId());
-            sda.setStructName(per.getStructName());
-            sda.setStructAlias(per.getStructAlias());
-            String type = per.getType();
-            if(null != type && !"ARRAY".equals(type)){
-                sda.setType(type + "(" + per.getLength() + ")");
-            }else{
-                sda.setType(type);
+            SDABean sdaBean = new SDABean(per);
+            if(null != sdaBean.getType() && !"STRUCT".equals(sdaBean.getType()) && !"ARRAY".equals(sdaBean.getType())){
+                sdaBean.setType(sdaBean.getType() + "("+sdaBean.getLength()+")");
             }
-            sda.setLength(per.getLength());
-            sda.setMetadataId(per.getMetadataId());
-            sda.setRequired(per.getRequired());
-            sda.setRemark(per.getRemark());
-            sda.setSeq(per.getSeq());
-            list1.add(sda);
-        }*/
+            tempList.add(sdaBean);
+        }
         Map<String, String> fields = new HashMap<String, String>();
         fields.put("id", "sdaId");
         fields.put("text", "structName");
@@ -127,46 +117,68 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
 
-        List<TreeNode> nodeList = eUtil.convertTree(list, fields);
+        List<TreeNode> nodeList = eUtil.convertTree(tempList, fields);
         return nodeList;
 
     }
 
-    public static class SdaTreeBean {
+    public static class SDABean {
+
         private String sdaId;
+
         private String structName;
+
         private String structAlias;
-        private String type;
-        private String length;
+
         private String metadataId;
-        private String required;
-        private String remark;
-        private int seq;
+
+        private int seq = 0;
+
         private String parentId;
+
+        private String serviceId;
+
+        private String optUser;
+
+        private String optDate;
+
         private String operationId;
 
-        public String getParentId() {
-            return parentId;
-        }
+        private String desc;
 
-        public void setParentId(String parentId) {
-            this.parentId = parentId;
-        }
+        private String remark;
 
-        public String getOperationId() {
-            return operationId;
-        }
+        private String headId;
 
-        public void setOperationId(String operationId) {
-            this.operationId = operationId;
-        }
+        private String version;
 
-        public String getLength() {
-            return length;
-        }
+        private String type;
 
-        public void setLength(String length) {
-            this.length = length;
+        private String length;
+
+        private String required;
+
+        private String argType;
+
+        public SDABean(SDA sda){
+            setSdaId(sda.getSdaId());
+            setStructName(sda.getStructName());
+            setStructAlias(sda.getStructAlias());
+            setMetadataId(sda.getMetadataId());
+            setSeq(sda.getSeq());
+            setParentId(sda.getParentId());
+            setServiceId(sda.getServiceId());
+            setOptUser(sda.getOptUser());
+            setOptDate(sda.getOptDate());
+            setOperationId(sda.getOperationId());
+            setDesc(sda.getDesc());
+            setRemark(sda.getRemark());
+            setHeadId(sda.getHeadId());
+            setVersion(sda.getVersion());
+            setType(sda.getType());
+            setLength(sda.getLength());
+            setRequired(sda.getRequired());
+            setArgType(sda.getArgType());
         }
 
         public String getSdaId() {
@@ -193,14 +205,6 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             this.structAlias = structAlias;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
         public String getMetadataId() {
             return metadataId;
         }
@@ -209,12 +213,60 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             this.metadataId = metadataId;
         }
 
-        public String getRequired() {
-            return required;
+        public int getSeq() {
+            return seq;
         }
 
-        public void setRequired(String required) {
-            this.required = required;
+        public void setSeq(int seq) {
+            this.seq = seq;
+        }
+
+        public String getParentId() {
+            return parentId;
+        }
+
+        public void setParentId(String parentId) {
+            this.parentId = parentId;
+        }
+
+        public String getServiceId() {
+            return serviceId;
+        }
+
+        public void setServiceId(String serviceId) {
+            this.serviceId = serviceId;
+        }
+
+        public String getOptUser() {
+            return optUser;
+        }
+
+        public void setOptUser(String optUser) {
+            this.optUser = optUser;
+        }
+
+        public String getOptDate() {
+            return optDate;
+        }
+
+        public void setOptDate(String optDate) {
+            this.optDate = optDate;
+        }
+
+        public String getOperationId() {
+            return operationId;
+        }
+
+        public void setOperationId(String operationId) {
+            this.operationId = operationId;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
         }
 
         public String getRemark() {
@@ -225,12 +277,52 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             this.remark = remark;
         }
 
-        public int getSeq() {
-            return seq;
+        public String getHeadId() {
+            return headId;
         }
 
-        public void setSeq(int seq) {
-            this.seq = seq;
+        public void setHeadId(String headId) {
+            this.headId = headId;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getLength() {
+            return length;
+        }
+
+        public void setLength(String length) {
+            this.length = length;
+        }
+
+        public String getRequired() {
+            return required;
+        }
+
+        public void setRequired(String required) {
+            this.required = required;
+        }
+
+        public String getArgType() {
+            return argType;
+        }
+
+        public void setArgType(String argType) {
+            this.argType = argType;
         }
     }
 

@@ -102,6 +102,19 @@ public class OperationController {
         result.put("rows", rows);
         return result;
     }
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/getByServiceId")
+    @ResponseBody
+    public List<Operation> getByServiceId(String serviceId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<Operation> rows;
+        if(StringUtils.isNotEmpty(serviceId)){
+            rows = operationServiceImpl.findBy("serviceId", serviceId);
+        }else {
+            rows = operationServiceImpl.getAll();
+        }
+        return rows;
+    }
 
     /**
      * 获取服务{serviceId}的待审核场景列表

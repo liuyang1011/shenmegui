@@ -136,7 +136,6 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		List<ServiceInvoke> list = serviceInvokeDAOImpl.findBy(map);
 
 		for (ServiceInvoke invoke : list){
-			serviceInvokeDAOImpl.delete(invoke);
 			//删除interface_invoke表。（调用关系）
 			map = new HashMap();
 			map.put("providerInvokeId",invoke.getInvokeId());
@@ -150,6 +149,7 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 			if(list3.size()>0){
 				interfaceInvokeDAO.delete(list3);
 			}
+			serviceInvokeDAOImpl.delete(invoke);
 		}
 		return true;
 //		String hql = "delete from ServiceInvoke t where t.operationId = '"+OperationId+"' and t.serviceId = '"+serviceId+"'";

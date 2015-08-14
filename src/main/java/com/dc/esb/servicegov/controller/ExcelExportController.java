@@ -59,9 +59,14 @@ public class ExcelExportController {
             }
         }
         catch (UnsupportedEncodingException e1)
-        {}
+        {
+            e1.printStackTrace();
+        }
         catch (Exception e)
-        {}
+        {
+            //TODO catch后没做任何处理，也没print，抛错后找不到地方
+            e.printStackTrace();
+        }
         finally
         {
             try
@@ -101,9 +106,13 @@ public class ExcelExportController {
             }
         }
         catch (UnsupportedEncodingException e1)
-        {}
+        {
+            e1.printStackTrace();
+        }
         catch (Exception e)
-        {}
+        {
+            e.printStackTrace();
+        }
         finally
         {
             try

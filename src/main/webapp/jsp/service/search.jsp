@@ -35,7 +35,15 @@
                  valueField:'serviceId',
                  onChange:function(newValue, oldValue){
 							this.value=newValue;
-							$('#serviceName').combobox('setValue',newValue);
+							var values = $('#serviceName').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.serviceId) == $.trim(newValue)){
+							        $('#serviceName').combobox('setValue',newValue);
+							        }
+							 });
+							 var urlpath = '/operation/getByServiceId?serviceId='+newValue;
+							 $('#operationId').combobox({url : urlpath});
+							 $('#operationName').combobox({url : urlpath});
 				    }
                  "
                   >
@@ -47,8 +55,14 @@
                  url:'/service/getAll',
                  textField:'serviceName',
                  valueField:'serviceId',
-                 onChange:function(newValue, oldValue){
-							$('#serviceId').combobox('setValue',newValue);
+                  onChange:function(newValue, oldValue){
+							this.value=newValue;
+							var values = $('#serviceId').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.serviceId) == $.trim(newValue) || $.trim(item.serviceName) == $.trim(newValue)){
+							        $('#serviceId').combobox('setValue',item.serviceId);
+							        }
+							 });
 				    }
                  "
               >
@@ -68,12 +82,18 @@
       <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:100px"
                  data-options="
                  method:'get',
-                 url:'/operation/getServiseById/1',
+                 url:'/operation/getByServiceId',
                  textField:'operationId',
                  valueField:'operationId',
                  onChange:function(newValue, oldValue){
                          this.value=newValue;
-							$('#operationName').combobox('setValue',newValue);
+							var values = $('#operationName').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.operationId) == $.trim(newValue)){
+							        $('#operationName').combobox('setValue',newValue);
+							        }
+							 });
+
 				    }
                  "
               >
@@ -87,7 +107,14 @@
                  textField:'operationName',
                  valueField:'operationId',
                  onChange:function(newValue, oldValue){
-							$('#operationId').combobox('setValue',newValue);
+                        this.value=newValue;
+                         var values = $('#operationId').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.operationId) == $.trim(newValue)){
+							        $('#operationId').combobox('setValue',newValue);
+							        }
+							 });
+
 				    }
                  "
                 >
@@ -298,6 +325,14 @@
       "operationState":$("#operationState").combobox("getValue")
     }
     $("#resultList").datagrid('options').queryParams = params;
+     var p = $("#resultList").datagrid('getPager');
+      var total =  $(p).pagination("options").total;
+      if(total < 100){
+          total = 100;
+      }
+      $(p).pagination({
+          pageList: [10,20,50,total]
+      });
     $("#resultList").datagrid('reload');
   }
 

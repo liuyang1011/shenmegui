@@ -17,6 +17,7 @@
             function exportServiceView(){
 				var t = $('#categoryId').combotree('tree');	// get the tree object
                 var node = t.tree('getSelected');		// get selected node
+				var type;
             	if(node == null || node == ''){
             		alert("请选择服务！");
             		return false;

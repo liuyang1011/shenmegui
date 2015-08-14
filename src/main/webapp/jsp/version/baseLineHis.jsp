@@ -13,6 +13,8 @@
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/resources/js/ui.js"></script>
 <script>
+	var operationflag = false;
+	var invokeflag = false;
 	$(function(){
 		$("#baseLineList").datagrid({
 			rownumbers:true,
@@ -23,7 +25,7 @@
 			pageSize:10,
 			onClickRow : function(){
 				var row = $("#baseLineList").datagrid("getSelected");
-				if(row){
+				if(row && operationflag){
 					//根据基线id获取基线版本中服务信息
 					$.ajax({
 						type : "get",
@@ -33,6 +35,20 @@
 						data : {"baseId" : row.baseId},
 						success : function(data) {
 							$("#operationList").datagrid("loadData", data);
+						}
+					});
+
+				}
+				if(row && invokeflag){
+					//根据基线id获取基线版本中服务信息
+					$.ajax({
+						type : "get",
+						async : false,
+						url : "/baseLine/getBLInvoke",
+						dataType : "json",
+						data : {"baseId" : row.baseId},
+						success : function(data) {
+							$("#invokeList").datagrid("loadData", data);
 						}
 					});
 
@@ -57,6 +73,7 @@
 	}
 	//服务场景列表展开事件
 	function operationExpand(){
+		operationflag = true;
 		var row = $("#baseLineList").datagrid("getSelected");
 		if(row){
 			//根据基线id获取基线版本中服务信息
@@ -79,6 +96,7 @@
 	}
 	
 	function invokeExpand(){
+		invokeflag = true;
 		var row = $("#baseLineList").datagrid("getSelected");
 		if(row){
 			//根据基线id获取基线版本中服务信息
@@ -146,6 +164,9 @@
 				pageSize:10,
 				onExpand:function(){
 					operationExpand();
+				},
+				onCollapse:function(){
+					operationflag = false;
 				}
 				" style="height:365px; width:auto;">
   <thead>
@@ -178,6 +199,9 @@
 				pageSize:10,
 				onExpand:function(){
 					invokeExpand();
+				},
+				onCollapse:function(){
+					invokeflag = false;
 				}
 				" style="height:365px; width:auto;">
   <thead>

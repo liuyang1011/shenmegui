@@ -50,7 +50,7 @@ var SYSMENU = {
                             animate:true
                         });
                     },
-                    prompt: '请输入关键词2'
+                    prompt: '请输入关键词'
                 });
                 $('#mxinterfaceheadtreefilter').searchbox({
                     searcher: function (value, name) {
