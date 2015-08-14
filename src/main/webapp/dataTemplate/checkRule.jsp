@@ -132,3 +132,19 @@
 	}
 
 %>
+<%
+	if(mid.equals("11.2")){
+%>
+{"success":true,"url":"/jsp/statistics/reuseRate.jsp","title":"复用率统计"}
+<%
+	}
+
+%>
+<%
+	if(mid.equals("11.3")){
+%>
+{"success":true,"url":"/jsp/statistics/release.jsp","title":"发布统计"}
+<%
+	}
+
+%>

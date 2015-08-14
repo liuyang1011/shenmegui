@@ -108,7 +108,8 @@
 <ul id="menu-tree" style="overflow:scroll;height:100%">
     <li><a href="javascript:;" mid="11.1">统计报表</a>
         <ul>
-            <li><a href="javascript:;" class="openable" mid="11.2">版本发布</a></li>
+            <li><a href="javascript:;" class="openable" mid="11.2">复用率统计</a></li>
+            <li><a href="javascript:;" class="openable" mid="11.3">发布统计</a></li>
         </ul>
     </li>
 </ul>

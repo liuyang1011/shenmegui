@@ -9,9 +9,7 @@ import com.dc.esb.servicegov.excel.MappingSheetTask;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
-import com.dc.esb.servicegov.vo.InterfaceHeadVO;
-import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
-import com.dc.esb.servicegov.vo.OperationPKVO;
+import com.dc.esb.servicegov.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -540,6 +538,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     }
 
     /**
+     * 导出服务视图
      * @param categoryId
      * @return
      */
@@ -910,5 +909,61 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             }
         }
         return result;
+    }
+
+
+    /**
+     * 导出复用率统计
+     * @return
+     */
+    public HSSFWorkbook genderRuserate(ReuseRateListVO listVO) {
+        try {
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_REUSERATE);
+            HSSFCellStyle cellStyle = commonStyle(wb);
+            if(listVO != null ){
+                List<ReuseRateVO> list = listVO.getList();
+                if(list != null && list.size() > 0){
+                    HSSFSheet sheet = wb.getSheet("statistics_reuse");
+                    for(int i = 0; i < list.size(); i++){
+                        HSSFRow row = sheet.createRow(i + 1);
+                        ReuseRateVO vo = list.get(i);
+                        String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getUseNum(), vo.getOperationNum(), vo.getServiceNum(), vo.getSum(), vo.getReuseRate()};
+                        setRowValue(row, cellStyle, values);
+                    }
+                }
+            }
+            return wb;
+        } catch (Exception e) {
+            logger.error(e, e);
+        }
+        return null;
+    }
+    /**
+     * 导出复用率统计
+     * @return
+     */
+    public HSSFWorkbook genderRelease(ReleaseListVO listVO) {
+        try {
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_RELEASE);
+            HSSFCellStyle cellStyle = commonStyle(wb);
+            if(listVO != null ){
+                List<ReleaseVO> list = listVO.getList();
+                if(list != null && list.size() > 0){
+                    HSSFSheet sheet = wb.getSheet("statistics_reuse");
+                    for(int i = 0; i < list.size(); i++){
+                        HSSFRow row = sheet.createRow(i + 1);
+                        ReleaseVO vo = list.get(i);
+                        String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getOperationReleaseNum(), vo.getServiceReleaseNum()};
+                        setRowValue(row, cellStyle, values);
+                    }
+                }
+            }
+            return wb;
+        } catch (Exception e) {
+            logger.error(e, e);
+        }
+        return null;
     }
 }
