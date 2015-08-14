@@ -211,10 +211,14 @@ public class ExcelExportController {
                 workbook.write(fOut);
             }
         }
-        catch (UnsupportedEncodingException e1)
-        {}
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
         catch (Exception e)
-        {}
+        {
+            e.printStackTrace();
+        }
         finally
         {
             try
