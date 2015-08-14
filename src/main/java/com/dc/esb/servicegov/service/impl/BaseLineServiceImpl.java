@@ -13,6 +13,7 @@ import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,7 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
         bl.setCode(code);
         bl.setBlDesc(blDesc);
         bl.setOptDate(DateUtils.format(new Date()));
+        bl.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
         String versionId = versionServiceImpl.addVersion(Constants.Version.TARGET_TYPE_BASELINE, bl.getBaseId(), Constants.Version.TARGET_TYPE_BASELINE);
         bl.setVersionId(versionId);
         baseLineDAO.save(bl);

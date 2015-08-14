@@ -143,9 +143,9 @@
 				<thead>
 					<tr>
 						<th data-options="field:'id',checkbox:true"></th>
-						<th data-options="field:'code', width:150">基线版本</th>
-						<th data-options="field:'blDesc', width:150">版本描述</th>
-						<th data-options="field:'optDate', width:100">发布时间</th>
+						<th data-options="field:'code', width:100">基线版本</th>
+						<th data-options="field:'blDesc', width:350">版本描述</th>
+						<th data-options="field:'optDate', width:200">发布时间</th>
 						<th data-options="field:'optUser', width:100">发布用户</th>
 					</tr>
 				</thead>
