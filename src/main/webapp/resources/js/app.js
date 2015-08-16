@@ -485,6 +485,9 @@ var SYSMENU = {
             });
             SYSTABMENU.init();
         });
+    },
+    reloadTreeByValue: function(key, value){
+        $('.mxservicetree').tree('doFilter', value);
     }
 };
 SYSMENU.init();

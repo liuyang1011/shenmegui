@@ -246,6 +246,12 @@
                                     parent.SYSMENU.changeLeftMenu(6);
                                     alert("请在右侧系统菜单中右键新增接口。");
                                 }
+                                if(task.name=="服务审核"){
+                                    $("#w").window("close");
+                                    $('#taskTable').datagrid('reload');
+                                    parent.SYSMENU.changeLeftMenu(4);
+                                    parent.SYSMENU.reloadTreeByValue('mxservicetree', "1");
+                                }
 
                             });
                             /*uiinit.win({
