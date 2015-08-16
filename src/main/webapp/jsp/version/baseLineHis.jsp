@@ -187,7 +187,7 @@
 			</tr>
   </thead>
 </table>
-<table id="invokeList" class="easyui-datagrid" title="服务接口隐射列表" 
+<table id="invokeList" class="easyui-datagrid" title="服务接口映射列表"
 			data-options="
 				rownumbers:true,
 				singleSelect:false,

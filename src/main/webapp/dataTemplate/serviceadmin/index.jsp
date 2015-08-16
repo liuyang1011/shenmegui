@@ -30,7 +30,7 @@
 <div title="服务OLA" style="padding:0px;">
     
 </div>
-<div title="服务接口隐射" style="padding:0px;">
+<div title="服务接口映射" style="padding:0px;">
     
 </div>
 <%}%>
