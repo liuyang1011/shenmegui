@@ -50,8 +50,6 @@
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.8.3" />
           <element id="library" level="project" name="Maven: org.apache.shiro:shiro-web:1.2.0" />
           <element id="library" level="project" name="Maven: org.apache.shiro:shiro-aspectj:1.2.0" />
-          <element id="library" level="project" name="Maven: org.aspectj:aspectjrt:1.6.12" />
-          <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.6.12" />
           <element id="library" level="project" name="Maven: org.apache.shiro:shiro-cas:1.2.0" />
           <element id="library" level="project" name="Maven: org.jasig.cas.client:cas-client-core:3.2.1" />
           <element id="library" level="project" name="Maven: org.apache.shiro:shiro-ehcache:1.2.0" />
@@ -120,10 +118,16 @@
           <element id="library" level="project" name="Maven: org.jbpm:jbpm-bam:5.2.0.Final" />
           <element id="library" level="project" name="Maven: net.sf.json-lib:json-lib:jdk15:2.2.3" />
           <element id="library" level="project" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" />
+          <element id="library" level="project" name="Maven: asm:asm:3.3.1" />
+          <element id="library" level="project" name="Maven: asm:asm-commons:3.3.1" />
+          <element id="library" level="project" name="Maven: asm:asm-tree:3.3.1" />
+          <element id="library" level="project" name="Maven: asm:asm-util:3.3.1" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.8.3" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjrt:1.6.11" />
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="D:\workspace2\shenmegui\target/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="servicegov/web/Web" />
     </root>
