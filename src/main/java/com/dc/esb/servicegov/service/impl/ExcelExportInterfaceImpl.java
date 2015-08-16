@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +46,9 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     @Autowired
     private IdaDAOImpl idaDAO;
 
-    public HSSFWorkbook genderExcel(String id, String type,String systemId){
+    public HSSFWorkbook genderExcel(String[] interfaceIds, String type,String systemId){
         if(INTERFACE.equals(type)){
-			return interfaceExcel(id,systemId);
+			return interfaceExcel(interfaceIds,systemId);
         }
         else{
             String errorMsg = "暂时不支持类型为["+type+"]的文档导出！";
@@ -58,22 +59,26 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
 
     /**
      * TODO根据服务id生成excel
-     * @param interfaceId
+     * @param interfaceIds
      * @return
      */
-    public HSSFWorkbook interfaceExcel(String interfaceId,String systemId){
-        Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
+    public HSSFWorkbook interfaceExcel(String[] interfaceIds,String systemId){
+        List<Interface> list = new ArrayList<Interface>();
+        for (String id : interfaceIds){
+            Interface inter = interfaceDAO.findUniqueBy("interfaceId", id);
+            list.add(inter);
+        }
         com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", systemId);
 
-        HSSFWorkbook workbook = fillExcel(inter,system);
+        HSSFWorkbook workbook = fillExcel(list,system);
         return workbook;
     }
 
-    public HSSFWorkbook fillExcel(Interface inter,System system){
-        if(null  != inter){
+    private HSSFWorkbook fillExcel(List<Interface> interList,System system){
+        if(null  != interList){
             HSSFWorkbook workbook =  getTempalteWb(Constants.EXCEL_TEMPLATE_INTERFACE);
-            fillIndex(workbook, inter,system);
-            fillMapings(workbook, inter);
+            fillIndex(workbook, interList,system);
+            fillMapings(workbook, interList);
             //List<InterfaceHeadVO> ihvList = getByInterfaceHeadVOServiceId(serviceId);
             //fillHeads(workbook, ihvList);
             return workbook;
@@ -84,17 +89,20 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     /**
      * 循环填充mapping
      * @param workbook
-     * @param inter
+     * @param interList
      * @return
      */
-    public void fillMapings(HSSFWorkbook workbook, Interface inter) {
+    private void fillMapings(HSSFWorkbook workbook, List<Interface> interList) {
         HSSFSheet mappingSheet = workbook.getSheet("MAPPING");
-        int poolSize = 10;
+        int poolSize = interList.size() > 10?10:interList.size();
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
-        HSSFSheet sheet = workbook.cloneSheet(workbook.getSheetIndex(mappingSheet));//复制模板中mapping页
-        workbook.setSheetName(workbook.getSheetIndex(sheet), inter.getInterfaceId());//修改sheet名称
-        fillMapping(sheet, inter);
+        for (int i = 0; i < interList.size(); i++) {
+            if(null == interList.get(i).getInterfaceId()) continue;
+            HSSFSheet sheet = workbook.cloneSheet(workbook.getSheetIndex(mappingSheet));//复制模板中mapping页
+            workbook.setSheetName(workbook.getSheetIndex(sheet), interList.get(i).getInterfaceId());//修改sheet名称
+            fillMapping(sheet, interList.get(i));
+        }
         pool.shutdown();
         while(true){ //判断多线程是否结束
             try {
@@ -113,7 +121,7 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     /**
      * TODO 填充mapping页
      */
-    public boolean fillMapping(HSSFSheet sheet, Interface inter){
+    private boolean fillMapping(HSSFSheet sheet, Interface inter){
         try {
             HSSFRow row0 = sheet.getRow(0);
             HSSFRow row1 = sheet.getRow(1);
@@ -197,14 +205,18 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
 
     /**
      * TODO 填充index页
-     * @param inter
+     * @param workbook
+     * @param interList
+     * @param system
      */
-    public boolean fillIndex(HSSFWorkbook workbook, Interface inter,System system){
+    private boolean fillIndex(HSSFWorkbook workbook, List<Interface> interList,System system){
         HSSFSheet sheet = workbook.getSheet("INDEX");
         try {
-            HSSFRow row = sheet.createRow(1);
-            row.createCell(0).setCellValue(inter.getInterfaceId());//接口id
-            row.createCell(1).setCellValue(system.getSystemAb());
+            for (int i = 0; i < interList.size(); i++) {
+                HSSFRow row = sheet.createRow(i+1);
+                row.createCell(0).setCellValue(interList.get(i).getInterfaceId());//接口id
+                row.createCell(1).setCellValue(system.getSystemAb());
+            }
         }catch (Exception e){
             e.printStackTrace();
             logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");

@@ -59,9 +59,9 @@ public class SystemController {
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
         boolean hasWhere = false;
         if(protocolId!=null&&!"".equals(protocolId)){
-            hql.append(",SystemProtocol t2 WHERE t1.systemId=t2.systemId and t2.protocolId=?");
+            hql.append(",SystemProtocol t2 WHERE t1.systemId=t2.systemId and t2.protocolId like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue(protocolId);
+            search.setFieldValue("%" + protocolId + "%");
             searchConds.add(search);
             hasWhere = true;
         }
@@ -69,9 +69,9 @@ public class SystemController {
             hql.append(" WHERE 1=1 ");
         }
         if(systemId!=null&&!"".equals(systemId)){
-            hql.append(" and t1.systemId = ?");
+            hql.append(" and t1.systemId like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue(systemId);
+            search.setFieldValue("%" + systemId + "%");
             searchConds.add(search);
         }
         if(systemAb!=null&&!"".equals(systemAb)){

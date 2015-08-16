@@ -173,12 +173,7 @@ public class ServiceController {
                 if (per.getId().equals(service.getCategoryId())) {
                     ServiceTreeViewBean treeViewBean = new ServiceTreeViewBean();
                     treeViewBean.setId(service.getServiceId());
-                    String serviceId = service.getServiceId();
-                    if (serviceId.length() > 3) {
-                        treeViewBean.setText(service.getServiceId().substring(service.getServiceId().length() - 3, service.getServiceId().length()) + service.getServiceName());
-                    }else{
-                        treeViewBean.setText(service.getServiceName());
-                    }
+                    treeViewBean.setText(service.getServiceName() + "("+service.getServiceId()+")");
                     treeViewBean.setType("service");
                     treeViewBean.setService(service);
                     List<ServiceTreeViewBean> children = per.getChildren();

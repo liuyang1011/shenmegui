@@ -90,6 +90,7 @@
 		<table id="tg" style="height: 370px; width: auto;">
 			<thead>
 				<tr>
+					<th data-options="field:'',checkbox:true"></th>
 					<th data-options="field:'interfaceId',width:'10%'">
 						接口ID
                     </th>
@@ -138,7 +139,7 @@
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
-	        singleSelect:true,//是否单选 
+	        singleSelect:false,//是否单选
 	        pagination:true,//分页控件 
 	        pageSize: 10,//每页显示的记录条数，默认为10
 		    pageList: [10,15,20],//可以设置每页记录条数的列表
@@ -213,8 +214,18 @@
 						iconCls:'icon-save',
 						handler:function(){
 							var row = $("#tg").treegrid("getSelected");
+							var rows = $("#tg").datagrid("getSelections");
+							var interfaceIds = "";
+							for(var per in rows){
+								if(per == rows.length-1){
+									interfaceIds += rows[per].interfaceId;
+								}else{
+									interfaceIds += rows[per].interfaceId + ",";
+								}
+
+							}
+
 							var systemId = ${param.systemId };
-							alert(systemId);
 							if(row){
 								var form=$("<form>");//定义一个form表单
 								form.attr("style","display:none");
@@ -223,8 +234,8 @@
 								form.attr("action","/excelExporter/exportInterface");
 								var input1=$("<input>");
 								input1.attr("type","hidden");
-								input1.attr("name","id");
-								input1.attr("value",row.interfaceId);
+								input1.attr("name","ids");
+								input1.attr("value",interfaceIds);
 								var input2=$("<input>");
 								input2.attr("type","hidden");
 								input2.attr("name","type");
