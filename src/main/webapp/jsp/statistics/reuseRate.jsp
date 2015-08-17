@@ -30,6 +30,25 @@
         <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:100px"
                    type="text" >
         </td>
+        <th>系统名称</th>
+        <td><input name="systemName" id="systemName"  class="easyui-combobox" style="width:150px"
+                   data-options="
+                 method:'get',
+                 url:'/system/getSystemAll',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+							var values = $('#systemName').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.id) == $.trim(newValue) || $.trim(item.text) == $.trim(newValue)){
+							        $('#systemId').textbox('setValue', newValue);
+							        }
+							 });
+				    }
+                 "
+                >
+        </td>
         <th>服务类型</th>
         <td>
           <select id="type" class="easyui-combobox" name="type"

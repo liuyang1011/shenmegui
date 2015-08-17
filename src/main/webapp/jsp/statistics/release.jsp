@@ -28,8 +28,27 @@
     <table border="0" cellspacing="0" cellpadding="0">
       <tr>
         <th>系统编号</th>
-        <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:100px"
+        <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:80px"
                    type="text" >
+        </td>
+        <th>系统名称</th>
+        <td><input name="systemName" id="systemName"  class="easyui-combobox" style="width:120px"
+                   data-options="
+                 method:'get',
+                 url:'/system/getSystemAll',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+							var values = $('#systemName').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.id) == $.trim(newValue) || $.trim(item.text) == $.trim(newValue)){
+							        $('#systemId').textbox('setValue', newValue);
+							        }
+							 });
+				    }
+                 "
+                >
         </td>
         <th>服务类型</th>
         <td>
@@ -41,9 +60,9 @@
           </select>
         </td>
         <th> 起始日期</th>
-        <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
+        <td><input class="easyui-datebox" style="width:80px" type="text" name="startDate" id="startDate"></td>
         <th> 结束日期</th>
-        <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
+        <td><input class="easyui-datebox" style="width:80px" type="text" name="endDate" id="endDate"></td>
         <th style="width:200px">
           <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>

@@ -27,7 +27,7 @@
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <th>服务代码</th>
-      <td><input name="serviceId" id="serviceId"  class="easyui-combobox" style="width:100px"
+      <td><input name="serviceId" id="serviceId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
                  url:'/service/getAll',
@@ -49,7 +49,7 @@
                   >
       </td>
       <th>服务名称</th>
-      <td><input name="serviceName" id="serviceName"  class="easyui-combobox" style="width:100px"
+      <td><input name="serviceName" id="serviceName"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
                  url:'/service/getAll',
@@ -79,7 +79,7 @@
     </tr>
     <tr>
       <th>场景代码</th>
-      <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:100px"
+      <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
                  url:'/operation/getByServiceId',
@@ -100,7 +100,7 @@
       </td>
       <th>场景名称</th>
       <td>
-        <input name="operationName" id="operationName"  class="easyui-combobox" style="width:100px"
+        <input name="operationName" id="operationName"  class="easyui-combobox" style="width:150px"
                data-options="
                  method:'get',
                  url:'/operation/getServiseById/1',
@@ -119,7 +119,7 @@
                  "
                 >
       </td>
-      <th>功能描述</th>
+      <th>场景功能描述</th>
       <td><input class="easyui-textbox" style="width:100px"
                  type="text" name="operationDesc" id="operationDesc">
       </td>
@@ -129,19 +129,32 @@
       </td>
       </tr>
     <tr>
-      <th>系统编号</th>
-      <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:100px" readonly=" true"
-                 type="text" >
-      </td>
-      <th>服务类型</th>
-      <td>
-        <select id="systemType" class="easyui-combobox" name="type" readonly=" true"
-                data-options="width:100,valueField:'value', textField:'text',data:[
-                {'value':'1','text':'消费者'},
-                {'value':'0','text':'提供者'}
-                ]">
-        </select>
-      </td>
+      <th>提供者</th>
+        <td><input name="providerId" id="providerId"  class="easyui-combobox" style="width:150px"
+                   data-options="
+                 method:'get',
+                 url:'/system/getSystemAll',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+				    }
+                 "
+                >
+        </td>
+      <th>消费者</th>
+        <td><input name="consumerId" id="consumerId"  class="easyui-combobox" style="width:150px"
+                   data-options="
+                 method:'get',
+                 url:'/system/getSystemAll',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+				    }
+                 "
+                >
+        </td>
       <th>
 
       </th>
@@ -178,6 +191,7 @@
     <th data-options="field:'',checkbox:true,width:50"></th>
     <th data-options="field:'serviceId',width:80">服务代码</th>
     <th data-options="field:'serviceName',width:100">服务名称</th>
+    <th data-options="field:'serviceDesc',width:100">服务功能描述</th>
     <th data-options="field:'operationId',width:80">场景代码</th>
     <th data-options="field:'operationName',width:100">场景名称</th>
     <th data-options="field:'operationDesc',width:150">功能描述</th>
@@ -315,14 +329,12 @@
       "serviceDesc":$("#serviceDesc").textbox("getValue"),
       "serviceState":$("#serviceState").combobox("getValue"),
 
-      "systemId":$("#systemId").textbox("getValue"),
-      "systemType":$("#systemType").textbox("getValue"),
-      "serviceId":$("#serviceId").textbox("getValue"),
-
       "operationId":$("#operationId").textbox("getValue"),
      // "operationName":$("#operationName").textbox("getValue"),
       "operationDesc":$("#operationDesc").textbox("getValue"),
-      "operationState":$("#operationState").combobox("getValue")
+      "operationState":$("#operationState").combobox("getValue"),
+      "providerId":$("#providerId").combobox("getValue"),
+      "consumerId":$("#consumerId").combobox("getValue")
     }
     $("#resultList").datagrid('options').queryParams = params;
      var p = $("#resultList").datagrid('getPager');

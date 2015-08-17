@@ -2,9 +2,8 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.OperationHis;
-import com.dc.esb.servicegov.entity.OperationPK;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
+import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.StatisticsService;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,10 +52,11 @@ public class StatisticsServiceImpl implements StatisticsService{
         long count = serviceInvokeDAO.find(hql).size();
         return count;
     }
-
-    @Override
-    public List<ReuseRateVO> getReuseRate(Map<String, String[]> values, Page page) {
-        String hql = "from " + ServiceInvoke.class.getName() + " as si where 1=1";
+    /**
+     * 根据系统id，类型分组
+     */
+    public List<Object[]> groupBySystemIdType(Map<String, String[]> values, Page page){
+        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si where 1=1";
         if(values.get("type") != null && values.get("type").length > 0){
             if (StringUtils.isNotEmpty(values.get("type")[0])) {
                 hql += " and si.type = " + values.get("type")[0];
@@ -67,21 +68,29 @@ public class StatisticsServiceImpl implements StatisticsService{
             }
         }
         hql += " group by systemId, type";
-        List<ServiceInvoke> list = serviceInvokeDAO.find(hql);
+        List<Object[]> list = serviceInvokeDAO.findBy(hql, page, new ArrayList<SearchCondition>());
+        return list;
+    }
+
+    @Override
+    public List<ReuseRateVO> getReuseRate(Map<String, String[]> values, Page page) {
+
+        List<Object[]> list = groupBySystemIdType(values, page);
 
         List<ReuseRateVO> voList = new ArrayList<ReuseRateVO>();
-        for(ServiceInvoke serviceInvoke : list){
+        for(Object[] strs: list){
+            com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", strs[0]);
             ReuseRateVO vo = new ReuseRateVO();
-            vo.setType(serviceInvoke.getType());
-            vo.setSystemChineseName(serviceInvoke.getSystem().getSystemChineseName());
-            vo.setSystemId(serviceInvoke.getSystemId());
-            long operationNum = getOperationRelaCount(serviceInvoke.getSystemId(), serviceInvoke.getType());
+            vo.setType(String.valueOf(strs[1]));
+            vo.setSystemChineseName(system.getSystemChineseName());
+            vo.setSystemId(String.valueOf(strs[0]));
+            long operationNum = getOperationRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setOperationNum(String.valueOf(operationNum));//关联场景数
-            long serviceNum = getServiceRelaCount(serviceInvoke.getSystemId(), serviceInvoke.getType());
+            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
-            long sum = getServiceInvokeCount(serviceInvoke.getType());
+            long sum = getServiceInvokeCount( String.valueOf(strs[1]));
             vo.setSum(String.valueOf(sum));//提供者或消费者被调用总数
-            long useNum = getServiceInvokeCount(serviceInvoke.getSystemId(), serviceInvoke.getType());
+            long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
             if(useNum > 1){
                 float r = (useNum - 1.0f)/sum;
@@ -152,26 +161,16 @@ public class StatisticsServiceImpl implements StatisticsService{
 
     @Override
     public List<ReleaseVO> getReleaseVO(Map<String, String[]> values, Page page) {
-        String hql = "from " + ServiceInvoke.class.getName() + " as si where 1=1";
-        if(values.get("type") != null && values.get("type").length > 0){
-            if (StringUtils.isNotEmpty(values.get("type")[0])) {
-                hql += " and si.type = " + values.get("type")[0];
-            }
-        }
-        if(values.get("systemId") != null && values.get("systemId").length > 0){
-            if (StringUtils.isNotEmpty(values.get("systemId")[0])) {
-                hql += " and si.systemId like '%" + values.get("systemId")[0] + "%'";
-            }
-        }
-        hql += " group by systemId, type";
-        List<ServiceInvoke> list = serviceInvokeDAO.find(hql);
+
+        List<Object[]> list = groupBySystemIdType(values, page);
 
         List<ReleaseVO> voList = new ArrayList<ReleaseVO>();
-        for(ServiceInvoke serviceInvoke : list){
+        for(Object[] strs : list){
+            com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", strs[0]);
             ReleaseVO vo = new ReleaseVO();
-            vo.setType(serviceInvoke.getType());
-            vo.setSystemChineseName(serviceInvoke.getSystem().getSystemChineseName());
-            vo.setSystemId(serviceInvoke.getSystemId());
+            vo.setType(String.valueOf(strs[1]));
+            vo.setSystemChineseName(system.getSystemChineseName());
+            vo.setSystemId(String.valueOf(strs[0]));
             setReleaseCount(vo, values);
             voList.add(vo);
         }
