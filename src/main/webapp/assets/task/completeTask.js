@@ -22,7 +22,19 @@ $(function () {
         taskManager.completeTask(task,params,function(){
             alert("任务已经处理！");
             $("#w").window("close");
+            console.log($('#taskTable'));
             $('#taskTable').datagrid('reload');
+
+            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/task/mytask.jsp" style="width:100%;height:100%;"></iframe>';
+            var title = "我的任务"
+            var tab = $('#mainContentTabs').tabs('getSelected');  // get selected panel
+            $('#mainContentTabs').tabs('update', {
+                tab: tab,
+                options: {
+                    title: title,
+                    content: content  // the new content URL
+                }
+            });
         });
     });
 });
