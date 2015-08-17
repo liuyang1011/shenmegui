@@ -59,9 +59,6 @@ var SYSMENU = {
                     prompt: '请输入关键词'
                 });
 
-
-
-
                 //报文管理
                 $('.mxsysadmintree').tree({
                     onContextMenu: function (e, node) {
@@ -177,10 +174,6 @@ var SYSMENU = {
                             }
 
                         }else{
-
-                            //alert(typeof(node.children));
-                            //if(typeof(node.children)=='undefined'){//编辑接口
-
                             var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
@@ -194,53 +187,12 @@ var SYSMENU = {
                                 });
                             }
                         }
-                        /*}else{//基本信息
-                         var mid = node.id;
-                         var title = node.text;
-                         if ($('#mainContentTabs').tabs('exists', title)){
-                         $('#mainContentTabs').tabs('select', title);
-                         } else {
-                         var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.SYSADMINUI+'" style="width:100%;height:100%;"></iframe>';
-                         $('#mainContentTabs').tabs('add',{
-                         title:title,
-                         content:content,
-                         closable:true
-                         });
-                         }
-                         }  */
-                    }/*,
-                    onLoadSuccess : function(node, data){
-
-                        var children = data[0].children;
-                        $.each(children,function(index,child){
-                            if(null != child.children && child.children.length > 0){
-                                child.state='closed';
-                            }
-                        });
-
-                        console.log(data[0].children);
-                        if(!loadFlag){
-                            $(this).tree('loadData',data);
-                            loadFlag = true;
-                        }
-                    }*/
+                    }
                 });
 
                 $('.msinterfacetree').tree('collapseAll');
 
                 $('.mslinktree').tree({
-                    /*onContextMenu: function (e, node) {
-                        e.preventDefault();
-                        $(this).tree('select', node.target);
-                        if (typeof(node.children) != 'undefined') {//编辑接口
-                            $('#mm-mslinktree').menu('show', {
-                                left: e.pageX,
-                                top: e.pageY
-                            });
-
-                        }
-
-                    },*/
                     onClick: function (node) {
                         if (typeof(node.children) == 'undefined') {
                             var mid = node.id;
@@ -268,7 +220,6 @@ var SYSMENU = {
                                     closable: true
                                 });
                             }
-
                         }
                     }
                 });
@@ -282,9 +233,7 @@ var SYSMENU = {
                                 left: e.pageX,
                                 top: e.pageY
                             });
-
                         }
-
                     },
                     onClick: function (node) {
                         if (node.type == 'service') {//打开服务场景
@@ -308,7 +257,6 @@ var SYSMENU = {
                                     $('#mainContentTabs').tabs('select', title);
                                 }
                             }
-
                         }
                     }
                 });
@@ -386,7 +334,6 @@ var SYSMENU = {
                     else {//基本信息
                         var mid = node.id;
                         var title = node.text;
-
                         var node = $('.mxsysadmintree').tree("getSelected");
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
@@ -403,52 +350,68 @@ var SYSMENU = {
             });
 
             //接口管理
+            var loadFlag = false;
             $('.msinterfacetree').tree({
                 onContextMenu: function (e, node) {
                     e.preventDefault();
                     $(this).tree('select', node.target);
                     if (typeof(node.children) != 'undefined') {//编辑接口
-
-                        if (node.click == 'disable') {
-                            $('#mm-mxinterfacetree').menu('show', {
+                        if(node.click == 'system') {
+                            $('#mm-mxsystemtree').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
                             });
-                        } else {
-                            $('#mm-mxinterfacedefinetree').menu('show', {
+                        }else if(node.click == 'disable'){
+
+                            $('#mm-mxsystemtree1').menu('show', {
+                                left: e.pageX,
+                                top: e.pageY
+                            });
+
+                        }else{
+                            $('#mm-mxinterfacetree1').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
                             });
                         }
-
                     }
 
                 },
                 onClick: function (node) {
-                    if (node.click == 'disable') {
+                    if (node.click == 'system') {
                         var mid = node.id;
                         var title = node.text;
-                        if ($('#mainContentTabs').tabs('exists', title)) {
+                        if ($('#mainContentTabs').tabs('exists', title)){
                             $('#mainContentTabs').tabs('select', title);
-                        } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:100%;"></iframe>';
-                            $('#mainContentTabs').tabs('add', {
-                                title: title,
-                                content: content,
-                                closable: true
+                        } else {
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.SYSTEMINDEX+'" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add',{
+                                title:title,
+                                content:content,
+                                closable:true
                             });
                         }
-                    } else {
+                    }else if(node.click == 'disable'){
+                        var mid = node.id;
+                        var title = node.text;
+                        if ($('#mainContentTabs').tabs('exists', title)){
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {//SYSADMINUIEDIT
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add',{
+                                title:title,
+                                content:content,
+                                closable:true
+                            });
+                        }
 
-                        //alert(typeof(node.children));
-                        //if(typeof(node.children)=='undefined'){//编辑接口
-
+                    }else{
                         var mid = node.id;
                         var title = node.text;
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACEDEFINE+'?interfaceId='+mid+'" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -458,26 +421,18 @@ var SYSMENU = {
                     }
                 }
             });
-            //交易链路
-            /*$('.mslinktree').tree({
-                onContextMenu: function (e, node) {
-                    e.preventDefault();
-                    $(this).tree('select', node.target);
-                    if (typeof(node.children) != 'undefined') {//编辑接口
-                        $('#mm-mslinktree').menu('show', {
-                            left: e.pageX,
-                            top: e.pageY
-                        });
-                    }
-                },
+
+            $('.msinterfacetree').tree('collapseAll');
+
+            $('.mslinktree').tree({
                 onClick: function (node) {
                     if (typeof(node.children) == 'undefined') {
                         var mid = node.id;
-                        var title = node.text ;
+                        var title = node.text + "交易链路";
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/dataTemplate/syslink/index2.html" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/dom.html" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -490,17 +445,16 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/dataTemplate/syslink/index.html" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId='+node.id+'" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
                                 closable: true
                             });
                         }
-
                     }
                 }
-            });*/
+            });
 
             $('.mxservicetree').tree({
                 onContextMenu: function (e, node) {
@@ -511,9 +465,7 @@ var SYSMENU = {
                             left: e.pageX,
                             top: e.pageY
                         });
-
                     }
-
                 },
                 onClick: function (node) {
                     if (node.type == 'service') {//打开服务场景
@@ -530,15 +482,21 @@ var SYSMENU = {
                                     closable: true
                                 });
                             }
+                        } else {
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            }
                         }
-
                     }
                 }
             });
-
-
             SYSTABMENU.init();
         });
+    },
+    reloadTreeByValue: function(key, value){
+        $('.mxservicetree').tree('doFilter', value);
     }
 };
 SYSMENU.init();
@@ -604,3 +562,26 @@ function addTab(title, content) {
         closable: true
     });
 }
+
+function changeTaskName(){
+    $("#taskName").text("当前任务:" + PROCESS_INFO.taskName + "("+PROCESS_INFO.taskId +")")
+}
+
+$(function(){
+    $("#taskName").click(function(){
+        uiinit.win({
+            w: 500,
+            iconCls: 'icon-cfp',
+            title: "完成任务",
+            url: "/jsp/task/completeTask.jsp"
+        });
+    });
+
+    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/task/mytask.jsp" style="width:100%;height:100%;"></iframe>';
+    var title = "我的任务"
+    $('#mainContentTabs').tabs('add', {
+        title: title,
+        content: content
+    });
+
+});

@@ -6,24 +6,6 @@
     if (mid.equals("1")) {
 %>
 <ul id="menu-tree" style="overflow:scroll;height:100%">
-    <li><a href="javascript:;" mid="1.1">版本管理</a>
-        <ul>
-            <li><a href="javascript:;" class="openable" mid="1.2">版本发布</a></li>
-            <li><a href="javascript:;" class="openable" mid="1.3">版本历史</a></li>
-            <!--
-            <li><a href="javascript:;" class="openable" mid="1.4">版本公告</a></li>
-             -->
-            <li><a href="javascript:;" class="openable" mid="1.5">基线制作</a></li>
-            <li><a href="javascript:;" class="openable" mid="1.6">基线历史</a></li>
-        </ul>
-    </li>
-    <li><a href="javascript:;" class="openable" mid="2.1">流程管理</a>
-        <ul>
-            <%--<li><a href="javascript:;" class="openable" mid="2.2">工作流程管理</a></li>--%>
-            <%--<li><a href="javascript:;" class="openable" mid="2.3">任务管理</a></li>--%>
-            <li><a href="javascript:;" class="openable" mid="2.4">我的任务</a></li>
-        </ul>
-    </li>
     <li><a href="javascript:;" class="openable" mid="9.1">字段映射</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.2">导入</a></li>
@@ -113,4 +95,23 @@
         </ul>
     </li>
 </ul>
-<%}%>
+<%
+    }
+    if(mid.equals("12")){
+%>
+<ul id="menu-tree" style="overflow:scroll;height:100%">
+    <li><a href="javascript:;" mid="1.1">版本管理</a>
+        <ul>
+            <li><a href="javascript:;" class="openable" mid="1.2">版本发布</a></li>
+            <li><a href="javascript:;" class="openable" mid="1.3">版本历史</a></li>
+            <!--
+            <li><a href="javascript:;" class="openable" mid="1.4">版本公告</a></li>
+             -->
+            <li><a href="javascript:;" class="openable" mid="1.5">基线制作</a></li>
+            <li><a href="javascript:;" class="openable" mid="1.6">基线历史</a></li>
+        </ul>
+    </li>
+</ul>
+<%
+    }
+%>

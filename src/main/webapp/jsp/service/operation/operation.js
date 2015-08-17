@@ -40,7 +40,8 @@ function save(formId, operation) {
     }
     var params = $("#" + formId).serialize();
     params = decodeURIComponent(params, true);
-
+    var processId = parent.parent.PROCESS_INFO.processId;
+    params = params + "&processId=" + processId;
     var urlPath;
     if (operation == 0) {
         urlPath = "/operation/add";
