@@ -28,6 +28,17 @@
       <tr>
         <th>系统编号</th>
         <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:100px"
+                   data-options="
+                   onChange:function(newValue, oldValue){
+                        this.value=newValue;
+							var values = $('#systemName').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.id) == $.trim(newValue) || $.trim(item.text) == $.trim(newValue)){
+							        $('#systemName').textbox('setText', item.chineseName);
+							        }
+							 });
+                   }
+                   "
                    type="text" >
         </td>
         <th>系统名称</th>
