@@ -220,7 +220,7 @@
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(4);
-                                    alert("请在右侧服务目录菜单中新增服务。");
+                                    alert("请在左侧服务目录菜单中新增服务。");
                                 }
                                 if(task.name=="创建公共代码"){
                                     var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/task/common.jsp?processId='+task.processInstanceId+'&taskId='+task.taskId+'" style="width:100%;height:100%;"></iframe>';
@@ -244,7 +244,7 @@
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(6);
-                                    alert("请在右侧系统菜单中右键新增接口。");
+                                    alert("请在左侧系统菜单中右键新增接口。");
                                 }
                                 if(task.name=="服务审核"){
                                     $("#w").window("close");

@@ -60,7 +60,7 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
         String service_define_path = loader.getResource("template/in_config/service_define_template.xml").getPath();
         String channel__service_path = loader.getResource("template/in_config/channel_service_template.xml").getPath();
         String service_system__path = loader.getResource("template/in_config/service_system_template.xml").getPath();
-        String destpath = loader.getResource("/").getPath() + "/generator/"+export.getServiceId()+export.getOperationId();
+        String destpath = loader.getResource("").getPath() + "/generator/"+export.getServiceId()+export.getOperationId();
         try {
             System system_consumer = systemService.getById(export.getConsumerSystemId());
 

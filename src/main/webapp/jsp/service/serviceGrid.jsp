@@ -363,7 +363,7 @@
                 }
 
             }
-        }/*,
+        },
         {
             text: '导出',
             iconCls: 'icon-qxfp',
@@ -389,7 +389,7 @@
                 }
 
             }
-        }*/
+        }
     ];
     //版本发布
     function releaseOp(desc, operationId) {
