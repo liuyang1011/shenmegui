@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
@@ -19,7 +19,7 @@
                     if (data == "Ready") {
                         return "已分派";
                     }
-                    if (data == "InProgress"){
+                    if (data == "InProgress") {
                         return "处理中";
                     }
                 }
@@ -37,8 +37,8 @@
                         return row.createdBy.id;
                 }
             },
-            "formatActualOwner": function(data,row){
-                if(data){
+            "formatActualOwner": function (data, row) {
+                if (data) {
                     return data.id;
                 }
             }
@@ -196,43 +196,44 @@
                             var task = {};
                             task.processInstanceId = Global.processInstanceId;
                             task.taskId = Global.taskId;
-                            task.userId = $("#userId").text();;
+                            task.userId = $("#userId").text();
+                            ;
                             task.name = Global.taskName;
-                            task.name = task.name.replace(/(^\s*)|(\s$)/g,'');
+                            task.name = task.name.replace(/(^\s*)|(\s$)/g, '');
                             parent.PROCESS_INFO.processId = checkedItem.id;
                             parent.PROCESS_INFO.taskName = task.name;
                             parent.PROCESS_INFO.taskId = task.taskId;
                             parent.changeTaskName();
-                            taskManager.processTask(task,function(result){
-                                if(task.name=='创建元数据'){
+                            taskManager.processTask(task, function (result) {
+                                if (task.name == '创建元数据') {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/process/metadataByTask/process/'+task.processInstanceId+'/task/'+task.taskId+'" style="width:100%;height:100%;"></iframe>';
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/process/metadataByTask/process/' + task.processInstanceId + '/task/' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
                                     parent.addTab("创建元数据", content);
                                 }
-                                if(task.name=="元数据审核"){
+                                if (task.name == "元数据审核") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/process/metadataAuditByTask/process/'+task.processInstanceId+'/task/'+task.taskId+'" style="width:100%;height:100%;"></iframe>';
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/process/metadataAuditByTask/process/' + task.processInstanceId + '/task/' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
                                     parent.addTab("创建元数据", content);
                                 }
-                                if(task.name=="服务定义"){
+                                if (task.name == "服务定义") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(4);
                                     alert("请在右侧服务目录菜单中新增服务。");
                                 }
-                                if(task.name=="创建公共代码"){
-                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/task/common.jsp?processId='+task.processInstanceId+'&taskId='+task.taskId+'" style="width:100%;height:100%;"></iframe>';
+                                if (task.name == "创建公共代码") {
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/task/common.jsp?processId=' + task.processInstanceId + '&taskId=' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
                                     parent.addTab("创建公共代码", content);
                                 }
-                                if(task.name=="公共代码审核"){
+                                if (task.name == "公共代码审核") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/process/sgenum/sgenumAuditByTask/process/'+task.processInstanceId+'/task/'+task.taskId+'" style="width:100%;height:100%;"></iframe>';
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/process/sgenum/sgenumAuditByTask/process/' + task.processInstanceId + '/task/' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
                                     parent.addTab("创建公共代码", content);
                                 }
-                                if(task.name=="接口需求上传"){
+                                if (task.name == "接口需求上传") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(6);
@@ -240,26 +241,40 @@
                                     parent.addTab("接口需求文件上传", content);
                                     alert("请上传接口需求文档。");
                                 }
-                                if(task.name=="接口定义"){
+                                if (task.name == "接口定义") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(6);
                                     alert("请在右侧系统菜单中右键新增接口。");
                                 }
-                                if(task.name=="服务审核"){
+                                if (task.name == "服务审核") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(4);
                                     parent.SYSMENU.reloadTreeByValue('mxservicetree', "1");
                                 }
-
+                                if(task.name == "服务发布"){
+                                    $("#w").window("close");
+                                    $('#taskTable').datagrid('reload');
+                                    parent.SYSMENU.changeLeftMenu(6);
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/version/versionRelease.jsp" style="width:100%;height:100%;"></iframe>';
+                                    parent.addTab("服务发布", content);
+                                    alert("请选择服务并发布。");
+                                }
+                                if (task.name == "服务开发") {
+                                    $("#w").window("close");
+                                    $('#taskTable').datagrid('reload');
+                                    parent.SYSMENU.changeLeftMenu(4);
+                                    alert("请在右侧服务选择服务，进行开发。");
+                                }
+                                if (task.name == "服务上线") {
+                                    $("#w").window("close");
+                                    $('#taskTable').datagrid('reload');
+                                    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/version/baseLineMake.jsp" style="width:100%;height:100%;"></iframe>';
+                                    parent.addTab("服务上线基线制作", content);
+                                    alert("请在上线基线中发布上线内容。");
+                                }
                             });
-                            /*uiinit.win({
-                                w: 500,
-                                iconCls: 'icon-edit',
-                                title: "任务分配",
-                                url: "/jsp/task/processTask.jsp"
-                            });*/
                         }
                     }
                     else {
@@ -267,19 +282,19 @@
                     }
                 }
             }/*,
-            {
-                text: '挂起',
-                iconCls: 'icon-guaqi',
-                handler: function () {
-                    alert('挂起')
-                }
-            },{
-                text: '完成',
-                iconCls: 'icon-guaqi',
-                handler: function () {
-                    alert('挂起')
-                }
-            }*/
+             {
+             text: '挂起',
+             iconCls: 'icon-guaqi',
+             handler: function () {
+             alert('挂起')
+             }
+             },{
+             text: '完成',
+             iconCls: 'icon-guaqi',
+             handler: function () {
+             alert('挂起')
+             }
+             }*/
         ];
     </script>
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
