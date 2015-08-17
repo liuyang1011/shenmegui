@@ -672,7 +672,7 @@
             <dataInputAssociation>
                 <targetRef>_3_CommentInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression"> 服务审核 </from>
+                    <from xsi:type="tFormalExpression"> 服务开发 </from>
                     <to xsi:type="tFormalExpression">_3_CommentInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -693,7 +693,7 @@
             <dataInputAssociation>
                 <targetRef>_3_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression"> 元数据审核 </from>
+                    <from xsi:type="tFormalExpression"> 服务开发 </from>
                     <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -757,7 +757,7 @@
             <dataInputAssociation>
                 <targetRef>_3_CommentInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression"> 服务审核 </from>
+                    <from xsi:type="tFormalExpression"> 服务测试 </from>
                     <to xsi:type="tFormalExpression">_3_CommentInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -778,7 +778,7 @@
             <dataInputAssociation>
                 <targetRef>_3_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression"> 元数据审核 </from>
+                    <from xsi:type="tFormalExpression"> 服务测试 </from>
                     <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -842,7 +842,7 @@
             <dataInputAssociation>
                 <targetRef>_3_CommentInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression"> 服务审核 </from>
+                    <from xsi:type="tFormalExpression"> 服务上线 </from>
                     <to xsi:type="tFormalExpression">_3_CommentInput</to>
                 </assignment>
             </dataInputAssociation>
@@ -863,7 +863,7 @@
             <dataInputAssociation>
                 <targetRef>_3_TaskNameInput</targetRef>
                 <assignment>
-                    <from xsi:type="tFormalExpression"> 元数据审核 </from>
+                    <from xsi:type="tFormalExpression"> 服务上线 </from>
                     <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
                 </assignment>
             </dataInputAssociation>

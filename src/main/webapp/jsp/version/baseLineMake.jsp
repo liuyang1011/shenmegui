@@ -104,7 +104,7 @@
 				singleSelect:false,
 				url:'/operationHis/operationHisList',
 				method:'get',
-				toolbar:toolbar,
+				<%--toolbar:toolbar,--%>
 				pagination:true,
 				pageSize:10"
 		style="height:365px; width:auto;">
@@ -132,7 +132,7 @@
 			singleSelect:false,
 			url:'datagrid_data1.json',
 			method:'get',
-			toolbar:toolbar2,pagination:true,
+			pagination:true,
 				pageSize:10"
 		style="height:365px; width:auto;">
 		<thead>

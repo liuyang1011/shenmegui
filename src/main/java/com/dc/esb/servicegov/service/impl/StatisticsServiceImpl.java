@@ -129,7 +129,8 @@ public class StatisticsServiceImpl implements StatisticsService{
      */
     public long getServiceInvokeCount(String type){
         String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si where si.type = ?";
-        Long count = serviceInvokeDAO.findUnique(hql, type);
+
+        long count = (Long)serviceInvokeDAO.findUnique(hql, type);
         return count;
     }
     /**
@@ -137,7 +138,7 @@ public class StatisticsServiceImpl implements StatisticsService{
      */
     public long getServiceInvokeCount(String systemId, String type){
         String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ?";
-        Long count = serviceInvokeDAO.findUnique(hql, systemId, type);
+        long count = (Long)serviceInvokeDAO.findUnique(hql, systemId, type);
         return count;
     }
 
@@ -198,7 +199,7 @@ public class StatisticsServiceImpl implements StatisticsService{
                     hql2 += " and o.optDate < '" + values.get("endDate")[0] + "' ";
                 }
             }
-            Long hisNum = operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
+            long hisNum = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
             operationReleaseNum += hisNum;
             if(!serviceIds.contains(pk.getServiceId()) && hisNum > 0){
                 serviceIds.add(pk.getServiceId());

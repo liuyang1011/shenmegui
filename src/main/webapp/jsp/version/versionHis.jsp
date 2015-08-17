@@ -95,7 +95,7 @@
 				singleSelect:true,
 				url:'/versionHis/hisVersionList',
 				method:'get',
-				toolbar:toolbar,
+				<%--toolbar:toolbar,--%>
 				pagination:true,
 				pageSize:10" style="height:365px; width:auto;">
   <thead>

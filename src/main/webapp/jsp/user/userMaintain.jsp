@@ -28,14 +28,14 @@
 			<td><input class="easyui-textbox" type="text" name="OrgId" id="OrgId">
 			</td>
 		</tr>
-		<tr>
+		<%--<tr>
 			<th>生效日期</th>
 			<td><input class="easyui-datebox" type="text" name="Startdate" id="Startdate">
 			</td>
 			<th>失效日期</th>
 			<td><input class="easyui-datebox" type="text" name="Lastdate" id="Lastdate">
 			</td>
-		</tr>
+		</tr>--%>
 
 		<tr>
 			<td>&nbsp;</td>
@@ -63,8 +63,8 @@
 				<th field="userMobile" width="130px" align="center">手机号码</th>
 				<th field="userTel" width="130px" align="center">电话号码</th>
 				<th field="orgId" width="130px" align="center">所属机构</th>
-				<th field="startdate" width="130px" align="center">生效日期</th>
-				<th field="lastdate" width="130px" align="center">失效日期</th>
+				<%--<th field="startdate" width="130px" align="center">生效日期</th>
+				<th field="lastdate" width="130px" align="center">失效日期</th>--%>
 				<th field="remark" width="130px" align="center">备 注</th>
 	</tr>
 	</thead>

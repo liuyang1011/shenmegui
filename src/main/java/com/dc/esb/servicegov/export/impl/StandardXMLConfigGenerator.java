@@ -100,7 +100,7 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
         String channel__service_path = loader.getResource("template/out_config/channel_service_template.xml").getPath();
         String service_system__path = loader.getResource("template/out_config/service_system_template.xml").getPath();
 
-        String destpath = loader.getResource("/").getPath() + "/generator/" + export.getServiceId()+export.getOperationId();
+        String destpath = loader.getResource("").getPath() + "/generator/" + export.getServiceId()+export.getOperationId();
 
         try {
             System provide_system = systemService.getById(export.getProviderSystemId());
@@ -109,10 +109,18 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
             FileUtil.copyFile(service_system__path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+"_system_"+provide_system.getSystemAb()+".xml",requestText,"");
 
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("StandardConfigGenerator.generatorOut 导出出现异常,"+e.getMessage());
         }
     }
 
+    public SystemService getSystemService() {
+        return systemService;
+    }
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
 
     public static void main(String[] args) {
 

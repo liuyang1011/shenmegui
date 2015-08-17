@@ -5,11 +5,13 @@ import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
 import net.sf.json.JSONArray;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -150,6 +152,8 @@ public class InterfaceController {
             //修改接口关系表不更新
             inter.setServiceInvoke(null);
         }
+        inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
+        inter.setOptDate(DateUtils.format(new Date()));
         interfaceService.save(inter);
         if (add) {
             //添加报文，自动生成固定报文头<root><request><response>

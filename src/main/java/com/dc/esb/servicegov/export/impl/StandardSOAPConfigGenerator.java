@@ -107,10 +107,14 @@ public class StandardSOAPConfigGenerator implements IMetadataConfigGenerator {
         }
     }
 
+    public SystemService getSystemService() {
+        return systemService;
+    }
 
-
-
-
+    @Override
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
 
     public static void main(String[] args) {
 
