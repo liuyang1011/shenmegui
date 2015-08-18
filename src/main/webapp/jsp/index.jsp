@@ -22,9 +22,6 @@
     <div id="logo"></div>
     <ul id="nav">
         <li>
-            <a href="javascript:;" mid="1">平台管理</a>
-        </li>
-        <li>
             <a href="javascript:;" mid="2">公共信息管理</a>
         </li>
         <li>
@@ -35,7 +32,11 @@
             </ul>
         </li>
         <li>
-            <a href="javascript:;" mid="4">服务管理</a>
+            <a href="javascript:;">服务管理</a>
+            <ul>
+                <li><a href="javascript:;" mid="4">服务信息管理</a></li>
+                <li><a href="javascript:;" mid="12">服务发布管理</a></li>
+            </ul>
         </li>
         <li>
             <a href="javascript:;" mid="5">交易链路管理</a>
@@ -43,10 +44,13 @@
         <li>
             <a href="javascript:;" mid="11">统计报表</a>
         </li>
+        <li>
+            <a href="javascript:;" mid="1">平台管理</a>
+        </li>
     </ul>
     <div id="header_toolsbar">
         <a href="javascript:;" class="login_user"><shiro:principal/></a>
-        <a id="taskName" href="javascript:;">当前任务:服务定义</a>
+        <a id="taskName" href="javascript:;">当前任务:</a>
         <a href="/logout/">退出</a>
         <a href="javascript:;">帮助</a>
     </div>
@@ -57,7 +61,6 @@
 </div>
 <div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
      class="easyui-tabs " id="mainContentTabs">
-    <div title="首页"></div>
 </div>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.easyui.min.js"></script>

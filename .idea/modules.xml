@@ -2,6 +2,16 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../MyPages/MyPages.iml" filepath="$PROJECT_DIR$/../MyPages/MyPages.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/demo-parent.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/demo-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/evaluation/jbpm-demo-evaluation.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/evaluation/jbpm-demo-evaluation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/jms/jbpm-demo-jms.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/jms/jbpm-demo-jms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/parameters/jbpm-demo-parameters.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/parameters/jbpm-demo-parameters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/rest/jbpm-demo-rest.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/rest/jbpm-demo-rest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/rewards/jbpm-demo-rewards.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/rewards/jbpm-demo-rewards.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/rewards-basic/jbpm-demo-rewards-basic.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/rewards-basic/jbpm-demo-rewards-basic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/spring/jbpm-demo-spring.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/spring/jbpm-demo-spring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jbpm-6-examples/quickstarts/jbpm6-quickstarts.iml" filepath="$PROJECT_DIR$/../jbpm-6-examples/quickstarts/jbpm6-quickstarts.iml" />
       <module fileurl="file://$PROJECT_DIR$/servicegov.iml" filepath="$PROJECT_DIR$/servicegov.iml" />
     </modules>
   </component>

@@ -24,7 +24,7 @@ import java.util.*;
  * Created by Administrator on 2015/7/15.
  */
 @Component
-public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
+public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
 
     protected Log logger = LogFactory.getLog(getClass());
 
@@ -97,6 +97,34 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
             }
         }
 
+        List<Ida> reqIdas = new ArrayList<Ida>();
+        List<Ida> resIdas = new ArrayList<Ida>();
+        String reqId = "";
+        String resId = "";
+        for (Ida ida : idas){
+            if(ida.getStructName().equals("request")){
+                reqId = ida.getId();
+            }
+            if(ida.getStructName().equals("response")){
+                resId = ida.getId();
+            }
+        }
+        for(Ida ida : idas){
+            if(null == ida.get_parentId()){
+                continue;
+            }else if(ida.get_parentId().equals(reqId)){
+                reqIdas.add(ida);
+            }else if(ida.get_parentId().equals(resId)){
+                resIdas.add(ida);
+            }
+        }
+        System provide_system = systemService.getById(export.getProviderSystemId());
+        Interface provide_interface = interfaceService.getById(export.getProviderInterfaceId());
+        //test
+        requestText = ExportUtil.generatorMappingXML(reqIdas,"request",provide_system.getSystemAb());
+        responseText = ExportUtil.generatorMappingXML(resIdas,"response","esb");
+
+//        ExportUtil.generatorMappingXML(idas,sdas);
 
         //读取in_config模板
         ClassLoader loader = this.getClass().getClassLoader();
@@ -110,13 +138,13 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
         String destpath = loader.getResource("").getPath() + "/generator/" + export.getServiceId()+export.getOperationId();
 
         try {
-            System provide_system = systemService.getById(export.getProviderSystemId());
-            FileUtil.copyFile(service_define_path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,responseText);
-            FileUtil.copyFile(channel__service_path,destpath+"/out_config/metadata/channel_"+provide_system.getSystemAb()+"_service_"+export.getServiceId()+export.getOperationId()+".xml","",responseText);
-            FileUtil.copyFile(service_system__path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+"_system_"+provide_system.getSystemAb()+".xml",requestText,"");
-
+//            FileUtil.copyFile(service_define_path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,responseText);
+//            FileUtil.copyFile(channel__service_path,destpath+"/out_config/metadata/channel_"+provide_system.getSystemAb()+"_service_"+export.getServiceId()+export.getOperationId()+".xml","",responseText);
+//            FileUtil.copyFile(service_system__path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+"_system_"+provide_system.getSystemAb()+".xml",requestText,"");
+            String systemAb = provide_system.getSystemAb();
+            String ecode = provide_interface.getEcode();
             //TZB导出
-//            FileUtil.copyFileTZB(type_mapping_ecode_path,destpath+"/out_config/provider_mapping_ecode_"+export.getProviderInterfaceId()+".xml",requestText,responseText);
+            FileUtil.copyFileTZB(type_mapping_ecode_path,destpath+"/out_config/provider_mapping_ecode_"+export.getProviderInterfaceId()+".xml",systemAb,ecode,requestText,responseText);
 
 
         } catch (Exception e) {
@@ -137,6 +165,7 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
         return interfaceService;
     }
 
+    @Override
     public void setInterfaceService(InterfaceService interfaceService) {
         this.interfaceService = interfaceService;
     }

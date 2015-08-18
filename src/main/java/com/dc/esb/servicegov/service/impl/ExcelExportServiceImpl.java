@@ -5,7 +5,7 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.Service;
 import com.dc.esb.servicegov.entity.System;
-import com.dc.esb.servicegov.excel.MappingSheetTask;
+import com.dc.esb.servicegov.excel.support.CellStyleSupport;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.dc.esb.servicegov.excel.support.Constants.INTERFACE_FILE_TYPE;
 import static com.dc.esb.servicegov.excel.support.Constants.MAPPING_FILE_TYPE;
-import static com.dc.esb.servicegov.excel.support.Constants.SERVICE_FILE_TYPE;
 
 /**
  * Created by Administrator on 2015/7/21.
@@ -37,6 +35,9 @@ import static com.dc.esb.servicegov.excel.support.Constants.SERVICE_FILE_TYPE;
 @Transactional
 public class ExcelExportServiceImpl extends AbstractBaseService {
     protected Log logger = LogFactory.getLog(getClass());
+
+    private HSSFCellStyle commonStyle;
+    private HSSFCellStyle arrayStyle;
 
     private static final String serviceType = "service";
     private static final String serviceCategoryType0 = "root";
@@ -161,6 +162,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public HSSFWorkbook fillExcel(List<ServiceInvoke> siList) {
         if (siList.size() > 0) {
             HSSFWorkbook workbook = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE);
+            commonStyle = CellStyleSupport.commonStyle(workbook);
+            arrayStyle = CellStyleSupport.arrayStyle(workbook);
             fillIndex(workbook, siList);
             fillMapings(workbook, siList);
             //List<InterfaceHeadVO> ihvList = getByInterfaceHeadVOServiceId(serviceId);
@@ -182,29 +185,30 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for (int i = 0; i < voList.size(); i++){
                 HSSFRow row = sheet.createRow(i + 1);
                 InterfaceInvokeVO vo = voList.get(i);
-                row.createCell(0).setCellValue(vo.getEcode());//交易码
-                row.createCell(1).setCellValue(vo.getInterfaceName());//交易名称
+
+                setCellValue(row.createCell(0), commonStyle, vo.getEcode());//交易码
+                setCellValue(row.createCell(1), commonStyle, vo.getInterfaceName());//交易名称
 
                 Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());
-                row.createCell(2).setCellValue(operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
-                row.createCell(3).setCellValue(operation.getOperationId());//场景id
-                row.createCell(4).setCellValue(operation.getOperationName());//场景名称
-                row.createCell(5).setCellValue(vo.getConsumers());//调用方
-                row.createCell(6).setCellValue(vo.getProviders());//提供者
+                setCellValue(row.createCell(2), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
+                setCellValue(row.createCell(3), commonStyle, operation.getOperationId());//场景id
+                setCellValue(row.createCell(4), commonStyle, operation.getOperationName());//场景名称
+                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
+                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
                 String systemAb = Constants.INVOKE_TYPE_CONSUMER.equals(vo.getType())? "Consumer" : "Provider";
-                row.createCell(7).setCellValue(systemAb);//接口方向
-                row.createCell(8).setCellValue(vo.getProviderIds());//接口提供系统ID
+                setCellValue(row.createCell(7), commonStyle, systemAb);//接口方向
+                setCellValue(row.createCell(8), commonStyle, vo.getProviderIds());//接口提供系统ID
 
-                row.createCell(9).setCellValue("");//报文名称
-                row.createCell(10).setCellValue("");//处理人
-                row.createCell(11).setCellValue("");//更新时间
-                row.createCell(12).setCellValue("");//报文转换方向
-                row.createCell(13).setCellValue("");//是否已有调用
-                row.createCell(14).setCellValue(vo.getConsumers());//调用方系统ID
-                row.createCell(15).setCellValue("");//参考文档
-                row.createCell(16).setCellValue("");//模块划分
-                row.createCell(17).setCellValue("");//是否穿透
-                row.createCell(18).setCellValue("");//业务报文头
+                setCellValue(row.createCell(9), commonStyle, "");//报文名称
+                setCellValue(row.createCell(10), commonStyle, "");//处理人
+                setCellValue(row.createCell(11), commonStyle, "");//更新时间
+                setCellValue(row.createCell(12), commonStyle, "");//报文转换方向
+                setCellValue(row.createCell(13), commonStyle, "");//是否已有调用
+                setCellValue(row.createCell(14), commonStyle, vo.getConsumers());//调用方系统ID
+                setCellValue(row.createCell(15), commonStyle, "");//参考文档
+                setCellValue(row.createCell(16), commonStyle, "");//模块划分
+                setCellValue(row.createCell(17), commonStyle, "");//是否穿透
+                setCellValue(row.createCell(18), commonStyle, "");//业务报文头
             }
 //                for (int i = 0; i < siList.size(); i++) {
 //                ServiceInvoke si = siList.get(i);
@@ -310,7 +314,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     }
 
     /**
-     * TODO 填充mapping页
+     *填充mapping页
      */
     public boolean fillMapping(HSSFSheet sheet, ServiceInvoke si) {
         try {
@@ -345,21 +349,21 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for (int i = 0; i < reqListSDA.size(); i++) {
                 fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
             }
-//        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
-//            for(int i = 0; i < reqListIda.size(); i++){
-//                fillIda(sheet, 7+reqListSDA.size()+i, reqListIda.get(i));
-//            }
-//        }
+        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
+            for(int i = 0; i < reqListIda.size(); i++){
+                fillIdaNewRow(sheet, counter, reqListIda.get(i));
+            }
+        }
             // sheet.createRow(8+reqListSDA.size());
             counter.increment();
             for (int i = 0; i < resListSDA.size(); i++) {
                 fillMappRow(sheet, counter, resListSDA.get(i), resListIda);
             }
-//            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
-//                for(int i = 0; i < resListIda.size(); i++){
-//                    fillIda(sheet, 8+reqListSDA.size()+reqListIda.size()+resListSDA.size()+i, reqListIda.get(i));
-//                }
-//            }
+            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
+                for(int i = 0; i < resListIda.size(); i++){
+                    fillIdaNewRow(sheet, counter, resListIda.get(i));
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");
@@ -372,17 +376,20 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         sheet.createRow(sheet.getLastRowNum() + 1);
         counter.increment();
         sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
-        fillSDA(sheet, counter.getCount(), sda);
+
         Ida ida = judgeMetadataId(idaList, sda.getMetadataId());
         if (ida != null) {
             fillIda(sheet, counter.getCount(), ida);
             idaList.remove(ida);
         } else {
-            sheet.getRow(counter.getCount()).createCell(5).setCellValue("不映射");
-            ;
+            String[] values = {"", "", "", "", "", "不映射"};
+            setRowValue(sheet.getRow(counter.getCount()), commonStyle, values);
         }
         if ((!StringUtils.isEmpty(sda.getType()) && (sda.getType().equalsIgnoreCase("array") || sda.getType().equalsIgnoreCase("struct"))) ||
                 (!StringUtils.isEmpty(sda.getLength()) && (sda.getLength().equalsIgnoreCase("array") || sda.getLength().equalsIgnoreCase("struct")))) {
+            sda.setRemark("start");
+            fillSDA(sheet, counter.getCount(), sda, arrayStyle);
+
             List<SDA> childList = getSDAChildren(sda.getSdaId());
             for (int i = 0; i < childList.size(); i++) {
                 fillMappRow(sheet, counter, childList.get(i), idaList);
@@ -391,52 +398,65 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             counter.increment();
             sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
             sda.setRemark("end");
-            fillSDA(sheet, counter.getCount(), sda);
+            fillSDA(sheet, counter.getCount(), sda, arrayStyle);
             if (ida != null) {
                 fillIda(sheet, counter.getCount(), ida);
             } else {
-                sheet.getRow(counter.getCount()).createCell(5).setCellValue("不映射");
-                ;
+                String[] values = {"", "", "", "", "", "不映射"};
+                setRowValue(sheet.getRow(counter.getCount()), commonStyle, values);
             }
         }
+        else{
+            fillSDA(sheet, counter.getCount(), sda, commonStyle);
+        }
+    }
+    public void fillSDA(HSSFSheet sheet, int index, SDA sda, HSSFCellStyle commonStyle) {
+        HSSFRow row = sheet.getRow(index);
+        setCellValue(row.createCell(7), commonStyle, sda.getStructName()); //英文名称
+        setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
+        setCellValue(row.createCell(9), commonStyle, sda.getType());//数据类型
+        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
+        setCellValue(row.createCell(11), commonStyle, "");//约束条件
+        setCellValue(row.createCell(12), commonStyle, sda.getRequired());//是否必输
+        setCellValue(row.createCell(13), commonStyle, sda.getRemark());//备注
+//        row.createCell(7).setCellValue(sda.getStructName()); //英文名称
+//        row.createCell(8).setCellValue(sda.getStructAlias()); //中文名称
+//        row.createCell(9).setCellValue(sda.getType()); //数据类型
+//        row.createCell(10).setCellValue(sda.getLength()); //长度
+//        row.createCell(11).setCellValue("");//约束条件
+//        row.createCell(12).setCellValue(sda.getRequired());//是否必输
+//        row.createCell(13).setCellValue(sda.getRemark());//备注
     }
 
-    public void fillSDA(HSSFSheet sheet, int index, SDA sda) {
+    public void fillIda(HSSFSheet sheet,int index, Ida ida) {
         HSSFRow row = sheet.getRow(index);
-        row.createCell(7).setCellValue(sda.getStructName()); //英文名称
-        row.createCell(8).setCellValue(sda.getStructAlias()); //中文名称
-        row.createCell(9).setCellValue(sda.getType()); //数据类型
-        row.createCell(10).setCellValue(sda.getLength()); //长度
-        row.createCell(11).setCellValue("");//约束条件
-        row.createCell(12).setCellValue(sda.getRequired());//是否必输
-        row.createCell(13).setCellValue(sda.getRemark());//备注
+        String[]  values = {ida.getStructName(), ida.getStructAlias(), ida.getType(), ida.getLength(), ida.getRequired(), ida.getRemark()};
+        setRowValue(row, commonStyle, values);
+//        row.createCell(0).setCellValue(ida.getStructName());//英文名称
+//        row.createCell(1).setCellValue(ida.getStructAlias());//中文名称
+//        row.createCell(2).setCellValue(ida.getType());//类型
+//        row.createCell(3).setCellValue(ida.getLength());//长度
+//        row.createCell(4).setCellValue(ida.getRequired());//是否必输
+//        row.createCell(5).setCellValue(ida.getRemark());//备注
     }
-
-    public void fillIda(HSSFSheet sheet, int index, Ida ida) {
-        HSSFRow row = sheet.getRow(index);
-//        if( null == row ){
-//            row = sheet.createRow(sheet.getLastRowNum() + 1);
-//            sheet.shiftRows(index, sheet.getLastRowNum(), 1, true, false); //插入一行
-//        }
-        fillIda(sheet, row, ida);
-        if (!StringUtils.isEmpty(ida.getType()) && (ida.getType().equalsIgnoreCase("array") || ida.getType().equalsIgnoreCase("struct"))) {
+    public void fillIdaNewRow(HSSFSheet sheet, Counter counter, Ida ida){
+        sheet.createRow(sheet.getLastRowNum() + 1);
+        counter.increment();
+        sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        if ((!StringUtils.isEmpty(ida.getType()) && (ida.getType().equalsIgnoreCase("array") || ida.getType().equalsIgnoreCase("struct"))) ||
+                (!StringUtils.isEmpty(ida.getLength()) && (ida.getLength().equalsIgnoreCase("array") || ida.getLength().equalsIgnoreCase("struct")))) {
+            ida.setRemark("start");
+            fillIda(sheet, counter.getCount(), ida);
             List<Ida> childList = getIdaChildren(ida.getId());
             for (int i = 0; i < childList.size(); i++) {
-                fillIda(sheet, index + i + 1, childList.get(i));
+                fillIdaNewRow(sheet, counter, childList.get(i));
             }
             ida.setRemark("end");
-            HSSFRow last = sheet.getRow(index + childList.size() + 1);
-            fillIda(sheet, last, ida);
+            fillIdaNewRow(sheet, counter, ida);
+        }else{
+            fillIda(sheet, counter.getCount(), ida);
         }
-    }
 
-    public void fillIda(HSSFSheet sheet, HSSFRow row, Ida ida) {
-        row.createCell(0).setCellValue(ida.getStructName());//英文名称
-        row.createCell(1).setCellValue(ida.getStructAlias());//中文名称
-        row.createCell(2).setCellValue(ida.getType());//类型
-        row.createCell(3).setCellValue(ida.getLength());//长度
-        row.createCell(4).setCellValue(ida.getRequired());//是否必输
-        row.createCell(5).setCellValue(ida.getRemark());//备注
     }
 
     public Ida judgeMetadataId(List<Ida> idaList, String metadataId) {
@@ -545,7 +565,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public HSSFWorkbook genderServiceView(String type, String categoryId) {
         try {
             HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE_VIEW);
-            HSSFCellStyle cellStyle = commonStyle(wb);
+            HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
             if (type.equals(serviceCategoryType0)) {
                 String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
                 List<ServiceCategory> list = serviceCategoryDao.find(hql);
@@ -615,42 +635,48 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
                             operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", " ", operation.getOperationRemark()};
 
-//                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
+//                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
+//                    if (interfaceInvokeVOs.size() == 0) {
+//                        HSSFRow row = sheet.createRow(counter);
+//                        counter++;
+//                        setRowValue(row, cellStyle, values3);
+//                        continue;
+//                    }
+//                    for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
+//                        HSSFRow row = sheet.createRow(counter);
+//                        counter++;
+//
+//                        values3[6] = interfaceInvokeVO.getConsumers();
+//                        values3[7] = interfaceInvokeVO.getEcode();
+//                        values3[8] = interfaceInvokeVO.getInterfaceName();
+//                        values3[9] = interfaceInvokeVO.getProviders();
+//                        setRowValue(row, cellStyle, values3);
+//                    }
 
-                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
-                    if (interfaceInvokeVOs.size() == 0) {
+                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
+                    if (interfaceInvokes.size() == 0) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
                         setRowValue(row, cellStyle, values3);
                         continue;
                     }
-                    for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
+                    for (InterfaceInvoke interfaceInvoke : interfaceInvokes) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
-
-                        values3[6] = interfaceInvokeVO.getConsumers();
-                        values3[7] = interfaceInvokeVO.getEcode();
-                        values3[8] = interfaceInvokeVO.getInterfaceName();
-                        values3[9] = interfaceInvokeVO.getProviders();
+                        if (interfaceInvoke.getConsumer() != null && interfaceInvoke.getConsumer().getSystem() != null) {
+                            values3[6] = interfaceInvoke.getConsumer().getSystem().getSystemChineseName();//服务消费者
+                        }
+                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getInter() != null) {
+                            values3[7] = interfaceInvoke.getProvider().getInter().getEcode();//交易码
+                            values3[8] = interfaceInvoke.getProvider().getInter().getInterfaceName();//交易名称
+                        }
+                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getSystem() != null) {
+                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务消费者
+                        }
                         setRowValue(row, cellStyle, values3);
                     }
-//                    for (InterfaceInvoke interfaceInvoke : interfaceInvokes) {
-//                        HSSFRow row = sheet.createRow(counter);
-//                        counter++;
-//                        if (interfaceInvoke.getConsumer() != null && interfaceInvoke.getConsumer().getSystem() != null) {
-//                            values3[6] = interfaceInvoke.getConsumer().getSystem().getSystemChineseName();//服务消费者
-//                        }
-//                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getInter() != null) {
-//                            values3[7] = interfaceInvoke.getProvider().getInter().getEcode();//交易码
-//                            values3[8] = interfaceInvoke.getProvider().getInter().getInterfaceName();//交易名称
-//                        }
-//                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getSystem() != null) {
-//                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务消费者
-//                        }
-//                        setRowValue(row, cellStyle, values3);
-//                    }
-                    CellRangeAddress region4 = new CellRangeAddress(counter - interfaceInvokeVOs.size(), counter - 1, (short) 4, (short) 4);
-                    CellRangeAddress region5 = new CellRangeAddress(counter - interfaceInvokeVOs.size(), counter - 1, (short) 5, (short) 5);
+                    CellRangeAddress region4 = new CellRangeAddress(counter - interfaceInvokes.size(), counter - 1, (short) 4, (short) 4);
+                    CellRangeAddress region5 = new CellRangeAddress(counter - interfaceInvokes.size(), counter - 1, (short) 5, (short) 5);
                     sheet.addMergedRegion(region4);//合并单元格：操作号
                     sheet.addMergedRegion(region5);//合并单元格：操作名称
                 }
@@ -702,23 +728,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public void setCellValue(HSSFCell cell, HSSFCellStyle cellStyle, String value) {
         cell.setCellStyle(cellStyle);
         cell.setCellValue(value);
-    }
-
-    /**
-     * 样式：边框+居中
-     *
-     * @param wb
-     * @return
-     */
-    public HSSFCellStyle commonStyle(HSSFWorkbook wb) {
-        HSSFCellStyle cellStyle = wb.createCellStyle();
-        cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框
-        cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框
-        cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框
-        cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
-        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//居中
-        cellStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-        return cellStyle;
     }
 
     public List<InterfaceHeadVO> getByInterfaceHeadVOServiceId(String serviceId) {
@@ -887,7 +896,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         return result;
     }
     /**
-     * 将一组serviceInvoke中的系统名称连接起来,用逗号隔开
+     * 将一组serviceInvoke中的系统名称或者系统id连接起来,用逗号隔开
      * @param list
      * @return
      */
@@ -919,7 +928,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public HSSFWorkbook genderRuserate(ReuseRateListVO listVO) {
         try {
             HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_REUSERATE);
-            HSSFCellStyle cellStyle = commonStyle(wb);
+            HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
             if(listVO != null ){
                 List<ReuseRateVO> list = listVO.getList();
                 if(list != null && list.size() > 0){
@@ -940,13 +949,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         return null;
     }
     /**
-     * 导出复用率统计
+     * 导出发布统计
      * @return
      */
     public HSSFWorkbook genderRelease(ReleaseListVO listVO) {
         try {
             HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_RELEASE);
-            HSSFCellStyle cellStyle = commonStyle(wb);
+            HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
             if(listVO != null ){
                 List<ReleaseVO> list = listVO.getList();
                 if(list != null && list.size() > 0){

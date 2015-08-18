@@ -577,4 +577,11 @@ $(function(){
         });
     });
 
+    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/task/mytask.jsp" style="width:100%;height:100%;"></iframe>';
+    var title = "我的任务"
+    $('#mainContentTabs').tabs('add', {
+        title: title,
+        content: content
+    });
+
 });

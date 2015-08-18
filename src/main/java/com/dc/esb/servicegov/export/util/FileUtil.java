@@ -1,5 +1,6 @@
 package com.dc.esb.servicegov.export.util;
 
+import com.dc.esb.servicegov.entity.SDA;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -47,6 +48,72 @@ public class FileUtil {
                 body = temp.replace("${request}$", requestTxt);
             }else if(temp.indexOf("${response}$") != -1){
                 body = temp.replace("${response}$", responseText);
+            }
+            writer.write(body);
+            writer.newLine();
+        }
+
+        writer.close();
+        if (writer != null)
+        {
+            writer.close();
+            writer = null;
+        }
+        if (reader != null)
+        {
+            reader.close();
+            reader = null;
+        }
+
+        //格式化xml
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(destFile);
+        FileOutputStream out = new FileOutputStream(destFile, false);
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setEncoding("utf-8");
+        XMLWriter formatWriter = new XMLWriter(new OutputStreamWriter(out, "utf-8"), format);// 重新写回到原来的xml文件中
+
+        formatWriter.write(document);
+
+        formatWriter.close();
+        out.close();
+
+
+        logger.info("复制结束...");
+    }
+
+    public static void copyFileTZB(String srcFile, String destFile, String systemAb, String ecode, String requestTxt,String responseText) throws Exception{
+        logger.info("复制文件开始，srcFile:" + srcFile + ",destFile:" + destFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(srcFile)),
+                "utf-8"));
+        File dFile = new File(destFile);
+        if (!dFile.isFile())
+        {
+            dFile.getParentFile().mkdirs();
+            dFile.createNewFile();
+        }
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(destFile)),
+                "utf-8"));
+
+        SDA SDARequest = null;
+        SDA SDAResponse = null;
+
+        String temp = null;
+        while ((temp = reader.readLine()) != null){
+            String body = temp;
+            if (temp.indexOf("${ecode}$") != -1)
+            {
+                body = body.replace("${ecode}$", ecode);
+            }
+            if(temp.indexOf("${systemAb}$") != -1){
+                body = body.replace("${systemAb}$", systemAb);
+            }
+            if(temp.indexOf("${request}$") != -1){
+                body = body.replace("${request}$", requestTxt);
+            }
+            if(temp.indexOf("${response}$") != -1){
+                body = body.replace("${response}$", responseText);
             }
             writer.write(body);
             writer.newLine();

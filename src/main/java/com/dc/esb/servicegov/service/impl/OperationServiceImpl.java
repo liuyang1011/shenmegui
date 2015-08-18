@@ -388,7 +388,14 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 }
                 if (key.equals("serviceDesc") && values.get(key) != null && values.get(key).length > 0) {
                     if (StringUtils.isNotEmpty(values.get(key)[0])) {
-                        hql += " and a.service.desc like '%" + values.get(key)[0] + "%' ";
+                        String desc = "";
+                        try {
+                            desc = URLDecoder.decode(values.get(key)[0],"utf-8");
+                        } catch (UnsupportedEncodingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        hql += " and a.service.desc like '%" + desc + "%' ";
                     }
                 }
                 if (key.equals("serviceState") && values.get(key) != null && values.get(key).length > 0) {
@@ -409,7 +416,14 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 }
                 if (key.equals("operationDesc") && values.get(key) != null && values.get(key).length > 0) {
                     if (StringUtils.isNotEmpty(values.get(key)[0])) {
-                        hql += " and a.operationDesc like '%" + values.get(key)[0] + "%' ";
+                        String desc = "";
+                        try {
+                            desc = URLDecoder.decode(values.get(key)[0],"utf-8");
+                        } catch (UnsupportedEncodingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        hql += " and a.operationDesc like '%" + desc  + "%' ";
                     }
                 }
                 if (key.equals("operationState") && values.get(key) != null && values.get(key).length > 0) {
@@ -418,14 +432,20 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     }
                 }
 
-                if (key.equals("systemId") && values.get(key) != null && values.get(key).length > 0) {
+                if (key.equals("providerId") && values.get(key) != null && values.get(key).length > 0) {
                     if (StringUtils.isNotEmpty(values.get(key)[0])) {
-                        hql += " and si.systemId like '%" + values.get(key)[0] + "%' ";
+                        hql += " and ii.provider.systemId like '%" + values.get(key)[0] + "%' ";
+                        hql += " and ii.provider.type like '%" +Constants.INVOKE_TYPE_PROVIDER + "%' ";
+
                     }
                 }
-                if (key.equals("systemType") && values.get(key) != null && values.get(key).length > 0) {
+                if (key.equals("consumerId") && values.get(key) != null && values.get(key).length > 0) {
                     if (StringUtils.isNotEmpty(values.get(key)[0])) {
-                        hql += " and si.type like '%" + values.get(key)[0] + "%' ";
+                        if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                            hql += " and ii.consumer.systemId like '%" + values.get(key)[0] + "%' ";
+                            hql += " and ii.consumer.type like '%" +Constants.INVOKE_TYPE_CONSUMER+ "%' ";
+
+                        }
                     }
                 }
 
@@ -434,16 +454,22 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return hql;
     }
     public long queryCount(Map<String, String[]> values){
-        String hql = "select count(*) from Operation a where 1=1 ";
+        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a,"
+                + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
         hql += genderQueryHql(values);
-        return (Long)operationDAOImpl.findUnique(hql);
+        hql += " group by a.serviceId, a.operationId";
+        return operationDAOImpl.find(hql).size();
     }
     public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page){
-        String hql = "select new " + OperationExpVO.class.getName() + "( a) from " + Operation.class.getName() +" as a where 1=1";
+        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a,"
+                + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
         hql += genderQueryHql(values);
-        List<OperationExpVO> voList =  operationDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
-        for(OperationExpVO vo : voList){
-            Operation operation = getOperation(vo.getServiceId(), vo.getOperationId());
+        hql += "  group by a.serviceId, a.operationId";
+        List<Object[]> strsArray =  operationDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
+        List<OperationExpVO> voList =  new ArrayList<OperationExpVO>();
+        for(Object[] strs : strsArray){
+            Operation operation = getOperation(String.valueOf(strs[0]), String.valueOf(strs[1]));
+            OperationExpVO vo = new OperationExpVO(operation);
             List<ServiceInvoke> consumerList = serviceInvokeService.getByOperationAndType(operation, Constants.INVOKE_TYPE_CONSUMER);
             String cunsumers = getSystemNames(consumerList);
             vo.setConsumers(cunsumers);
@@ -455,6 +481,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             if(operation.getVersion() != null){
                 vo.setVersion(operation.getVersion().getCode());
             }
+            voList.add(vo);
         }
         return voList;
     }

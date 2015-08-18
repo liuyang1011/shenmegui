@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.export.bean.ExportBean;
 import com.dc.esb.servicegov.export.bean.MetadataNode;
 import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
+import com.dc.esb.servicegov.service.InterfaceService;
 import com.dc.esb.servicegov.service.SystemService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +46,8 @@ public class StandardSOAPConfigGenerator implements IMetadataConfigGenerator {
 
     @Autowired
     SystemService systemService;
+    @Autowired
+    InterfaceService interfaceService;
     @Override
     public File generatorIn(List<Ida> idas, List<SDA> sdas, ExportBean export) {
         File file = null;
@@ -114,6 +117,14 @@ public class StandardSOAPConfigGenerator implements IMetadataConfigGenerator {
     @Override
     public void setSystemService(SystemService systemService) {
         this.systemService = systemService;
+    }
+
+    public InterfaceService getInterfaceService() {
+        return interfaceService;
+    }
+
+    public void setInterfaceService(InterfaceService interfaceService) {
+        this.interfaceService = interfaceService;
     }
 
     public static void main(String[] args) {

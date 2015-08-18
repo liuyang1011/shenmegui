@@ -161,7 +161,7 @@ public class ConfigExportController {
         }
 
         Map<String, String> providerIDAMap = new HashMap<String, String>();
-        providerIDAMap.put("interfaceId", export.getProviderSystemId());
+        providerIDAMap.put("interfaceId", export.getProviderInterfaceId());
         List<Ida> provideridas = idaService.findBy(providerIDAMap);
         //提供方是否标准接口
         if (export.isProviderIsStandard()) {
@@ -197,6 +197,7 @@ public class ConfigExportController {
                         try {
                             IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
                             generator.setSystemService(systemService);
+                            generator.setInterfaceService(interfaceService);
                             generator.generatorOut(provideridas, sdas, export);
                         } catch (InstantiationException e) {
                             logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());

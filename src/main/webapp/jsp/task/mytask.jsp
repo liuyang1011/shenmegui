@@ -68,73 +68,7 @@
             </thead>
         </table>
     </div>
-    <%--<div title="已完成任务" style="padding:10px">
-        <fieldset>
-            <legend>条件搜索</legend>
-            &lt;%&ndash;<table border="0" cellspacing="0" cellpadding="0">&ndash;%&gt;
-            &lt;%&ndash;<tr>&ndash;%&gt;
-            &lt;%&ndash;<th>工作流程</th>&ndash;%&gt;
-            &lt;%&ndash;<td>&ndash;%&gt;
-            &lt;%&ndash;<select class="easyui-combobox" panelHeight="auto" style="width:155px">&ndash;%&gt;
-            &lt;%&ndash;<option value="java">流程1</option>&ndash;%&gt;
-            &lt;%&ndash;<option value="c">流程2</option>&ndash;%&gt;
-            &lt;%&ndash;<option value="basic">流程3</option>&ndash;%&gt;
-            &lt;%&ndash;<option value="perl">流程4</option>&ndash;%&gt;
-            &lt;%&ndash;</select></td>&ndash;%&gt;
 
-            &lt;%&ndash;<th>任务节点</th>&ndash;%&gt;
-            &lt;%&ndash;<td>&ndash;%&gt;
-            &lt;%&ndash;<select class="easyui-combobox" panelHeight="auto" style="width:155px">&ndash;%&gt;
-            &lt;%&ndash;<option value="java">节点1</option>&ndash;%&gt;
-            &lt;%&ndash;<option value="c">节点2</option>&ndash;%&gt;
-            &lt;%&ndash;<option value="basic">节点3</option>&ndash;%&gt;
-            &lt;%&ndash;<option value="perl">节点4</option>&ndash;%&gt;
-            &lt;%&ndash;</select></td>&ndash;%&gt;
-            &lt;%&ndash;<th>紧急程度</th>&ndash;%&gt;
-            &lt;%&ndash;<td><input class="easyui-textbox" type="text" name="name"></td>&ndash;%&gt;
-            &lt;%&ndash;</tr>&ndash;%&gt;
-            &lt;%&ndash;<tr>&ndash;%&gt;
-            &lt;%&ndash;<th>计划起始日期</th>&ndash;%&gt;
-            &lt;%&ndash;<td><input class="easyui-datebox" type="text" name="name"></td>&ndash;%&gt;
-            &lt;%&ndash;<th>计划结束日期</th>&ndash;%&gt;
-            &lt;%&ndash;<td><input class="easyui-datebox" type="text" name="name"></td>&ndash;%&gt;
-            &lt;%&ndash;<th>责任人</th>&ndash;%&gt;
-            &lt;%&ndash;<td><input class="easyui-textbox" type="text" name="name"></td>&ndash;%&gt;
-            &lt;%&ndash;</tr>&ndash;%&gt;
-            &lt;%&ndash;<tr>&ndash;%&gt;
-            &lt;%&ndash;<td>&nbsp;</td>&ndash;%&gt;
-            &lt;%&ndash;<td>&nbsp;</td>&ndash;%&gt;
-            &lt;%&ndash;<td>&nbsp;</td>&ndash;%&gt;
-            &lt;%&ndash;<td>&nbsp;</td>&ndash;%&gt;
-            &lt;%&ndash;<td>&nbsp;</td>&ndash;%&gt;
-            &lt;%&ndash;<td align="right"><a href="#" class="easyui-linkbutton" iconCls="icon-search">搜索任务</a></td>&ndash;%&gt;
-            &lt;%&ndash;</tr>&ndash;%&gt;
-            &lt;%&ndash;</table>&ndash;%&gt;
-
-
-        </fieldset>
-        &lt;%&ndash;<table class="easyui-datagrid" title="已完成任务"&ndash;%&gt;
-        &lt;%&ndash;data-options="rownumbers:true,singleSelect:false,url:'../datagrid_data1.json',method:'get',pagination:true,&ndash;%&gt;
-        &lt;%&ndash;pageSize:10" style="height:370px; width:auto;">&ndash;%&gt;
-        &lt;%&ndash;<thead>&ndash;%&gt;
-        &lt;%&ndash;<tr>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'productid',checkbox:true"></th>&ndash;%&gt;
-
-
-        &lt;%&ndash;<th data-options="field:'itemid'">字段1</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'status'">字段2</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'listprice',align:'right'">字段3</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'unitcost',width:80,align:'right'">字段4</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'attr1'">消费方</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'status',width:60,align:'center'">字段5</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'attr1'"> 字段6</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'attr1'"> 字段7</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'attr1'">字段8</th>&ndash;%&gt;
-        &lt;%&ndash;<th data-options="field:'attr1'">字段9</th>&ndash;%&gt;
-        &lt;%&ndash;</tr>&ndash;%&gt;
-        &lt;%&ndash;</thead>&ndash;%&gt;
-        &lt;%&ndash;</table>&ndash;%&gt;
-    </div>--%>
     <script type="text/javascript">
         var Global = {};
         var toolbar = [
@@ -253,7 +187,7 @@
                                     parent.SYSMENU.changeLeftMenu(4);
                                     parent.SYSMENU.reloadTreeByValue('mxservicetree', "1");
                                 }
-                                if(task.name == "服务发布"){
+                                if (task.name == "服务发布") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(6);
@@ -281,20 +215,7 @@
                         alert("请选中要修改的数据！");
                     }
                 }
-            }/*,
-             {
-             text: '挂起',
-             iconCls: 'icon-guaqi',
-             handler: function () {
-             alert('挂起')
-             }
-             },{
-             text: '完成',
-             iconCls: 'icon-guaqi',
-             handler: function () {
-             alert('挂起')
-             }
-             }*/
+            }
         ];
     </script>
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>

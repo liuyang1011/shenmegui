@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.entity.Operation;
 public class OperationExpVO {
     private String serviceId;
     private String serviceName;
+    private String serviceDesc;
     private String operationId;
     private String operationName;
     private String operationDesc;
@@ -21,6 +22,7 @@ public class OperationExpVO {
     public OperationExpVO(Operation o) {
         this.serviceId = o.getServiceId();
         this.serviceName = o.getService().getServiceName();
+        this.serviceDesc = o.getService().getDesc();
         this.operationId = o.getOperationId();
         this.operationName = o.getOperationName();
         this.operationDesc = o.getOperationDesc();
@@ -116,5 +118,13 @@ public class OperationExpVO {
 
     public void setOptState(String optState) {
         this.optState = optState;
+    }
+
+    public String getServiceDesc() {
+        return serviceDesc;
+    }
+
+    public void setServiceDesc(String serviceDesc) {
+        this.serviceDesc = serviceDesc;
     }
 }
