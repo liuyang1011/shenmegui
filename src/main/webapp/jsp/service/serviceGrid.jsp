@@ -116,6 +116,15 @@
             if (value == 2) {
                 return "<font color='red'>审核未通过</font>";
             }
+            if (value == 3) {
+                return "<font color='#adff2f'>已发布</font>";
+            }
+            if (value == 4) {
+                return "<font color='#006400'>已上线</font>";
+            }
+            if (value == 5) {
+                return "<font color='#a9a9a9'>已下线</font>";
+            }
         },
         version: function (value, row, index) {
             try {
@@ -272,7 +281,7 @@
                         if (checkedItems[0].state == "1") {
                             var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version.code) + "&operationId=" + encodeURI(checkedItems[0].operationId);
                             $('#opDialog').dialog({
-                                title: 'SDAHis',
+                                title: '版本发布',
                                 width: 500,
                                 closed: false,
                                 cache: false,

@@ -267,7 +267,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             slaService.backUpSLAByCondition(params, operationHisAutoId);
             //备份OLA
             olaService.backUpByCondition(params, operationHisAutoId);
-
+            operation.setState("3");
+            operationDAOImpl.save(operation);
         }
     }
 
@@ -438,15 +439,25 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return hql;
     }
     public long queryCount(Map<String, String[]> values){
-        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a,"
-                + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
+        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ";
+        if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
+                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) ) ){
+            hql = hql + ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
+        }else{
+            hql += " where 1=1 ";
+        }
         hql += genderQueryHql(values);
         hql += " group by a.serviceId, a.operationId";
         return operationDAOImpl.find(hql).size();
     }
     public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page){
-        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a,"
-                + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
+        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ";
+        if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
+                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) ) ){
+            hql = hql + ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
+        }else{
+            hql += " where 1=1 ";
+        }
         hql += genderQueryHql(values);
         hql += "  group by a.serviceId, a.operationId";
         List<Object[]> strsArray =  operationDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
