@@ -101,7 +101,7 @@ var taskManager = {
         $.ajax({
             "type" : "GET",
             "contentType" : "application/json;charset=utf-8",
-            "url": "/searchService/processId/" + processId,
+            "url": "/service/searchService/processId/" + processId,
             "dataType": "json",
             "success": function(result) {
                 callBack(result);

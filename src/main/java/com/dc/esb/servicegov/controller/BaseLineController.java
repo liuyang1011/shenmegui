@@ -40,6 +40,7 @@ public class BaseLineController {
     boolean release(HttpServletRequest req, String code, String blDesc,
                     String versionHisIds) {
         return baseLineServiceImpl.release(req, code, blDesc, versionHisIds);
+
     }
 
     @RequiresPermissions({"version-get"})

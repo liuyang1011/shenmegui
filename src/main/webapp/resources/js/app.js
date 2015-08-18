@@ -495,8 +495,240 @@ var SYSMENU = {
             SYSTABMENU.init();
         });
     },
+    changeLeftMenuWithCallBack: function (mid, callBack) {
+        $("#west-menu").load(LOAD_URL.LEFTMENU, 'mid=' + mid, function () {
+            $('#mxsysadmintreefilter').searchbox({
+                searcher: function (value, name) {
+                    alert(value + "," + name);
+                },
+                prompt: '请输入关键词'
+            });
+            $('#servicetreefilter').searchbox({
+                "searcher": function (value, name) {
+                    $('.mxservicetree').tree('doFilter', value);
+                },
+                prompt: '请输入服务名'
+            });
+            $('#mxinterfacetreefilter').searchbox({
+                searcher: function (value, name) {
+                    $('.msinterfacetree').tree('doFilter', value);
+                },
+                prompt: '请输入关键词'
+            });
+            $('#mxinterfaceheadtreefilter').searchbox({
+                searcher: function (value, name) {
+                    $('.mxsysadmintree').tree('doFilter', value);
+                },
+                prompt: '请输入关键词'
+            });
+
+            //报文管理
+            $('.mxsysadmintree').tree({
+                onContextMenu: function (e, node) {
+                    /*if(node.id=='root'){
+                     return;
+                     }*/
+                    e.preventDefault();
+                    $(this).tree('select', node.target);
+                    if (typeof(node.children) != 'undefined') {//编辑接口
+                        $('#mm-mxsysadmintree').menu('show', {
+                            left: e.pageX,
+                            top: e.pageY
+                        });
+                    }
+                },
+                onClick: function (node) {
+                    if (node.id == 'root') {
+                        return;
+                    }
+                    if (typeof(node.children) == 'undefined') {//编辑接口
+                        var url = LOAD_URL.SYSADMINUIEDIT;
+                        var mid = node.id;
+                        var title = node.text;
+                        //公共报文头信息管理
+                        if (mid == 1) {
+                            url = LOAD_URL.PUBLICHEADER;
+                        }
+
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+                    }
+
+                    else {//基本信息
+                        var mid = node.id;
+                        var title = node.text;
+                        var node = $('.mxsysadmintree').tree("getSelected");
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {//LOAD_URL.SYSADMINUI+
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+                    }
+                }
+            });
+
+            //接口管理
+            var loadFlag = false;
+            $('.msinterfacetree').tree({
+                onContextMenu: function (e, node) {
+                    e.preventDefault();
+                    $(this).tree('select', node.target);
+                    if (typeof(node.children) != 'undefined') {//编辑接口
+                        if(node.click == 'system') {
+                            $('#mm-mxsystemtree').menu('show', {
+                                left: e.pageX,
+                                top: e.pageY
+                            });
+                        }else if(node.click == 'disable'){
+
+                            $('#mm-mxsystemtree1').menu('show', {
+                                left: e.pageX,
+                                top: e.pageY
+                            });
+
+                        }else{
+                            $('#mm-mxinterfacetree1').menu('show', {
+                                left: e.pageX,
+                                top: e.pageY
+                            });
+                        }
+                    }
+
+                },
+                onClick: function (node) {
+                    if (node.click == 'system') {
+                        var mid = node.id;
+                        var title = node.text;
+                        if ($('#mainContentTabs').tabs('exists', title)){
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.SYSTEMINDEX+'" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add',{
+                                title:title,
+                                content:content,
+                                closable:true
+                            });
+                        }
+                    }else if(node.click == 'disable'){
+                        var mid = node.id;
+                        var title = node.text;
+                        if ($('#mainContentTabs').tabs('exists', title)){
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {//SYSADMINUIEDIT
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add',{
+                                title:title,
+                                content:content,
+                                closable:true
+                            });
+                        }
+
+                    }else{
+                        var mid = node.id;
+                        var title = node.text;
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {//SYSADMINUIEDIT
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACEDEFINE+'?interfaceId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+                    }
+                }
+            });
+
+            $('.msinterfacetree').tree('collapseAll');
+
+            $('.mslinktree').tree({
+                onClick: function (node) {
+                    if (typeof(node.children) == 'undefined') {
+                        var mid = node.id;
+                        var title = node.text + "交易链路";
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/dom.html" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+                    } else {
+                        var mid = node.id;
+                        var title = node.text + "交易链路";
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId='+node.id+'" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+                    }
+                }
+            });
+
+            $('.mxservicetree').tree({
+                onContextMenu: function (e, node) {
+                    e.preventDefault();
+                    $(this).tree('select', node.target);
+                    if (typeof(node.children) != 'undefined') {
+                        $('#mm-mxservicetree').menu('show', {
+                            left: e.pageX,
+                            top: e.pageY
+                        });
+                    }
+                },
+                onClick: function (node) {
+                    if (node.type == 'service') {//打开服务场景
+                        if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {
+                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id + '" style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
+                                });
+                            }
+                        } else {
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            }
+                        }
+                    }
+                }
+            });
+            SYSTABMENU.init();
+            callBack();
+        });
+    },
     reloadTreeByValue: function(key, value){
-        $('.mxservicetree').tree('doFilter', value);
+        $('.' + key).tree("loadData", value);
     }
 };
 SYSMENU.init();

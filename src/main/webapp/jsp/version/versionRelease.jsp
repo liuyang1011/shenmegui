@@ -69,14 +69,12 @@
 				alert("不能发布空数据！");
 				return false;
 			}
-		//	var pcItems = $('#pcList').datagrid('getChecked');
 			var operations = new Array();
 			$.each(opItems, function(index, item) {
 				var opertion = {};
 				opertion.serviceId = item.serviceId;
 				opertion.operationId = item.operationId;
 				opertion.operationDesc =  $("#desc").textbox("getValue");
-			//	opertion.operationRemark =  $("#code").textbox("getValue");
 				operations.push(opertion);
 			});
 			$.ajax({
