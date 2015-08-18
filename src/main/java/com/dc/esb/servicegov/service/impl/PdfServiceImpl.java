@@ -20,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -70,18 +68,40 @@ public class PdfServiceImpl {
         document.close();
         return pdfFile;
     }
+
+    /**
+     * 根据传入的operation列表构建pdf
+     * @param pkvo
+     * @return
+     * @throws Exception
+     */
     public File genderServicePdf(OperationPKVO pkvo) throws Exception{
         File pdfFile = createFdfFile("operation_" + new Date().getTime());
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream(pdfFile))
                 .setInitialLeading(16);
         document.open();
-        List<Operation> operations = new ArrayList<Operation>();
+
+        Map<com.dc.esb.servicegov.entity.Service, List<Operation>> map = new HashMap<com.dc.esb.servicegov.entity.Service, List<Operation>>();
         for(OperationPK pk : pkvo.getPks()){
             Operation operation = operationDAO.getBySO(pk.getServiceId(), pk.getOperationId());
-            operations.add(operation);
+            List<Operation> operations = map.get(operation.getService());
+            if(operations != null){
+                operations.add(operation);
+            }
+            else{
+                operations = new ArrayList<Operation>();
+                operations.add(operation);
+                map.put(operation.getService(), operations);
+            }
         }
-        genderService(operations, document);
+        int i = 0;
+        for(Map.Entry<com.dc.esb.servicegov.entity.Service, List<Operation>> entry:map.entrySet()){
+            com.dc.esb.servicegov.entity.Service service = entry.getKey();
+            printServiceTitle(service, document, String.valueOf(++i));
+            List<Operation> operations = entry.getValue();
+            printOperationInfo(operations, document);
+        }
         document.close();
         return pdfFile;
     }
@@ -129,8 +149,18 @@ public class PdfServiceImpl {
             }
         }
     }
+
     public void genderPdfByService(String serviceId, Document document, String tab) throws Exception{
         com.dc.esb.servicegov.entity.Service service = serviceDAO.findUniqueBy("serviceId", serviceId);
+        printServiceTitle(service, document, tab);
+        List<Operation> operations = operationDAO.findBy("serviceId", serviceId);
+        printOperationInfo(operations, document);
+    }
+
+    /**
+     * 打印服务信息
+     */
+    public void printServiceTitle(com.dc.esb.servicegov.entity.Service service, Document document, String tab) throws Exception{
         Phrase servicePhrase = new Phrase(tab, PdfUtils.ST_SONG_BIG_BOLD_FONT);
         servicePhrase.add("  "+service.getServiceName());
         servicePhrase.add("("+service.getServiceId()+")");
@@ -144,12 +174,8 @@ public class PdfServiceImpl {
         Phrase opPhrase = new Phrase("              本服务有以下场景：", PdfUtils.ST_SONG_MIDDLE_FONT);
         document.add(opPhrase);
         document.add(Chunk.NEWLINE);
-
-        List<Operation> operations = operationDAO.findBy("serviceId", serviceId);
-        genderService(operations, document);
     }
-
-    public void genderService(List<Operation> operations, Document document) throws Exception{
+    public void printOperationInfo(List<Operation> operations, Document document) throws Exception{
         if (null != operations) {
             int i=0;
             for (Operation operation : operations) {
@@ -181,12 +207,14 @@ public class PdfServiceImpl {
                     log.error(errorMsg, e);
                     throw e;
                 }
-
             }
         } else {
             String errorMsg = "生成PDF失败，服务为空！";
             log.error(errorMsg);
         }
+    }
+    public void printOperationTitle(Operation operation, Document document) throws  Exception{
+
     }
     public File createFdfFile(String fileName) throws Exception{
         File pdfFile = null;

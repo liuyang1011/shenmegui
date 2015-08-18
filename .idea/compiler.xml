@@ -22,6 +22,20 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="jbpm-demo-evaluation" />
+        <module name="jbpm-demo-jms" />
+        <module name="jbpm-demo-parameters" />
+        <module name="jbpm-demo-rest" />
+        <module name="jbpm-demo-rewards" />
+        <module name="jbpm-demo-rewards-basic" />
+        <module name="jbpm-demo-spring" />
+        <module name="jbpm6-quickstarts" />
+      </profile>
+      <profile default="false" name="Annotation profile for servicegov" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="servicegov" />
       </profile>
     </annotationProcessing>

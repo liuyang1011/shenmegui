@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal">
-    <data-source name="oracle_sg" uuid="2e847f3e-c6d3-41c6-b0c8-b63e9ed68e60">
-      <user-name>esb</user-name>
-      <user-password>dfcfdfd9dfc8</user-password>
-      <schema-pattern>*.ESB</schema-pattern>
-      <default-schemas>*.ESB</default-schemas>
-    </data-source>
-    <data-source name="esbsg1" uuid="22c6e72b-54c8-4d7c-afb7-926556a74304">
-      <user-name>esbsg1</user-name>
-      <user-password>dfcfdfd9dfc8dfd9dfcddf9b</user-password>
-      <schema-pattern>*.ESBSG1</schema-pattern>
-      <default-schemas>*.ESB</default-schemas>
-    </data-source>
+    <data-source name="oracle_sg" uuid="2e847f3e-c6d3-41c6-b0c8-b63e9ed68e60" />
+    <data-source name="esbsg1" uuid="22c6e72b-54c8-4d7c-afb7-926556a74304" />
   </component>
 </project>
