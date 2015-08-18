@@ -56,7 +56,6 @@ var taskManager = {
                 callBack(result);
             }
         });
-
     },
     "completeTask" : function (task, params, callBack){
         //{user}/work/{task}
@@ -92,8 +91,27 @@ var taskManager = {
             }
         });
     },
+
     "check" : function(task,callBack){
         var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/taskCheck/common.jsp?processId='+task.processId+'&taskId='+task.taskId+'" style="width:100%;height:100%;"></iframe>';
         parent.addTab("验收公共代码", content);
+    },
+
+    "getServiceByProcess" : function getServiceByProcess(processId, callBack){
+        $.ajax({
+            "type" : "GET",
+            "contentType" : "application/json;charset=utf-8",
+            "url": "/searchService/processId/" + processId,
+            "dataType": "json",
+            "success": function(result) {
+                callBack(result);
+            },
+            "complete":function(responce){
+                var resText = responce.responseText;
+                if(resText.toString().charAt(0) == "<"){
+                    alert("没有权限！");
+                }
+            }
+        });
     }
 };

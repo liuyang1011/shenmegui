@@ -20,7 +20,7 @@ public class Constants {
 	public static final String EXCEL_TEMPLATE_RELEASE =Constants.class.getResource("/").getPath() +"/template/excel_release_template.xls";
 
     public static class Operation{
-    	public static final String OPT_STATE_UNAUDIT = "0";  //0：未审核（正常）， 1：审核通过，2：审核不通过,
+    	public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
     	public static final String OPT_STATE_PASS = "1";
     	public static final String OPT_STATE_UNPASS = "2";
     	public static final String LIFE_CYCLE_STATE_TEST = "3";//测试
