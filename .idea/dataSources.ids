@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<component name="dataSourceStorage">
-  <data-source name="oracle_sg" uuid="2e847f3e-c6d3-41c6-b0c8-b63e9ed68e60">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
-  <data-source name="esbsg1" uuid="22c6e72b-54c8-4d7c-afb7-926556a74304">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
-</component>
