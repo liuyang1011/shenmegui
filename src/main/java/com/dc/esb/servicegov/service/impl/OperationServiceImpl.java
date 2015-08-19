@@ -14,6 +14,8 @@ import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,9 @@ import java.util.*;
 @Service
 @Transactional
 public class OperationServiceImpl extends AbstractBaseService<Operation, OperationPK>{
+
+
+    private static final Log log = LogFactory.getLog(OperationServiceImpl.class);
 
     @Autowired
     private OperationDAOImpl operationDAOImpl;
@@ -118,7 +123,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             operationDAOImpl.save(entity);
             sdaService.genderSDAAuto(entity);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e,e);
             return false;
         }
         return true;
@@ -130,7 +135,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             operationDAOImpl.save(entity);
             //清空
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e,e);
             return false;
         }
         return true;
@@ -259,7 +264,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 try {
                     versionDesc = URLDecoder.decode(versionDesc, "utf-8");
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    log.error(e, e);
                 }
             }
             OperationHis operationHis = backUpOperation(serviceId, operationId, versionDesc);
@@ -269,6 +274,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             slaService.backUpSLAByCondition(params, operationHisAutoId);
             //备份OLA
             olaService.backUpByCondition(params, operationHisAutoId);
+            operation.setState(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED);
+            operationDAOImpl.save(operation);
 
         }
     }

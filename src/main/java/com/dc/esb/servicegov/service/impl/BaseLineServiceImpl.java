@@ -8,7 +8,11 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
+import com.dc.esb.servicegov.dao.impl.OperationHisDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.entity.OperationHis;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
@@ -40,6 +44,10 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
     private BVServiceImpl bvServiceImpl;
     @Autowired
     private ServiceInvokeServiceImpl serviceInvokeServiceImpl;
+    @Autowired
+    private OperationHisDAOImpl operationHisDAO;
+    @Autowired
+    private OperationDAOImpl operationDAO;
 
     public boolean release(HttpServletRequest req, String code, String blDesc, String versionHisIds) {
         //新建基线
@@ -54,23 +62,35 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
         baseLineDAO.save(bl);
 
         //保存基线版本关系
-        if(!StringUtils.isEmpty(versionHisIds)){
-        	  String[] vids = versionHisIds.split("\\,");
-              for (String versionHisId : vids) {
-                  BaseLineVersionHisMapping bvm = new BaseLineVersionHisMapping();
-                  bvm.setBaseLineId(bl.getBaseId());
-                  bvm.setVersionHisId(versionHisId);
-                  bvServiceImpl.save(bvm);
-              }
-              
-              versionHisServiceImpl.updateVerionHis(Constants.Version.TARGET_TYPE_BASELINE, vids);
+        if (!StringUtils.isEmpty(versionHisIds)) {
+            String[] vids = versionHisIds.split("\\,");
+            for (String versionHisId : vids) {
+                BaseLineVersionHisMapping bvm = new BaseLineVersionHisMapping();
+                bvm.setBaseLineId(bl.getBaseId());
+                bvm.setVersionHisId(versionHisId);
+                bvServiceImpl.save(bvm);
+                //更新服务状态为上线
+                List<OperationHis> operationHises = operationHisDAO.findBy("versionHisId", versionHisId);
+                for (OperationHis operationHis : operationHises) {
+                    String serviceId = operationHis.getServiceId();
+                    String operationId = operationHis.getOperationId();
+                    Operation operation = operationServiceImpl.getOperation(serviceId, operationId);
+                    if (null != operation) {
+                        operation.setState(Constants.Operation.LIFE_CYCLE_STATE_ONLINE);
+                        operationServiceImpl.save(operation);
+                    }
+
+                }
+            }
+            versionHisServiceImpl.updateVerionHis(Constants.Version.TARGET_TYPE_BASELINE, vids);
         }
-        
-      return true;
+
+
+        return true;
     }
 
     public List<BaseLine> getBaseLine(String code, String blDesc) {
-        
+
         return baseLineDAO.getBaseLine(code, blDesc);
     }
 

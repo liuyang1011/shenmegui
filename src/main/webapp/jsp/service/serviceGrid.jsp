@@ -108,13 +108,22 @@
     var formatter = {
         operationState: function (value, row, index) {
             if (value == 0) {
-                return "<font color=''>待审核</font>";
+                return "<font color='green'>服务定义</font>";
             }
             if (value == 1) {
                 return "<font color='green'>审核通过</font>";
             }
             if (value == 2) {
                 return "<font color='red'>审核未通过</font>";
+            }
+            if (value == 3) {
+                return "<font color='green'>已发布</font>";
+            }
+            if (value == 4) {
+                return "<font color='green'>已上线</font>";
+            }
+            if (value == 5) {
+                return "<font color='red'>已下线</font>";
             }
         },
         version: function (value, row, index) {

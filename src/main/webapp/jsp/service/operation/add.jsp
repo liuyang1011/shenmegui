@@ -91,7 +91,7 @@
                 <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
 
                 <th>状态</th>
-                <td>未审核
+                <td>服务定义
                     <input type="hidden" value="0" name="state"/>
                 </td>
             </tr>

@@ -131,10 +131,9 @@
                             task.processInstanceId = Global.processInstanceId;
                             task.taskId = Global.taskId;
                             task.userId = $("#userId").text();
-                            ;
                             task.name = Global.taskName;
                             task.name = task.name.replace(/(^\s*)|(\s$)/g, '');
-                            parent.PROCESS_INFO.processId = checkedItem.id;
+                            parent.PROCESS_INFO.processId = checkedItem.processInstanceId;
                             parent.PROCESS_INFO.taskName = task.name;
                             parent.PROCESS_INFO.taskId = task.taskId;
                             parent.changeTaskName();
@@ -184,8 +183,12 @@
                                 if (task.name == "服务审核") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    parent.SYSMENU.changeLeftMenu(4);
-                                    parent.SYSMENU.reloadTreeByValue('mxservicetree', "1");
+                                    parent.SYSMENU.changeLeftMenuWithCallBack(4,function(){
+                                        var callBack = function (result) {
+                                            parent.SYSMENU.reloadTreeByValue('mxservicetree', result);
+                                        };
+                                        taskManager.getServiceByProcess(parent.PROCESS_INFO.processId,callBack);
+                                    });
                                 }
                                 if (task.name == "服务发布") {
                                     $("#w").window("close");
@@ -198,7 +201,12 @@
                                 if (task.name == "服务开发") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    parent.SYSMENU.changeLeftMenu(4);
+                                    parent.SYSMENU.changeLeftMenuWithCallBack(4,function(){
+                                        var callBack = function (result) {
+                                            parent.SYSMENU.reloadTreeByValue('mxservicetree', result);
+                                        };
+                                        taskManager.getServiceByProcess(parent.PROCESS_INFO.processId,callBack);
+                                    });
                                     alert("请在右侧服务选择服务，进行开发。");
                                 }
                                 if (task.name == "服务上线") {

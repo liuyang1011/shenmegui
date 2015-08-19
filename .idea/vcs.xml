@@ -4,10 +4,13 @@
 <<<<<<< HEAD
 =======
     <mapping directory="" vcs="" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../jbpm" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../jbpm-6-examples" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../ld" vcs="svn" />
+<<<<<<< HEAD
 >>>>>>> 648e5561d4d13bf5754c13373550235b6f178c1e
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+=======
+>>>>>>> 7e9867e2dabc91f8322c5e82700c1277d592d031
   </component>
 </project>
