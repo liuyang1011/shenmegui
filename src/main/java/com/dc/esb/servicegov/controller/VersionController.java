@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -36,7 +37,9 @@ public class VersionController {
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
 
-        Page page = operationService.getAll(rowCount);
+//        Page page = operationService.getAll(rowCount);
+        String hql = "select count(*) from Operation a where a.state=? and a.version.optType !=?";
+        Page page = operationService.getPageBy(hql,rowCount, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE);
         page.setPage(pageNo);
 
         Map<String, Object> result = new HashMap<String, Object>();

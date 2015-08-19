@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -22,7 +23,8 @@ import java.io.UnsupportedEncodingException;
 @Controller
 @RequestMapping("/login")
 public class LoginController {
-
+    @Autowired
+    SystemLogServiceImpl systemLogService;
 
     @Autowired
     private UserServiceImpl userService;
@@ -60,15 +62,17 @@ public class LoginController {
             log.error("用户名或密码编码错误！");
             ModelAndView mv = new ModelAndView("/login/login");
             mv.addObject("errMsg", "输入编码错误！");
+            systemLogService.addLoginLog(username,"登入", "失败");
             return mv;
         }catch(Exception e){
             log.error(e, e );
             log.error("用户名或密码错误！");
             ModelAndView mv = new ModelAndView("/login/login");
             mv.addObject("errMsg", "用户名或密码错误！");
+            systemLogService.addLoginLog(username, "登入", "失败");
             return mv;
         }
-
+        systemLogService.addLoginLog(username,"登入", "成功");
         return new ModelAndView("index");
     }
 

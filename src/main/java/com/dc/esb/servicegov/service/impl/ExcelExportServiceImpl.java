@@ -186,7 +186,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 HSSFRow row = sheet.createRow(i + 1);
                 InterfaceInvokeVO vo = voList.get(i);
 
-                setCellValue(row.createCell(0), commonStyle, vo.getEcode());//交易码
+                setCellValue(row.createCell(0), commonStyle, vo.getInterfaceId());//交易码
                 setCellValue(row.createCell(1), commonStyle, vo.getInterfaceName());//交易名称
 
                 Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());

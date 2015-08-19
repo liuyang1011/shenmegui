@@ -281,7 +281,7 @@
                         if (checkedItems[0].state == "1") {
                             var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version.code) + "&operationId=" + encodeURI(checkedItems[0].operationId);
                             $('#opDialog').dialog({
-                                title: 'SDAHis',
+                                title: '版本发布',
                                 width: 500,
                                 closed: false,
                                 cache: false,

@@ -229,16 +229,14 @@ public class HibernateDAO<T, PK extends Serializable> {
     }
 
     /**
-     * 获取全部对象，并返回该对象的分页信息对象。
+     * 获取对象的分页信息对象。
      *
-     * @param pageSize 分页大小
+     * @param hql
      * @return 分页信息对象
      */
-    public Page getPageBy(String hql) {
-        String countQueryString = " select count(*) from "
-                + getEntityClass().getName();
+    public Page getPageBy(String hql,int pageSize) {
         // 创建查询
-        Query query = getSession().createQuery(countQueryString);
+        Query query = getSession().createQuery(hql);
 
         List countlist = query.list();
         long totalCount = (Long) countlist.get(0);
@@ -247,7 +245,31 @@ public class HibernateDAO<T, PK extends Serializable> {
         if (totalCount < 1) {
             totalCount = 0;
         }
+        return new Page(totalCount, pageSize);
+    }
 
+    /**
+     * 获取对象的分页信息对象。
+     *
+     * @param hql
+     * @return 分页信息对象
+     */
+    public Page getPageBy(String hql,int pageSize,final Object... values) {
+        // 创建查询
+        Query query = getSession().createQuery(hql);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                query.setParameter(i, values[i]);
+            }
+        }
+
+        List countlist = query.list();
+        long totalCount = (Long) countlist.get(0);
+
+        // 返回分页对象
+        if (totalCount < 1) {
+            totalCount = 0;
+        }
         return new Page(totalCount, pageSize);
     }
 

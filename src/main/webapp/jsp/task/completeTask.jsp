@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
   String path = request.getContextPath();
   String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -19,6 +20,7 @@
 </head>
 
 <body>
+<div id="userId" style="display: none"><shiro:principal/></div>
 <script type="text/javascript" src="/assets/task/taskManager.js"></script>
 
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">

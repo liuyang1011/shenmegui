@@ -36,7 +36,7 @@ public class VersionHisController {
 		int pageNo = Integer.parseInt(req.getParameter("page"));
 		int rowCount = Integer.parseInt(req.getParameter("rows"));
 		Page page = versionHisServiceImpl.getAll(rowCount);
-		Page page = versionHisServiceImpl.getPageBy(hql);
+//		Page page = versionHisServiceImpl.getPageBy(hql);
 		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();
 		String hql = " from VersionHis";

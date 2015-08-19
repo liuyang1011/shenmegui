@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -59,11 +60,14 @@ public class OperationHisController {
 	public Map<String, Object> operationHisList(HttpServletRequest req) {
 		int pageNo = Integer.parseInt(req.getParameter("page"));
 		int rowCount = Integer.parseInt(req.getParameter("rows"));
-		Page page = operationHisServiceImpl.getAll(rowCount);
+		String hql = "select count(*) from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
+		Page page = operationHisServiceImpl.getPageBy(hql, rowCount);
+		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<?> rows = operationHisServiceImpl.operationHisList();
+		hql = "from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
+		List<?> rows = operationHisServiceImpl.findBy(hql,page);
 
-		result.put("total", rows.size());
+		result.put("total", page.getResultCount());
 		result.put("rows", rows);
 		return result;
 	}
