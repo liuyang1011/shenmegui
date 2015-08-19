@@ -28,6 +28,27 @@ public class Constants {
         public static final String LIFE_CYCLE_STATE_ONLINE = "4";
         public static final String LIFE_CYCLE_STATE_DISCHARGE = "5";
 
+        public static String getStateName(String state){
+            if(OPT_STATE_UNAUDIT.equals(state)){
+                return "服务定义";
+            }
+            if(OPT_STATE_PASS.equals(state)){
+                return "审核通过";
+            }
+            if(OPT_STATE_UNPASS.equals(state)){
+                return "审核不通过";
+            }
+            if(LIFE_CYCLE_STATE_PUBLISHED.equals(state)){
+                return "已发布";
+            }
+            if(LIFE_CYCLE_STATE_ONLINE.equals(state)){
+                return "已上线";
+            }
+            if(LIFE_CYCLE_STATE_DISCHARGE.equals(state)){
+                return "已下线";
+            }
+            return "";
+        }
 //    	public static final String LIFE_CYCLE_STATE_TEST = "3";//测试
 //    	public static final String LIFE_CYCLE_STATE_STOP = "4";//停止
 //    	public static final String LIFE_CYCLE_STATE_MATAIN = "5";//维护

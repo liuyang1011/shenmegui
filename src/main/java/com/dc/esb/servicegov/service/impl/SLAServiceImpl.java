@@ -6,6 +6,7 @@ import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.SLA;
 import com.dc.esb.servicegov.entity.SLAHis;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,5 +48,9 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
             }
         }
     }
-
+    @Override
+    public void save(SLA sla){
+        super.save(sla);
+        operationService.editReleate(sla.getServiceId(), sla.getOperationId());
+    }
 }

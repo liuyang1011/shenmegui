@@ -6,7 +6,9 @@ import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.entity.SDAHis;
 import com.dc.esb.servicegov.service.SDAService;
+import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -33,6 +35,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     private ServiceServiceImpl serviceService;
     @Autowired
     private SDAHisServiceImpl sdaHisService;
+    @Autowired
+    private VersionServiceImpl versionService;
     public boolean genderSDAAuto(Operation operation){
         SDA sdaRoot = new SDA();
         sdaRoot.setSdaId(UUID.randomUUID().toString());
@@ -332,13 +336,17 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 sda.setOptDate(DateUtils.format(new Date()));
                 sdaDAO.save(sda);
             }
+            operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());
             return true;
         }
+
         return false;
     }
 
     public boolean delete(String[] delIds) {
         if (delIds != null && delIds.length > 0) {
+            SDA sda = sdaDAO.findUniqueBy("sdaId", delIds[0]);
+            operationService.editReleate(sda.getServiceId(), sda.getOperationId());
             for (String id : delIds) {
                 sdaDAO.delete(id);
             }
@@ -349,7 +357,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public boolean moveUp(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
-
+        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         List<SDA> list;
         if (sda.getParentId() == null) {
             String hql = " from SDA where parentId is null order by seq asc";
@@ -380,7 +388,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public boolean moveDown(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
-
+        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         List<SDA> list;
         if (sda.getParentId() == null) {
             String hql = " from SDA where parentId is null order by seq asc";

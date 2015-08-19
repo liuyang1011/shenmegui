@@ -72,28 +72,26 @@
                  type="text" name="desc" id="serviceDesc">
       </td>
       <th>
-        服务状态
+
       </th>
-      <td><input class="easyui-combobox" style="width:100px"
-                 type="text" name="serviceState" id="serviceState"></td>
+      <td></td>
     </tr>
     <tr>
       <th>场景代码</th>
       <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
-                 url:'/operation/getByServiceId',
+                  url:'/operation/getByServiceId',
                  textField:'operationId',
                  valueField:'operationId',
                  onChange:function(newValue, oldValue){
-                         this.value=newValue;
+                    this.value=newValue;
 							var values = $('#operationName').combobox('getData');
 							 $.each(values, function (index, item) {
 							   if($.trim(item.operationId) == $.trim(newValue)){
 							        $('#operationName').combobox('setValue',newValue);
 							        }
 							 });
-
 				    }
                  "
               >
@@ -103,18 +101,17 @@
         <input name="operationName" id="operationName"  class="easyui-combobox" style="width:150px"
                data-options="
                  method:'get',
-                 url:'/operation/getServiseById/1',
+                 url:'/operation/getByServiceId',
                  textField:'operationName',
                  valueField:'operationId',
                  onChange:function(newValue, oldValue){
-                        this.value=newValue;
+                    this.value=newValue;
                          var values = $('#operationId').combobox('getData');
 							 $.each(values, function (index, item) {
 							   if($.trim(item.operationId) == $.trim(newValue)){
 							        $('#operationId').combobox('setValue',newValue);
 							        }
 							 });
-
 				    }
                  "
                 >
@@ -125,7 +122,20 @@
       </td>
       <th>场景状态</th>
       <td><input class="easyui-combobox" style="width:100px"
-                 type="text" name="operationState" id="operationState">
+                 type="text" name="operationState" id="operationState"
+                 data-options="
+                 textField:'text',
+                 valueField:'id',
+                 data:[
+                    {'id':'0','text':'服务定义'},
+                    {'id':'1','text':'审核通过'},
+                    {'id':'2','text':'审核不通过'},
+                    {'id':'3','text':'已发布'},
+                    {'id':'4','text':'已上线'},
+                    {'id':'5','text':'已下线'}
+                 ]
+                 "
+              >
       </td>
       </tr>
     <tr>
@@ -181,10 +191,9 @@
 			rownumbers:true,
 			singleSelect:false,
 			fitColumns:false,
-			url:'/operation/query',
 			method:'get',toolbar:toolbar,
 			pagination:true,
-				pageSize:10"
+				"
        style="height:370px; width:100%;">
   <thead>
   <tr>
@@ -200,7 +209,7 @@
     <th data-options="field:'version', width:80" >版本号</th>
     <th data-options="field:'optDate',width:100">更新时间</th>
     <th data-options="field:'optUser', width:50">更新用户</th>
-    <th data-options="field:'optState',width:50">状态</th>
+    <th data-options="field:'optState',width:50"  formatter='formatter.operationState'>状态</th>
   </tr>
   </thead>
 </table>
@@ -213,18 +222,31 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $("#resultList").datagrid({url:"/operation/query"});
+       query();
+    });
   var formatter = {
-    operationState: function (value, row, index) {
-      if (value == 0) {
-        return "<font color=''>待审核</font>";
-      }
-      if (value == 1) {
-        return "<font color='green'>审核通过</font>";
-      }
-      if (value == 2) {
-        return "<font color='red'>审核未通过</font>";
-      }
-    },
+      operationState: function (value, row, index) {
+          if (value == 0) {
+              return "<font color='green'>服务定义</font>";
+          }
+          if (value == 1) {
+              return "<font color='green'>审核通过</font>";
+          }
+          if (value == 2) {
+              return "<font color='red'>审核未通过</font>";
+          }
+          if (value == 3) {
+              return "<font color='green'>已发布</font>";
+          }
+          if (value == 4) {
+              return "<font color='green'>已上线</font>";
+          }
+          if (value == 5) {
+              return "<font color='red'>已下线</font>";
+          }
+      },
     version: function (value, row, index) {
       try {
         return row.version.code
@@ -325,13 +347,13 @@
   function query(){
     var params = {
       "serviceId":$("#serviceId").combobox("getValue"),
-     // "serviceName":$("#serviceName").textbox("getValue"),
-      "serviceDesc":$("#serviceDesc").textbox("getValue"),
-      "serviceState":$("#serviceState").combobox("getValue"),
+      "serviceName":encodeURI($("#serviceName").combobox("getText")),
+      "serviceDesc":encodeURI($("#serviceDesc").textbox("getValue")),
+//      "serviceState":$("#serviceState").combobox("getValue"),
 
       "operationId":$("#operationId").textbox("getValue"),
-     // "operationName":$("#operationName").textbox("getValue"),
-      "operationDesc":$("#operationDesc").textbox("getValue"),
+      "operationName":encodeURI($("#operationName").combobox("getText")),
+      "operationDesc":encodeURI($("#operationDesc").textbox("getValue")),
       "operationState":$("#operationState").combobox("getValue"),
       "providerId":$("#providerId").combobox("getValue"),
       "consumerId":$("#consumerId").combobox("getValue")

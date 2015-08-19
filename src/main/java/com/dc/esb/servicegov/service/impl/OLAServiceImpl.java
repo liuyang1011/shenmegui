@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.OLA;
 import com.dc.esb.servicegov.entity.OLAHis;
 import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.entity.SLA;
 import com.dc.esb.servicegov.service.OLAService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +28,8 @@ public class OLAServiceImpl extends AbstractBaseService<OLA, String> implements 
     private OLADAOImpl olaDAO;
     @Autowired
     private OLAHisServiceImpl olaHisService;
+    @Autowired
+    private OperationServiceImpl operationService;
 
     @Override
     public HibernateDAO<OLA, String> getDAO() {
@@ -76,6 +79,11 @@ public class OLAServiceImpl extends AbstractBaseService<OLA, String> implements 
                 olaHisService.save(olaHis);
             }
         }
+    }
+    @Override
+    public void save(OLA ola){
+        super.save(ola);
+        operationService.editReleate(ola.getServiceId(), ola.getOperationId());
     }
 }
 
