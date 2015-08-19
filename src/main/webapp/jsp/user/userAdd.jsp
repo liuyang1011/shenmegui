@@ -32,12 +32,13 @@
             </select><font color="#FF0000">*</font></td>
         </tr>
         <tr>
-            <th>生效日期</th>
-            <td><input name="startdate" type="text" class="easyui-datebox" id="startdate"/></td>
-            <th>失效日期</th>
-            <td><input name="lastdate" class="easyui-datebox" id="lastdate"/></td>
             <th>备 注</th>
             <td><input name="remark" class="easyui-textbox" type="text" id="remark"/></td>
+            <%--<th>生效日期</th>
+            <td><input name="startdate" type="text" class="easyui-datebox" id="startdate"/></td>
+            <th>失效日期</th>
+            <td><input name="lastdate" class="easyui-datebox" id="lastdate"/></td>--%>
+
         </tr>
     </table>
 </fieldset>
@@ -90,10 +91,10 @@
         var name=$('#userName').val();
         var password=$('#password').val();
         var org=$('#org').combobox('getValue');
-  		var str1 = $('#startdate').datebox('getValue');
+  		/*var str1 = $('#startdate').datebox('getValue');
         var str2 = $('#lastdate').datebox('getValue');
         var startdate =new Date(str1);
-		var lastdate = new Date(str2);
+		var lastdate = new Date(str2);*/
         if(isValid){
             var data = {};
             var rows = $("#roleTable").datagrid("getSelections");
@@ -113,21 +114,21 @@
 			alert("给用户至少选择一个角色");
 			return;
 		}
-		 if(Date.parse(startdate)>Date.parse(lastdate)){
+		/* if(Date.parse(startdate)>Date.parse(lastdate)){
         alert("生效时间不能晚于失效时间！");
         return false;
         }
          if(Date.parse(startdate)==Date.parse(lastdate)){
         alert("生效时间和失效时间不能是同一天！");
         return false;
-        }
+        }*/
             data.id = $('#userId').val();
             data.name = name;
             data.password = password;
             data.userMobile = $('#userMobile').val();
             data.userTel = $('#userTel').val();
-            data.startdate = $('#startdate').datebox('getValue');
-            data.lastdate = $('#lastdate').datebox('getValue');
+//            data.startdate = $('#startdate').datebox('getValue');
+//            data.lastdate = $('#lastdate').datebox('getValue');
             data.orgId = org;
             data.remark = $('#remark').val();
             var roles = [];

@@ -63,7 +63,7 @@
     </tr>
   </thead>
 </table>
-<table class="easyui-datagrid" title="服务接口隐射列表" 
+<table class="easyui-datagrid" title="服务接口映射列表"
 			data-options="rownumbers:true,singleSelect:false,url:'datagrid_data1.json',method:'get',pagination:true,
 				pageSize:10" style="height:365px; width:auto;">
   <thead>

@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.service.impl;
 
 import java.util.List;
 
+import com.dc.esb.servicegov.dao.support.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,10 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 	
 	public void updateVerionHis(String type, String[] versionHisIds){
 		hisDaoImpl.updateVerionHis(type, versionHisIds);
+	}
+
+	public List<VersionHis> findBy(String hql,Page page){
+		return hisDaoImpl.findBy(hql,page);
 	}
 
 	@Override

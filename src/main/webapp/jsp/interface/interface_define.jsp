@@ -299,7 +299,18 @@
                 }
             }
 
-        }
+        }/*,{
+            text: '提交任务',
+            iconCls: 'icon-ok',
+            handler: function () {
+                uiinit.win({
+                    w: 500,
+                    iconCls: 'icon-cfp',
+                    title: "完成任务",
+                    url: "/jsp/task/completeTask.jsp"
+                });
+            }
+        }*/
         ]
 
         function onContextMenu(e, row) {

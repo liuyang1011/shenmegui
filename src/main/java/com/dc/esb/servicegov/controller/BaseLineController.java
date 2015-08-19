@@ -6,9 +6,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.entity.BaseLine;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -46,10 +49,29 @@ public class BaseLineController {
     @RequiresPermissions({"version-get"})
     @RequestMapping("/getBaseLine")
     @ResponseBody
-    public Map<String, Object> getBaseLine(String code, String blDesc) {
+    public Map<String, Object> getBaseLine(String code, String blDesc,HttpServletRequest req) {
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        String hql = "select count(*) from "+ BaseLine.class.getName() +" where 1=1 ";
+        if (StringUtils.isNotEmpty(code)) {
+            hql += "and code like '%" + code + "%' ";
+        }
+        if (StringUtils.isNotEmpty(blDesc)) {
+            hql += "and blDesc like '%" + blDesc + "%' ";
+        }
+        Page page = baseLineServiceImpl.getPageBy(hql,rowCount);
+        page.setPage(pageNo);
+
         Map<String, Object> result = new HashMap<String, Object>();
-        List<?> rows = baseLineServiceImpl.getBaseLine(code, blDesc);
-        result.put("total", rows.size());
+        hql = " from "+ BaseLine.class.getName() +" where 1=1 ";
+        if (StringUtils.isNotEmpty(code)) {
+            hql += "and code like '%" + code + "%' ";
+        }
+        if (StringUtils.isNotEmpty(blDesc)) {
+            hql += "and blDesc like '%" + blDesc + "%' ";
+        }
+        List<?> rows = baseLineServiceImpl.findBy(hql,page);
+        result.put("total", page.getResultCount());
         result.put("rows", rows);
         return result;
     }

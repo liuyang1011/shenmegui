@@ -3,6 +3,8 @@ package com.dc.esb.servicegov.export;
 import com.dc.esb.servicegov.entity.Ida;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.export.bean.ExportBean;
+import com.dc.esb.servicegov.service.InterfaceService;
+import com.dc.esb.servicegov.service.SystemService;
 
 import java.io.File;
 import java.util.List;
@@ -24,4 +26,9 @@ public interface IMetadataConfigGenerator {
      * @param sdas 服务定义
      */
     public void generatorOut(List<Ida> idas,List<SDA> sdas,ExportBean export);
+
+    public void setSystemService(SystemService systemService);
+
+    public void setInterfaceService(InterfaceService interfaceService);
+
 }

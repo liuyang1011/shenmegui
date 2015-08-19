@@ -129,6 +129,7 @@ public class StatisticsServiceImpl implements StatisticsService{
      */
     public long getServiceInvokeCount(String type){
         String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si where si.type = ?";
+
         long count = (Long)serviceInvokeDAO.findUnique(hql, type);
         return count;
     }

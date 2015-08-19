@@ -229,6 +229,51 @@ public class HibernateDAO<T, PK extends Serializable> {
     }
 
     /**
+     * 获取对象的分页信息对象。
+     *
+     * @param hql
+     * @return 分页信息对象
+     */
+    public Page getPageBy(String hql,int pageSize) {
+        // 创建查询
+        Query query = getSession().createQuery(hql);
+
+        List countlist = query.list();
+        long totalCount = (Long) countlist.get(0);
+
+        // 返回分页对象
+        if (totalCount < 1) {
+            totalCount = 0;
+        }
+        return new Page(totalCount, pageSize);
+    }
+
+    /**
+     * 获取对象的分页信息对象。
+     *
+     * @param hql
+     * @return 分页信息对象
+     */
+    public Page getPageBy(String hql,int pageSize,final Object... values) {
+        // 创建查询
+        Query query = getSession().createQuery(hql);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                query.setParameter(i, values[i]);
+            }
+        }
+
+        List countlist = query.list();
+        long totalCount = (Long) countlist.get(0);
+
+        // 返回分页对象
+        if (totalCount < 1) {
+            totalCount = 0;
+        }
+        return new Page(totalCount, pageSize);
+    }
+
+    /**
      * 获取全部对象数量
      *
      * @return 全部对象数量
@@ -663,6 +708,16 @@ public class HibernateDAO<T, PK extends Serializable> {
         for (int i = 0; i < searchConds.size(); i++) {
             query.setParameter(i, searchConds.get(i).getFieldValue());
         }
+        query.setFirstResult(page.getFirstItemPos());
+        query.setMaxResults(page.getPageSize());
+        List list = query.list();
+        return list;
+    }
+
+    public List findBy(String hql, Page page) {
+
+        // 创建查询
+        Query query = getSession().createQuery(hql);
         query.setFirstResult(page.getFirstItemPos());
         query.setMaxResults(page.getPageSize());
         List list = query.list();

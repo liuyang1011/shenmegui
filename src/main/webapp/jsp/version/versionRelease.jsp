@@ -21,7 +21,7 @@
 				singleSelect:false,
 				url:'/version/operationList',
 				method:'get',
-				toolbar:toolbar,
+//				toolbar:toolbar,
 				pagination:true,
 				pageSize:10
 			});
@@ -125,9 +125,9 @@
 				</th>
 				<th data-options="field:'service.serviceName'"
 					formatter='service.serviceName'>服务名称</th>
-				<th data-options="field:'operationId',align:'right'">服务场景</th>
-				<th data-options="field:'operationName',width:80,align:'right'">服务场景名称</th>
-				<th data-options="field:'desc',width:80,align:'right'">场景描述</th>
+				<th data-options="field:'operationId',width:40,align:'left'">服务场景</th>
+				<th data-options="field:'operationName',width:120,align:'left'">服务场景名称</th>
+				<th data-options="field:'operationDesc',width:380,align:'left'">场景描述</th>
 				<th data-options="field:'version.optType'" formatter="version.optType">修订类型</th>
 				<th data-options="field:'version.code'" formatter="version.code">版本号</th>
 			</tr>
@@ -139,7 +139,7 @@
 			singleSelect:false,
 			url:'datagrid_data1.json',
 			method:'get',
-			toolbar:toolbar2,pagination:true,
+			pagination:true,
 				pageSize:10"
 		style="height:365px; width:auto;">
 		<thead>

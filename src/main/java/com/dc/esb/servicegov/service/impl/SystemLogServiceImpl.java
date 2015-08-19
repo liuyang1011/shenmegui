@@ -57,7 +57,7 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
                 hql += " and o.optDate < '" + values.get("endDate")[0] + "' ";
             }
         }
-        long count = operationLogDAO.findUnique(hql);
+        long count = (Long)operationLogDAO.findUnique(hql);
         return count;
     }
     public List<OperationLog> getLogs(Map<String, String[]> values, Page page) {

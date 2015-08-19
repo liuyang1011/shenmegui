@@ -13,7 +13,7 @@ $(function () {
         var task = {};
         task.taskId = parent.PROCESS_INFO.taskId;
         var nextUser = $("#nextUser").combobox('getValue');
-        task.userId = "admin";
+        task.userId = $("#userId").text();
         var params = {};
         params.userId = nextUser;
         params.approved = parent.PROCESS_INFO.approved;

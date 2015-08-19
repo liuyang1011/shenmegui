@@ -203,7 +203,7 @@
     <th data-options="field:'serviceDesc',width:100">服务功能描述</th>
     <th data-options="field:'operationId',width:80">场景代码</th>
     <th data-options="field:'operationName',width:100">场景名称</th>
-    <th data-options="field:'operationDesc',width:150">功能描述</th>
+    <th data-options="field:'operationDesc',width:150">场景功能描述</th>
     <th data-options="field:'consumers',width:150">消费者</th>
     <th data-options="field:'providers',width:150">提供者</th>
     <th data-options="field:'version', width:80" >版本号</th>
@@ -266,7 +266,7 @@
           form.attr("target","");
           form.attr("method","post");
           form.attr("action","/excelExporter/exportOperation");
-
+            alert(checkedItems.length);
           for(var i=0; i < checkedItems.length; i++){
             var input1=$("<input>");
             input1.attr("type","hidden");
@@ -300,7 +300,6 @@
           form.attr("target","");
           form.attr("method","post");
           form.attr("action","/pdfExporter/exportOperation");
-
           for(var i=0; i < checkedItems.length; i++){
             var input1=$("<input>");
             input1.attr("type","hidden");

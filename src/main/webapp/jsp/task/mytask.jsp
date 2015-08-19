@@ -8,8 +8,27 @@
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
     <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript">
 
+    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/resources/js/ui.js"></script>
+    <script type="text/javascript" src="/assets/task/taskManager.js"></script>
+    <script type="text/javascript">
+        var userID = "";
+        $(function(){
+            userID = $("#userId").text();
+            var url = '/process/'+userID+'/list';
+            $("#taskTable").datagrid({
+                rownumbers:true,
+                border:false,
+                toolbar:toolbar,
+                singleSelect:false,
+                url:url,
+                method:'get',
+                pagination:true,
+                pageSize:10
+            });
+        })
         var taskFormatter = {
             "formatStatus": function (data, row) {
                 if (data) {
@@ -50,9 +69,7 @@
 <div id="userId" style="display: none"><shiro:principal/></div>
 <div class="easyui-tabs" style="width:100%;height:auto">
     <div title="未完成任务" style="padding:0px">
-        <table class="easyui-datagrid" id="taskTable"
-               data-options="rownumbers:true,border:false,toolbar:toolbar,singleSelect:false,url:'/process/admin/list',method:'get',pagination:true,
-				pageSize:10" style="height:370px; width:auto;">
+        <table id="taskTable" style="height:370px; width:auto;">
             <thead>
             <tr>
                 <th data-options="field:'productid',checkbox:true"></th>
@@ -68,6 +85,7 @@
             </thead>
         </table>
     </div>
+
     <script type="text/javascript">
         var Global = {};
         var toolbar = [
@@ -153,7 +171,7 @@
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(4);
-                                    alert("请在右侧服务目录菜单中新增服务。");
+                                    alert("请在左侧服务目录菜单中新增服务。");
                                 }
                                 if (task.name == "创建公共代码") {
                                     var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/task/common.jsp?processId=' + task.processInstanceId + '&taskId=' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
@@ -177,7 +195,7 @@
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(6);
-                                    alert("请在右侧系统菜单中右键新增接口。");
+                                    alert("请在左侧系统菜单中右键新增接口。");
                                 }
                                 if (task.name == "服务审核") {
                                     $("#w").window("close");
@@ -225,10 +243,6 @@
             }
         ];
     </script>
-    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="/resources/js/ui.js"></script>
-    <script type="text/javascript" src="/assets/task/taskManager.js"></script>
 
 </body>
 </html>

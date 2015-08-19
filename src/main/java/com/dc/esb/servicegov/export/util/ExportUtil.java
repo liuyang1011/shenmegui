@@ -7,9 +7,7 @@ import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/7/16.
@@ -145,6 +143,61 @@ public class ExportUtil {
         }
     }
 
+    public static void generatorFile(List<Ida> idas, Element root, String type) {
+        if("request".equals(type)){
+            for (Ida ida : idas) {
+                String prefix = "";
+
+                if (root.getNamespace() != null && !"".equals(root.getNamespace().getPrefix())) {
+                    prefix = root.getNamespace().getPrefix() + ":";
+                }
+                if (!ida.getStructName().equals("root") && !ida.getStructName().equals("request") && !ida.getStructName().equals("response")) {
+                    if(null == ida.getMetadataId()){
+                        root.addComment(ida.getStructAlias());
+                        Element ele = root.addElement(prefix + "item");
+                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.setText("\"\"");
+                    }else{
+                        root.addComment(ida.getStructAlias());
+                        Element ele = root.addElement(prefix + "item");
+                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.setText("\"\"");
+                        ele = root.addElement(prefix + "item");
+                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.setText("in.BODY." + ida.getMetadataId());
+                    }
+
+                }
+            }
+        }else if("response".equals(type)){
+            for (Ida ida : idas) {
+                String prefix = "";
+
+                if (root.getNamespace() != null && !"".equals(root.getNamespace().getPrefix())) {
+                    prefix = root.getNamespace().getPrefix() + ":";
+                }
+                if (!ida.getStructName().equals("root") && !ida.getStructName().equals("request") && !ida.getStructName().equals("response")) {
+                    if(null == ida.getMetadataId()){
+                        root.addComment(ida.getStructAlias());
+                        Element ele = root.addElement(prefix + "item");
+                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.setText("\"\"");
+                    }else{
+                        root.addComment(ida.getStructAlias());
+                        Element ele = root.addElement(prefix + "item");
+                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.setText("\"\"");
+                        ele = root.addElement(prefix + "item");
+                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.setText("in.BODY." + ida.getMetadataId());
+                    }
+
+                }
+            }
+        }
+
+    }
+
     public static String generatorServiceDefineSOAP(List<SDA> sdas, SDA sda) {
         MetadataNode esbBody = new MetadataNode();
         esbBody.setNodeId(sda.getSdaId());
@@ -176,6 +229,47 @@ public class ExportUtil {
         String xml = doc.asXML();
 
         return xml.substring(xml.indexOf("<BODY>"));
+    }
+
+    public static String generatorMappingXML(List<Ida> idas,String type,String systemAb) {
+        Collections.sort(idas, new Comparator<Ida>() {
+            @Override
+            public int compare(Ida o1, Ida o2) {
+                return (""+o1.getSeq()).compareTo(""+o2.getSeq());
+            }
+        });
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+
+
+        Element element = null;
+        String body = "";
+        if("request" == type){
+            //req
+            element = doc.addElement("request-mapping");
+            element.addAttribute("base","default");
+            element.addAttribute("dict",systemAb);
+
+            Element ele = element.addElement("request-head");
+            ele.addAttribute("channel", systemAb);
+
+            body = "<request-mapping";
+        }else if("response" == type){
+            //res
+            element = doc.addElement("response-mapping");
+            element.addAttribute("base","default");
+            element.addAttribute("dict",systemAb);
+
+            Element ele = element.addElement("response-head");
+            ele.addAttribute("channel",systemAb);
+
+            body = "<response-mapping";
+        }
+        ExportUtil.generatorFile(idas, element, type);
+
+        String xml = doc.asXML();
+
+        return xml.substring(xml.indexOf(body));
     }
 
     public static void main(String[] a) {

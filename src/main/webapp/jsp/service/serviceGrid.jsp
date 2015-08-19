@@ -374,7 +374,7 @@
 //            }
 //        }/*,
         {
-            text: '导出配置文件',
+            text: '导出',
             iconCls: 'icon-qxfp',
             handler: function () {
 

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.entity.VersionHis;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,7 +89,7 @@ public class OperationHisServiceImpl extends
 
 	@Override
 	public HibernateDAO<OperationHis, String> getDAO() {
-		return null;
+		return operationHisDAOImpl;
 	}
 
 	@Override
@@ -104,5 +106,9 @@ public class OperationHisServiceImpl extends
 
 	public List<?> getBLOperationHiss(String baseId) {
 		return operationHisDAOImpl.getBLOperationHiss(baseId);
+	}
+
+	public List<?> findBy(String hql,Page page){
+		return operationHisDAOImpl.findBy(hql,page);
 	}
 }

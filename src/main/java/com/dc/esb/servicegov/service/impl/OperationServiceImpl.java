@@ -13,6 +13,7 @@ import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -239,6 +240,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         //修改operationHis 版本
         String versionHisId = versionServiceImpl.releaseVersion(operation.getVersionId(), operationHis.getAutoId(), versionDesc);
         operationHis.setVersionHisId(versionHisId);
+        operationHis.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
         operationHisService.save(operationHis);
         return operationHis;
     }
