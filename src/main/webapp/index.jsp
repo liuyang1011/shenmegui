@@ -23,7 +23,7 @@
     <div id="logo"></div>
     <ul id="nav">
         <li>
-            <a href="javascript:;" mid="1">平台管理</a>
+            <a href="javascript:;" mid="1">平台管理1</a>
         </li>
         <li>
             <a href="javascript:;" mid="2">公共信息管理</a>

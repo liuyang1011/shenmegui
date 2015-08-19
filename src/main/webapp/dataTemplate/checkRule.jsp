@@ -44,6 +44,14 @@
 
 %>
 <%
+	if(mid.equals("1.12")){
+%>
+{"success":true,"url":"/jsp/systemLog/list.jsp","title":"系统日志"}
+<%
+	}
+
+%>
+<%
 	if(mid.equals("2.3")){
 %>
 {"success":true,"url":"/dataTemplate/grid4.jsp","title":"任务管理"}

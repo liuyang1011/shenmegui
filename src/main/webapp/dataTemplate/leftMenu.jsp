@@ -20,6 +20,11 @@
             <li><a href="javascript:;" class="openable" mid="5.2">角色维护</a></li>
         </ul>
     </li>
+    <li><a href="javascript:;" class="openable" mid="1.11">日志管理</a>
+        <ul>
+            <li><a href="javascript:;" class="openable" mid="1.12">系统日志</a></li>
+        </ul>
+    </li>
 </ul>
 <%
     }
