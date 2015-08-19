@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.OperationLogType;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -77,5 +79,16 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
         }
         List<OperationLog> list = operationLogDAO.find(hql, page);
         return list;
+    }
+
+    public void addLoginLog(String userName,String optType, String result){
+        OperationLog operationLog = new OperationLog();
+        operationLog.setOptUser(userName);
+        operationLog.setOptDate(DateUtils.format(new Date()));
+        operationLog.setChineseName("登录");
+        operationLog.setOptType(optType);
+        operationLog.setParams("用户名：" + userName);
+        operationLog.setOptResult(result);
+        operationLogDAO.save(operationLog);
     }
 }
