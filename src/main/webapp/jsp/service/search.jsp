@@ -244,7 +244,7 @@
           form.attr("target","");
           form.attr("method","post");
           form.attr("action","/excelExporter/exportOperation");
-
+            alert(checkedItems.length);
           for(var i=0; i < checkedItems.length; i++){
             var input1=$("<input>");
             input1.attr("type","hidden");
@@ -278,7 +278,6 @@
           form.attr("target","");
           form.attr("method","post");
           form.attr("action","/pdfExporter/exportOperation");
-
           for(var i=0; i < checkedItems.length; i++){
             var input1=$("<input>");
             input1.attr("type","hidden");

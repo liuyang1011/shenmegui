@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dc.esb.servicegov.dao.support.Page;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -55,8 +56,10 @@ public class OperationHisController {
 	@RequiresPermissions({"service-get"})
 	@RequestMapping("/operationHisList")
 	@ResponseBody
-	public Map<String, Object> operationHisList() {
-		
+	public Map<String, Object> operationHisList(HttpServletRequest req) {
+		int pageNo = Integer.parseInt(req.getParameter("page"));
+		int rowCount = Integer.parseInt(req.getParameter("rows"));
+		Page page = operationHisServiceImpl.getAll(rowCount);
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<?> rows = operationHisServiceImpl.operationHisList();
 

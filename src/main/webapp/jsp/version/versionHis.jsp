@@ -13,6 +13,17 @@
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/jsp/version/version.js"></script>
 <script type="text/javascript">
+	$(function (){
+		$("#operationList").datagrid({
+			rownumbers:true,
+			singleSelect:true,
+			url:'/versionHis/hisVersionList',
+			method:'get',
+			<%--toolbar:toolbar,--%>
+			pagination:true,
+			pageSize:10
+		});
+	});
 		var toolbar = [
 		{
 			text:'撤销',
@@ -89,15 +100,7 @@
 </table>
 
 </fieldset>
-<table id="operationList" class="easyui-datagrid" title="版本历史" 
-			data-options="
-				rownumbers:true,
-				singleSelect:true,
-				url:'/versionHis/hisVersionList',
-				method:'get',
-				<%--toolbar:toolbar,--%>
-				pagination:true,
-				pageSize:10" style="height:365px; width:auto;">
+<table id="operationList" title="版本历史" style="height:365px; width:auto;">
   <thead>
     <tr>
           <th data-options="field:'autoId',checkbox:true"> </th>

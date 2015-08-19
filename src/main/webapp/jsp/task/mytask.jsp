@@ -8,8 +8,27 @@
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
     <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript">
 
+    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/resources/js/ui.js"></script>
+    <script type="text/javascript" src="/assets/task/taskManager.js"></script>
+    <script type="text/javascript">
+        var userID = "";
+        $(function(){
+            userID = $("#userId").text();
+            var url = '/process/'+userID+'/list';
+            $("#taskTable").datagrid({
+                rownumbers:true,
+                border:false,
+                toolbar:toolbar,
+                singleSelect:false,
+                url:url,
+                method:'get',
+                pagination:true,
+                pageSize:10
+            });
+        })
         var taskFormatter = {
             "formatStatus": function (data, row) {
                 if (data) {
@@ -50,9 +69,7 @@
 <div id="userId" style="display: none"><shiro:principal/></div>
 <div class="easyui-tabs" style="width:100%;height:auto">
     <div title="未完成任务" style="padding:0px">
-        <table class="easyui-datagrid" id="taskTable"
-               data-options="rownumbers:true,border:false,toolbar:toolbar,singleSelect:false,url:'/process/admin/list',method:'get',pagination:true,
-				pageSize:10" style="height:370px; width:auto;">
+        <table id="taskTable" style="height:370px; width:auto;">
             <thead>
             <tr>
                 <th data-options="field:'productid',checkbox:true"></th>
@@ -226,10 +243,6 @@
             }
         ];
     </script>
-    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="/resources/js/ui.js"></script>
-    <script type="text/javascript" src="/assets/task/taskManager.js"></script>
 
 </body>
 </html>

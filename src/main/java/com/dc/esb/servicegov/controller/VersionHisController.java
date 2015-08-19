@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dc.esb.servicegov.service.impl.VersionHisServiceImpl;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/versionHis")
@@ -28,12 +32,23 @@ public class VersionHisController {
 
 	@RequestMapping("/hisVersionList")
 	@ResponseBody
-	public Map<String, Object> hisVersionList(String keyValue) {
-
+	public Map<String, Object> hisVersionList(String keyValue,HttpServletRequest req) {
+		int pageNo = Integer.parseInt(req.getParameter("page"));
+		int rowCount = Integer.parseInt(req.getParameter("rows"));
+		Page page = versionHisServiceImpl.getAll(rowCount);
+		Page page = versionHisServiceImpl.getPageBy(hql);
+		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<VersionHis> rows = versionHisServiceImpl.hisVersionList(keyValue);
+		String hql = " from VersionHis";
+		if(StringUtils.isNotEmpty(keyValue)){
+			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%'";
+		}
+		List<VersionHis> rows = versionHisServiceImpl.findBy(hql,page);
+//		List<VersionHis> rows = versionHisServiceImpl.hisVersionList(keyValue);
 
-		result.put("total", rows.size());
+
+
+		result.put("total", page.getResultCount());
 		result.put("rows", rows);
 		return result;
 	}
