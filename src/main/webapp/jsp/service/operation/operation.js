@@ -194,6 +194,8 @@ function auditUnPass(listId) {
             }
         });
     }
+    //如果有任务在执行，则更新任务的状态
+    parent.PROCESS_INFO.approved = false;
 }
 //加载系统列表
 function loadSystem(id, items, valueField, textField) {
