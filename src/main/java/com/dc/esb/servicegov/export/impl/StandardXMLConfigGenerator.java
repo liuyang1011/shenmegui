@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.export.bean.MetadataNode;
 import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.service.InterfaceService;
+import com.dc.esb.servicegov.service.SDAService;
 import com.dc.esb.servicegov.service.SystemService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -139,6 +140,9 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
 
     public void setInterfaceService(InterfaceService interfaceService) {
         this.interfaceService = interfaceService;
+    }
+
+    public void setSdaService(SDAService sdaService){
     }
 
     public static void main(String[] args) {

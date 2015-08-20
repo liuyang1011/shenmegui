@@ -113,6 +113,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         fields.put("append4", "metadataId");
         fields.put("append5", "required");
         fields.put("append6", "remark");
+        fields.put("append7", "constraint");
         fields.put("attributes", "seq");
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
@@ -160,6 +161,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         private String argType;
 
+        private String constraint;
+
         public SDABean(SDA sda){
             setSdaId(sda.getSdaId());
             setStructName(sda.getStructName());
@@ -179,6 +182,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             setLength(sda.getLength());
             setRequired(sda.getRequired());
             setArgType(sda.getArgType());
+            setConstraint(sda.getConstraint());
         }
 
         public String getSdaId() {
@@ -324,11 +328,27 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         public void setArgType(String argType) {
             this.argType = argType;
         }
+
+        public String getConstraint() {
+            return constraint;
+        }
+
+        public void setConstraint(String constraint) {
+            this.constraint = constraint;
+        }
     }
 
     public boolean save(SDA[] sdas) {
+
         if (sdas != null && sdas.length > 0) {
             for (SDA sda : sdas) {
+                //TODO TZB类型和长度合并了
+                String type = sda.getType();
+                type.replaceAll("（","(").replaceAll("）",")");
+                if(type.indexOf("(")>=0){
+                    sda.setType(type.split("[()]+")[0]);
+                    sda.setLength(type.split("[()]+")[1]);
+                }
                 sda.setOptDate(DateUtils.format(new Date()));
                 sdaDAO.save(sda);
             }

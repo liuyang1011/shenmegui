@@ -97,7 +97,8 @@ public class OperationController {
     @ResponseBody
     public Map<String, Object> getOperationByServiceId(@PathVariable(value = "serviceId") String serviceId) {
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Operation> rows = operationServiceImpl.findBy("serviceId", serviceId);
+//        List<Operation> rows = operationServiceImpl.findBy("serviceId", serviceId);
+        List<OperationServiceImpl.OperationBean> rows = operationServiceImpl.findOperationBy(serviceId);
         result.put("total", rows.size());
         result.put("rows", rows);
         return result;

@@ -56,17 +56,21 @@
          function replaceMetadataId(){
             var sda = $("#sda").treegrid("getSelected");
             if(sda != null){
+                alert(111);
                 if(sda.text == "root" || sda.text == "request"|| sda.text == "response"){
                     alert("请选择其他节点!");
                     return false
                 }
                 var ida = $("#ida").treegrid("getSelected");
                 if(ida != null){
+                    alert(222);
                      if(ida.structName == "root" || ida.structName == "request"|| ida.structName == "response"){
                           alert("请选择其他节点!");
                           return false
                      }
+
                      if(sda.append4 != null){
+                         alert(444);
                          $.ajax({
                                     type: "post",
                                     async: false,

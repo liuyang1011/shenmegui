@@ -82,6 +82,10 @@
         <th data-options="field:'operationId'">服务场景</th>
         <th data-options="field:'operationName'">场景名称</th>
         <th data-options="field:'operationDesc'">功能描述</th>
+
+        <th data-options="field:'providerSystems'">提供方</th>
+        <th data-options="field:'consumerSystems'">消费方</th>
+
         <th data-options="field:'operationRemark'">关键字</th>
         <th data-options="field:'headId'">适用范围说明</th>
         <th data-options="field:' '" formatter='formatter.version'>版本号</th>

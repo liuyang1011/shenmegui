@@ -416,7 +416,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
         setCellValue(row.createCell(9), commonStyle, sda.getType());//数据类型
         setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
-        setCellValue(row.createCell(11), commonStyle, "");//约束条件
+        setCellValue(row.createCell(11), commonStyle, sda.getConstraint());//约束条件
         setCellValue(row.createCell(12), commonStyle, sda.getRequired());//是否必输
         setCellValue(row.createCell(13), commonStyle, sda.getRemark());//备注
 //        row.createCell(7).setCellValue(sda.getStructName()); //英文名称

@@ -3,6 +3,7 @@ package com.dc.esb.servicegov.export.util;
 import com.dc.esb.servicegov.entity.Ida;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.export.bean.MetadataNode;
+import com.dc.esb.servicegov.service.SDAService;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
@@ -143,7 +144,7 @@ public class ExportUtil {
         }
     }
 
-    public static void generatorFile(List<Ida> idas, Element root, String type) {
+    public static void generatorFile(List<Ida> idas, Element root, String type, SDAService sdaService,String serviceId ,String operationId) {
         if("request".equals(type)){
             for (Ida ida : idas) {
                 String prefix = "";
@@ -158,13 +159,28 @@ public class ExportUtil {
                         ele.addAttribute("name","BODY."+ida.getStructName());
                         ele.setText("\"\"");
                     }else{
+                        Map<String,String> map = new HashMap<String, String>();
+                        map.put("serviceId",serviceId);
+                        map.put("metadataId",ida.getMetadataId());
+                        map.put("operationId",operationId);
+                        SDA sda = sdaService.findUniqueBy(map);
+
                         root.addComment(ida.getStructAlias());
                         Element ele = root.addElement(prefix + "item");
-                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        if(null != sda.getConstraint()){
+                            ele.addAttribute("name",sda.getConstraint()+"."+ida.getStructName());
+                        }else{
+                            ele.addAttribute("name","BODY."+ida.getStructName());
+                        }
                         ele.setText("\"\"");
                         ele = root.addElement(prefix + "item");
-                        ele.addAttribute("name","BODY."+ida.getStructName());
-                        ele.setText("in.BODY." + ida.getMetadataId());
+                        if(null != sda.getConstraint()){
+                            ele.addAttribute("name",sda.getConstraint()+"."+ida.getStructName());
+                            ele.setText("in."+sda.getConstraint()+"." + ida.getMetadataId());
+                        }else{
+                            ele.addAttribute("name","BODY."+ida.getStructName());
+                            ele.setText("in.BODY." + ida.getMetadataId());
+                        }
                     }
 
                 }
@@ -180,16 +196,31 @@ public class ExportUtil {
                     if(null == ida.getMetadataId()){
                         root.addComment(ida.getStructAlias());
                         Element ele = root.addElement(prefix + "item");
-                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        ele.addAttribute("name","BODY."+ida.getMetadataId());
                         ele.setText("\"\"");
                     }else{
+//                        SDA sda = sdaService.getById(ida.getMetadataId());
+                        Map<String,String> map = new HashMap<String, String>();
+                        map.put("serviceId",serviceId);
+                        map.put("metadataId",ida.getMetadataId());
+                        map.put("operationId",operationId);
+                        SDA sda = sdaService.findUniqueBy(map);
                         root.addComment(ida.getStructAlias());
                         Element ele = root.addElement(prefix + "item");
-                        ele.addAttribute("name","BODY."+ida.getStructName());
+                        if(null != sda.getConstraint()){
+                            ele.addAttribute("name",sda.getConstraint()+"."+ida.getMetadataId());
+                        }else{
+                            ele.addAttribute("name","BODY."+ida.getMetadataId());
+                        }
                         ele.setText("\"\"");
                         ele = root.addElement(prefix + "item");
-                        ele.addAttribute("name","BODY."+ida.getStructName());
-                        ele.setText("in.BODY." + ida.getMetadataId());
+                        if(null != sda.getConstraint()){
+                            ele.addAttribute("name",sda.getConstraint()+"."+ida.getMetadataId());
+                            ele.setText("in."+sda.getConstraint()+"." + ida.getStructName());
+                        }else{
+                            ele.addAttribute("name","BODY."+ida.getMetadataId());
+                            ele.setText("in.BODY." + ida.getStructName());
+                        }
                     }
 
                 }
@@ -231,7 +262,7 @@ public class ExportUtil {
         return xml.substring(xml.indexOf("<BODY>"));
     }
 
-    public static String generatorMappingXML(List<Ida> idas,String type,String systemAb) {
+    public static String generatorMappingXML(List<Ida> idas,String type,String systemAb,SDAService sdaService, String serviceId, String operationId) {
         Collections.sort(idas, new Comparator<Ida>() {
             @Override
             public int compare(Ida o1, Ida o2) {
@@ -265,7 +296,7 @@ public class ExportUtil {
 
             body = "<response-mapping";
         }
-        ExportUtil.generatorFile(idas, element, type);
+        ExportUtil.generatorFile(idas, element, type ,sdaService , serviceId ,operationId);
 
         String xml = doc.asXML();
 

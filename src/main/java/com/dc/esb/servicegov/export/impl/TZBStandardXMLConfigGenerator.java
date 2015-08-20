@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.export.bean.MetadataNode;
 import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.service.InterfaceService;
+import com.dc.esb.servicegov.service.SDAService;
 import com.dc.esb.servicegov.service.SystemService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +41,8 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
     SystemService systemService;
     @Autowired
     InterfaceService interfaceService;
+    @Autowired
+    SDAService sdaService;
     @Override
     public File generatorIn(List<Ida> idas, List<SDA> sdas, ExportBean export) {
         File file = null;
@@ -121,8 +124,8 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
         System provide_system = systemService.getById(export.getProviderSystemId());
         Interface provide_interface = interfaceService.getById(export.getProviderInterfaceId());
         //test
-        requestText = ExportUtil.generatorMappingXML(reqIdas,"request",provide_system.getSystemAb());
-        responseText = ExportUtil.generatorMappingXML(resIdas,"response","esb");
+        requestText = ExportUtil.generatorMappingXML(reqIdas,"request",provide_system.getSystemAb(),sdaService,export.getServiceId(),export.getOperationId());
+        responseText = ExportUtil.generatorMappingXML(resIdas,"response","esb",sdaService,export.getServiceId(),export.getOperationId());
 
 //        ExportUtil.generatorMappingXML(idas,sdas);
 
@@ -173,4 +176,13 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
     public static void main(String[] args) {
 
     }
+
+    public SDAService getSdaService() {
+        return sdaService;
+    }
+
+    public void setSdaService(SDAService sdaService) {
+        this.sdaService = sdaService;
+    }
+
 }
