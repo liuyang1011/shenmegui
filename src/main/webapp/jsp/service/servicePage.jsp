@@ -39,9 +39,6 @@
     <div title="服务接口映射" style="padding:0px;">
     </div>
     <div title="服务检索" style="padding:0px;">
-        <iframe id="services" name="services" scrolling="auto" frameborder="0"
-                src="jsp/service/search.jsp"
-                style="width:100%;height:100%;"></iframe>
     </div>
 </div>
 
@@ -49,11 +46,12 @@
     function closeTab(title) {
         $('#subtab').tabs('close', title);
     }
-    var k = 0;
-    var j = 0;
-    var m = 0;
-    var n = 0;
-    var q = 0;
+    var k = 1;
+    var j = 1;
+    var m = 1;
+    var n = 1;
+    var q = 1;
+    var p = 1;
     $('#subtab').tabs({
         border: false,
         border: false,
@@ -76,7 +74,7 @@
                                      $('#subtab').tabs('select', '服务基本信息');
                                  }
             }
-            if (index == 2) {
+            if (index == 2 && j == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
                     var urlPath = "/sda/sdaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&t="+ new Date().getTime();
@@ -93,7 +91,7 @@
                 }
             }
 
-            if (index == 3) {
+            if (index == 3 && m == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
                     var urlPath = "/sla/slaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId;
@@ -109,7 +107,7 @@
                     $('#subtab').tabs('select', '服务基本信息');
                 }
             }
-            if (index == 4) {
+            if (index == 4  && k == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
                     var urlPath = "/ola/olaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId;
@@ -125,7 +123,7 @@
                     $('#subtab').tabs('select', '服务基本信息');
                 }
             }
-            if (index == 5) {
+            if (index == 5  && q == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
                     var urlPath = "/operation/interfacePage?serviceId=${param.serviceId}&operationId=" + opId;
@@ -141,10 +139,27 @@
                     $('#subtab').tabs('select', '服务基本信息');
                 }
             }
+            if (index == 6  && p == 0) {
+                var currTab = $('#subtab').tabs('getSelected');
+                var urlPath = "jsp/service/search.jsp";
+                $('#subtab').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
+                    }
+                });
+            }
             //if(title+' is selected');
 
         }
+
     });
+    k = 0;
+    j = 0;
+    m = 0;
+    n = 0;
+    q = 0;
+    p = 0;
 </script>
 </body>
 </html>

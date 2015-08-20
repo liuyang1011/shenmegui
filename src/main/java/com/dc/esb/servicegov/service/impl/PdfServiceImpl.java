@@ -466,8 +466,11 @@ public class PdfServiceImpl {
 
     public SDAVO getSDAofService(Operation operation){
         SDA sda = sdadao.findRootByOperation(operation);
-        SDAVO sdavo = genderSDAVO(sda);
-        return sdavo;
+        if(sda != null){
+            SDAVO sdavo = genderSDAVO(sda);
+            return sdavo;
+        }
+        return null;
     }
     public SDAVO genderSDAVO(SDA sda){
         SDAVO sdavo = new SDAVO();

@@ -224,7 +224,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#resultList").datagrid({url:"/operation/query"});
-       query();
+        query();
     });
   var formatter = {
       operationState: function (value, row, index) {
@@ -266,7 +266,6 @@
           form.attr("target","");
           form.attr("method","post");
           form.attr("action","/excelExporter/exportOperation");
-            alert(checkedItems.length);
           for(var i=0; i < checkedItems.length; i++){
             var input1=$("<input>");
             input1.attr("type","hidden");
@@ -358,17 +357,21 @@
       "consumerId":$("#consumerId").combobox("getValue")
     }
     $("#resultList").datagrid('options').queryParams = params;
-     var p = $("#resultList").datagrid('getPager');
-      var total =  $(p).pagination("options").total;
-      if(total < 100){
-          total = 100;
-      }
-      $(p).pagination({
-          pageList: [10,20,50,total]
-      });
+      changePageList()
     $("#resultList").datagrid('reload');
   }
+function changePageList(){
+    var p = $("#resultList").datagrid('getPager');
+    console.log($(p).pagination("options"));
+    var total =  $(p).pagination("options").total;
+    if(total < 100){
+        total = 100;
+    }
+    $(p).pagination({
+        pageList: [10,20,50,total]
+    });
 
+}
   function exportFile(url, values){
     var form=$("<form>");//定义一个form表单
     form.attr("style","display:none");

@@ -131,7 +131,6 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $("#resultList").datagrid({url:"/statistics/reuseRate?type=0"});
-    query();
   });
   var formatter = {
     typeText: function (value, row, index) {

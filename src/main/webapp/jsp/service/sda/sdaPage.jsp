@@ -51,31 +51,9 @@ var delIds = [];
 					$("#okbtn"+editingId).show();
 				}
 		}
-		//添加第一层节点
-		function addNode(){
-			var uuid = nextId();
-			$('#tg').treegrid('append',{
-				data: [{
-					id: uuid,
-					text: '',
-					append1: '',
-					//append2: $.fn.datebox.defaults.formatter(d1),
-					append2: '',
-					//append3: $.fn.datebox.defaults.formatter(d2)
-					append3: ''
-				}]
-			});
-			editingId = uuid;
-			newIds.push(uuid);
-			$('#tg').treegrid('reloadFooter');
-			$('#tg').treegrid('beginEdit', uuid);
-		}
 		
 		function append(){
-			var uuid = nextId();
-			//var d1 = new Date();
-			//var d2 = new Date();
-			//d2.setMonth(d2.getMonth()+1);
+			var uuid = new Date().getTime();
 			var node = $('#tg').treegrid('getSelected');
 			if(node.text == "root"){
 				alert("请选择其他节点！");
@@ -85,32 +63,13 @@ var delIds = [];
 				parent: node.id,
 				data: [{
 					id: uuid,
-					text: '',
-					parentId:node.id,
-					append1: '',
-					//append2: $.fn.datebox.defaults.formatter(d1),
-					append2: '',
-					//append3: $.fn.datebox.defaults.formatter(d2)
-					append3: ''
+					parentId:node.id
 				}]
 			});
 			editingId = uuid;
 			newIds.push(uuid);
 			$('#tg').treegrid('reloadFooter');
 			$('#tg').treegrid('beginEdit', uuid);
-		}
-		//获取主键
-		function nextId(){
-			var uuid;
-			$.ajax({
-	         async: false,
-	         url: "/sda/genderSDAUuid",
-	         dataType: "text",
-	         success: function(data){
-	        	 uuid=data;
-	            }
-		 	});
-		 	return uuid;
 		}
 		function saveSDA(){
 			if (!$("#sdaForm").form('validate')) {
@@ -192,20 +151,27 @@ var delIds = [];
 		    	return s;
 	    	
 		}
-		
+		//节点上移
 		function moveUp(){
 			var node = $('#tg').treegrid('getSelected');
-			alert(node.id);
+
 			if(node != null){
+				//判断是否是第一个节点
+				var parentNode = $('#tg').treegrid('getParent', node.id);
+				var brothers =  $('#tg').treegrid('getChildren', parentNode.id);
+				if(node.id == brothers[0].id){
+					alert("已经在顶部！");
+					return false;
+				}
 				$.ajax({
 					type:"get",
-					url: "/sda/moveUp",
+					url: "/sda/moveUp?_t=" + new Date().getTime(),
 			        dataType: "json",
 			        data: {"sdaId": node.id},
 			        success: function(data){
 			        	 if(data){
-			        	 	$('#tg').treegrid('reload');
-			        	 }
+							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+						 }
 			            }
 				});
 			}
@@ -215,15 +181,23 @@ var delIds = [];
 		function moveDown(){
 			var node = $('#tg').treegrid('getSelected');
 			if(node != null){
+				//判断是否是第一个节点
+				var parentNode = $('#tg').treegrid('getParent', node.id);
+				var brothers =  $('#tg').treegrid('getChildren', parentNode.id);
+				if(node.id == brothers[brothers.length -1 ].id){
+					alert("已经在底部！");
+					return false;
+				}
 				$.ajax({
 					type:"get",
-					url: "/sda/moveDown",
+					url: "/sda/moveDown?_t="+new Date().getTime(),
 			        dataType: "json",
 			        data: {"sdaId": node.id},
 			        success: function(data){
 			        	 if(data){
-			        	 	$('#tg').treegrid('reload');
-			        	 }
+							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+
+						 }
 			            }
 				});
 			}
