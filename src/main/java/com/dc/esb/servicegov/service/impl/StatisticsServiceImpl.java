@@ -86,14 +86,16 @@ public class StatisticsServiceImpl implements StatisticsService{
             vo.setSystemId(String.valueOf(strs[0]));
             long operationNum = getOperationRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setOperationNum(String.valueOf(operationNum));//关联场景数
+            long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+            vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
             long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
             long sum = getServiceInvokeCount( String.valueOf(strs[1]));
             vo.setSum(String.valueOf(sum));//提供者或消费者被调用总数
             long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
-            if(useNum > 1){
-                float r = (useNum - 1.0f)/sum;
+            if(operationInvokeNum > operationNum && operationNum > 0){
+                float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
                 NumberFormat nt = NumberFormat.getPercentInstance();
                 nt.setMinimumFractionDigits(2);
                 vo.setReuseRate(nt.format(r));
@@ -112,6 +114,24 @@ public class StatisticsServiceImpl implements StatisticsService{
     public long getOperationRelaCount(String systemId, String type){
         String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
         long count = serviceInvokeDAO.find(hql, systemId, type).size();
+        return count;
+    }
+
+    /**
+     * @param systemId 系统id
+     * @param type 类型
+     * @return 系统相关所有场景消费者数量或提供者数量
+     */
+    public long getOperationInvokeCount(String systemId, String type){
+        long count = 0;
+        String hql = " select o from " + ServiceInvoke.class.getName() + " as si, " +
+                Operation.class.getName() + " as o  where si.serviceId = o.serviceId and si.operationId = o.operationId and si.systemId = ? and si.type = ? ";
+        List<Operation> operations = operationDAO.find(hql, systemId, type);
+        for(Operation operation : operations){
+            String hql2 = " select count(*) from " + ServiceInvoke.class.getName() + " as si where si.serviceId = ? and si.operationId = ? and si.type = ?";
+            long singleCount = serviceInvokeDAO.findUnique(hql2, operation.getServiceId(), operation.getOperationId(), type);
+            count += singleCount;
+        }
         return count;
     }
     /**

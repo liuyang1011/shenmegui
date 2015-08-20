@@ -108,7 +108,7 @@ public class OperationHisServiceImpl extends
 		return operationHisDAOImpl.getBLOperationHiss(baseId);
 	}
 
-	public List<?> findBy(String hql,Page page){
+	public List findBy(String hql,Page page){
 		return operationHisDAOImpl.findBy(hql,page);
 	}
 }

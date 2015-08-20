@@ -60,6 +60,7 @@
                  "
                 >
         </td>
+        <!--
         <th>服务类型</th>
         <td>
           <select id="type" class="easyui-combobox" name="type"
@@ -69,6 +70,7 @@
                 ]">
           </select>
         </td>
+        -->
         <th>
 
         </th>
@@ -95,7 +97,6 @@
 			rownumbers:true,
 			singleSelect:false,
 			fitColumns:false,
-			url:'/statistics/reuseRate',
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				pageSize:50"
@@ -106,10 +107,14 @@
       <th data-options="field:'systemId',width:100">系统编码</th>
       <th data-options="field:'systemChineseName',width:100">系统名称</th>
       <th data-options="field:'type',width:80" formatter='formatter.typeText'>类型</th>
-      <th data-options="field:'useNum',width:80">调用次数</th>
-      <th data-options="field:'operationNum',width:80">关联场景数</th>
+      <!--
+
+      <th data-options="field:'useNum',width:80">调用数</th>
+      -->
       <th data-options="field:'serviceNum',width:80">关联服务数</th>
-      <th data-options="field:'sum',width:120">类型调用总次数</th>
+      <th data-options="field:'operationNum',width:80">关联场景数</th>
+
+      <th data-options="field:'operationInvokeNum',width:80">消费者数</th>
       <th data-options="field:'reuseRate',width:100">复用率</th>
 
     </tr>
@@ -124,6 +129,10 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
+  $(document).ready(function () {
+    $("#resultList").datagrid({url:"/statistics/reuseRate?type=0"});
+    query();
+  });
   var formatter = {
     typeText: function (value, row, index) {
       if ("1" == value) {
@@ -170,7 +179,9 @@
   function query(){
     var params = {
       "systemId":$("#systemId").textbox("getValue"),
-      "type":$("#type").combobox("getValue")
+      "systemName":$("#systemName").textbox("getValue"),
+//      "type":$("#type").combobox("getValue")
+      "type":"0"
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');
