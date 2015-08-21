@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.StatisticsService;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +35,8 @@ public class StatisticsServiceImpl implements StatisticsService{
     private OperationHisDAOImpl operationHisDAO;
     @Autowired
     private ServiceInvokeDAOImpl serviceInvokeDAO;
-
+    @Autowired
+    private ServiceCategoryDAOImpl serviceCategoryDAO;
     @Override
     public long getReuseRateCount(Map<String, String[]> values) {
         String hql = "select count(*) from " + ServiceInvoke.class.getName() + " si where 1=1";
@@ -227,5 +229,95 @@ public class StatisticsServiceImpl implements StatisticsService{
         }
         vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
         vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
+    }
+
+    /**
+     * 根据服务分类计算复用率
+     * @param values 分类id
+     * @return 复用率
+     */
+    @Override
+    public List<ReuseRateVO> getServiceReuseRate(Map<String, String[]> values) {
+        List<ReuseRateVO> result = new ArrayList<ReuseRateVO>();
+        if(values.get("id") != null && values.get("id").length > 0) {
+            String id = values.get("id")[0];
+            if (StringUtils.isNotEmpty(id)) {
+                if(values.get("type") != null && values.get("type").length > 0) {
+                    String type = values.get("type")[0];
+                    ReuseRateVO vo = new ReuseRateVO();
+                    List<com.dc.esb.servicegov.entity.Service> services;
+                    if (StringUtils.isNotEmpty(type) && "service".equals(type)) {  //判断传入的id是分类还是服务
+                        services = serviceDAO.findBy("serviceId", id);
+                    }
+                    else{
+                        services = getService(id);
+                    }
+                    long serviceNum = services.size();
+                    vo.setServiceNum(String.valueOf(serviceNum));
+                    List<Operation> operations = getOperation(services);
+                    long operationNum = operations.size();
+                    vo.setOperationNum(String.valueOf(operations.size()));
+                    List<ServiceInvoke> consumers = getServiceInvoke(operations, Constants.INVOKE_TYPE_CONSUMER);
+                    long operationInvokeNum = consumers.size();
+                    vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));
+                    if(operationInvokeNum > operationNum && operationNum > 0){
+                        float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
+                        NumberFormat nt = NumberFormat.getPercentInstance();
+                        nt.setMinimumFractionDigits(2);
+                        vo.setReuseRate(nt.format(r));
+                    }else{
+                        vo.setReuseRate("0");
+                    }
+                    result.add(vo);
+                }
+
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 迭代：根据分类id查询服务
+     * @param categoryId
+     * @return
+     */
+    public List<com.dc.esb.servicegov.entity.Service> getService(String categoryId){
+        List<com.dc.esb.servicegov.entity.Service> list = new ArrayList<com.dc.esb.servicegov.entity.Service>();
+        List<ServiceCategory> children = serviceCategoryDAO.findBy("parentId", categoryId);
+        if("root".equals(categoryId)){
+            String hql = " from " + ServiceCategory.class.getName() + " where parentId is null ";
+            children = serviceCategoryDAO.find(hql);
+        }
+        if(children != null && children.size() > 0){
+            for(ServiceCategory serviceCategory : children){
+                List<com.dc.esb.servicegov.entity.Service> childList = getService(serviceCategory.getCategoryId());
+                list.addAll(childList);
+            }
+        }
+        else{
+            list = serviceDAO.findBy("categoryId", categoryId);
+        }
+        return list;
+    }
+    /**
+     * @return
+     */
+    public List<Operation> getOperation(List<com.dc.esb.servicegov.entity.Service> services){
+        List<Operation> operations = new ArrayList<Operation>();
+        for(com.dc.esb.servicegov.entity.Service service : services){
+            List<Operation> childOperations = operationDAO.findBy("serviceId", service.getServiceId());
+            operations.addAll(childOperations);
+        }
+        return operations;
+    }
+
+    public List<ServiceInvoke> getServiceInvoke(List<Operation> operations, String type){
+        List<ServiceInvoke> list = new ArrayList<ServiceInvoke>();
+        for(Operation operation : operations){
+            String hql = " from " + ServiceInvoke.class.getName() + " as si where si.serviceId=? and si.operationId = ? and si.type=?";
+            List<ServiceInvoke> childList = serviceInvokeDAO.find(hql, operation.getServiceId(), operation.getOperationId(), type);
+            list.addAll(childList);
+        }
+        return list;
     }
 }

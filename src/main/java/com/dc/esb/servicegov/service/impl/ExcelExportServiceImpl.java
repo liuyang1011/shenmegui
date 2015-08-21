@@ -633,7 +633,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 }
                 for (Operation operation : operations) {
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
-                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", " ", operation.getOperationRemark()};
+                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
 
 //                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
 //                    if (interfaceInvokeVOs.size() == 0) {
@@ -937,7 +937,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReuseRateVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getUseNum(), vo.getOperationNum(), vo.getServiceNum(), vo.getSum(), vo.getReuseRate()};
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type,vo.getServiceNum(), vo.getOperationNum(), vo.getOperationInvokeNum(), vo.getReuseRate()};
                         setRowValue(row, cellStyle, values);
                     }
                 }

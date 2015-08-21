@@ -17,4 +17,5 @@ public interface StatisticsService{
     public long getReuseRateCount(Map<String, String[]> values);
     public List<ReleaseVO> getReleaseVO(Map<String, String[]> values, Page page);
     public long getReleaseVOCount(Map<String, String[]> values);
+    public List<ReuseRateVO> getServiceReuseRate(Map<String, String[]> values);
 }
