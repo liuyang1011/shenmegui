@@ -85,6 +85,12 @@ public class OLAServiceImpl extends AbstractBaseService<OLA, String> implements 
         super.save(ola);
         operationService.editReleate(ola.getServiceId(), ola.getOperationId());
     }
+    @Override
+    public void deleteById(String id) {
+        OLA ola = olaDAO.findUniqueBy("olaId", id);
+        operationService.editReleate(ola.getServiceId(), ola.getOperationId());
+        getDAO().delete(id);
+    }
 }
 
 
