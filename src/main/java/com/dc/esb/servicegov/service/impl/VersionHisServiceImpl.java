@@ -42,8 +42,17 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 		List<VersionHis> list = hisDaoImpl.findBy(hql,page);
 		List<VersionHisBean> beanList = new ArrayList<VersionHisBean>();
 		for(VersionHis vh : list){
-			BaseLineVersionHisMapping mapping = baselineVersionHisMappingDAO.findUniqueBy("versionHisId",vh.getAutoId());
-			String baseLineNum = mapping.getBaseLine().getCode();
+//			Map<String,String> map = new HashMap<String, String>();
+//			map.put("versionHisId",vh.getAutoId());
+			List<BaseLineVersionHisMapping> mapping = baselineVersionHisMappingDAO.findBy("versionHisId",vh.getAutoId());
+			String baseLineNum = "";
+			for (int i = 0; i < mapping.size(); i++) {
+				if(i==0){
+					baseLineNum = mapping.get(i).getBaseLine().getCode();
+				}else{
+					baseLineNum += "," + mapping.get(i).getBaseLine().getCode();
+				}
+			}
 			beanList.add(new VersionHisBean(vh,baseLineNum));
 		}
 		return beanList;

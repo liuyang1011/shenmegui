@@ -68,7 +68,7 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
                 bvServiceImpl.save(bvm);
                 //TODO 更改versionHis的基线版本号和type(基线版本号根据BaseLineVersionHisMapping查找基线）
                 VersionHis vh = versionHisServiceImpl.getById(versionHisId);
-                vh.setType(Constants.Version.TYPE_ELSE);
+//                vh.setType(Constants.Version.TYPE_BASELINE);
                 //更新服务状态为上线
                 List<OperationHis> operationHises = operationHisDAO.findBy("versionHisId", versionHisId);
                 for (OperationHis operationHis : operationHises) {
@@ -82,6 +82,7 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
 
                 }
             }
+            //TODO versionHis的type到底是什么
             versionHisServiceImpl.updateVerionHis(Constants.Version.TARGET_TYPE_BASELINE, vids);
         }
 
