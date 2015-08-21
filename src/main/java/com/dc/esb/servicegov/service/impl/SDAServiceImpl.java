@@ -6,10 +6,13 @@ import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.entity.SDAHis;
 import com.dc.esb.servicegov.service.SDAService;
+import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.TreeNode;
+import com.dc.esb.servicegov.vo.SDABean;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +36,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     private ServiceServiceImpl serviceService;
     @Autowired
     private SDAHisServiceImpl sdaHisService;
+    @Autowired
+    private VersionServiceImpl versionService;
     public boolean genderSDAAuto(Operation operation){
         SDA sdaRoot = new SDA();
         sdaRoot.setSdaId(UUID.randomUUID().toString());
@@ -352,13 +357,17 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 sda.setOptDate(DateUtils.format(new Date()));
                 sdaDAO.save(sda);
             }
+            operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());
             return true;
         }
+
         return false;
     }
 
     public boolean delete(String[] delIds) {
         if (delIds != null && delIds.length > 0) {
+            SDA sda = sdaDAO.findUniqueBy("sdaId", delIds[0]);
+            operationService.editReleate(sda.getServiceId(), sda.getOperationId());
             for (String id : delIds) {
                 sdaDAO.delete(id);
             }
@@ -366,66 +375,64 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         }
         return false;
     }
-
+    /**
+     * 将一个节点上移
+     */
     public boolean moveUp(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
 
-        List<SDA> list;
-        if (sda.getParentId() == null) {
-            String hql = " from SDA where parentId is null order by seq asc";
-            list = sdaDAO.find(hql);
-        } else {
-            String hql = " from SDA where parentId = ? order by seq asc";
-            list = sdaDAO.find(hql, sda.getParentId());
+        String hql = " from SDA where parentId = ? order by seq asc";
+        List<SDA> list = sdaDAO.find(hql, sda.getParentId());//查询兄弟节点
+        int position = list.indexOf(sda);
+        if(position == 0){
+            return false;
         }
+        for (int i = 0; i < list.size(); i++) {
+            SDA node = list.get(i);
+            if ( i == position) {
+                //于之前的节点seq互换
+                SDA beforeSDA = list.get(i - 1);
+                int seq = node.getSeq();
+                sda.setSeq(beforeSDA.getSeq());
+                beforeSDA.setSeq(seq);
 
-        if (list.size() > 0) {
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getSdaId().equals(sdaId)) {
-                    if (i == 0) {
-                        return false;
-                    } else {
-                        SDA beforeSDA = list.get(i - 1);
-                        int seq = beforeSDA.getSeq();
-                        seq --;
-                        sda.setSeq(seq );
-                        sdaDAO.save(sda);
-                        return true;
-                    }
-                }
+                sdaDAO.save(sda);
+                return true;
+            }
+            else if(i < position){
+                node.setSeq(node.getSeq() - 1);//所有当前节点之前的节点，seq-1；
             }
         }
+        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         return false;
     }
 
     public boolean moveDown(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
 
-        List<SDA> list;
-        if (sda.getParentId() == null) {
-            String hql = " from SDA where parentId is null order by seq asc";
-            list = sdaDAO.find(hql);
-        } else {
-            String hql = " from SDA where parentId = ? order by seq asc";
-            list = sdaDAO.find(hql, sda.getParentId());
+        String hql = " from SDA where parentId = ? order by seq asc";
+        List<SDA> list = sdaDAO.find(hql, sda.getParentId());//查询兄弟节点
+        int position = list.indexOf(sda);
+        if(position == (list.size()-1)){
+            return false;
         }
+        for (int i = list.size() -1; i >= 0; i--) {
+            SDA node = list.get(i);
+            if ( i == position) {
+                //于之前的节点seq互换
+                SDA beforeSDA = list.get(i + 1);
+                int seq = node.getSeq();
+                sda.setSeq(beforeSDA.getSeq());
+                beforeSDA.setSeq(seq);
 
-        if (list.size() > 0) {
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getSdaId().equals(sdaId)) {
-                    if (i == (list.size() - 1)) {
-                        return false;
-                    } else {
-                        SDA nextSda = list.get(i + 1);
-                        int seq = nextSda.getSeq();
-                        seq ++;
-                        sda.setSeq(seq );
-                        sdaDAO.save(sda);
-                        return true;
-                    }
-                }
+                sdaDAO.save(sda);
+                return true;
+            }
+            else if(i > position){
+                node.setSeq(node.getSeq() + 1);//所有当前节点之前的节点，seq-1；
             }
         }
+        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         return false;
     }
 

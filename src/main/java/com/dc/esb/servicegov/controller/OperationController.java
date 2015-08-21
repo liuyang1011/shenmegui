@@ -380,7 +380,7 @@ public class OperationController {
     @RequiresPermissions({"service-get"})
     @RequestMapping("/query")
     @ResponseBody
-    public Map<String, Object> query(HttpServletRequest req) {
+    public Map<String, Object> query(HttpServletRequest req) throws  Throwable{
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         Page page = new Page(operationServiceImpl.queryCount(req.getParameterMap()), rowCount);

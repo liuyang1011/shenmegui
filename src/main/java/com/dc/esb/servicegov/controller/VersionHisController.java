@@ -43,7 +43,7 @@ public class VersionHisController {
 		if(StringUtils.isNotEmpty(keyValue)){
 			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%'";
 		}
-		List<VersionHis> rows = versionHisServiceImpl.findBy(hql,page);
+		List<VersionHisServiceImpl.VersionHisBean> rows = versionHisServiceImpl.findVersionBeanBy(hql, page);
 //		List<VersionHis> rows = versionHisServiceImpl.hisVersionList(keyValue);
 
 

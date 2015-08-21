@@ -14,6 +14,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,10 @@ import java.util.List;
 public class ExcelExportController {
 
     private static Log log = LogFactory.getLog(ExcelExportController.class);
-
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setAutoGrowCollectionLimit(Integer.MAX_VALUE);
+    }
     @Autowired
     private ExcelExportServiceImpl excelExportServiceImpl;
 

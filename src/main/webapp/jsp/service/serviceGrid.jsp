@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <th>服务功能描述</th>
-            <td colspan="8"><input class="easyui-textbox" disabled="true" style="width:120%" type="text" name="desc" value="${entity.desc }"></td>
+            <td colspan="7"><input class="easyui-textbox" disabled="true" style="width:100%" type="text" name="desc" value="${entity.desc }"></td>
         </tr>
         <tr>
             <th>服务标签</th>
@@ -66,18 +66,19 @@
 
 
 </fieldset>
-<table id="operationList" class="easyui-datagrid" title="场景明细"
+<table id="operationList" class="easyui-datagrid" title="场景列表"
        data-options="
 			rownumbers:true,
 			singleSelect:false,
 			fitColumns:true,
-			url:'/operation/getOperationByServiceId/${entity.serviceId }',
+			url:'/operation/query?serviceId=${entity.serviceId }',
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				pageSize:10"
        style="height:370px; width:auto;">
     <thead>
     <tr>
+<%--<<<<<<< HEAD
         <th data-options="field:'',checkbox:true"></th>
         <th data-options="field:'operationId'">服务场景</th>
         <th data-options="field:'operationName'">场景名称</th>
@@ -93,6 +94,17 @@
         <th data-options="field:'optUser'">更新用户</th>
         <th data-options="field:'state'" formatter='formatter.operationState'>状态</th>
     </tr>
+=======--%>
+        <th data-options="field:'',checkbox:true,width:50"></th>
+        <th data-options="field:'operationId',width:100">场景代码</th>
+        <th data-options="field:'operationName',width:120">场景名称</th>
+        <th data-options="field:'operationDesc',width:150">场景功能描述</th>
+        <th data-options="field:'consumers',width:150">消费者</th>
+        <th data-options="field:'providers',width:150">提供者</th>
+        <th data-options="field:'version', width:80" >版本号</th>
+        <th data-options="field:'optDate',width:120">更新时间</th>
+        <th data-options="field:'optUser', width:80">更新用户</th>
+        <th data-options="field:'optState',width:80"  formatter='formatter.operationState'>状态</th>
     </thead>
 </table>
 <div id="w" class="easyui-window" title=""

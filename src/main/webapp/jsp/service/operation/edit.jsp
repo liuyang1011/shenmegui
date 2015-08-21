@@ -10,15 +10,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>列表页</title>
-<link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
-<link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="/resources/js/jquery.min.js"></script> 
-<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/resources/js/ui.js"></script>
-<script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
+    <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
+    <link href="/plugin/aehlke-tag-it/css/jquery.tagit.css" rel="stylesheet" type="text/css">
+    <link href="/plugin/aehlke-tag-it/css/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+    <script src="/newui/plugins/jQueryUI/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/plugin/aehlke-tag-it/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/resources/js/ui.js"></script>
 
-<script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
+
+    <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
+    <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
 <script type="text/javascript">
 	 $(document).ready(function(){
     	loadSystem("systemList1", ${systemList}, "systemId", "systemChineseName");

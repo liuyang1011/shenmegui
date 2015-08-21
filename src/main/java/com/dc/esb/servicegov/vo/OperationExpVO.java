@@ -26,7 +26,9 @@ public class OperationExpVO {
         this.operationId = o.getOperationId();
         this.operationName = o.getOperationName();
         this.operationDesc = o.getOperationDesc();
-        this.version = o.getVersion().getCode();
+        if(o.getVersion() != null){
+            this.version = o.getVersion().getCode();
+        }
         this.optDate = o.getOptDate();
         this.optUser = o.getOptUser();
         this.optState = o.getState();

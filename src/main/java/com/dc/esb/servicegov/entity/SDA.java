@@ -71,7 +71,7 @@ public class SDA implements Serializable {
 	//参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
 	private String argType;
 
-	@Column(name = "CONSTRAINT")
+	@Column(name = "CONSTRAINT_ALIAS")
 	private String constraint;//约束条件 如：SYS_HEAD  APP_HEAD
 
 	public String getConstraint() {

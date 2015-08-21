@@ -75,7 +75,6 @@
             onLoadSuccess:function(data){
                 $.each(data.rows, function (index, item) {
                     var invokeType = item.invokeType;
-                    console.log(item);
                     if(invokeType == '0'){
                         item.invokeType = '提供者';
                     }else if(invokeType == '1'){
