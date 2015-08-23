@@ -38,9 +38,9 @@
                         				 		 textField: 'categoryName',
                         				 		 onChange:function(newValue, oldValue){
                         							this.value=newValue;
-                        							var t = $('#categoryId').combotree('tree');	// get the tree object
-                                              var node = t.tree('getSelected');
-                                              $('#resultList').datagrid({ url:'/statistics/serviceReuseRate?id=' + newValue +'&type='+node.type});
+                        							$('#resultList').treegrid('select', newValue);
+                        							var node = $('#resultList').treegrid('getSelected');
+                        							alert('关联场景数：'+ node.append2 +', 关联服务数:'+ node.append3 +',消费者数:' + node.append4 + ', 复用率：'+node.append5);
                         						}
                         					"
                         />
@@ -65,24 +65,26 @@
     </fieldset>
 </form>
 <div style="width:100%">
-    <table id="resultList" class="easyui-datagrid"
+    <table id="resultList" class="easyui-treegrid"
            data-options="
 			rownumbers:true,
-			url:'/statistics/serviceReuseRate?id=root&type=serviceCategory',
-			singleSelect:false,
+			url:'/statistics/serviceReuseRate',
+			singleSelect:true,
 			fitColumns:false,
 			method:'get',
-			pagination:true,
-				pageSize:50"
+			idField: 'id',
+			treeField: 'text'"
            style="height:auto; width:100%;">
         <thead>
         <tr>
 
-            <th data-options="field:'serviceNum',width:80">关联服务数</th>
-            <th data-options="field:'operationNum',width:80">关联场景数</th>
+            <th data-options="field:'text',width:280">服务</th>
+            <th data-options="field:'id',width:280">编码</th>
+            <th data-options="field:'append2',width:80">关联服务数</th>
+            <th data-options="field:'append3',width:80">关联场景数</th>
 
-            <th data-options="field:'operationInvokeNum',width:80">消费者数</th>
-            <th data-options="field:'reuseRate',width:100">复用率</th>
+            <th data-options="field:'append4',width:80">消费者数</th>
+            <th data-options="field:'append5',width:100">复用率</th>
 
         </tr>
         </thead>
@@ -96,42 +98,48 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
-    var formatter = {
-        typeText: function (value, row, index) {
-            if ("1" == value) {
-                return "消费者";
-            }
-            if ("0" == value) {
-                return "提供者";
-            }
-        }
-    };
     function exportExcel(){
-        var checkedItems = $('#resultList').datagrid('getChecked');
+        var data = $("#resultList").treegrid("getData");
+        var form = $("<form>");//定义一个form表单
+        form.attr("style", "display:none");
+        form.attr("target", "");
+        form.attr("method", "post");
+        form.attr("action", "/excelExporter/exportServiceReuserate");
 
-        if (checkedItems != null && checkedItems.length > 0) {
-            var form = $("<form>");//定义一个form表单
-            form.attr("style", "display:none");
-            form.attr("target", "");
-            form.attr("method", "post");
-            form.attr("action", "/excelExporter/exportServiceReuserate");
-            var fields = ["serviceNum", "operationNum", , "operationInvokeNum", "reuseRate"];
-            for (var i = 0; i < checkedItems.length; i++) {
-                for (var j = 0; j < fields.length; j++) {
-                    var input1 = $("<input>");
-                    input1.attr("type", "hidden");
-                    input1.attr("name", "list[" + i + "]." + fields[j]);
-                    input1.attr("value", checkedItems[i][fields[j]]);
-                    form.append(input1);
-                }
+        appendTreeNode(form, data[0],"");
+
+        $("body").append(form);//将表单放置在web中
+        //form.submit();//表单提交
+    }
+    function appendTreeNode(form, node, nodename){
+        var fields = ["id", "text", "append2", "append3", "append4", "append5"];
+        console.log(nodename);
+        for (var j = 0; j < fields.length; j++) {
+            try {
+                var input1 = $("<input>");
+                input1.attr("type", "hidden");
+                input1.attr("name", nodename + fields[j]);
+                input1.attr("value", node[fields[j]]);
+                form.append(input1);
+            } catch (exception) {
+                continue;
             }
+        }
+        var children = node['children'];
+        if(children != null){
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                var childName;
+                if(nodename == ""){
+                    childName = "children[" + i + "]";
+                }else{
+                    child =  childName+"[children[" + i + "]]";
+                }
 
-            $("body").append(form);//将表单放置在web中
-            form.submit();//表单提交
+                appendTreeNode(form, child,childName);
+            }
         }
-        else {
-            alert("没有选中数据！");
-        }
+
     }
 
     function query() {

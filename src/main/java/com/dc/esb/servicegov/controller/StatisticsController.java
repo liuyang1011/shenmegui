@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.service.StatisticsService;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -54,12 +55,10 @@ public class StatisticsController {
     @RequiresPermissions({"statistics-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/serviceReuseRate", headers = "Accept=application/json")
     @ResponseBody
-    public Map<String, Object> serviceReuseRate(HttpServletRequest req){
-        List<ReuseRateVO> rows = statisticsService.getServiceReuseRate(req.getParameterMap());
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("total", rows.size());
-        result.put("rows", rows);
-        return result;
+    public List<TreeNode> serviceReuseRate(HttpServletRequest req){
+        List<TreeNode> rows = statisticsService.getServiceReuseRate();
+
+        return rows;
     }
 
     /**

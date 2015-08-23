@@ -154,7 +154,7 @@
           form.attr("style","display:none");
           form.attr("target","");
           form.attr("method","post");
-          form.attr("action","/excelExporter/exportReuserate");
+          form.attr("action","/excelExporter/exportSystemReuserate");
           var fields = ["systemId", "systemChineseName","type", "serviceNum", "operationNum",  "operationInvokeNum", "reuseRate"];
           for(var i=0; i < checkedItems.length; i++){
             for(var j=0; j < fields.length; j++){

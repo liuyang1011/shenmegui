@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.excel.support.CellStyleSupport;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -922,12 +923,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
 
     /**
-     * 导出复用率统计
+     * 导出系统复用率统计
      * @return
      */
-    public HSSFWorkbook genderRuserate(ReuseRateListVO listVO) {
+    public HSSFWorkbook genderSystemRuserate(ReuseRateListVO listVO) {
         try {
-            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_REUSERATE);
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SYSTEM_REUSERATE);
             HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
             if(listVO != null ){
                 List<ReuseRateVO> list = listVO.getList();
@@ -947,6 +948,37 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             logger.error(e, e);
         }
         return null;
+    }
+    /**
+     * 导出服务复用率统计
+     * @return
+     */
+    public HSSFWorkbook genderServiceRuserate(TreeNode root) {
+        try {
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE_REUSERATE);
+            HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
+            if(root != null ){
+                Counter counter = new Counter(1);
+                HSSFSheet sheet = wb.getSheet("statistics_reuse");
+                fillServiceReuseRow(sheet, cellStyle, root, counter, "|--");
+            }
+            return wb;
+        } catch (Exception e) {
+            logger.error(e, e);
+        }
+        return null;
+    }
+    public void fillServiceReuseRow(HSSFSheet sheet, HSSFCellStyle cellStyle, TreeNode treeNode, Counter counter, String tab){
+        HSSFRow row = sheet.createRow(counter.getCount());
+        counter.increment();
+        String[] values = { tab + treeNode.getText(), treeNode.getId(), treeNode.getAppend2(), treeNode.getAppend3(), treeNode.getAppend4(), treeNode.getAppend5()};
+        setRowValue(row, cellStyle, values);
+        List<TreeNode> children = treeNode.getChildren();
+        if(children != null && children.size() > 0){
+            for(TreeNode child : children){
+                fillServiceReuseRow(sheet, cellStyle, child, counter, tab+tab);
+            }
+        }
     }
     /**
      * 导出发布统计

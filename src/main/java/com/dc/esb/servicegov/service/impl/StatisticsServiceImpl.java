@@ -6,12 +6,15 @@ import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.StatisticsService;
 import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.util.EasyUiTreeUtil;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.tree.Tree;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -230,50 +233,91 @@ public class StatisticsServiceImpl implements StatisticsService{
         vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
         vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
     }
-
     /**
-     * 根据服务分类计算复用率
-     * @param values 分类id
+     * 从服务分类维度计算复用率
      * @return 复用率
      */
     @Override
-    public List<ReuseRateVO> getServiceReuseRate(Map<String, String[]> values) {
-        List<ReuseRateVO> result = new ArrayList<ReuseRateVO>();
-        if(values.get("id") != null && values.get("id").length > 0) {
-            String id = values.get("id")[0];
-            if (StringUtils.isNotEmpty(id)) {
-                if(values.get("type") != null && values.get("type").length > 0) {
-                    String type = values.get("type")[0];
-                    ReuseRateVO vo = new ReuseRateVO();
-                    List<com.dc.esb.servicegov.entity.Service> services;
-                    if (StringUtils.isNotEmpty(type) && "service".equals(type)) {  //判断传入的id是分类还是服务
-                        services = serviceDAO.findBy("serviceId", id);
-                    }
-                    else{
-                        services = getService(id);
-                    }
-                    long serviceNum = services.size();
-                    vo.setServiceNum(String.valueOf(serviceNum));
-                    List<Operation> operations = getOperation(services);
-                    long operationNum = operations.size();
-                    vo.setOperationNum(String.valueOf(operations.size()));
-                    List<ServiceInvoke> consumers = getServiceInvoke(operations, Constants.INVOKE_TYPE_CONSUMER);
-                    long operationInvokeNum = consumers.size();
-                    vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));
-                    if(operationInvokeNum > operationNum && operationNum > 0){
-                        float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
-                        NumberFormat nt = NumberFormat.getPercentInstance();
-                        nt.setMinimumFractionDigits(2);
-                        vo.setReuseRate(nt.format(r));
-                    }else{
-                        vo.setReuseRate("0");
-                    }
-                    result.add(vo);
-                }
+    public List<TreeNode> getServiceReuseRate(){
+        TreeNode root = new TreeNode();//真是让人蛋疼的数据库设计，为什么不在数据库中直接插一个root节点，每次要手动拼，服务分类和服务明明就可以一张表
+        root.setId("root");
+        root.setText("服务类");
 
+        List<ServiceCategory> categories = serviceCategoryDAO.getAll();
+        Map<String, String > fields =  new HashMap<String, String>();
+        fields.put("id", "categoryId");
+        fields.put("text", "categoryName");
+
+        List<TreeNode> categoryNodes = EasyUiTreeUtil.getInstance().convertTree(categories,fields );//将分类拼接成树
+        root.setChildren(categoryNodes);
+        genderCategoryService(root);
+        genderServiceReuseRate(root);
+
+        List<TreeNode> result = new ArrayList<TreeNode>();
+        result.add(root);
+        return result;
+    }
+    public void genderCategoryService(TreeNode categoryNode){//根据服务分类查询服务
+        if (StringUtils.isNotEmpty(categoryNode.getParentId()) && categoryNode.getChildren() == null) {
+            List<com.dc.esb.servicegov.entity.Service> services = getService(categoryNode.getId());
+            if (services != null && services.size() > 0) {
+                List<TreeNode> serviceNodes = new ArrayList<TreeNode>();
+                for (com.dc.esb.servicegov.entity.Service service : services) {
+                    TreeNode serviceNode = new TreeNode();
+                    serviceNode.setId(service.getServiceId());
+                    serviceNode.setText(service.getServiceName());
+                    serviceNode.setAppend1("service");
+                    serviceNodes.add(serviceNode);
+                }
+                categoryNode.setChildren(serviceNodes);
             }
         }
-        return result;
+        List<TreeNode> children = categoryNode.getChildren();
+        if(children != null && children.size() > 0){
+            for(TreeNode child : children){
+                genderCategoryService(child);
+            }
+        }
+    }
+    /**
+     * @param treeNode 计算服务分类或服务复用率
+     */
+    public void genderServiceReuseRate(TreeNode treeNode) {
+        String id = treeNode.getId();
+        String type = treeNode.getAppend1();
+        List<com.dc.esb.servicegov.entity.Service> services;
+        if (StringUtils.isNotEmpty(type) && "service".equals(type)) {  //判断传入的id是分类还是服务
+            services = serviceDAO.findBy("serviceId", id);
+        }
+        else{
+            services = getService(id);
+        }
+        long serviceNum = services.size();
+        treeNode.setAppend2(String.valueOf(serviceNum)); //服务数
+
+        List<Operation> operations = getOperation(services);
+        long operationNum = operations.size();
+        treeNode.setAppend3(String.valueOf(operationNum));//场景数
+
+        List<ServiceInvoke> consumers = getServiceInvoke(operations, Constants.INVOKE_TYPE_CONSUMER);
+        long operationInvokeNum = consumers.size();
+        treeNode.setAppend4(String.valueOf(operationInvokeNum));//消费者数
+
+        if(operationInvokeNum > operationNum && operationNum > 0){
+            float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
+            NumberFormat nt = NumberFormat.getPercentInstance();
+            nt.setMinimumFractionDigits(2);
+            treeNode.setAppend5(nt.format(r));//复用率
+        }else{
+            treeNode.setAppend5("0");
+        }
+
+        List<TreeNode> children = treeNode.getChildren();
+        if(children != null && children.size() > 0){
+            for(TreeNode child : children){
+                genderServiceReuseRate(child);
+            }
+        }
     }
 
     /**

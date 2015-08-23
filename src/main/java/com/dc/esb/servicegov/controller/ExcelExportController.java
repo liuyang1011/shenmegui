@@ -3,6 +3,7 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.service.impl.ExcelExportInterfaceImpl;
 import com.dc.esb.servicegov.service.impl.ExcelExportServiceImpl;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.OperationPKVO;
 import com.dc.esb.servicegov.vo.ReleaseListVO;
 import com.dc.esb.servicegov.vo.ReuseRateListVO;
@@ -244,10 +245,10 @@ public class ExcelExportController {
      * 导出复用率统计execl
      * */
     @RequiresPermissions({"excelExport-get"})
-    @RequestMapping(method = RequestMethod.POST, value = "/exportReuserate", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/exportSystemReuserate", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean exportReuserate(HttpServletRequest request, HttpServletResponse response,
+    boolean exportSystemReuserate(HttpServletRequest request, HttpServletResponse response,
                             ReuseRateListVO listVO) {
         String codedFileName = null;
         OutputStream fOut = null;
@@ -259,7 +260,52 @@ public class ExcelExportController {
             response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
             // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
             // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderRuserate(listVO);
+            HSSFWorkbook workbook = excelExportServiceImpl.genderSystemRuserate(listVO);
+            fOut = response.getOutputStream();
+            if(workbook != null){
+                workbook.write(fOut);
+            }
+        }
+        catch (UnsupportedEncodingException e1)
+        {}
+        catch (Exception e)
+        {}
+        finally
+        {
+            try
+            {
+                if(fOut != null){
+                    fOut.flush();
+                    fOut.close();
+                }
+            }
+            catch (IOException e)
+            {
+                log.error("IO异常");
+            }
+        }
+        return true;
+    }
+    /**
+     * 导出服务复用率统计execl
+     * */
+    @RequiresPermissions({"excelExport-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/exportServiceReuserate", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean exportServiceReuserate(HttpServletRequest request, HttpServletResponse response,
+                            TreeNode root) {
+        String codedFileName = null;
+        OutputStream fOut = null;
+        try
+        {
+            // 进行转码，使其支持中文文件名
+            response.setContentType("application/zip");
+            codedFileName = java.net.URLEncoder.encode("service_reuse_rate_"+ new Date().getTime(), "UTF-8");
+            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
+            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
+            // 产生工作簿对象
+            HSSFWorkbook workbook = excelExportServiceImpl.genderServiceRuserate(root);
             fOut = response.getOutputStream();
             if(workbook != null){
                 workbook.write(fOut);

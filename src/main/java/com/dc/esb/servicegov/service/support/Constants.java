@@ -16,7 +16,8 @@ public class Constants {
     public static final String EXCEL_TEMPLATE_SERVICE = Constants.class.getResource("/").getPath() + "/template/excel_service_template.xls";
     public static final String EXCEL_TEMPLATE_SERVICE_VIEW = Constants.class.getResource("/").getPath() + "/template/excel_service_view_template.xls";
     public static final String EXCEL_TEMPLATE_INTERFACE = Constants.class.getResource("/").getPath() + "/template/excel_interface_template.xls";
-    public static final String EXCEL_TEMPLATE_REUSERATE = Constants.class.getResource("/").getPath() + "/template/excel_reuserate_template.xls";
+    public static final String EXCEL_TEMPLATE_SYSTEM_REUSERATE = Constants.class.getResource("/").getPath() + "/template/excel_system_reuserate_template.xls";
+    public static final String EXCEL_TEMPLATE_SERVICE_REUSERATE = Constants.class.getResource("/").getPath() + "/template/excel_service_reuserate_template.xls";
     public static final String EXCEL_TEMPLATE_RELEASE = Constants.class.getResource("/").getPath() + "/template/excel_release_template.xls";
 
     public static class Operation {
