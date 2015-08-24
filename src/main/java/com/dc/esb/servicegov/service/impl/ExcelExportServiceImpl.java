@@ -617,11 +617,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 continue;
             }
             for (Service service : services) {
-                //debug 测试
-                int i = 0;
-                if(service.getServiceName().equals("存款信息查询")){
-                    i++;
-                }
                 String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
 
                 List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());
@@ -633,7 +628,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 }
                 for (Operation operation : operations) {
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
-                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", " ", operation.getOperationRemark()};
+                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
 
 //                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
 //                    if (interfaceInvokeVOs.size() == 0) {
@@ -671,7 +666,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                             values3[8] = interfaceInvoke.getProvider().getInter().getInterfaceName();//交易名称
                         }
                         if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getSystem() != null) {
-                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务消费者
+                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务提供者
                         }
                         setRowValue(row, cellStyle, values3);
                     }

@@ -40,7 +40,7 @@
     </table>
 
 </fieldset>
-<table id="tt" style="height:370px; width:auto;"
+<table id="tt" style="height:580px; width:auto;"
        title="所有类别词">
     <thead>
     <tr>
@@ -114,7 +114,8 @@
             method: 'get',
             toolbar: toolbar,
             pagination: true,
-            pageSize: 10,
+            pageSize: 18,
+            pageList: [18,30,50],
             onBeginEdit: function (index, row) {
                 editedRows.push(index);
             },

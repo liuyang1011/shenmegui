@@ -8,6 +8,8 @@ import java.util.Map;
 import com.dc.esb.servicegov.dao.impl.BaselineVersionHisMappingDAOImpl;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.BaseLineVersionHisMapping;
+import com.dc.esb.servicegov.entity.OperationHis;
+import com.dc.esb.servicegov.service.OperationHisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 	VersionHisDAOImpl hisDaoImpl;
 	@Autowired
 	BaselineVersionHisMappingDAOImpl baselineVersionHisMappingDAO;
+	@Autowired
+	OperationHisService operationHisService;
 
 	@Override
 	public void save(VersionHis entity){
@@ -53,7 +57,16 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 					baseLineNum += "," + mapping.get(i).getBaseLine().getCode();
 				}
 			}
-			beanList.add(new VersionHisBean(vh,baseLineNum));
+			//场景信息
+			String operationHisId = vh.getTargetId();
+			OperationHis operationHis = operationHisService.getById(operationHisId);
+			String serviceName = operationHis.getService().getServiceName();
+			String serviceId = operationHis.getService().getServiceId();
+			String operationName = operationHis.getOperationName();
+			String operationId = operationHis.getOperationId();
+			String operationDesc = operationHis.getOperationDesc();
+
+			beanList.add(new VersionHisBean(vh, baseLineNum,serviceName,serviceId,operationName,operationId,operationDesc));
 		}
 		return beanList;
 //		return hisDaoImpl.findBy(hql,page);
@@ -88,7 +101,13 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 
 		private String baseLineNum;//基线版本
 
-		public VersionHisBean(VersionHis vh,String baseLineNum){
+		private String serviceName;
+		private String serviceId;
+		private String operationName;
+		private String operationId;
+		private String operationDesc;
+
+		public VersionHisBean(VersionHis vh,String baseLineNum,String serviceName,String serviceId,String operationName,String operationId,String operationDesc){
 			setAutoId(vh.getAutoId());
 			setId(vh.getId());
 			setCode(vh.getCode());
@@ -102,6 +121,11 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 			setTargetType(vh.getTargetType());
 			setTargetId(vh.getTargetId());
 			setBaseLineNum(baseLineNum);
+			setServiceName(serviceName);
+			setServiceId(serviceId);
+			setOperationName(operationName);
+			setOperationId(operationId);
+			setOperationDesc(operationDesc);
 		}
 
 		public String getAutoId() {
@@ -206,6 +230,46 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 
 		public void setBaseLineNum(String baseLineNum) {
 			this.baseLineNum = baseLineNum;
+		}
+
+		public String getServiceName() {
+			return serviceName;
+		}
+
+		public void setServiceName(String serviceName) {
+			this.serviceName = serviceName;
+		}
+
+		public String getServiceId() {
+			return serviceId;
+		}
+
+		public void setServiceId(String serviceId) {
+			this.serviceId = serviceId;
+		}
+
+		public String getOperationName() {
+			return operationName;
+		}
+
+		public void setOperationName(String operationName) {
+			this.operationName = operationName;
+		}
+
+		public String getOperationId() {
+			return operationId;
+		}
+
+		public void setOperationId(String operationId) {
+			this.operationId = operationId;
+		}
+
+		public String getOperationDesc() {
+			return operationDesc;
+		}
+
+		public void setOperationDesc(String operationDesc) {
+			this.operationDesc = operationDesc;
 		}
 	}
 

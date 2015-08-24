@@ -169,6 +169,12 @@ public class OperationLogAspect {
             for (Object info : args) {
 
                 //获取对象类型
+                //测试
+                int i =0;
+                if(info == null){
+                    i=2;
+                    continue;
+                }
                 className = info.getClass().getName();
                 className = className.substring(className.lastIndexOf(".") + 1);
                 rs.append("[参数" + index + "，类型：" + className + "，值：");

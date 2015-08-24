@@ -13,7 +13,7 @@ public class OperationLog {
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid",strategy="uuid")
-    @Column(name = "id")
+    @Column(name = "log_id")
     private  String id;
     @Column(name = "opt_user")
     private String optUser;
@@ -23,11 +23,11 @@ public class OperationLog {
     private String optResult;
     @Column(name = "opt_type")
     private String optType;
-    @Column(name = "class_name")
+    @Column(name = "target_class_name")
     private String className;
     @Column(name = "chinese_name")
     private String chineseName;
-    @Column(name = "method_name")
+    @Column(name = "target_method_name")
     private String methodName;
     @Column(name = "params", length = 1024)
     private String params;

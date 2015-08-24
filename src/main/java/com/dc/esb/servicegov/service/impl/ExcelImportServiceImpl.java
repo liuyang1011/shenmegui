@@ -570,6 +570,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             Row sheetRow = tranSheet.getRow(j);
             String tranCode = "";
             String tranName = "";
+            String tranDesc = "";
             String serviceName = "";
             String serviceId = "";
             String operId = "";
@@ -633,6 +634,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                             flag = false;
                         }
                         inter.setInterfaceName(tranName);
+                    } else if ("接口功能描述".equals(cell) && k==0) {
+                        tranDesc = sheetRow.getCell(k + 1).getStringCellValue();
+                        inter.setDesc(tranDesc);
                     } else if ("服务操作名称".equals(cell)) {
                         operName = sheetRow.getCell(k + 1).getStringCellValue();
                         if (operName == null || "".equals(operName)) {

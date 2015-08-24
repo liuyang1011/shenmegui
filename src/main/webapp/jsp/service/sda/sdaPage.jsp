@@ -132,9 +132,8 @@ var delIds = [];
 			        	 if(data){
 			        	 	delIds = [];
 			        	 	alert("保存成功");
-							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t=x'+ new Date().getTime()});
-//			        	 	t.treegrid('reload');
-			        	 }
+							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+						 }
 			            }
 				 });
 			}

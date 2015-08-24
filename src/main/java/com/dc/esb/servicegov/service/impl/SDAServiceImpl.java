@@ -380,7 +380,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
      */
     public boolean moveUp(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
-
+        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         String hql = " from SDA where parentId = ? order by seq asc";
         List<SDA> list = sdaDAO.find(hql, sda.getParentId());//查询兄弟节点
         int position = list.indexOf(sda);
@@ -403,13 +403,13 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 node.setSeq(node.getSeq() - 1);//所有当前节点之前的节点，seq-1；
             }
         }
-        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+
         return false;
     }
 
     public boolean moveDown(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
-
+        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         String hql = " from SDA where parentId = ? order by seq asc";
         List<SDA> list = sdaDAO.find(hql, sda.getParentId());//查询兄弟节点
         int position = list.indexOf(sda);
@@ -432,7 +432,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 node.setSeq(node.getSeq() + 1);//所有当前节点之前的节点，seq-1；
             }
         }
-        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+
         return false;
     }
 
@@ -461,6 +461,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         map.put("serviceId",serviceId);
         List<SDA> list = sdaDAO.findBy(map);
         sdaDAO.delete(list);
+        operationService.editReleate(serviceId, OperationId);
         return true;
     }
 }

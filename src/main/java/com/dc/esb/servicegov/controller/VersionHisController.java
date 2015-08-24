@@ -46,9 +46,6 @@ public class VersionHisController {
 		List<VersionHisServiceImpl.VersionHisBean> rows = versionHisServiceImpl.findVersionBeanBy(hql, page);
 //		List<VersionHis> rows = versionHisServiceImpl.findBy(hql,page);
 //		List<VersionHis> rows = versionHisServiceImpl.hisVersionList(keyValue);
-
-
-
 		result.put("total", page.getResultCount());
 		result.put("rows", rows);
 		return result;

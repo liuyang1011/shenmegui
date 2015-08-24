@@ -103,7 +103,12 @@
 <table id="operationList" title="版本历史" style="height:365px; width:auto;">
   <thead>
     <tr>
-          <th data-options="field:'autoId',checkbox:true"> </th>
+        <th data-options="field:'autoId',checkbox:true"> </th>
+		<th data-options="field:'serviceId'">服务代码 </th>
+	    <th data-options="field:'serviceName'">服务名称 </th>
+		<th data-options="field:'operationId'">服务场景 </th>
+		<th data-options="field:'operationName'">场景名称 </th>
+		<%--<th data-options="field:'operationDesc'">场景描述 </th>--%>
       <th data-options="field:'code'">版本号 </th>
       <th data-options="field:'type'" formatter="versionHis.type">是否基线版本 </th>
       <th data-options="field:'baseLineNum'">基线版本号 </th>
