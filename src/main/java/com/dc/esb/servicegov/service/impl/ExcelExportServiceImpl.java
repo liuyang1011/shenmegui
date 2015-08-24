@@ -65,6 +65,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     private InterfaceInvokeDAOImpl interfaceInvokeDAO;
     @Autowired
     private InterfaceDAOImpl interfaceDAO;
+    @Autowired
+    private StatisticsServiceImpl statisticsService;
     /**
      * TODO根据参数id和类型，返回excel文件
      */
@@ -956,12 +958,15 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public HSSFWorkbook genderServiceRuserate(TreeNode root) {
         try {
             HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE_REUSERATE);
-            HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
-            if(root != null ){
+            HSSFCellStyle cellStyle = CellStyleSupport.leftStyle(wb);
+            List<TreeNode> list = statisticsService.getServiceReuseRate();
+            if(list != null && list.size() > 0){
+                root = list.get(0);
                 Counter counter = new Counter(1);
                 HSSFSheet sheet = wb.getSheet("statistics_reuse");
-                fillServiceReuseRow(sheet, cellStyle, root, counter, "|--");
+                fillServiceReuseRow(sheet, cellStyle, root, counter, "1.");
             }
+
             return wb;
         } catch (Exception e) {
             logger.error(e, e);
@@ -975,8 +980,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         setRowValue(row, cellStyle, values);
         List<TreeNode> children = treeNode.getChildren();
         if(children != null && children.size() > 0){
-            for(TreeNode child : children){
-                fillServiceReuseRow(sheet, cellStyle, child, counter, tab+tab);
+            for(int i = 0; i< children.size(); i++){
+                TreeNode child = children.get(i);
+                fillServiceReuseRow(sheet, cellStyle, child, counter, tab+ (i+1)+".");
             }
         }
     }

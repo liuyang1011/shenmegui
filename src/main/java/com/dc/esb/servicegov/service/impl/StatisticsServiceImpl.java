@@ -257,7 +257,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         result.add(root);
         return result;
     }
-    public void genderCategoryService(TreeNode categoryNode){//根据服务分类查询服务
+    public void genderCategoryService(TreeNode categoryNode){//构建服务树
         if (StringUtils.isNotEmpty(categoryNode.getParentId()) && categoryNode.getChildren() == null) {
             List<com.dc.esb.servicegov.entity.Service> services = getService(categoryNode.getId());
             if (services != null && services.size() > 0) {
@@ -294,14 +294,33 @@ public class StatisticsServiceImpl implements StatisticsService{
         }
         long serviceNum = services.size();
         treeNode.setAppend2(String.valueOf(serviceNum)); //服务数
+        List<String> serviceIds = new ArrayList<String>();
+        for(int i=0; i < services.size(); i++){
+            serviceIds.add(services.get(i).getServiceId());
+        }
+        long operationNum = 0 ;
+        long operationInvokeNum = 0;
+        if(serviceIds.size() > 0){
+            String optNumHql = "select count(*) from  "+ Operation.class.getName() + " as o where o.serviceId in (:serviceIds)";
+            Map<String, Object> p1 = new HashMap<String, Object>();
+            p1.put("serviceIds", serviceIds);
+            p1.put("type", Constants.INVOKE_TYPE_CONSUMER);
+            operationNum = operationDAO.findUnique(optNumHql,p1 );
 
-        List<Operation> operations = getOperation(services);
-        long operationNum = operations.size();
+
+            String conNumHql = "select count(*)  from " + ServiceInvoke.class.getName() + " as si where si.type=:type and si.serviceId  in (:serviceIds)";
+            operationInvokeNum = serviceInvokeDAO.findUnique(conNumHql,p1 );
+
+        }
+
+//        List<Operation> operations = getOperation(services);
+//        long operationNum = operations.size();
+
+//        List<ServiceInvoke> consumers = getServiceInvoke(operations, Constants.INVOKE_TYPE_CONSUMER);
+//        long operationInvokeNum = consumers.size();
+
         treeNode.setAppend3(String.valueOf(operationNum));//场景数
-
-        List<ServiceInvoke> consumers = getServiceInvoke(operations, Constants.INVOKE_TYPE_CONSUMER);
-        long operationInvokeNum = consumers.size();
-        treeNode.setAppend4(String.valueOf(operationInvokeNum));//消费者数
+        treeNode.setAppend4(String.valueOf(operationInvokeNum));//场景数
 
         if(operationInvokeNum > operationNum && operationNum > 0){
             float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;

@@ -51,9 +51,9 @@
                 </th>
                 <td></td>
                 <th>
-                    <!--
+
                     <a href="#" id="clean" onclick="exportExcel()" class="easyui-linkbutton" iconCls="icon-excel-export" style="margin-left:1em" >导出EXCEL</a>
-                    -->
+
                 </th>
                 <td></td>
                 <td></td>
@@ -106,10 +106,10 @@
         form.attr("method", "post");
         form.attr("action", "/excelExporter/exportServiceReuserate");
 
-        appendTreeNode(form, data[0],"");
+        //appendTreeNode(form, data[0],"");
 
         $("body").append(form);//将表单放置在web中
-        //form.submit();//表单提交
+        form.submit();//表单提交
     }
     function appendTreeNode(form, node, nodename){
         var fields = ["id", "text", "append2", "append3", "append4", "append5"];
