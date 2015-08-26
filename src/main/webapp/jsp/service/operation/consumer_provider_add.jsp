@@ -3,34 +3,66 @@
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
-<script type="text/javascript">
-       //关系保存按钮
-        function selectCP(){
-            alert(0);
-            var consumerId = $("#consumerId").combobox("getValue");
-            var consumer = $("#consumerId").combobox("getText");
-            var consumerInterfaceId = $("#consumerInterfaceId").combobox("getValue");
-            var consumerInterface = $("#consumerInterfaceId").combobox("getText");
-            var providerId = $("#providerId").combobox("getValue");
-            var provider = $("#providerId").combobox("getText");
-            var providerInterfaceId = $("#providerInterfaceId").combobox("getValue");
-            var providerInterface = $("#providerInterfaceId").combobox("getText");
-
-            var row = {"consumerId": consumerId,
-              "consumer": consumer,
-             "consumerInterfaceId":consumerInterfaceId,
-             "consumerInterface":consumerInterface,
-             "providerId":providerId,
-             "provider":provider,
-             "providerInterfaceId":providerInterfaceId,
-             "providerInterface":providerInterface};
-
-            $("#consumerProvicerList").datagrid("appendRow", row);
-            closeDlg();
-        }
-
-</script>
 <form class="formui">
+    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="$('#interfaceDlg').dialog('close')">取消</a><a href="#"
+                                                                                     onclick="addInterfaceContent()"
+                                                                                     class="easyui-linkbutton"
+                                                                                     iconCls="icon-save">确定</a></div>
+    <fieldset>
+        <legend>服务消费者</legend>
+        <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
+            <tr>
+                <th align="center">已经应用</th>
+                <td width="50" align="center">&nbsp;</td>
+                <th align="center">应用系统列表</th>
+            </tr>
+
+            <tr>
+                <th align="center"><select name="select2" id="consumer" size="10" multiple
+                                           style="width:155px;height:160px" panelHeight="auto">
+                </select></th>
+                <td align="center" valign="middle"><a href="#" class="easyui-linkbutton" iconCls="icon-select-add"
+                                                      onClick="selectex('consumer','systemList1','1')"></a><br>
+                    <br>
+                    <br>
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-select-remove"
+                       onClick="chooseInterface('systemList1','consumer','1')"></a></td>
+                <td align="center">
+                    <select name="select" id="systemList1" size="10" multiple style="width:155px;height:160px"
+                            panelHeight="auto"/>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <div style="margin-top:10px;"></div>
+    <fieldset>
+        <legend>服务提供者</legend>
+        <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
+            <tr>
+                <th align="center">已经应用</th>
+                <td width="50" align="center">&nbsp;</td>
+                <th align="center">应用系统列表</th>
+            </tr>
+
+            <tr>
+                <th align="center"><select name="select2" id="provider" size="10" multiple
+                                           style="width:155px;height:160px" panelHeight="auto">
+                </select></th>
+                <td align="center" valign="middle"><a href="#" class="easyui-linkbutton" iconCls="icon-select-add"
+                                                      onClick="selectex('provider','systemList2','2')"></a><br>
+                    <br>
+                    <br>
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-select-remove"
+                       onClick="chooseInterface('systemList2','provider','2')"></a></td>
+                <td align="center"><select name="select" id="systemList2" size="10" multiple
+                                           style="width:155px;height:160px" panelHeight="auto">
+
+                </select></td>
+            </tr>
+        </table>
+    </fieldset>
 <div style="margin:20px">
 <table border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -105,9 +137,13 @@
 
         </table>
  </div>
- <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                            onClick="closeDlg()">取消</a><a href="#"
-                                                                                       onclick="selectCP()"
-                                                                                       class="easyui-linkbutton"
-                                                                                       iconCls="icon-save">保存</a></div>
+
         </form>
+<div id="interfaceDlg" class="easyui-dialog"
+     style="width:400px;height:280px;padding:10px 20px" closed="true"
+     resizable="true"></div>
+<script type="text/javascript">
+    loadSystem("systemList1", systemList, "systemId", "systemChineseName");
+    loadSystem("systemList2", systemList, "systemId", "systemChineseName");
+
+</script>

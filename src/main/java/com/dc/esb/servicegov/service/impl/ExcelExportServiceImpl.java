@@ -620,6 +620,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 continue;
             }
             for (Service service : services) {
+                int serviceStart = counter;
                 String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
 
                 List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());
@@ -630,6 +631,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     continue;
                 }
                 for (Operation operation : operations) {
+                    int operationStart = counter;
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
                             operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
 
@@ -673,16 +675,16 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         }
                         setRowValue(row, cellStyle, values3);
                     }
-                    CellRangeAddress region4 = new CellRangeAddress(counter - interfaceInvokes.size(), counter - 1, (short) 4, (short) 4);
-                    CellRangeAddress region5 = new CellRangeAddress(counter - interfaceInvokes.size(), counter - 1, (short) 5, (short) 5);
+                    CellRangeAddress region4 = new CellRangeAddress(operationStart, counter - 1, (short) 4, (short) 4);
+                    CellRangeAddress region5 = new CellRangeAddress(operationStart, counter - 1, (short) 5, (short) 5);
                     sheet.addMergedRegion(region4);//合并单元格：操作号
                     sheet.addMergedRegion(region5);//合并单元格：操作名称
                 }
-                CellRangeAddress region2 = new CellRangeAddress(counter - operations.size(), counter - 1, (short) 2, (short) 2);
-                CellRangeAddress region3 = new CellRangeAddress(counter - operations.size(), counter - 1, (short) 3, (short) 3);
+                CellRangeAddress region2 = new CellRangeAddress(serviceStart, counter - 1, (short) 2, (short) 2);
+                CellRangeAddress region3 = new CellRangeAddress(serviceStart, counter - 1, (short) 3, (short) 3);
                 sheet.addMergedRegion(region2);//合并单元格：服务号
                 sheet.addMergedRegion(region3);//合并单元格：服务名称
-                HSSFRow R = sheet.getRow(counter - operations.size());//居中
+                HSSFRow R = sheet.getRow( serviceStart);//居中
                 HSSFCell C = R.getCell(2);
                 C.setCellStyle(cellStyle);
                 sheet.getRow(counter - operations.size()).getCell(3).setCellStyle(cellStyle);//居中
@@ -935,7 +937,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReuseRateVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type,vo.getServiceNum(), vo.getOperationNum(), vo.getOperationInvokeNum(), vo.getReuseRate()};
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type,vo.getServiceNum(), vo.getOperationNum(), vo.getResueOperationNum(), vo.getSum(), vo.getReuseRate()};
                         setRowValue(row, cellStyle, values);
                     }
                 }
@@ -971,7 +973,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public void fillServiceReuseRow(HSSFSheet sheet, HSSFCellStyle cellStyle, TreeNode treeNode, Counter counter, String tab){
         HSSFRow row = sheet.createRow(counter.getCount());
         counter.increment();
-        String[] values = { tab + treeNode.getText(), treeNode.getId(), treeNode.getAppend2(), treeNode.getAppend3(), treeNode.getAppend4(), treeNode.getAppend5()};
+        String[] values = { tab + treeNode.getText(), treeNode.getId(), treeNode.getAppend2(), treeNode.getAppend3(), treeNode.getAppend4(), treeNode.getAppend5(), treeNode.getAppend6()};
         setRowValue(row, cellStyle, values);
         List<TreeNode> children = treeNode.getChildren();
         if(children != null && children.size() > 0){

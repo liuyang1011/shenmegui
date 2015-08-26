@@ -1,6 +1,5 @@
 package com.dc.esb.servicegov.controller;
 
-import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.service.impl.ExcelExportInterfaceImpl;
 import com.dc.esb.servicegov.service.impl.ExcelExportServiceImpl;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -42,110 +41,38 @@ public class ExcelExportController {
     @Autowired
     private ExcelExportInterfaceImpl excelExportInterfaceImpl;
 
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
+    }
 
+    /**
+     * 根据服务分类或者服务导出字段映射
+     **/
     @RequiresPermissions({"excelExport-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportService", headers = "Accept=application/json")
     public
     @ResponseBody
     boolean exportService(HttpServletRequest request, HttpServletResponse response,
                           String id, String type) {
-        String codedFileName = null;
-        OutputStream fOut = null;
-        try
-        {
-            // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode(type+"_"+id, "UTF-8");
-            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
-            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
-            // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderExcel(id, type);
-            fOut = response.getOutputStream();
-            if(workbook != null){
-                workbook.write(fOut);
-            }
-        }
-        catch (UnsupportedEncodingException e1)
-        {
-            e1.printStackTrace();
-        }
-        catch (Exception e)
-        {
-            //TODO catch后没做任何处理，也没print，抛错后找不到地方
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                if(fOut != null){
-                    fOut.flush();
-                    fOut.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.error("IO异常");
-            }
-        }
-        return true;
+        String fileName = type+"_"+id + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderExcel(id, type);
+        return export(request, response,fileName, workbook);
     }
-
+    /*根据场景列表导出字段映射*/
     @RequiresPermissions({"excelExport-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportOperation", headers = "Accept=application/json")
     public
     @ResponseBody
     boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
-        String codedFileName = null;
-        OutputStream fOut = null;
-        try
-        {
-            // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode("operation_" + new Date().getTime(), "UTF-8");
-            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
-            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
-            // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderExcelByOperation(pkvo);
-            fOut = response.getOutputStream();
-            if(workbook != null){
-                workbook.write(fOut);
-            }
-        }
-        catch (UnsupportedEncodingException e1)
-        {
-            e1.printStackTrace();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                if(fOut != null){
-                    fOut.flush();
-                    fOut.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.error("IO异常");
-            }
-        }
-        return true;
+        String fileName = "operation_" + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderExcelByOperation(pkvo);
+        return export(request, response,fileName, workbook);
     }
 
-    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
-    public String processUnauthorizedException() {
-        return "403";
-    }
+
     /**
-     * @param request
-     * @param response
-     * @param categoryId
-     * @return
+     * 根据服务分类或者服务导出服务视图
      */
     @RequiresPermissions({"excelExport-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportServiceView", headers = "Accept=application/json")
@@ -153,44 +80,9 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportServiceView(HttpServletRequest request, HttpServletResponse response,
             String type, String categoryId) {
-        String codedFileName = null;
-        OutputStream fOut = null;
-        try
-        {
-            // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode("serviceview_"+categoryId, "UTF-8");
-            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
-            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
-            // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderServiceView(type, categoryId);
-
-            fOut = response.getOutputStream();
-            workbook.write(fOut);
-        }
-        catch (UnsupportedEncodingException e1)
-        {
-            log.error(e1, e1);
-        }
-        catch (Exception e)
-        {
-            log.error(e, e);
-        }
-        finally
-        {
-            try
-            {
-                if(fOut != null){
-                    fOut.flush();
-                    fOut.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.error("IO异常");
-            }
-        }
-        return true;
+        String fileName = "serviceview_"+categoryId + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderServiceView(type, categoryId);
+        return export(request, response,fileName, workbook);
     }
 
     @RequiresPermissions({"excelExport-get"})
@@ -199,46 +91,10 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportInterface(HttpServletRequest request, HttpServletResponse response,
                           String ids, String type,String systemId) {
-        String codedFileName = null;
-        OutputStream fOut = null;
-        try
-        {
-            // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode(type, "UTF-8");
-            String[] interfaceIds = ids.split(",");
-            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
-            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
-            // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportInterfaceImpl.genderExcel(interfaceIds, type, systemId);
-            fOut = response.getOutputStream();
-            if(workbook != null){
-                workbook.write(fOut);
-            }
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            e.printStackTrace();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                if(fOut != null){
-                    fOut.flush();
-                    fOut.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.error("IO异常");
-            }
-        }
-        return true;
+        String fileName = type + new Date().getTime();
+        String[] interfaceIds = ids.split(",");
+        HSSFWorkbook workbook = excelExportInterfaceImpl.genderExcel(interfaceIds, type, systemId);
+        return export(request, response,fileName, workbook);
     }
 
     /**
@@ -250,41 +106,9 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportSystemReuserate(HttpServletRequest request, HttpServletResponse response,
                             ReuseRateListVO listVO) {
-        String codedFileName = null;
-        OutputStream fOut = null;
-        try
-        {
-            // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode("reuse_rate_"+ new Date().getTime(), "UTF-8");
-            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
-            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
-            // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderSystemRuserate(listVO);
-            fOut = response.getOutputStream();
-            if(workbook != null){
-                workbook.write(fOut);
-            }
-        }
-        catch (UnsupportedEncodingException e1)
-        {}
-        catch (Exception e)
-        {}
-        finally
-        {
-            try
-            {
-                if(fOut != null){
-                    fOut.flush();
-                    fOut.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.error("IO异常");
-            }
-        }
-        return true;
+        String fileName = "reuse_rate_" + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderSystemRuserate(listVO);
+        return export(request, response,fileName, workbook);
     }
     /**
      * 导出服务复用率统计execl
@@ -295,41 +119,9 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportServiceReuserate(HttpServletRequest request, HttpServletResponse response,
                             TreeNode root) {
-        String codedFileName = null;
-        OutputStream fOut = null;
-        try
-        {
-            // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode("service_reuse_rate_"+ new Date().getTime(), "UTF-8");
-            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
-            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
-            // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderServiceRuserate(root);
-            fOut = response.getOutputStream();
-            if(workbook != null){
-                workbook.write(fOut);
-            }
-        }
-        catch (UnsupportedEncodingException e1)
-        {}
-        catch (Exception e)
-        {}
-        finally
-        {
-            try
-            {
-                if(fOut != null){
-                    fOut.flush();
-                    fOut.close();
-                }
-            }
-            catch (IOException e)
-            {
-                log.error("IO异常");
-            }
-        }
-        return true;
+        String fileName ="reuse_rate_" + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderServiceRuserate(root);
+        return export(request, response,fileName, workbook);
     }
     /**
      * 导出发布统计
@@ -340,17 +132,24 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportRelease(HttpServletRequest request, HttpServletResponse response,
                             ReleaseListVO listVO) {
+        String fileName ="release_" + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderRelease(listVO);
+        return export(request, response,fileName, workbook);
+
+    }
+
+    public boolean  export(HttpServletRequest request, HttpServletResponse response, String fileName, HSSFWorkbook workbook ){
         String codedFileName = null;
         OutputStream fOut = null;
         try
         {
             // 进行转码，使其支持中文文件名
-            response.setContentType("application/zip");
-            codedFileName = java.net.URLEncoder.encode("release_"+ new Date().getTime(), "UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            codedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
             response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
             // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
             // 产生工作簿对象
-            HSSFWorkbook workbook = excelExportServiceImpl.genderRelease(listVO);
+//            HSSFWorkbook workbook = excelExportServiceImpl.genderRelease(listVO);
             fOut = response.getOutputStream();
             if(workbook != null){
                 workbook.write(fOut);
@@ -379,6 +178,7 @@ public class ExcelExportController {
             }
         }
         return true;
+
     }
 
 }

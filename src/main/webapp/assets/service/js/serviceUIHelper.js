@@ -150,25 +150,28 @@ var serviceUIHelper = {
             alert("请选择服务！");
             return false;
         }
-        var type;
+        var type =  node.type;
         var id = node.id;
-        if(node.domId == '_easyui_tree_1'){
-            type = "root";
+        console.log(node);
+        if(node.type == "serviceCategory"){
+            if(node.children != null && node.children.length == 0){
+                alert("该服务分类下没有服务数据！");
+                return false;
+            }
+            else if(node.serviceCategory.parentId == null){
+                type = "serviceCategory1";
+            }
+            else{
+                type = "serviceCategory1";
+                var parent = t.tree('getParent', node.target);
+                id =  parent.id;
+            }
         }
-        if(node.domId == '_easyui_tree_2'){
-            type = "serviceCategory1";
-        }
-        if(node.domId == '_easyui_tree_3'){
+        if(node.type == "service"){
             type = "serviceCategory1";
             var parent = t.tree('getParent', node.target);
-            id = parent.id;
+            id =  t.tree('getParent', parent.target).id;
         }
-        if(node.domId == '_easyui_tree_4'){
-            type = "serviceCategory1";
-            parent = t.tree('getParent', node.target);
-            id = t.tree('getParent', parent.target).id;
-        }
-
         var form=$("<form>");//定义一个form表单
         form.attr("style","display:none");
         form.attr("target","");
