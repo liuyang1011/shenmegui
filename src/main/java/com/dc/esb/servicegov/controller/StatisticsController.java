@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.service.StatisticsService;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -27,14 +28,14 @@ public class StatisticsController {
     private StatisticsService statisticsService;
 
     /**
-     * 查询复用率统计报表
+     * 查询系统复用率统计报表
      * @param req
      * @return
      */
     @RequiresPermissions({"statistics-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/reuseRate", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/systemReuseRate", headers = "Accept=application/json")
     @ResponseBody
-    public Map<String, Object> reuseRate(HttpServletRequest req){
+    public Map<String, Object> systemReuseRate(HttpServletRequest req){
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         Page page = new Page(statisticsService.getReuseRateCount(req.getParameterMap()), rowCount);
@@ -44,6 +45,20 @@ public class StatisticsController {
         result.put("total", page.getResultCount());
         result.put("rows", rows);
         return result;
+    }
+
+    /**
+     *
+     * @param req 分类id， type
+     * @return 复用率
+     */
+    @RequiresPermissions({"statistics-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/serviceReuseRate", headers = "Accept=application/json")
+    @ResponseBody
+    public List<TreeNode> serviceReuseRate(HttpServletRequest req){
+        List<TreeNode> rows = statisticsService.getServiceReuseRate();
+
+        return rows;
     }
 
     /**

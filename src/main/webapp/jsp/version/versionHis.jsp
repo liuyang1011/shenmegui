@@ -110,7 +110,7 @@
 		<th data-options="field:'operationName'">场景名称 </th>
 		<%--<th data-options="field:'operationDesc'">场景描述 </th>--%>
       <th data-options="field:'code'">版本号 </th>
-      <th data-options="field:'type'" formatter="versionHis.type">是否基线版本 </th>
+      <%--<th data-options="field:'type'" formatter="versionHis.type">是否基线版本 </th>--%>
       <th data-options="field:'baseLineNum'">基线版本号 </th>
       <th data-options="field:'optType'" formatter="versionHis.optType0">修订类型 </th>
       <th data-options="field:'versionDesc'">发布说明 </th>

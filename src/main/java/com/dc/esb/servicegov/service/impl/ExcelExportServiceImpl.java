@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.excel.support.CellStyleSupport;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -64,6 +65,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     private InterfaceInvokeDAOImpl interfaceInvokeDAO;
     @Autowired
     private InterfaceDAOImpl interfaceDAO;
+    @Autowired
+    private StatisticsServiceImpl statisticsService;
     /**
      * TODO根据参数id和类型，返回excel文件
      */
@@ -917,12 +920,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
 
     /**
-     * 导出复用率统计
+     * 导出系统复用率统计
      * @return
      */
-    public HSSFWorkbook genderRuserate(ReuseRateListVO listVO) {
+    public HSSFWorkbook genderSystemRuserate(ReuseRateListVO listVO) {
         try {
-            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_REUSERATE);
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SYSTEM_REUSERATE);
             HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
             if(listVO != null ){
                 List<ReuseRateVO> list = listVO.getList();
@@ -932,7 +935,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReuseRateVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getUseNum(), vo.getOperationNum(), vo.getServiceNum(), vo.getSum(), vo.getReuseRate()};
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type,vo.getServiceNum(), vo.getOperationNum(), vo.getOperationInvokeNum(), vo.getReuseRate()};
                         setRowValue(row, cellStyle, values);
                     }
                 }
@@ -942,6 +945,41 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             logger.error(e, e);
         }
         return null;
+    }
+    /**
+     * 导出服务复用率统计
+     * @return
+     */
+    public HSSFWorkbook genderServiceRuserate(TreeNode root) {
+        try {
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE_REUSERATE);
+            HSSFCellStyle cellStyle = CellStyleSupport.leftStyle(wb);
+            List<TreeNode> list = statisticsService.getServiceReuseRate();
+            if(list != null && list.size() > 0){
+                root = list.get(0);
+                Counter counter = new Counter(1);
+                HSSFSheet sheet = wb.getSheet("statistics_reuse");
+                fillServiceReuseRow(sheet, cellStyle, root, counter, "1.");
+            }
+
+            return wb;
+        } catch (Exception e) {
+            logger.error(e, e);
+        }
+        return null;
+    }
+    public void fillServiceReuseRow(HSSFSheet sheet, HSSFCellStyle cellStyle, TreeNode treeNode, Counter counter, String tab){
+        HSSFRow row = sheet.createRow(counter.getCount());
+        counter.increment();
+        String[] values = { tab + treeNode.getText(), treeNode.getId(), treeNode.getAppend2(), treeNode.getAppend3(), treeNode.getAppend4(), treeNode.getAppend5()};
+        setRowValue(row, cellStyle, values);
+        List<TreeNode> children = treeNode.getChildren();
+        if(children != null && children.size() > 0){
+            for(int i = 0; i< children.size(); i++){
+                TreeNode child = children.get(i);
+                fillServiceReuseRow(sheet, cellStyle, child, counter, tab+ (i+1)+".");
+            }
+        }
     }
     /**
      * 导出发布统计

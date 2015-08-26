@@ -41,8 +41,6 @@ public class CategoryWordController {
         String esglisgAb = req.getParameter("esglisgAb");
         String remark = req.getParameter("remark");
 
-        Page page = categoryWordService.getAll(rowCount);
-        page.setPage(pageNo);
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
         StringBuffer hql = new StringBuffer("select c from CategoryWord c where 1=1 ");
         if (null != englishWord && !"".equals(englishWord)) {
@@ -67,6 +65,16 @@ public class CategoryWordController {
             hql.append(" and remark like ?");
             searchConds.add(new SearchCondition("remark", "%" + remark + "%"));
         }
+//        Page page = categoryWordService.getAll(rowCount);
+        Page page = new Page();
+        if(searchConds.size() <= 0){
+            page = categoryWordService.getPageBy(hql.toString(),rowCount);
+        }else{
+            page = categoryWordService.getPageBy(hql.toString(),rowCount,searchConds);
+        }
+
+        page.setPage(pageNo);
+
         List<CategoryWord> list = categoryWordService.findBy(hql.toString(), page,searchConds);
         HashMap<String,Object> map = new HashMap<String, Object>();
         map.put("total", page.getResultCount());
@@ -193,7 +201,10 @@ public class CategoryWordController {
     boolean saveCategoryWord(@RequestBody List list) {
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
-            Set<String> keySet = map.keySet();
+            List<CategoryWord> list1 = categoryWordService.findBy("englishWord", map.get("englishWord"));
+            if(list1.size() > 0){
+                return false;
+            }
             CategoryWord categoryWord = new CategoryWord();
             categoryWord.setId(map.get("id"));
             categoryWord.setChineseWord(map.get("chineseWord"));

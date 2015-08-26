@@ -20,6 +20,7 @@
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
 	<script type="text/javascript">
+        var serviceId;
         $(function(){
             var url = '/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }';
             $("#invokeList").datagrid({
@@ -36,10 +37,44 @@
                     relateInterface();
                 }
             });
-        })
+        });
+        var item;
+        var toolbar = [
+            {
+                text: '映射元数据',
+                iconCls: 'icon-qxfp',
+                handler: function () {
+                    /*var selectData = $('#ida').datagrid('getSelected');
+                    if (selectData == null) {
+                        alert("请先选择一条记录");
+                        return;
+                    }*/
+                    serviceId = $("#1").textbox('getValue');
+                    var operationId = $("#3").textbox('getValue');
+                    var url = '/ida/idaMapping/'+serviceId+'/'+operationId+'/'+item.interfaceId +'/'+item.systemId;
+                    var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'"  style="width:100%;height:100%;"></iframe>';
+                    var title = "ida映射元数据";
+
+                    if (parent.$('#subtab').tabs('exists', title)) {
+                        parent.$('#subtab').tabs('close', title);
+                        parent.$('#subtab').tabs('update', {
+                            "title" : title,
+                            "content" : content,
+                            "closable" : true
+                        });
+                    } else {
+                        parent.$('#subtab').tabs('add', {
+                            "title" : title,
+                            "content" : content,
+                            "closable" : true
+                        });
+                    }
+                }
+            }
+        ];
 	    //根据已选中的接口关系在“接口映射”区域更新接口信息
         function relateInterface(){
-                    var item = $('#invokeList').treegrid('getSelected');
+                    item = $('#invokeList').treegrid('getSelected');
                     if(item != null){
                         if(item.interfaceId == null || item.interfaceId=='' ){
                             alert("该系统没有关联接口！");
@@ -56,21 +91,18 @@
          function replaceMetadataId(){
             var sda = $("#sda").treegrid("getSelected");
             if(sda != null){
-                alert(111);
                 if(sda.text == "root" || sda.text == "request"|| sda.text == "response"){
                     alert("请选择其他节点!");
                     return false
                 }
                 var ida = $("#ida").treegrid("getSelected");
                 if(ida != null){
-                    alert(222);
                      if(ida.structName == "root" || ida.structName == "request"|| ida.structName == "response"){
                           alert("请选择其他节点!");
                           return false
                      }
 
                      if(sda.append4 != null){
-                         alert(444);
                          $.ajax({
                                     type: "post",
                                     async: false,
@@ -147,7 +179,7 @@
 	    <div>
             <table width="100%">
                 <tr>
-                    <td width="50%">
+                    <td width="50%" style="display: none">
                         接口需求
                     </td>
                     <td width="50%">
@@ -156,7 +188,7 @@
                 </tr>
                 <tr>
                     <td colspan=2 width="100%">
-                        <div style="width:40%;padding:1px; margin-top:0; float:left">
+                        <div style="width:40%;padding:1px; margin-top:0; float:left;display: none">
                             <table id="sda" title="sda" class="easyui-treegrid" id="tg" style=" width:auto;"
                                  data-options="
                                 iconCls: 'icon-ok',
@@ -181,12 +213,12 @@
                                     </thead>
                             </table>
                         </div>
-                        <div style="width:15px; float:left;text-align:center;">
+                        <div style="width:15px; float:left;text-align:center; display: none">
                             <table style="margin:auto; margin-top:20px">
                              <tr><td> <a href="#" title="元数据关联" class="easyui-linkbutton"  iconCls="icon-select-add" onClick="replaceMetadataId()"></a></td></tr>
                             </table>
                         </div>
-                        <div style="width:55%;padding:1px; margin-top:0; float:right">
+                        <div style="width:100%;padding:1px; margin-top:0; float:left">
                                                     <table title="接口定义信息" id="ida"
                                                             class="easyui-treegrid"
                                                             data-options="
@@ -198,6 +230,8 @@
                                                                 idField: 'id',
                                                                 treeField: 'structName',
                                                                 singleSelect:true,
+                                                                collapsible:true,
+                                                                toolbar:toolbar
                                                             ">
                                                             <thead>
                                                                 <tr>

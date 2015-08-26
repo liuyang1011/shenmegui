@@ -258,7 +258,9 @@ public class MetadataController {
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         Page page = new Page(metadataService.queryCount(req.getParameterMap()), rowCount);
         page.setPage(pageNo);
-        List<Metadata> rows = metadataService.queryByCondition(req.getParameterMap(), page);
+//        List<Metadata> rows = metadataService.queryByCondition(req.getParameterMap(), page);
+        //关联categoryWord表，显示chineseWord
+        List<MetadataServiceImpl.MetadataBean> rows = metadataService.queryByCondition2(req.getParameterMap(), page);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
         result.put("rows", rows);

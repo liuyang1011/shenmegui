@@ -40,6 +40,16 @@ public class SystemServiceImpl extends AbstractBaseService<System, String> imple
 		systemDAOImpl.exeHql("delete from SystemProtocol where systemId = ?",systemProtocol.getSystemId());
 	}
 
+	public void deleteProtocolBySystemId(String systemId){
+		systemDAOImpl.exeHql("delete from SystemProtocol where systemId = ?",systemId);
+	}
+
+	public void deleteSystemById(String systemId){
+		//要先删除SYSTEM_PROTOCOL记录
+		deleteProtocolBySystemId(systemId);
+		systemDAOImpl.delete(systemId);
+	}
+
 	/**
 	 * 是否包含接口
 	 * @return

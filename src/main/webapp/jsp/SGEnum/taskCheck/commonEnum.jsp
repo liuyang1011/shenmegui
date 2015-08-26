@@ -60,7 +60,7 @@
 
 
 	</fieldset>
-	<table title="公共代码列表 " id="dg"
+	<table title="公共代码列表" id="dg"
 		style="height:370px;width:auto">
 		<thead>
 			<tr>

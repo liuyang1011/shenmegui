@@ -1,9 +1,6 @@
 package com.dc.esb.servicegov.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "METADATA")
@@ -57,6 +54,11 @@ public class Metadata {
     private String buzzCategory;
     @Column(name = "DATA_CATEGORY", length = 255)
     private String dataCategory;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CATEGORY_WORD_ID", insertable = false, updatable = false)
+    private CategoryWord categoryWord;
+
     public String getMetadataId() {
         return metadataId;
     }

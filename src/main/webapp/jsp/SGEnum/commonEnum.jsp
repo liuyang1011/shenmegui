@@ -60,7 +60,7 @@
 
 
 	</fieldset>
-	<table title="公共代码列表 " id="dg"
+	<table title="公共代码列表" id="dg"
 		style="height:370px;width:auto">
 		<thead>
 			<tr>
@@ -147,8 +147,8 @@
 		})
 		var toolbar = [
 				{
-					text : '新增',
-					iconCls : 'icon-add',
+					text : '元数据映射',
+					iconCls : 'icon-qxfp',
 					handler : function(event) {
 						uiinit.win({
 							w : 500,

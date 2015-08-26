@@ -169,7 +169,7 @@ public class SystemController {
     public @ResponseBody
     boolean delete(@PathVariable
                  String systemId) {
-        systemService.deleteById(systemId);
+        systemService.deleteSystemById(systemId);
         return true;
 
     }

@@ -92,6 +92,9 @@
                 categoryWordManager.saveCategoryWord(editData, function (result) {
                     if (result) {
                         $('#tt').datagrid('reload');
+                    }else{
+                        alert("英文名称不能重复");
+                        $('#tt').datagrid('reload');
                     }
                 });
                 var deleteData = $("#tt").datagrid('getChanges', 'deleted');

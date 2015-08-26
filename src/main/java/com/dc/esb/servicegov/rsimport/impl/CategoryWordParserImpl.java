@@ -16,6 +16,9 @@ import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.CategoryWordServiceImpl;
+
+import java.util.List;
+
 @Component
 public class CategoryWordParserImpl implements IResourceParser {
 
@@ -38,10 +41,25 @@ public class CategoryWordParserImpl implements IResourceParser {
 
 	@Transactional
 	private void parseSheet(Sheet sheet) {
-		categoryWordService.deleteAll();
+//		categoryWordService.deleteAll();
 		for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
 			Row row = sheet.getRow(rowNum);
 			CategoryWord categoryWord =parseRow(row);
+			//判断是否重复
+			List<CategoryWord> list = categoryWordService.findBy("englishWord",categoryWord.getEnglishWord());
+			if(list.size() > 0){
+				//重复则覆盖
+				categoryWord.setId(list.get(0).getId());
+				try{
+					categoryWordService.save(categoryWord);
+				}catch(NonUniqueObjectException e){
+					log.error("类别词["+categoryWord.getId()+"]重复,执行覆盖！",e);
+					CategoryWord categoryWordToDel = categoryWordService.getById(categoryWord.getId());
+					categoryWordService.delete(categoryWordToDel);
+					categoryWordService.save(categoryWord);
+				}
+				continue;
+			}
 			try{
 				categoryWordService.save(categoryWord);
 			}catch(NonUniqueObjectException e){

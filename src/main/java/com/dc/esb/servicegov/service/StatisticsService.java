@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.service;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.service.support.BaseService;
+import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ReleaseListVO;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
@@ -17,4 +18,5 @@ public interface StatisticsService{
     public long getReuseRateCount(Map<String, String[]> values);
     public List<ReleaseVO> getReleaseVO(Map<String, String[]> values, Page page);
     public long getReleaseVOCount(Map<String, String[]> values);
+    public List<TreeNode> getServiceReuseRate();
 }

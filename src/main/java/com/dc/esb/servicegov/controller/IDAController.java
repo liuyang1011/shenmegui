@@ -1,9 +1,12 @@
 package com.dc.esb.servicegov.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
+import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
+import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -11,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.dc.esb.servicegov.entity.Ida;
-import com.dc.esb.servicegov.service.IdaService;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/ida")
@@ -20,6 +22,16 @@ public class IDAController {
 	
 	@Autowired
 	IdaService idaService;
+	@Autowired
+	SystemService systemService;
+	@Autowired
+	ServiceServiceImpl serviceService;
+	@Autowired
+	InterfaceService interfaceService;
+	@Autowired
+	OperationServiceImpl operationService;
+	@Autowired
+	SDAServiceImpl sdaService;
 
 	@RequiresPermissions({"system-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getHeads/{headId}", headers = "Accept=application/json")
@@ -103,6 +115,76 @@ public class IDAController {
 		return idaService.updateMetadataId(metadataId, id);
 	}
 
+	@RequiresPermissions({"system-update"})
+	@RequestMapping(method = RequestMethod.GET, value = "/idaMapping/{serviceId}/{operationId}/{interfaceId}/{systemId}", headers = "Accept=application/json")
+	public @ResponseBody ModelAndView idaMapping( @PathVariable String serviceId, @PathVariable String operationId, @PathVariable String interfaceId, @PathVariable String systemId){
+		Interface inter = interfaceService.getById(interfaceId);
+		com.dc.esb.servicegov.entity.System system = systemService.getById(systemId);
+
+		Service service = serviceService.getById(serviceId);
+		Operation operation = operationService.getOperation(serviceId,operationId);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("system", system);
+		modelAndView.addObject("interface", inter);
+		modelAndView.addObject("service", service);
+		modelAndView.addObject("operation", operation);
+
+		modelAndView.setViewName("service/operation/idaMapping");
+		return modelAndView;
+	}
+
+	@RequiresPermissions({"system-update"})
+	@RequestMapping(method = RequestMethod.GET, value = "/getIdaMapping/{interfaceId}", headers = "Accept=application/json")
+	public @ResponseBody List<Ida> getIdaMapping(@PathVariable String interfaceId){
+		List<Ida> idaList = idaService.findBy("interfaceId",interfaceId);
+		for (int i = 0; i < idaList.size(); i++) {
+			Ida ida = idaList.get(i);
+			if(ida.getStructName().equalsIgnoreCase("root") || ida.getStructName().equalsIgnoreCase("request") || ida.getStructName().equalsIgnoreCase("response")){
+				idaList.remove(i);
+			}
+		}
+		return idaList;
+	}
+
+	@RequiresPermissions({"system-update"})
+	@RequestMapping(method = RequestMethod.GET, value = "/getSdaMapping/{serviceId}/{operationId}", headers = "Accept=application/json")
+	public @ResponseBody List<SDA> getSdaMapping( @PathVariable String serviceId, @PathVariable String operationId){
+		List<SDA> sdaList = sdaService.getSDAListBySO(serviceId, operationId);
+		for (int i = 0; i < sdaList.size(); i++) {
+			SDA sda = sdaList.get(i);
+			if(sda.getStructName().equalsIgnoreCase("root") || sda.getStructName().equalsIgnoreCase("request") || sda.getStructName().equalsIgnoreCase("response") || sda.getType().equalsIgnoreCase("ARRAY")){
+				sdaList.remove(i);
+			}
+		}
+		return sdaList;
+	}
+
+	@RequiresPermissions({"system-update"})
+	@RequestMapping(method = RequestMethod.POST, value = "/saveIdaMapping", headers = "Accept=application/json")
+	public @ResponseBody boolean saveIdaMapping(@RequestBody List list){
+		for (int i = 0; i < list.size(); i++) {
+			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+			String idaId = map.get("id");
+			String metadaId = map.get("metadataId");
+			Ida ida = idaService.getById(idaId);
+			ida.setMetadataId(metadaId);
+			idaService.save(ida);
+		}
+		return true;
+	}
+
+	@RequiresPermissions({"system-update"})
+	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
+	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
+		for (int i = 0; i < list.size(); i++) {
+			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+			String idaId = map.get("id");
+			Ida ida = idaService.getById(idaId);
+			ida.setMetadataId(null);
+			idaService.save(ida);
+		}
+		return true;
+	}
 
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {

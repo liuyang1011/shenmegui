@@ -477,7 +477,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             hql.append(" where 1=1 ");
         }
         hql.append(genderQueryHql(values));
-        hql.append("  group by a.serviceId, a.operationId");
+        hql.append("  group by a.serviceId, a.operationId order by a.serviceId, a.operationId");
         List<Object[]> strsArray =  operationDAOImpl.findBy(hql.toString(), page, new ArrayList<SearchCondition>());
         List<OperationExpVO> voList =  new ArrayList<OperationExpVO>();
         for(Object[] strs : strsArray){
@@ -501,13 +501,18 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     public String getSystemNames(List<ServiceInvoke> serviceInvokes){
         String consumer = "";
+        List<String> temp = new ArrayList<String>();
         for(int i = 0; i < serviceInvokes.size(); i++){
             ServiceInvoke si = serviceInvokes.get(i);
             if(si.getSystem() != null){
-                if(i != 0){
-                    consumer += ", ";
+                if(!temp.contains(si.getSystem().getSystemId())){
+                    temp.add(si.getSystem().getSystemId());
+                    if(i != 0){
+                        consumer += ", ";
+                    }
+                    consumer += si.getSystem().getSystemChineseName();
                 }
-                consumer += si.getSystem().getSystemChineseName();
+
             }
         }
         return consumer;

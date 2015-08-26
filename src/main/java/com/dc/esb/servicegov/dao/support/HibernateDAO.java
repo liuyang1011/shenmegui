@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -239,7 +240,31 @@ public class HibernateDAO<T, PK extends Serializable> {
         Query query = getSession().createQuery(hql);
 
         List countlist = query.list();
-        long totalCount = (Long) countlist.get(0);
+//        long totalCount = (Long) countlist.get(0);
+        long totalCount = countlist.size();
+
+        // 返回分页对象
+        if (totalCount < 1) {
+            totalCount = 0;
+        }
+        return new Page(totalCount, pageSize);
+    }
+
+    /**
+     * 获取对象的分页信息对象。
+     *
+     * @param hql
+     * @return 分页信息对象
+     */
+    public Page getPageBy(String hql,int pageSize,List<SearchCondition> searchConds) {
+        // 创建查询
+        Query query = getSession().createQuery(hql);
+        for (int i = 0; i < searchConds.size(); i++) {
+            query.setParameter(i, searchConds.get(i).getFieldValue());
+        }
+
+        List countlist = query.list();
+        long totalCount = countlist.size();
 
         // 返回分页对象
         if (totalCount < 1) {
@@ -745,6 +770,43 @@ public class HibernateDAO<T, PK extends Serializable> {
         }
         return query.executeUpdate() > 0;
     }
+
+    public List<T> exeSQL(String sql){
+        SQLQuery query = getSession().createSQLQuery(sql);
+        List list = query.list();
+        return list;
+    }
+
+    public List<T> exeSQL(String sql,final Object... values){
+        SQLQuery query = getSession().createSQLQuery(sql);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                query.setParameter(i, values[i]);
+            }
+        }
+        List list = query.list();
+        return list;
+    }
+
+    public List<T> exeSQL(String sql,Page page,ArrayList<SearchCondition> searchConds){
+        SQLQuery query = getSession().createSQLQuery(sql);
+        for (int i = 0; i < searchConds.size(); i++) {
+            query.setParameter(i, searchConds.get(i).getFieldValue());
+        }
+        query.setFirstResult(page.getFirstItemPos());
+        query.setMaxResults(page.getPageSize());
+        List list = query.list();
+        return list;
+    }
+
+    public List exeSQL(String sql,Page page){
+        SQLQuery query = getSession().createSQLQuery(sql);
+        query.setFirstResult(page.getFirstItemPos());
+        query.setMaxResults(page.getPageSize());
+        List list = query.list();
+        return list;
+    }
+
 
     public Page findPage(final String hql, int pageSize, List<SearchCondition> searchConds) {
         List<T> entitys = findBy(hql, searchConds);

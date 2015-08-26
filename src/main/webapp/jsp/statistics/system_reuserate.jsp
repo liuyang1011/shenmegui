@@ -18,7 +18,6 @@
   <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
   <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-  <script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
 </head>
 
 <body>
@@ -28,7 +27,7 @@
     <table border="0" cellspacing="0" cellpadding="0">
       <tr>
         <th>系统编号</th>
-        <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:80px"
+        <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:100px"
                    data-options="
                    onChange:function(newValue, oldValue){
                         this.value=newValue;
@@ -43,7 +42,7 @@
                    type="text" >
         </td>
         <th>系统名称</th>
-        <td><input name="systemName" id="systemName"  class="easyui-combobox" style="width:120px"
+        <td><input name="systemName" id="systemName"  class="easyui-combobox" style="width:150px"
                    data-options="
                  method:'get',
                  url:'/system/getSystemAll',
@@ -61,6 +60,7 @@
                  "
                 >
         </td>
+        <!--
         <th>服务类型</th>
         <td>
           <select id="type" class="easyui-combobox" name="type"
@@ -70,10 +70,15 @@
                 ]">
           </select>
         </td>
-        <th> 起始日期</th>
-        <td><input class="easyui-datebox" style="width:80px" type="text" name="startDate" id="startDate"></td>
-        <th> 结束日期</th>
-        <td><input class="easyui-datebox" style="width:80px" type="text" name="endDate" id="endDate"></td>
+        -->
+        <th>
+
+        </th>
+        <td></td>
+        <th>
+
+        </th>
+        <td></td>
         <th style="width:200px">
           <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
@@ -92,7 +97,6 @@
 			rownumbers:true,
 			singleSelect:false,
 			fitColumns:false,
-			url:'/statistics/release',
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				pageSize:50"
@@ -103,8 +107,16 @@
       <th data-options="field:'systemId',width:100">系统编码</th>
       <th data-options="field:'systemChineseName',width:100">系统名称</th>
       <th data-options="field:'type',width:80" formatter='formatter.typeText'>类型</th>
-      <th data-options="field:'operationReleaseNum',width:80">发布场景数</th>
-      <th data-options="field:'serviceReleaseNum',width:80">发布服务数</th>
+      <!--
+
+      <th data-options="field:'useNum',width:80">调用数</th>
+      -->
+      <th data-options="field:'serviceNum',width:80">关联服务数</th>
+      <th data-options="field:'operationNum',width:80">关联场景数</th>
+
+      <th data-options="field:'operationInvokeNum',width:80">消费者数</th>
+      <th data-options="field:'reuseRate',width:100">复用率</th>
+
     </tr>
     </thead>
   </table>
@@ -117,6 +129,9 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
+  $(document).ready(function () {
+    $("#resultList").datagrid({url:"/statistics/systemReuseRate?type=0"});
+  });
   var formatter = {
     typeText: function (value, row, index) {
       if ("1" == value) {
@@ -139,8 +154,8 @@
           form.attr("style","display:none");
           form.attr("target","");
           form.attr("method","post");
-          form.attr("action","/excelExporter/exportRelease");
-          var fields = ["systemId", "systemChineseName", "type", "operationReleaseNum", "serviceReleaseNum"];
+          form.attr("action","/excelExporter/exportSystemReuserate");
+          var fields = ["systemId", "systemChineseName","type", "serviceNum", "operationNum",  "operationInvokeNum", "reuseRate"];
           for(var i=0; i < checkedItems.length; i++){
             for(var j=0; j < fields.length; j++){
               var input1=$("<input>");
@@ -163,10 +178,9 @@
   function query(){
     var params = {
       "systemId":$("#systemId").textbox("getValue"),
-      "type":$("#type").combobox("getValue"),
-      "startDate":$("#startDate").datebox("getValue"),
-      "endDate":$("#endDate").datebox("getValue"),
-      "systemName":encodeURI($("#systemName").datebox("getValue"))
+      "systemName":encodeURI($("#systemName").textbox("getValue")),
+//      "type":$("#type").combobox("getValue")
+      "type":"0"
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');

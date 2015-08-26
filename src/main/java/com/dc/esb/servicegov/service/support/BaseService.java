@@ -59,6 +59,7 @@ public interface BaseService<T, PK extends Serializable> {
 
 	public List<T> findBy(Map<String, String> properties);
 
+	public List<T> findBy(String key, String value);
 
 
 	public List<T> findBy(SearchCondition searchCond, Page page);
