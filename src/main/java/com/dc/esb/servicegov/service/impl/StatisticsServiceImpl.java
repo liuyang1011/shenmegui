@@ -11,11 +11,15 @@ import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sun.reflect.generics.tree.Tree;
 
+import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,16 +95,24 @@ public class StatisticsServiceImpl implements StatisticsService{
             vo.setSystemId(String.valueOf(strs[0]));
             long operationNum = getOperationRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setOperationNum(String.valueOf(operationNum));//关联场景数
+            long operationReuseNum = getOperationReuseCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+            vo.setResueOperationNum(String.valueOf(operationReuseNum));//复用场景数
             long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
             long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
-            long sum = getServiceInvokeCount( String.valueOf(strs[1]));
-            vo.setSum(String.valueOf(sum));//提供者或消费者被调用总数
+//            long sum = getServiceInvokeCount( String.valueOf(strs[1]));//提供者或消费者被调用总数
+            long sum = operationDAO.getAllCount();//场景总数
+            vo.setSum(String.valueOf(sum));
             long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
-            if(operationInvokeNum > operationNum && operationNum > 0){
-                float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
+//            if(operationInvokeNum > operationNum && operationNum > 0){
+//                float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
+//                NumberFormat nt = NumberFormat.getPercentInstance();
+//                nt.setMinimumFractionDigits(2);
+//                vo.setReuseRate(nt.format(r));
+            if(operationReuseNum > 0){
+                float r = (operationReuseNum + 0f)/sum;
                 NumberFormat nt = NumberFormat.getPercentInstance();
                 nt.setMinimumFractionDigits(2);
                 vo.setReuseRate(nt.format(r));
@@ -117,9 +129,37 @@ public class StatisticsServiceImpl implements StatisticsService{
      * @return
      */
     public long getOperationRelaCount(String systemId, String type){
-        String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
+        String hql = "select count(*) from " + ServiceInvoke.class.getName()
+                + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
         long count = serviceInvokeDAO.find(hql, systemId, type).size();
         return count;
+    }
+//根据系统id，type计算服务场景 消费者数量大于1的场景数
+    public long getOperationReuseCount(String systemId, String type){
+        String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM (SELECT service_id, operation_id FROM service_invoke WHERE TYPE =? AND system_id=? GROUP BY service_id, operation_id) a ," +
+                " service_invoke b WHERE a.service_id = b.service_id AND a.operation_id = b.operation_id AND TYPE=? GROUP BY b.service_id, b.operation_id HAVING COUNT(*) > 1) c";
+        Session session = serviceInvokeDAO.getSession();
+        Query query = session.createSQLQuery(sql.toString());
+        int i = 0;
+        query.setParameter(i, type);
+        query.setParameter(1, systemId);
+        query.setParameter(2, Constants.INVOKE_TYPE_CONSUMER);
+        BigInteger count = (BigInteger)query.uniqueResult();
+        return count.longValue();
+    }
+    //根据系统id，type计算服务场景 消费者数量大于1的场景数
+    public long getOperationReuseCount(List<String> serviceIds){
+        String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM (SELECT service_id, operation_id FROM service_invoke WHERE TYPE = :providerType AND service_id in (:serviceIds) GROUP BY service_id, operation_id) a ," +
+                " service_invoke b WHERE a.service_id = b.service_id AND a.operation_id = b.operation_id AND TYPE=:cousumerType GROUP BY b.service_id,  b.operation_id HAVING COUNT(*) > 1) c";
+        Session session = serviceInvokeDAO.getSession();
+        Query query = session.createSQLQuery(sql.toString());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("providerType", Constants.INVOKE_TYPE_PROVIDER);
+        params.put("serviceIds", serviceIds);
+        params.put("cousumerType", Constants.INVOKE_TYPE_CONSUMER);
+        query.setProperties(params);
+        BigInteger count = (BigInteger)query.uniqueResult();
+        return count.longValue();
     }
 
     /**
@@ -298,8 +338,11 @@ public class StatisticsServiceImpl implements StatisticsService{
         for(int i=0; i < services.size(); i++){
             serviceIds.add(services.get(i).getServiceId());
         }
+        long sum = operationDAO.getAllCount();
         long operationNum = 0 ;
         long operationInvokeNum = 0;
+        long operationReuseNum = 0;
+
         if(serviceIds.size() > 0){
             String optNumHql = "select count(*) from  "+ Operation.class.getName() + " as o where o.serviceId in (:serviceIds)";
             Map<String, Object> p1 = new HashMap<String, Object>();
@@ -311,6 +354,8 @@ public class StatisticsServiceImpl implements StatisticsService{
             String conNumHql = "select count(*)  from " + ServiceInvoke.class.getName() + " as si where si.type=:type and si.serviceId  in (:serviceIds)";
             operationInvokeNum = serviceInvokeDAO.findUnique(conNumHql,p1 );
 
+            operationReuseNum = getOperationReuseCount(serviceIds);
+
         }
 
 //        List<Operation> operations = getOperation(services);
@@ -320,15 +365,16 @@ public class StatisticsServiceImpl implements StatisticsService{
 //        long operationInvokeNum = consumers.size();
 
         treeNode.setAppend3(String.valueOf(operationNum));//场景数
-        treeNode.setAppend4(String.valueOf(operationInvokeNum));//场景数
+        treeNode.setAppend4(String.valueOf(operationReuseNum));//复用场景数
+        treeNode.setAppend5(String.valueOf(sum));//场景总数
 
-        if(operationInvokeNum > operationNum && operationNum > 0){
-            float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
+        if(operationReuseNum > 0){
+            float r = (operationReuseNum + 0f)/sum;
             NumberFormat nt = NumberFormat.getPercentInstance();
             nt.setMinimumFractionDigits(2);
-            treeNode.setAppend5(nt.format(r));//复用率
+            treeNode.setAppend6(nt.format(r));//复用率
         }else{
-            treeNode.setAppend5("0");
+            treeNode.setAppend6("0");
         }
 
         List<TreeNode> children = treeNode.getChildren();

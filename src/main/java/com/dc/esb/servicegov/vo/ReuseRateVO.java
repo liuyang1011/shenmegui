@@ -7,6 +7,7 @@ public class ReuseRateVO {
     private String systemId;//系统名称
     private String systemChineseName;//系统名称
     private String type;//类型1：消费者，0：提供者
+    private String resueOperationNum;//复用场景数（消费者大于1）
     private String operationNum;//关联场景数
     private String operationInvokeNum;//场景消费者、提供者总数
     private String serviceNum;//关联服务数
@@ -104,5 +105,13 @@ public class ReuseRateVO {
 
     public void setOperationInvokeNum(String operationInvokeNum) {
         this.operationInvokeNum = operationInvokeNum;
+    }
+
+    public String getResueOperationNum() {
+        return resueOperationNum;
+    }
+
+    public void setResueOperationNum(String resueOperationNum) {
+        this.resueOperationNum = resueOperationNum;
     }
 }
