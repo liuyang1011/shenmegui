@@ -115,9 +115,9 @@
 				</th>
 				<th data-options="field:'service.serviceName'"
 					formatter='service.serviceName'>服务名称</th>
-				<th data-options="field:'operationId',width:40,align:'right'">服务场景</th>
-				<th data-options="field:'operationName',width:80,align:'right'">服务场景名称</th>
-				<th data-options="field:'operationDesc',width:280,align:'right'">场景描述</th>
+				<th data-options="field:'operationId',width:60,align:'center'">服务场景</th>
+				<th data-options="field:'operationName',width:180,align:'left'">服务场景名称</th>
+				<%--<th data-options="field:'operationDesc',width:280,align:'right'">场景描述</th>--%>
 				<th data-options="field:'versionHis.optType'" formatter="versionHis.optType">修订类型</th>
 				<th data-options="field:'optUser'">发布用户</th>
 				<th data-options="field:'versionHis.optDate'" formatter="versionHis.optDate">发布时间</th>

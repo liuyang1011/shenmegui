@@ -37,14 +37,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <th></th>
     <td> </td>
    </tr>
-  <tr>
+  <%--<tr>
      <th>服务头代码</th>
    		 <td>${serviceHead.headId }</td>
    	 <th>服务头名称</th>
     <td>${serviceHead.headName }</td>
      <th></th>
     <td> </td>
-   </tr>
+   </tr>--%>
   <tr>
      <th>场景号</th>
     <td>${operation.operationId }</td>

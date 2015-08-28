@@ -95,7 +95,7 @@ color: #0e2d5f;
 .datagrid{
 	margin-bottom:10px;}
 .panel-body{
-	overflow-y:hidden;
+	/*overflow-y:hidden;*/
 }
 #nav{
 	right: 30em;

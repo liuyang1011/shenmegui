@@ -59,7 +59,7 @@
         <th data-options="field:'metadataId'">元数据名称</th>
         <th data-options="field:'chineseName'">中文名称</th>
         <th data-options="field:'metadataName'">英文名称</th>
-        <th data-options="field:'categoryWordId'">类别词</th>
+        <th data-options="field:'categoryChineseWord'">类别词</th>
         <th data-options="field:'type'">类型</th>
         <th data-options="field:'length'">长度</th>
         <th data-options="field:'scale'">精度</th>

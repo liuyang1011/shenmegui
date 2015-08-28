@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.StatisticsService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
@@ -11,14 +12,17 @@ import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ReleaseVO;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.tree.Tree;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -57,6 +61,30 @@ public class StatisticsServiceImpl implements StatisticsService{
                 hql += " and si.systemId like '%" + values.get("systemId")[0] + "%'";
             }
         }
+        if(values.get("systemName") != null && values.get("systemName").length > 0){
+            if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
+                Map<String,String> map = new HashMap<String, String>();
+                try {
+                    map.put("systemChineseName", URLDecoder.decode(values.get("systemName")[0], "utf-8"));
+                }catch (UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+                List<System> list = systemDAO.findLike(map, MatchMode.ANYWHERE);
+                String systemsStr = "";
+                for (int i = 0; i < list.size(); i++) {
+                    if(i == 0){
+                        systemsStr += list.get(i).getSystemId();
+                    }else{
+                        systemsStr += ","+list.get(i).getSystemId();
+                    }
+                }
+                if(!"".equals(systemsStr)){
+                    hql += " and si.systemId in (" + systemsStr + ")";
+                }else{
+                    hql += " and si.systemId in (1)";
+                }
+            }
+        }
         hql += " group by si.systemId, si.type";
         long count = serviceInvokeDAO.find(hql).size();
         return count;
@@ -74,6 +102,30 @@ public class StatisticsServiceImpl implements StatisticsService{
         if(values.get("systemId") != null && values.get("systemId").length > 0){
             if (StringUtils.isNotEmpty(values.get("systemId")[0])) {
                 hql += " and si.systemId like '%" + values.get("systemId")[0] + "%'";
+            }
+        }
+        if(values.get("systemName") != null && values.get("systemName").length > 0){
+            if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
+                Map<String,String> map = new HashMap<String, String>();
+                try {
+                    map.put("systemChineseName", URLDecoder.decode(values.get("systemName")[0], "utf-8"));
+                }catch (UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
+                List<System> list = systemDAO.findLike(map, MatchMode.ANYWHERE);
+                String systemsStr = "";
+                for (int i = 0; i < list.size(); i++) {
+                    if(i == 0){
+                        systemsStr += list.get(i).getSystemId();
+                    }else{
+                        systemsStr += ","+list.get(i).getSystemId();
+                    }
+                }
+                if(!"".equals(systemsStr)){
+                    hql += " and si.systemId in (" + systemsStr + ")";
+                }else{
+                    hql += " and si.systemId in (1)";
+                }
             }
         }
         hql += " group by systemId, type";
@@ -144,7 +196,9 @@ public class StatisticsServiceImpl implements StatisticsService{
         query.setParameter(i, type);
         query.setParameter(1, systemId);
         query.setParameter(2, Constants.INVOKE_TYPE_CONSUMER);
-        BigInteger count = (BigInteger)query.uniqueResult();
+//        BigInteger count = (BigInteger)query.uniqueResult();
+        BigDecimal a = (BigDecimal)query.uniqueResult();
+        BigInteger count = new BigInteger(""+a.intValue());
         return count.longValue();
     }
     //根据系统id，type计算服务场景 消费者数量大于1的场景数
@@ -182,7 +236,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         List<Operation> operations = operationDAO.find(hql, systemId, type);
         for(Operation operation : operations){
             String hql2 = " select count(*) from " + ServiceInvoke.class.getName() + " as si where si.serviceId = ? and si.operationId = ? and si.type = ?";
-            long singleCount = serviceInvokeDAO.findUnique(hql2, operation.getServiceId(), operation.getOperationId(), type);
+            long singleCount = (Long)serviceInvokeDAO.findUnique(hql2, operation.getServiceId(), operation.getOperationId(), type);
             count += singleCount;
         }
         return count;
@@ -397,11 +451,11 @@ public class StatisticsServiceImpl implements StatisticsService{
             Map<String, Object> p1 = new HashMap<String, Object>();
             p1.put("serviceIds", serviceIds);
             p1.put("type", Constants.INVOKE_TYPE_CONSUMER);
-            operationNum = operationDAO.findUnique(optNumHql,p1 );
+            operationNum = (Long)operationDAO.findUnique(optNumHql,p1 );
 
 
             String conNumHql = "select count(*)  from " + ServiceInvoke.class.getName() + " as si where si.type=:type and si.serviceId  in (:serviceIds)";
-            operationInvokeNum = serviceInvokeDAO.findUnique(conNumHql,p1 );
+            operationInvokeNum = (Long)serviceInvokeDAO.findUnique(conNumHql,p1 );
 
             operationReuseNum = getOperationReuseCount(serviceIds);
 

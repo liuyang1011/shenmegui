@@ -185,7 +185,7 @@ public class ConfigExportController {
                     logger.error("提供方接口未关联协议，导出失败");
                     logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
 //                    return "提供方接口未关联协议，导出失败";
-                    return null;
+                    return "提供方接口未关联协议，导出失败";
                 } else {
 
 
@@ -198,6 +198,7 @@ public class ConfigExportController {
                             IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
                             generator.setSystemService(systemService);
                             generator.setInterfaceService(interfaceService);
+                            generator.setSdaService(sdaService);
                             generator.generatorOut(provideridas, sdas, export);
                         } catch (InstantiationException e) {
                             logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());

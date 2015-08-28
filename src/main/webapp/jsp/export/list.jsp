@@ -73,10 +73,10 @@
 				<tr>
 					<th>服务：</th>
 					<td>
-                        <input type="text" name="categoryId" id="categoryId"
+                        <input type="text" name="categoryId" id="categoryId" style="width:400px"
                                                class="easyui-combotree"
                                                data-options="
-                                               panelHeight:'auto',
+                                               panelHeight:'600px',
                         						url:'/service/getTree',
                         				 		 method:'get',
                         				 		 valueField: 'categoryId',

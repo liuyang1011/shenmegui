@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
 import com.dc.esb.servicegov.dao.impl.OperationHisDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.OperationHis;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dc.esb.servicegov.dao.impl.BaseLineDAOImpl;
-import com.dc.esb.servicegov.entity.BaseLine;
-import com.dc.esb.servicegov.entity.BaseLineVersionHisMapping;
 import com.dc.esb.servicegov.util.DateUtils;
 
 @Service
@@ -69,6 +66,9 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
                 bvm.setBaseLineId(bl.getBaseId());
                 bvm.setVersionHisId(versionHisId);
                 bvServiceImpl.save(bvm);
+                //TODO 更改versionHis的基线版本号和type(基线版本号根据BaseLineVersionHisMapping查找基线）
+                VersionHis vh = versionHisServiceImpl.getById(versionHisId);
+//                vh.setType(Constants.Version.TYPE_BASELINE);
                 //更新服务状态为上线
                 List<OperationHis> operationHises = operationHisDAO.findBy("versionHisId", versionHisId);
                 for (OperationHis operationHis : operationHises) {
@@ -82,6 +82,7 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
 
                 }
             }
+            //TODO versionHis的type到底是什么
             versionHisServiceImpl.updateVerionHis(Constants.Version.TARGET_TYPE_BASELINE, vids);
         }
 

@@ -10,4 +10,8 @@ public interface SystemService extends BaseService<System, String> {
     public void insertProtocol(SystemProtocol systemProtocol);
 
     public void deleteProtocol(SystemProtocol systemProtocol);
+
+    public void deleteProtocolBySystemId(String systemId);
+
+    public void deleteSystemById(String systemId);
 }

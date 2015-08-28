@@ -27,7 +27,8 @@
                 url:url,
                 method:'get',
                 pagination:true,
-                pageSize:10
+                pageSize:10,
+                pageList: [10,20,50]
             });
         })
         var taskFormatter = {
@@ -70,7 +71,7 @@
 <div id="userId" style="display: none"><shiro:principal/></div>
 <div class="easyui-tabs" style="width:100%;height:auto">
     <div title="未完成任务" style="padding:0px">
-        <table id="taskTable" style="height:370px; width:auto;">
+        <table id="taskTable" style="height:620px; width:auto;">
             <thead>
             <tr>
                 <th data-options="field:'productid',checkbox:true"></th>

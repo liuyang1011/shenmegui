@@ -1,13 +1,12 @@
 package com.dc.esb.servicegov.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "METADATA")
-public class Metadata {
+public class Metadata implements Serializable {
+    private static final long serialVersionUID = -6018121328134021256L;
     @Id
     @Column(name = "METADATA_ID", length = 50)
     private String metadataId;
@@ -57,6 +56,19 @@ public class Metadata {
     private String buzzCategory;
     @Column(name = "DATA_CATEGORY", length = 255)
     private String dataCategory;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY_WORD_ID",referencedColumnName = "ENGLISH_WORD",insertable=false,updatable = false)
+    private CategoryWord categoryWord;
+
+    public CategoryWord getCategoryWord() {
+        return categoryWord;
+    }
+
+    public void setCategoryWord(CategoryWord categoryWord) {
+        this.categoryWord = categoryWord;
+    }
+
     public String getMetadataId() {
         return metadataId;
     }

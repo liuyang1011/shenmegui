@@ -40,7 +40,7 @@
 	$(document).ready(function (){
 
 		    $('#protocolIdRelate').combobox({
-                url:'/system/getProtocolAll',
+                url:'/system/getProtocolAll'+'?time=' + (new Date()).valueOf(),
                 method:'get',
                 mode:'remote',
                 valueField:'id',
@@ -66,7 +66,10 @@
 
         var systemId = "${param.systemId}";
         var protocolIds = $("#protocolIdRelate").combobox('getValues');
-
+		if(protocolIds == ""){
+			alert("不关联无需保存");
+			return;
+		}
 		$.ajax({
 			type: "GET",
 			contentType: "application/json; charset=utf-8",

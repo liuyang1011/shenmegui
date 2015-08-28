@@ -23,7 +23,7 @@ public class OLADAOImpl extends HibernateDAO<OLA, String> {
             sb.append(" and ");
             sb.append(entry.getKey());
             sb.append("=");
-            sb.append(entry.getValue());
+            sb.append("'"+entry.getValue()+"'");
         }
         return find(sb.toString());
     }

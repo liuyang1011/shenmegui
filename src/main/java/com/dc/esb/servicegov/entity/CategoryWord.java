@@ -9,10 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name="CATEGORY_WORD")
-public class CategoryWord {
+public class CategoryWord implements Serializable{
+	private static final long serialVersionUID = -6048321328134021256L;
 	@Id
 	@Column(name = "ID")
 	@GeneratedValue(generator="system-uuid")

@@ -95,6 +95,7 @@ var delIds = [];
 					node.metadataId = editNode.append4;
 					node.required = editNode.append5;
 					node.remark = editNode.append6;
+					node.constraint = editNode.append7;
 					node.seq = editNode.attributes;
 
 					editNodes.push(node);
@@ -259,15 +260,16 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:180, editor:'text'" editor="{ type : 'validatebox', options : { required : true, validType:'unique'} } ">字段名</th>
+				<th data-options="field:'text',width:140, editor:'text'" editor="{ type : 'validatebox', options : { required : true, validType:'unique'} } ">字段名</th>
 				<th data-options="field:'append1',width:60,align:'right',editor:'text'">字段别名</th>
-				<th data-options="field:'append2',width:60,editor:'text'">类型/长度</th>
-				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>
-				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataName'}}">元数据</th>--%>
-                <th data-options="field:'append5',width:60,editor:'text'">是否必输</th>
+				<th data-options="field:'append2',width:50,editor:'text'">类型/长度</th>
+				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
+				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId'}}">元数据</th>
+                <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
                	-->
+				<th field ="append7" width="80" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data2.json',valueField:'id',textField:'text'}}">约束条件</th>
                	<th data-options="field:'append6',width:80,editor:'text'">备注</th>
 			</tr>
 		</thead>

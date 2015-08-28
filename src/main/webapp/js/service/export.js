@@ -56,6 +56,10 @@ var exportManager = {
                   +t1+"/"+s2+"/"+i2+"/"+t2+"/"+p1+"/"+p2;
 
             $.fileDownload(url,{
+                failCallback: function (responseHtml, url) {
+                    //TODO 怎么显示返回string？
+                    //console.log(responseHtml);
+                },
                 prepareCallback: function (url) {
                     $('#w').window('close');
                  }

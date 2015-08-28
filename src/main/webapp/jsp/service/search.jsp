@@ -330,6 +330,8 @@
           $('#opDialog').dialog({
             title: '详细信息',
             width: 700,
+            left:200,
+            top:100,
             closed: false,
             cache: false,
             href: '/operation/detailPage?serviceId=' +  checkedItems[0].serviceId + '&operationId=' + checkedItems[0].operationId,
@@ -362,7 +364,6 @@
   }
 function changePageList(){
     var p = $("#resultList").datagrid('getPager');
-    console.log($(p).pagination("options"));
     var total =  $(p).pagination("options").total;
     if(total < 100){
         total = 100;

@@ -205,6 +205,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     si.setServiceId(serviceId);
                     si.setOperationId(operationId);
                     si.setType(Constants.INVOKE_TYPE_CONSUMER);
+                    si.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     serviceInvokeService.save(si);
                 }
             }
@@ -221,6 +222,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     si.setServiceId(serviceId);
                     si.setOperationId(operationId);
                     si.setType(Constants.INVOKE_TYPE_PROVIDER);
+                    si.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     serviceInvokeService.save(si);
                 }
             }
@@ -469,16 +471,16 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return operationDAOImpl.find(hql).size();
     }
     public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page) throws  Throwable{
-        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ";
+        StringBuffer hql = new StringBuffer("select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ");
         if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
                 || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) ) ){
-            hql = hql + ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
+            hql.append( ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ");
         }else{
-            hql += " where 1=1 ";
+            hql.append(" where 1=1 ");
         }
-        hql += genderQueryHql(values);
-        hql += "  group by a.serviceId, a.operationId order by a.serviceId, a.operationId";
-        List<Object[]> strsArray =  operationDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
+        hql.append(genderQueryHql(values));
+        hql.append("  group by a.serviceId, a.operationId order by a.serviceId, a.operationId");
+        List<Object[]> strsArray =  operationDAOImpl.findBy(hql.toString(), page, new ArrayList<SearchCondition>());
         List<OperationExpVO> voList =  new ArrayList<OperationExpVO>();
         for(Object[] strs : strsArray){
             Operation operation = getOperation(String.valueOf(strs[0]), String.valueOf(strs[1]));
@@ -516,5 +518,199 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             }
         }
         return consumer;
+    }
+
+    public List<OperationBean> findOperationBy(String serviceId){
+        List<Operation> rows = findBy("serviceId", serviceId);
+        List<OperationBean> operList = new ArrayList<OperationBean>();
+        for(Operation operation : rows){
+            Map<String,String> map = new HashMap<String, String>();
+            map.put("serviceId",operation.getServiceId());
+            map.put("operationId",operation.getOperationId());
+            List<ServiceInvoke> list = serviceInvokeService.findBy(map);
+            String providerSystems = "";
+            String consumerSystems = "";
+            for(ServiceInvoke per : list){
+                String type = per.getType();
+                if(Constants.INVOKE_TYPE_PROVIDER.equals(type)){//提供方
+                    String systemAb = per.getSystem().getSystemAb();
+                    if("".equals(providerSystems)){
+                        providerSystems = systemAb;
+                    }else{
+                        providerSystems += ","+systemAb;
+                    }
+                }
+                if(Constants.INVOKE_TYPE_CONSUMER.equals(type)){//调用方
+                    String systemAb = per.getSystem().getSystemAb();
+                    if("".equals(consumerSystems)){
+                        consumerSystems = systemAb;
+                    }else{
+                        consumerSystems += ","+systemAb;
+                    }
+                }
+            }
+
+            operList.add(new OperationBean(operation,providerSystems,consumerSystems));
+        }
+        return operList;
+    }
+
+    public static class OperationBean{
+        private String operationId;
+
+        private String serviceId;
+
+        private String operationName;
+
+        private String operationDesc;
+
+        private String operationRemark;
+
+        private String versionId;
+
+        private String state;
+
+        private String lifeCyscleState;
+
+        private String optUser;
+
+        private String optDate;
+
+        private String headId;
+        private String deleted;
+
+        private String providerSystems;
+
+        private String consumerSystems;
+
+        public OperationBean(Operation operation, String providerSystems, String consumerSystems){
+            setOperationId(operation.getOperationId());
+            setServiceId(operation.getServiceId());
+            setOperationName(operation.getOperationName());
+            setOperationDesc(operation.getOperationDesc());
+            setOperationRemark(operation.getOperationRemark());
+            setVersionId(operation.getVersionId());
+            setState(operation.getState());
+            setLifeCyscleState(operation.getLifeCyscleState());
+            setOptUser(operation.getOptUser());
+            setOptDate(operation.getOptDate());
+            setHeadId(operation.getHeadId());
+            setDeleted(operation.getDeleted());
+
+            setProviderSystems(providerSystems);
+            setConsumerSystems(consumerSystems);
+        }
+
+        public String getOperationId() {
+            return operationId;
+        }
+
+        public void setOperationId(String operationId) {
+            this.operationId = operationId;
+        }
+
+        public String getServiceId() {
+            return serviceId;
+        }
+
+        public void setServiceId(String serviceId) {
+            this.serviceId = serviceId;
+        }
+
+        public String getOperationName() {
+            return operationName;
+        }
+
+        public void setOperationName(String operationName) {
+            this.operationName = operationName;
+        }
+
+        public String getOperationDesc() {
+            return operationDesc;
+        }
+
+        public void setOperationDesc(String operationDesc) {
+            this.operationDesc = operationDesc;
+        }
+
+        public String getOperationRemark() {
+            return operationRemark;
+        }
+
+        public void setOperationRemark(String operationRemark) {
+            this.operationRemark = operationRemark;
+        }
+
+        public String getVersionId() {
+            return versionId;
+        }
+
+        public void setVersionId(String versionId) {
+            this.versionId = versionId;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        public void setState(String state) {
+            this.state = state;
+        }
+
+        public String getLifeCyscleState() {
+            return lifeCyscleState;
+        }
+
+        public void setLifeCyscleState(String lifeCyscleState) {
+            this.lifeCyscleState = lifeCyscleState;
+        }
+
+        public String getOptUser() {
+            return optUser;
+        }
+
+        public void setOptUser(String optUser) {
+            this.optUser = optUser;
+        }
+
+        public String getOptDate() {
+            return optDate;
+        }
+
+        public void setOptDate(String optDate) {
+            this.optDate = optDate;
+        }
+
+        public String getHeadId() {
+            return headId;
+        }
+
+        public void setHeadId(String headId) {
+            this.headId = headId;
+        }
+
+        public String getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(String deleted) {
+            this.deleted = deleted;
+        }
+
+        public String getProviderSystems() {
+            return providerSystems;
+        }
+
+        public void setProviderSystems(String providerSystems) {
+            this.providerSystems = providerSystems;
+        }
+
+        public String getConsumerSystems() {
+            return consumerSystems;
+        }
+
+        public void setConsumerSystems(String consumerSystems) {
+            this.consumerSystems = consumerSystems;
+        }
     }
 }

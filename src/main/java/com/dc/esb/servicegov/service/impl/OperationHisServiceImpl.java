@@ -84,7 +84,8 @@ public class OperationHisServiceImpl extends
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("operationId", operationId);
 		params.put("serviceId", serviceId);
-		return operationHisDAOImpl.findBy(params);
+		List<OperationHis> list = operationHisDAOImpl.findBy(params);
+		return list;
 	}
 
 	@Override

@@ -93,7 +93,7 @@ function save(formId, operation) {
                 });
 
             } else {
-                alert("保存出现异常 ，操作失败！");
+                alert("场景号已存在或其他异常");
             }
 
         },

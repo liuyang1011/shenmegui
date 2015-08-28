@@ -41,8 +41,6 @@ public class CategoryWordController {
         String esglisgAb = req.getParameter("esglisgAb");
         String remark = req.getParameter("remark");
 
-        Page page = categoryWordService.getAll(rowCount);
-        page.setPage(pageNo);
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
         StringBuffer hql = new StringBuffer("select c from CategoryWord c where 1=1 ");
         if (null != englishWord && !"".equals(englishWord)) {
@@ -65,8 +63,24 @@ public class CategoryWordController {
         }
         if (null != remark && !"".equals(remark)) {
             hql.append(" and remark like ?");
+            try {
+                remark = URLDecoder.decode(remark, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             searchConds.add(new SearchCondition("remark", "%" + remark + "%"));
         }
+//        Page page = categoryWordService.getAll(rowCount);
+        Page page = new Page();
+        if(searchConds.size() <= 0){
+            page = categoryWordService.getPageBy(hql.toString(),rowCount);
+        }else{
+            page = categoryWordService.getPageBy(hql.toString(),rowCount,searchConds);
+        }
+
+        page.setPage(pageNo);
+
         List<CategoryWord> list = categoryWordService.findBy(hql.toString(), page,searchConds);
         HashMap<String,Object> map = new HashMap<String, Object>();
         map.put("total", page.getResultCount());
@@ -187,14 +201,23 @@ public class CategoryWordController {
     }
 
     @RequiresPermissions({"metadata-add"})
-    @RequestMapping(method = RequestMethod.POST, value = "/saveCategoryWord", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/saveCategoryWord/{type}", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean saveCategoryWord(@RequestBody List list) {
+    boolean saveCategoryWord(@RequestBody List list,@PathVariable String type) {//type 1 insert  2 update
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
-            Set<String> keySet = map.keySet();
-            CategoryWord categoryWord = new CategoryWord();
+            List<CategoryWord> list1 = categoryWordService.findBy("englishWord", map.get("englishWord"));
+            List<CategoryWord> list2 = categoryWordService.findBy("chineseWord", map.get("chineseWord"));
+            if((list1.size() > 0 || list2.size() > 0) && type.equals("1")){
+                return false;
+            }
+            CategoryWord categoryWord = null;
+            if(type.equals("1")){
+                categoryWord = new CategoryWord();
+            }else if(type.equals("2")){
+                categoryWord = categoryWordService.getById(map.get("id"));
+            }
             categoryWord.setId(map.get("id"));
             categoryWord.setChineseWord(map.get("chineseWord"));
             categoryWord.setEnglishWord(map.get("englishWord"));

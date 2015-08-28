@@ -78,6 +78,23 @@
        style="height:370px; width:auto;">
     <thead>
     <tr>
+<%--<<<<<<< HEAD
+        <th data-options="field:'',checkbox:true"></th>
+        <th data-options="field:'operationId'">服务场景</th>
+        <th data-options="field:'operationName'">场景名称</th>
+        <th data-options="field:'operationDesc'">功能描述</th>
+
+        <th data-options="field:'providerSystems'">提供方</th>
+        <th data-options="field:'consumerSystems'">消费方</th>
+
+        <th data-options="field:'operationRemark'">关键字</th>
+        <th data-options="field:'headId'">适用范围说明</th>
+        <th data-options="field:' '" formatter='formatter.version'>版本号</th>
+        <th data-options="field:'optDate'">更新时间</th>
+        <th data-options="field:'optUser'">更新用户</th>
+        <th data-options="field:'state'" formatter='formatter.operationState'>状态</th>
+    </tr>
+=======--%>
         <th data-options="field:'',checkbox:true,width:50"></th>
         <th data-options="field:'operationId',width:100">场景代码</th>
         <th data-options="field:'operationName',width:120">场景名称</th>
@@ -278,7 +295,7 @@
                     }
                     else {
                         if (checkedItems[0].optState == "1") {
-                            var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version.code) + "&operationId=" + encodeURI(checkedItems[0].operationId);
+                            var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version) + "&operationId=" + encodeURI(checkedItems[0].operationId);
                             $('#opDialog').dialog({
                                 title: '版本发布',
                                 width: 500,

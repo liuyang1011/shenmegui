@@ -171,6 +171,10 @@ public abstract class AbstractBaseService<T, PK extends Serializable> {
         return getDAO().getPageBy(hql, pageSize,values);
     }
 
+    public Page getPageBy(String hql,int pageSize,List<SearchCondition> searchConds) {
+        return getDAO().getPageBy(hql, pageSize,searchConds);
+    }
+
     public List<T> getAll(Page page) {
         return getDAO().getAll(page);
     }

@@ -419,7 +419,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
         setCellValue(row.createCell(9), commonStyle, sda.getType());//数据类型
         setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
-        setCellValue(row.createCell(11), commonStyle, "");//约束条件
+        setCellValue(row.createCell(11), commonStyle, sda.getConstraint());//约束条件
         setCellValue(row.createCell(12), commonStyle, sda.getRequired());//是否必输
         setCellValue(row.createCell(13), commonStyle, sda.getRemark());//备注
 //        row.createCell(7).setCellValue(sda.getStructName()); //英文名称
@@ -634,6 +634,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     int operationStart = counter;
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
                             operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
+                    //处理标准数据
                     List<InterfaceInvokeVO> standardVOs = getStandardVOList(operation.getServiceId(), operation.getOperationId());
                     //处理非标准数据
                     List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
@@ -654,8 +655,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         values3[9] = interfaceInvokeVO.getProviders();
                         setRowValue(row, cellStyle, values3);
                     }
-                    //处理标准数据
-
 //
 //                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
 //                    if (interfaceInvokes.size() == 0) {
