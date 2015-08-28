@@ -316,15 +316,14 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     //关联categoryWord表，显示chineseWord
     public List<MetadataBean> queryByCondition2(Map<String, String[]> values, Page page){
 //        String hql = "select a,b.chineseWord from Metadata a, CategoryWord b where 1=1 and a.categoryWordId=b.englishWord ";
-//        hql += genderHql(values);
-        String sql = "select a.*,b.chinese_Word from Metadata a left join Category_Word b on a.category_Word_Id=b.english_Word where 1=1 ";
-        sql += genderSql(values);
-//        List<Object[]> list = metadataDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
-        List<Object[]> list = metadataDAOImpl.exeSQL(sql,page);
+        String hql = "from Metadata a left join a.categoryWord where 1=1 ";
+        hql += genderHql(values);
+        List<Object[]> list = metadataDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
         List<MetadataBean> metadataBeanList = new ArrayList<MetadataBean>();
         for (Object[] per : list){
             if(per[1] != null){
-                metadataBeanList.add(new MetadataBean((Metadata)per[0], per[1].toString()));
+                CategoryWord cw = (CategoryWord)per[1];
+                metadataBeanList.add(new MetadataBean((Metadata)per[0], cw.getChineseWord()));
             }else{
                 metadataBeanList.add(new MetadataBean((Metadata)per[0], ""));
             }

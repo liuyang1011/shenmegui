@@ -12,6 +12,7 @@
 </head>
 
 <body>
+<form id="searchForm">
 <fieldset>
     <legend>条件过滤</legend>
     <table border="0" cellspacing="0" cellpadding="0">
@@ -28,18 +29,21 @@
             <td>
                 <input class="easyui-textbox" id="esglisgAb"/>
             </td>
+        </tr>
+        <tr>
             <th>备注</th>
             <td>
                 <input class="easyui-textbox" id="remark"/>
             </td>
             <td>
-                <button href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search">过滤
-                </button>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
+                <a href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search" style="margin-left:1em">查询</a>
             </td>
         </tr>
     </table>
 
 </fieldset>
+</form>
 <table id="tt" style="height:580px; width:auto;"
        title="所有类别词">
     <thead>
@@ -88,16 +92,25 @@
                     $("#tt").datagrid('endEdit', editedRows[per]);
                 }
 
-                var editData = $("#tt").datagrid('getChanges');
-                categoryWordManager.saveCategoryWord(editData, function (result) {
+                var editData1 = $("#tt").datagrid('getChanges','inserted');
+                var editData2 = $("#tt").datagrid('getChanges','updated');
+                var deleteData = $("#tt").datagrid('getChanges', 'deleted');
+                categoryWordManager.saveCategoryWord(editData1,'1', function (result) {
                     if (result) {
                         $('#tt').datagrid('reload');
                     }else{
-                        alert("英文名称不能重复");
+                        alert("英文名称或中文名称不能重复");
                         $('#tt').datagrid('reload');
                     }
                 });
-                var deleteData = $("#tt").datagrid('getChanges', 'deleted');
+                categoryWordManager.saveCategoryWord(editData2,'2', function (result) {
+                    if (result) {
+                        $('#tt').datagrid('reload');
+                    }else{
+                        alert("英文名称或中文名称不能重复");
+                        $('#tt').datagrid('reload');
+                    }
+                });
                 if (deleteData.length > 0) {
                     categoryWordManager.deleteCategoryWord(deleteData, function (result) {
                         if (result) {
@@ -135,7 +148,7 @@
             queryParams.englishWord = $("#englishWord").textbox("getValue");
             queryParams.chineseWord = encodeURI($("#chineseWord").textbox("getValue"));
             queryParams.esglisgAb = $("#esglisgAb").textbox("getValue");
-            queryParams.remark = $("#remark").textbox("getValue");
+            queryParams.remark = encodeURI($("#remark").textbox("getValue"));
             if (queryParams.englishWord || queryParams.chineseWord || queryParams.esglisgAb || queryParams.remark) {
                 $("#tt").datagrid('options').queryParams = queryParams;//传递值
                 $("#tt").datagrid('reload');//重新加载table

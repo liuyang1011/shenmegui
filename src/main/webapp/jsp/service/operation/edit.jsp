@@ -53,7 +53,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </tr>
   <tr>
      <th>场景号</th>
-    <td><input id="operationId" name="operationId"  value="${operation.operationId }" class="easyui-textbox"  type="text" data-options="required:true" ></td>
+    <td><input id="operationId" readonly="true" name="operationId"  value="${operation.operationId }" class="easyui-textbox"  type="text" data-options="required:true" ></td>
     <th>场景名称</th>
     <td><input id="operationName" name="operationName" value="${operation.operationName }" class="easyui-textbox"  type="text" ></td>
     </tr>

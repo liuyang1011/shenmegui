@@ -40,7 +40,7 @@
 	$(document).ready(function (){
 
 		    $('#protocolIdRelate').combobox({
-                url:'/system/getProtocolAll',
+                url:'/system/getProtocolAll'+'?time=' + (new Date()).valueOf(),
                 method:'get',
                 mode:'remote',
                 valueField:'id',

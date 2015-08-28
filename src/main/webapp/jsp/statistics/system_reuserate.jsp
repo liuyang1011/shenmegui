@@ -96,11 +96,11 @@
          data-options="
 			rownumbers:true,
 			singleSelect:false,
-			fitColumns:false,
+			fitColumns:true,
 			method:'get',toolbar:toolbar,
 			pagination:true,
-				pageSize:50"
-         style="height:auto; width:100%;">
+				pageSize:20"
+         style="height:370px; width:auto;">
     <thead>
     <tr>
       <th data-options="field:'',checkbox:true,width:50"></th>

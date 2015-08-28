@@ -205,6 +205,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     si.setServiceId(serviceId);
                     si.setOperationId(operationId);
                     si.setType(Constants.INVOKE_TYPE_CONSUMER);
+                    si.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     serviceInvokeService.save(si);
                 }
             }
@@ -221,6 +222,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     si.setServiceId(serviceId);
                     si.setOperationId(operationId);
                     si.setType(Constants.INVOKE_TYPE_PROVIDER);
+                    si.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     serviceInvokeService.save(si);
                 }
             }

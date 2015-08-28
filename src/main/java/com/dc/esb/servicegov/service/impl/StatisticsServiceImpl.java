@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.math.BigInteger;
 import java.text.NumberFormat;
@@ -195,7 +196,9 @@ public class StatisticsServiceImpl implements StatisticsService{
         query.setParameter(i, type);
         query.setParameter(1, systemId);
         query.setParameter(2, Constants.INVOKE_TYPE_CONSUMER);
-        BigInteger count = (BigInteger)query.uniqueResult();
+//        BigInteger count = (BigInteger)query.uniqueResult();
+        BigDecimal a = (BigDecimal)query.uniqueResult();
+        BigInteger count = new BigInteger(""+a.intValue());
         return count.longValue();
     }
     //根据系统id，type计算服务场景 消费者数量大于1的场景数
@@ -209,7 +212,9 @@ public class StatisticsServiceImpl implements StatisticsService{
         params.put("serviceIds", serviceIds);
         params.put("cousumerType", Constants.INVOKE_TYPE_CONSUMER);
         query.setProperties(params);
-        BigInteger count = (BigInteger)query.uniqueResult();
+//        BigInteger count = (BigInteger)query.uniqueResult();
+        BigDecimal a = (BigDecimal)query.uniqueResult();
+        BigInteger count = new BigInteger(""+a.intValue());
         return count.longValue();
     }
 

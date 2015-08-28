@@ -294,9 +294,8 @@
                         return false;
                     }
                     else {
-                        alert(checkedItems[0].optState);
                         if (checkedItems[0].optState == "1") {
-                            var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version.code) + "&operationId=" + encodeURI(checkedItems[0].operationId);
+                            var urlPath = "/jsp/service/operation/release.jsp?operationName=" + encodeURI(encodeURI(checkedItems[0].operationName)) + "&versionCode=" + encodeURI(checkedItems[0].version) + "&operationId=" + encodeURI(checkedItems[0].operationId);
                             $('#opDialog').dialog({
                                 title: '版本发布',
                                 width: 500,

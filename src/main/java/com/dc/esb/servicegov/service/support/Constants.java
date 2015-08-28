@@ -12,6 +12,8 @@ public class Constants {
 
     public static final String INVOKE_TYPE_CONSUMER = "1";//接口映射类型，1：消费者，0：提供者
     public static final String INVOKE_TYPE_PROVIDER = "0";
+    public static final String INVOKE_TYPE_STANDARD_Y = "0";//是否标准接口，1：否，0：是
+    public static final String INVOKE_TYPE_STANDARD_N = "1";
 
     public static final String EXCEL_TEMPLATE_SERVICE = Constants.class.getResource("/").getPath() + "/template/excel_service_template.xls";
     public static final String EXCEL_TEMPLATE_SERVICE_VIEW = Constants.class.getResource("/").getPath() + "/template/excel_service_view_template.xls";

@@ -82,7 +82,7 @@
                         }
                         else{
                             $('#ida').treegrid({
-                                url:'/ida/getInterfaces/'+item.interfaceId
+                                url:'/ida/getInterfaces/'+item.interfaceId + "?time=" + (new Date()).valueOf()
                                 });
                         }
                     }
@@ -235,28 +235,28 @@
                                                             ">
                                                             <thead>
                                                                 <tr>
-                                                                    <th data-options="field:'id',checkbox:true"></th>
+                                                                    <%--<th data-options="field:'id',checkbox:true"></th>--%>
                                                                     <th
-                                                                        data-options="field:'structName',width:150,align:'left',editor:'text'">
+                                                                        data-options="field:'structName',width:'20%',align:'left',editor:'text'">
                                                                         字段名称
                                                                     </th>
                                                                     <th
-                                                                        data-options="field:'structAlias',width:100,align:'left',editor:'text'">
+                                                                        data-options="field:'structAlias',width:'20%',align:'left',editor:'text'">
                                                                         字段别名
                                                                     </th>
-                                                                    <th data-options="field:'type',width:50,editor:'text'">
+                                                                    <th data-options="field:'type',width:'10%',editor:'text'">
                                                                         类型
                                                                     </th>
-                                                                    <th data-options="field:'length',width:50,editor:'text'">
+                                                                    <th data-options="field:'length',width:'10%',editor:'text'">
                                                                         长度
                                                                     </th>
-                                                                    <th data-options="field:'metadataId',width:150,editor:'text'">
+                                                                    <th data-options="field:'metadataId',width:'20%',editor:'text'">
                                                                         元数据ID
                                                                     </th>
                                                                    <%-- <th data-options="field:'scale',width:50,editor:'text'">
                                                                         精度
                                                                     </th>--%>
-                                                                    <th data-options="field:'required',width:50,editor:'text'">
+                                                                    <th data-options="field:'required',width:'10%',editor:'text'">
                                                                         是否必须
                                                                     </th>
 

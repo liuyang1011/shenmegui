@@ -58,7 +58,10 @@ function selectService() {
 function choseOperation(){
 	$('#dlg').dialog({
 		title : '场景',
-		width : 500,
+		width : 930,
+		height : 430,
+		left : 100,
+		top : 200,
 		closed : false,
 		cache : false,
 		href : '/jsp/service/operationHis/operationList.jsp?serviceId='+serviceId,
@@ -164,10 +167,11 @@ function olaList(id){
 				<th data-options="field:'operationName'">场景名称</th>
 				<th data-options="field:'operationDesc'">功能描述</th>
 				<th data-options="field:'operationRemark'">备注</th>
-				<th data-options="field:'version'" formatter="formatter.version">版本号</th>
+				<th data-options="field:'versionHis.code'">版本号</th>
+				<%--<th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>--%>
 				<th data-options="field:'optDate'">更新时间</th>
 				<th data-options="field:'optUser'">更新用户</th>
-				<th data-options="field:' ',width:180,formatter:formatConsole">操作</th>
+				<th data-options="field:' ',formatter:formatConsole">操作</th>
 			</tr>
 		</thead>
 	</table>

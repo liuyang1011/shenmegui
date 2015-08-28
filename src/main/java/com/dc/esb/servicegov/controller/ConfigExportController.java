@@ -185,7 +185,7 @@ public class ConfigExportController {
                     logger.error("提供方接口未关联协议，导出失败");
                     logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
 //                    return "提供方接口未关联协议，导出失败";
-                    return null;
+                    return "提供方接口未关联协议，导出失败";
                 } else {
 
 

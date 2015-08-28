@@ -1,10 +1,12 @@
 package com.dc.esb.servicegov.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "METADATA")
-public class Metadata {
+public class Metadata implements Serializable {
+    private static final long serialVersionUID = -6018121328134021256L;
     @Id
     @Column(name = "METADATA_ID", length = 50)
     private String metadataId;
@@ -56,8 +58,16 @@ public class Metadata {
     private String dataCategory;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CATEGORY_WORD_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "CATEGORY_WORD_ID",referencedColumnName = "ENGLISH_WORD",insertable=false,updatable = false)
     private CategoryWord categoryWord;
+
+    public CategoryWord getCategoryWord() {
+        return categoryWord;
+    }
+
+    public void setCategoryWord(CategoryWord categoryWord) {
+        this.categoryWord = categoryWord;
+    }
 
     public String getMetadataId() {
         return metadataId;

@@ -174,9 +174,20 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean add(Operation Operation) {
-        operationServiceImpl.addOperation(Operation);
-        return true;
+    boolean add(Operation operation) {
+        if(Integer.parseInt(operation.getOperationId()) < 10){
+            operation.setOperationId("0"+Integer.parseInt(operation.getOperationId()));
+        }
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("operationId", operation.getOperationId());
+        map.put("serviceId",operation.getServiceId());
+        List<Operation> list = operationServiceImpl.findBy(map);
+        if(list.size() > 0){
+            return false;
+        }else{
+            operationServiceImpl.addOperation(operation);
+            return true;
+        }
     }
 
     /**
@@ -194,6 +205,9 @@ public class OperationController {
     public
     @ResponseBody
     boolean afterAdd(HttpServletRequest req, String serviceId, String operationId, String consumerStr, String providerStr) {
+        if(Integer.parseInt(operationId) < 10){
+            operationId = "0"+Integer.parseInt(operationId);
+        }
         return operationServiceImpl.addInvoke(req, serviceId, operationId, consumerStr, providerStr);
     }
 

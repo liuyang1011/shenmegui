@@ -38,6 +38,19 @@
   </table>
 </fieldset>
 <table title="ida映射" id="mappingdatagrid" style="height:530px; width:auto;">
+  <thead>
+  <tr>
+    <th data-options="field:'productid',checkbox:true"></th>
+    <th data-options="field:'structName',title:'字段名称',width:'15%'"></th>
+    <th data-options="field:'structAlias',title:'字段别名',width:'12%'"></th>
+    <th data-options="field:'type',title:'类型',width:'10%'"></th>
+    <th data-options="field:'remark',title:'接口备注',width:'15%'"></th>
+    <th data-options="field:'metadataId',title:'元数据ID',required : true,width:'12%',editor:{type:'combobox',
+      options:{url:'/ida/getSdaMapping/${service.serviceId}/${operation.operationId}', method : 'get',valueField : 'metadataId',textField : 'metadataId',panelHeight : '200px'}}"></th>
+    <th data-options="field:'sdastructAlias',title:'SDA字段别名',width:'13%'"></th>
+    <th data-options="field:'sdaremark',title:'服务备注',width:'21%'"></th>
+  </tr>
+  </thead>
 </table>
 <div id="w" class="easyui-window" title=""
      data-options="modal:true,closed:true,iconCls:'icon-add'"
@@ -54,37 +67,47 @@
   var processId = parent.processId;
   var taskId = parent.taskId;
   $(function(){
-    var url = "/ida/getIdaMapping/"+"${interface.interfaceId}";
-    $('#mappingdatagrid').datagrid({
+    var url = "/ida/getIdaMapping/${interface.interfaceId}/${operation.serviceId}/${operation.operationId}";
+    $('#mappingdatagrid').treegrid({
+      animate: true,
+      fitColumns: true,
       rownumbers:true,
       singleSelect:false,
       collapsible:true,
       url:url,
       method:'get',
       toolbar:toolbar,
+      onContextMenu:onContextMenu,
+      idField: 'id',
+      treeField: 'structName',
 //      pagination:true,
       pageSize:10,
-      columns:[[
+     /* columns:[[
         {field:'productid',checkbox:true},
-        {field:'structName',title:'字段名称',width:'30%'},
-        {field:'structAlias',title:'字段别名',width:'30%'},
-        {field:'metadataId',title:'元数据ID',required : true,width:'30%',
+        {field:'structName',title:'字段名称',width:'15%'},
+        {field:'structAlias',title:'字段别名',width:'12%'},
+        {field:'type',title:'类型',width:'10%'},
+        {field:'remark',title:'接口备注',width:'15%'},
+        {field:'metadataId',title:'元数据ID',required : true,width:'12%',
           editor:{
             type:'combobox',
             options:{
               url : '/ida/getSdaMapping/'+"${service.serviceId}" + "/" +"${operation.operationId}",
               method : 'get',
               valueField : 'metadataId',
-              textField : 'metadataId',
-              panelHeight : '200px'
+              textField : 'metadataId'
+//              panelHeight : '200px'
             }
           }
-        }
-      ]],
-      onDblClickCell: function(index,field,value){
-        $(this).datagrid('beginEdit', index);
-        var ed = $(this).datagrid('getEditor', {index:index,field:field});
-        $(ed.target).focus();
+        },
+        {field:'sdastructAlias',title:'SDA字段别名',width:'13%'},
+        *//*{field:'sdatype',title:'SDA类型',width:'10%'},*//*
+        {field:'sdaremark',title:'服务备注',width:'21%'}
+      ]],*/
+      onDblClickCell: function(index,field){
+        $(this).treegrid('beginEdit', field.id);
+          var ed = $(this).treegrid('getEditor', {id:field.id,field:field});
+//        $(ed.target).focus();
       },
       onBeginEdit : function(index,row){
         editedRows.push(index);
@@ -102,11 +125,27 @@
 
     });
   });
+
+  function onContextMenu(e, row) {
+
+    e.preventDefault();
+
+
+    $(this).treegrid('unselectAll');
+
+    $(this).treegrid('select', row.id);
+
+    if (row.structName == 'root') {
+      $('#mappingdatagrid').treegrid('unselect', row.id);
+      return;
+    }
+
+  }
   var toolbar = [ {
     text : '删除映射关系',
     iconCls : 'icon-remove',
     handler : function() {
-      var selectData = $('#mappingdatagrid').datagrid('getSelections');
+      var selectData = $('#mappingdatagrid').treegrid('getSelections');
       if (selectData.length == 0) {
         alert("请先选择一条记录");
         return;
@@ -114,7 +153,7 @@
       if(confirm('确定删除映射关系吗 ？')){
         idaManager.deleteIdaMapping(selectData, function(result){
           if(result){
-            $('#mappingdatagrid').datagrid('reload');
+            $('#mappingdatagrid').treegrid('reload');
           }
         });
       }
@@ -124,13 +163,12 @@
     iconCls : 'icon-remove',
     handler : function() {
       for ( var per in editedRows) {
-        $("#mappingdatagrid").datagrid('endEdit', editedRows[per]);
+        $("#mappingdatagrid").treegrid('endEdit', editedRows[per].id);
       }
-      var editData = $("#mappingdatagrid").datagrid('getChanges');
-      console.log(editData);
+      var editData = $("#mappingdatagrid").treegrid('getChanges');
       idaManager.saveIdaMapping(editData,function(result){
         if(result){
-          $('#mappingdatagrid').datagrid('reload');
+          $('#mappingdatagrid').treegrid('reload');
         }
       });
       editedRows = [];

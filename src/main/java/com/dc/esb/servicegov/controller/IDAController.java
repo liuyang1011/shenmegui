@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.service.impl.IdaServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
@@ -134,16 +135,18 @@ public class IDAController {
 	}
 
 	@RequiresPermissions({"system-update"})
-	@RequestMapping(method = RequestMethod.GET, value = "/getIdaMapping/{interfaceId}", headers = "Accept=application/json")
-	public @ResponseBody List<Ida> getIdaMapping(@PathVariable String interfaceId){
-		List<Ida> idaList = idaService.findBy("interfaceId",interfaceId);
-		for (int i = 0; i < idaList.size(); i++) {
-			Ida ida = idaList.get(i);
-			if(ida.getStructName().equalsIgnoreCase("root") || ida.getStructName().equalsIgnoreCase("request") || ida.getStructName().equalsIgnoreCase("response")){
-				idaList.remove(i);
-			}
-		}
-		return idaList;
+	@RequestMapping(method = RequestMethod.GET, value = "/getIdaMapping/{interfaceId}/{serviceId}/{operationId}", headers = "Accept=application/json")
+	public @ResponseBody Map<String,Object> getIdaMapping(@PathVariable String interfaceId, @PathVariable String serviceId, @PathVariable String operationId){
+		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,String> reqMap = new HashMap<String,String>();
+		reqMap.put("interfaceId", interfaceId);
+		List<IdaServiceImpl.IdaMappingBean> list = idaService.findIdaMappingBy(reqMap, "seq", serviceId, operationId);
+//		for(Ida ida:idas){
+//			ida.setHeads(null);
+//		}
+		map.put("total", list.size());
+		map.put("rows", list);
+		return map;
 	}
 
 	@RequiresPermissions({"system-update"})

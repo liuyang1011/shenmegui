@@ -51,11 +51,11 @@ var categoryWordManager = {
             }
         });
     },
-    "saveCategoryWord": function (data, callBack) {
+    "saveCategoryWord": function (data,type, callBack) {
         $.ajax({
             "type": "POST",
             "contentType": "application/json; charset=utf-8",
-            "url": "/categoryWord/saveCategoryWord",
+            "url": "/categoryWord/saveCategoryWord/"+type,
             "dataType": "json",
             "data": JSON.stringify(data),
             "success": function (result) {
