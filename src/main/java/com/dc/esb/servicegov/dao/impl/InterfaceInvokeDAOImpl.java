@@ -32,4 +32,10 @@ public class InterfaceInvokeDAOImpl extends HibernateDAO<InterfaceInvoke, String
 
         return list;
     }
+
+    public List<InterfaceInvoke> getStandard(String serviceId, String operationId){
+        String hql = " from " + InterfaceInvoke.class.getName() + " as ii where ii.provider.interfaceId is null and ii.consumer.interfaceId is null and ii.provider.serviceId=? and ii.provider.operationId=? ";
+        List<InterfaceInvoke> list = this.find(hql, serviceId, operationId);
+        return list;
+    }
 }

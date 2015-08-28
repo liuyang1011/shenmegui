@@ -124,16 +124,30 @@ public class ExcelExportController {
         return export(request, response,fileName, workbook);
     }
     /**
-     * 导出发布统计
+     * 导出发布状况统计
      * */
     @RequiresPermissions({"excelExport-get"})
-    @RequestMapping(method = RequestMethod.POST, value = "/exportRelease", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/exportRelease/state", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean exportRelease(HttpServletRequest request, HttpServletResponse response,
+    boolean exportReleaseSate(HttpServletRequest request, HttpServletResponse response,
+                          ReleaseListVO listVO) {
+        String fileName ="release_" + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderReleaseState(listVO);
+        return export(request, response,fileName, workbook);
+
+    }
+    /**
+     * 导出发布数量统计
+     * */
+    @RequiresPermissions({"excelExport-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/exportRelease/count", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean exportReleaseCount(HttpServletRequest request, HttpServletResponse response,
                             ReleaseListVO listVO) {
         String fileName ="release_" + new Date().getTime();
-        HSSFWorkbook workbook = excelExportServiceImpl.genderRelease(listVO);
+        HSSFWorkbook workbook = excelExportServiceImpl.genderReleaseCount(listVO);
         return export(request, response,fileName, workbook);
 
     }

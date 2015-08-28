@@ -612,7 +612,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             int start = counter;
             String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
             String hql = " from " + Service.class.getName() + " where categoryId = ? order by serviceId asc";
-            List<Service> services = serviceDao.find(hql, child.getCategoryId());
+            List<Service> services = serviceDao.find(hql, child.getCategoryId());//查询服务
             if (services.size() == 0) {
                 HSSFRow row = sheet.createRow(counter);
                 counter++;
@@ -623,7 +623,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 int serviceStart = counter;
                 String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
 
-                List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());
+                List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());//查询场景
                 if (operations.size() == 0) {
                     HSSFRow row = sheet.createRow(counter);
                     counter++;
@@ -634,47 +634,50 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     int operationStart = counter;
                     String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
                             operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
-
-//                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
-//                    if (interfaceInvokeVOs.size() == 0) {
-//                        HSSFRow row = sheet.createRow(counter);
-//                        counter++;
-//                        setRowValue(row, cellStyle, values3);
-//                        continue;
-//                    }
-//                    for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
-//                        HSSFRow row = sheet.createRow(counter);
-//                        counter++;
-//
-//                        values3[6] = interfaceInvokeVO.getConsumers();
-//                        values3[7] = interfaceInvokeVO.getEcode();
-//                        values3[8] = interfaceInvokeVO.getInterfaceName();
-//                        values3[9] = interfaceInvokeVO.getProviders();
-//                        setRowValue(row, cellStyle, values3);
-//                    }
-
-                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
-                    if (interfaceInvokes.size() == 0) {
+                    //处理标准数据
+                    List<InterfaceInvokeVO> standardVOs = getStandardVOList(operation.getServiceId(), operation.getOperationId());
+                    //处理非标准数据
+                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
+                    interfaceInvokeVOs.addAll(standardVOs);
+                    if (interfaceInvokeVOs.size() == 0) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
                         setRowValue(row, cellStyle, values3);
                         continue;
                     }
-                    for (InterfaceInvoke interfaceInvoke : interfaceInvokes) {
+                    for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
-                        if (interfaceInvoke.getConsumer() != null && interfaceInvoke.getConsumer().getSystem() != null) {
-                            values3[6] = interfaceInvoke.getConsumer().getSystem().getSystemChineseName();//服务消费者
-                        }
-                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getInter() != null) {
-                            values3[7] = interfaceInvoke.getProvider().getInter().getEcode();//交易码
-                            values3[8] = interfaceInvoke.getProvider().getInter().getInterfaceName();//交易名称
-                        }
-                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getSystem() != null) {
-                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务提供者
-                        }
+
+                        values3[6] = interfaceInvokeVO.getConsumers();
+                        values3[7] = interfaceInvokeVO.getEcode();
+                        values3[8] = interfaceInvokeVO.getInterfaceName();
+                        values3[9] = interfaceInvokeVO.getProviders();
                         setRowValue(row, cellStyle, values3);
                     }
+//
+//                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
+//                    if (interfaceInvokes.size() == 0) {
+//                        HSSFRow row = sheet.createRow(counter);
+//                        counter++;
+//                        setRowValue(row, cellStyle, values3);
+//                        continue;
+//                    }
+//                    for (InterfaceInvoke interfaceInvoke : interfaceInvokes) {
+//                        HSSFRow row = sheet.createRow(counter);
+//                        counter++;
+//                        if (interfaceInvoke.getConsumer() != null && interfaceInvoke.getConsumer().getSystem() != null) {
+//                            values3[6] = interfaceInvoke.getConsumer().getSystem().getSystemChineseName();//服务消费者
+//                        }
+//                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getInter() != null) {
+//                            values3[7] = interfaceInvoke.getProvider().getInter().getEcode();//交易码
+//                            values3[8] = interfaceInvoke.getProvider().getInter().getInterfaceName();//交易名称
+//                        }
+//                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getSystem() != null) {
+//                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务消费者
+//                        }
+//                        setRowValue(row, cellStyle, values3);
+//                    }
                     CellRangeAddress region4 = new CellRangeAddress(operationStart, counter - 1, (short) 4, (short) 4);
                     CellRangeAddress region5 = new CellRangeAddress(operationStart, counter - 1, (short) 5, (short) 5);
                     sheet.addMergedRegion(region4);//合并单元格：操作号
@@ -827,8 +830,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             interfaceInvokeVO.setConsumers(joinServiceInvokeSystemName(consList, "systemChineseName"));
             interfaceInvokeVO.setConsumerIds(joinServiceInvokeSystemName(consList, "systemId"));
 
-            String hql = " from " + ServiceInvoke.class.getName() + " as si ," +  InterfaceInvoke.class.getName() + " as ii"
-                    + " where si.consumerInvokeId = ? and si.invokeId = ii.providerInvokeId";
+            String hql = "select si from " + ServiceInvoke.class.getName() + " as si ," +  InterfaceInvoke.class.getName() + " as ii"
+                    + " where ii.consumerInvokeId = ? and si.invokeId = ii.providerInvokeId";
             String providers = "";
             String providerIds = "";
             for(int i=0; i < consList.size(); i++){
@@ -846,7 +849,52 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             interfaceInvokeVO.setProviderIds(providerIds);
         }
     }
+    //获取场景下标准-标准的情况
+    public List<InterfaceInvokeVO> getStandardVOList(String serviceId, String operationId){
+        List<InterfaceInvokeVO> result = new ArrayList<InterfaceInvokeVO>();
+        List<InterfaceInvoke> standardInvokes = interfaceInvokeDAO.getStandard(serviceId, operationId);
+        if(standardInvokes != null ){
+            List<String> providerIds = new ArrayList<String>();
+            for(int i=0; i < standardInvokes.size(); i++){//按照提供者合并消费者
+                InterfaceInvoke interfaceInvoke = standardInvokes.get(i);
+                ServiceInvoke provider = interfaceInvoke.getProvider();
+                ServiceInvoke consumer = interfaceInvoke.getConsumer();
+                if(!providerIds.contains(provider.getInvokeId())){
+                    InterfaceInvokeVO vo = new InterfaceInvokeVO();
+                    vo.setProviderIds(provider.getInvokeId());
+                    vo.setProviders(provider.getSystem().getSystemChineseName());
+                    vo.setConsumerIds(consumer.getInvokeId());
+                    vo.setConsumers(consumer.getSystem().getSystemChineseName());
+                    providerIds.add(provider.getInvokeId());
+                    result.add(vo);
+                }else{
+                    int index = providerIds.indexOf(provider.getInvokeId());
+                    InterfaceInvokeVO vo = result.get(index);
 
+                    String consumers = vo.getConsumers() +","+consumer.getSystem().getSystemChineseName();
+                    vo.setConsumers(consumers);
+                }
+            }
+            for(int i = 0; i < result.size(); i++){//根据消费者合并提供者
+                InterfaceInvokeVO vo1 = result.get(i);
+                if(vo1 != null){
+                    for(int j = i+1; j < result.size(); j++){
+                        InterfaceInvokeVO vo2 = result.get(j);
+                        if(vo2 != null){
+                            if(vo1.getConsumers().equals(vo2.getConsumers())){
+                                String providers = vo1.getProviders() + "," + vo2.getProviders();
+                                vo1.setProviders(providers);
+                                result.set(j, null);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return result;
+    }
     /**
      * 将一个场景下的映射关系根据接口id和类型分组
      * 转换类
@@ -984,12 +1032,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         }
     }
     /**
-     * 导出发布统计
+     * 导出发布状况统计
      * @return
      */
-    public HSSFWorkbook genderRelease(ReleaseListVO listVO) {
+    public HSSFWorkbook genderReleaseState(ReleaseListVO listVO) {
         try {
-            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_RELEASE);
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_RELEASE_STATE);
             HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
             if(listVO != null ){
                 List<ReleaseVO> list = listVO.getList();
@@ -999,7 +1047,34 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReleaseVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getOperationReleaseNum(), vo.getServiceReleaseNum()};
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getServiceReleaseNum(), vo.getOperationReleaseNum() };
+                        setRowValue(row, cellStyle, values);
+                    }
+                }
+            }
+            return wb;
+        } catch (Exception e) {
+            logger.error(e, e);
+        }
+        return null;
+    }
+    /**
+     * 导出发布数量统计
+     * @return
+     */
+    public HSSFWorkbook genderReleaseCount(ReleaseListVO listVO) {
+        try {
+            HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_RELEASE_COUNT);
+            HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
+            if(listVO != null ){
+                List<ReleaseVO> list = listVO.getList();
+                if(list != null && list.size() > 0){
+                    HSSFSheet sheet = wb.getSheet("statistics_reuse");
+                    for(int i = 0; i < list.size(); i++){
+                        HSSFRow row = sheet.createRow(i + 1);
+                        ReleaseVO vo = list.get(i);
+                        String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
+                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getServiceReleaseNum(), vo.getOperationReleaseNum() };
                         setRowValue(row, cellStyle, values);
                     }
                 }

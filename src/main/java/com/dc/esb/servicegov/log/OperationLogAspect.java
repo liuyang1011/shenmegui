@@ -166,8 +166,11 @@ public class OperationLogAspect {
             String className = null;
             int index = 1;
             // 遍历参数对象
-            for (Object info : args) {
-
+            for (int i = 0; i< args.length; i++) {
+                Object info = args[i];
+                if(info == null){
+                    rs.append("[参数:null]");
+                }
                 //获取对象类型
                 className = info.getClass().getName();
                 className = className.substring(className.lastIndexOf(".") + 1);

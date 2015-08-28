@@ -212,10 +212,16 @@ public class StatisticsServiceImpl implements StatisticsService{
         params.put("serviceIds", serviceIds);
         params.put("cousumerType", Constants.INVOKE_TYPE_CONSUMER);
         query.setProperties(params);
-//        BigInteger count = (BigInteger)query.uniqueResult();
-        BigDecimal a = (BigDecimal)query.uniqueResult();
-        BigInteger count = new BigInteger(""+a.intValue());
-        return count.longValue();
+        //db2 返回Integer，mysql返回BigInteger
+        Object result = query.uniqueResult();
+        if(result != null && result instanceof  BigInteger){
+            BigInteger bigCount = (BigInteger)query.uniqueResult();
+            return bigCount.longValue();
+
+        }else{
+            long count = (Long)query.uniqueResult();
+            return count;
+        }
     }
 
     /**
@@ -282,7 +288,7 @@ public class StatisticsServiceImpl implements StatisticsService{
     }
 
     @Override
-    public List<ReleaseVO> getReleaseVO(Map<String, String[]> values, Page page) {
+    public List<ReleaseVO> getReleaseCountVO(Map<String, String[]> values, Page page) {
 
         List<Object[]> list = groupBySystemIdType(values, page);
 
@@ -324,6 +330,47 @@ public class StatisticsServiceImpl implements StatisticsService{
             operationReleaseNum += hisNum;
             if(!serviceIds.contains(pk.getServiceId()) && hisNum > 0){
                 serviceIds.add(pk.getServiceId());
+            }
+        }
+        vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
+        vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
+    }
+    /*获取发布状态统计*/
+    @Override
+    public List<ReleaseVO> getReleaseStateVO(Map<String, String[]> values, Page page) {
+
+        List<Object[]> list = groupBySystemIdType(values, page);
+
+        List<ReleaseVO> voList = new ArrayList<ReleaseVO>();
+        for(Object[] strs : list){
+            com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", strs[0]);
+            ReleaseVO vo = new ReleaseVO();
+            vo.setType(String.valueOf(strs[1]));
+            vo.setSystemChineseName(system.getSystemChineseName());
+            vo.setSystemId(String.valueOf(strs[0]));
+            setReleaseState(vo, values);
+            voList.add(vo);
+        }
+        return voList;
+    }
+    /**
+     * 根据系统id,  查询已发布的场景数
+     * @return
+     */
+    public void setReleaseState(ReleaseVO vo, Map<String, String[]> values){
+        String hql = "select new " + OperationPK.class.getName() + "(si.serviceId, si.operationId) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
+        List pkList = serviceInvokeDAO.find(hql, vo.getSystemId(), vo.getType());
+        long operationReleaseNum = 0;
+        List<String> serviceIds = new ArrayList<String>();
+        for(int i = 0; i < pkList.size(); i++){
+            OperationPK pk = (OperationPK)pkList.get(i);
+            String hql2 = " select count(*) from " + OperationHis.class.getName() + " as o where o.serviceId=? and operationId=?";
+            long count = operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
+            if(count > 0){
+                operationReleaseNum ++;
+                if(!serviceIds.contains(pk.getServiceId())){
+                    serviceIds.add(pk.getServiceId());
+                }
             }
         }
         vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));

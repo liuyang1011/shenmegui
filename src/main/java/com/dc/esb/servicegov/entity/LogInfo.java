@@ -58,6 +58,9 @@ public class LogInfo implements Serializable{
 	}
 
 	public void setDetail(String detail) {
+		if(detail.length() > 255){
+			detail = detail.substring(0, 254);
+		}
 		this.detail = detail;
 	}
 

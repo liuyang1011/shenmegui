@@ -568,6 +568,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         Operation oper = new Operation();
         for (int j = start; j <= end; j++) {
             Row sheetRow = tranSheet.getRow(j);
+            if(sheetRow == null){
+                continue;
+            }
             String tranCode = "";
             String tranName = "";
             String tranDesc = "";
