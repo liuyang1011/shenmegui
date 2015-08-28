@@ -33,7 +33,15 @@
 		
 		//按照关键字查询版本历史
 		function verionHisSearch(){
-			var data = $("#keyValue").textbox("getValue");
+			var queryParams = $('#operationList').datagrid('options').queryParams;
+			queryParams.keyValue = encodeURI($("#keyValue").textbox("getValue"));
+			if(queryParams.keyValue){
+				$("#operationList").datagrid('options').queryParams = queryParams;//传递值
+				$("#operationList").datagrid('reload');
+			}else{
+				$("#operationList").datagrid('reload');
+			}
+			/*var data = $("#keyValue").textbox("getValue");
 			$.ajax({
 				type : "get",
 				async : false,
@@ -43,7 +51,7 @@
 				success : function(data) {
 					$("#operationList").datagrid("loadData", data.rows);
 				}
-			});
+			});*/
 		}
 		
 		//操作按钮

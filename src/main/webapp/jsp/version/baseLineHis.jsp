@@ -60,16 +60,16 @@
 		var code = $("#code").textbox("getValue");
 		var blDesc = $("#blDesc").textbox("getValue");
 		var urlPath = "/baseLine/getBaseLine";
-		$.ajax({
-				type : "get",
-				async : false,
-				url : urlPath,
-				dataType : "json",
-				data : {"code" : code, "blDesc" : blDesc},
-				success : function(data) {
-					$("#baseLineList").datagrid("loadData", data.rows);
-				}
-			});
+
+		var queryParams = $('#baseLineList').datagrid('options').queryParams;
+		queryParams.code = encodeURI(code);
+		queryParams.blDesc = encodeURI(blDesc);
+		if(queryParams.keyValue){
+			$("#baseLineList").datagrid('options').queryParams = queryParams;//传递值
+			$("#baseLineList").datagrid('reload');
+		}else{
+			$("#baseLineList").datagrid('reload');
+		}
 	}
 	//服务场景列表展开事件
 	function operationExpand(){
