@@ -62,19 +62,38 @@ public class StatisticsController {
     }
 
     /**
-     * 查询发布统计报表
+     * 查询发布次数统计报表
      * @param req
      * @return
      */
     @RequiresPermissions({"statistics-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/release", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/release/count", headers = "Accept=application/json")
     @ResponseBody
-    public Map<String, Object> release(HttpServletRequest req){
+    public Map<String, Object> releaseCount(HttpServletRequest req){
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
-        Page page = new Page(statisticsService.getReuseRateCount(req.getParameterMap()), rowCount);
+        Page page = new Page(statisticsService.getReleaseVOCount(req.getParameterMap()), rowCount);
         page.setPage(pageNo);
-        List<ReleaseVO> rows = statisticsService.getReleaseVO(req.getParameterMap(), page);
+        List<ReleaseVO> rows = statisticsService.getReleaseCountVO(req.getParameterMap(), page);
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("total", page.getResultCount());
+        result.put("rows", rows);
+        return result;
+    }
+    /**
+     * 查询发布状态统计报表
+     * @param req
+     * @return
+     */
+    @RequiresPermissions({"statistics-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/release/state", headers = "Accept=application/json")
+    @ResponseBody
+    public Map<String, Object> releaseState(HttpServletRequest req){
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        Page page = new Page(statisticsService.getReleaseVOCount(req.getParameterMap()), rowCount);
+        page.setPage(pageNo);
+        List<ReleaseVO> rows = statisticsService.getReleaseStateVO(req.getParameterMap(), page);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
         result.put("rows", rows);

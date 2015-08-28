@@ -16,7 +16,8 @@ import java.util.Map;
 public interface StatisticsService{
     public List<ReuseRateVO> getReuseRate(Map<String, String[]> values, Page page);
     public long getReuseRateCount(Map<String, String[]> values);
-    public List<ReleaseVO> getReleaseVO(Map<String, String[]> values, Page page);
+    public List<ReleaseVO> getReleaseCountVO(Map<String, String[]> values, Page page);
+    public List<ReleaseVO> getReleaseStateVO(Map<String, String[]> values, Page page);
     public long getReleaseVOCount(Map<String, String[]> values);
     public List<TreeNode> getServiceReuseRate();
 }

@@ -625,7 +625,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             Ida ida = new Ida();
             SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null){
+                continue;
+            }
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
