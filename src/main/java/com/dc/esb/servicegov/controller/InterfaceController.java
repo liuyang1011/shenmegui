@@ -231,6 +231,7 @@ public class InterfaceController {
         resInter.setVersion(inter.getVersion());
         resInter.setOptDate(inter.getOptDate());
         resInter.setOptUser(inter.getOptUser());
+        resInter.setStatus(inter.getStatus());
         List<InterfaceHeadRelate> heads = inter.getHeadRelates();
         String headName = "";
         for (InterfaceHeadRelate head : heads) {

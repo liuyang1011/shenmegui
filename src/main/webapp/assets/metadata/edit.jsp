@@ -70,7 +70,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  </tr>
 			<tr>
             				<th>类型</th>
-            				<td><input class="easyui-textbox" type="text" name="length" value="${entity.type}"></td>
+            				<td><input class="easyui-textbox" type="text" name="type" value="${entity.type}"></td>
             </tr>
 			<tr>
 				<th>长度</th>

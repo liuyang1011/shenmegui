@@ -1371,6 +1371,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             //添加协议==================
             // provider_invoke.setProtocolId("");
             provider_invoke.setInterfaceId(inter.getInterfaceId());
+            //非标准
+            provider_invoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_N);
             serviceInvokeDAO.save(provider_invoke);
         }
         list.add(exists);

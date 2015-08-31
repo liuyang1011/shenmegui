@@ -19,7 +19,7 @@
 				报文头
 			</th>
 			<td>
-				<select class="easyui-combobox" id="headerRelate" style="width:155px" panelHeight="auto" data-options="editable:false,multiple:true">
+				<select class="easyui-combobox" id="headerRelate" style="width:155px" panelHeight="auto" data-options="editable:true,multiple:true">
 				</select>
 			</td>
 		</tr>

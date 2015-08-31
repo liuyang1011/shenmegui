@@ -16,6 +16,8 @@ import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.BatchUpdateException;
+
 @Component
 public class MetadataXlsxParserImpl implements IResourceParser {
 
@@ -56,6 +58,9 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
                 metadataService.save(metadata);
+            } catch (Exception e){
+                System.out.println(metadata.getMetadataName());
+                e.printStackTrace();
             }
         }
     }

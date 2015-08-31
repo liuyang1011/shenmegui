@@ -178,7 +178,7 @@
   function query(){
     var params = {
       "systemId":$("#systemId").textbox("getValue"),
-      "systemName":encodeURI($("#systemName").textbox("getValue")),
+      "systemName":encodeURI($("#systemName").textbox("getText")),
 //      "type":$("#type").combobox("getValue")
       "type":"0"
     }

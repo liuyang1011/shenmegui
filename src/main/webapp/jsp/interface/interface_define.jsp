@@ -421,7 +421,16 @@
                 $('#tg').treegrid('unselect', row.id);
             }
         }
-
+        var formatter = {
+            interfaceState: function (value, row, index) {
+                if (value == 0) {
+                    return "<font color='green'>投产</font>";
+                }
+                if (value == 1) {
+                    return "<font color='red'>废弃</font>";
+                }
+            }
+        };
         $(function () {
             var interfaceId = "${param.interfaceId}";
             /**
@@ -486,7 +495,7 @@
             交易名称
         </th>
 
-        <th data-options="field:'status',width:'8%',align:'right'">
+        <th data-options="field:'status',width:'8%',align:'right'" formatter='formatter.interfaceState'>
             交易状态
         </th>
         <th data-options="field:'headName',width:'15%'">

@@ -122,6 +122,14 @@ function olaList(id){
 		modal : true
 	});
 }
+var formatter = {
+	versionHis: function (value, row, index) {
+		try {
+			return row.versionHis.code
+		} catch (exception) {
+		}
+	}
+};
 </script>
 </head>
 <body >
@@ -167,7 +175,7 @@ function olaList(id){
 				<th data-options="field:'operationName'">场景名称</th>
 				<th data-options="field:'operationDesc'">功能描述</th>
 				<th data-options="field:'operationRemark'">备注</th>
-				<th data-options="field:'versionHis.code'">版本号</th>
+				<th data-options="field:'versionHis'" formatter='formatter.versionHis'>版本号</th>
 				<%--<th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>--%>
 				<th data-options="field:'optDate'">更新时间</th>
 				<th data-options="field:'optUser'">更新用户</th>

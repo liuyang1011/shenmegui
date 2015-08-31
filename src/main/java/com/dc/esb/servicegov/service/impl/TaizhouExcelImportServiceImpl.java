@@ -32,6 +32,10 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         // 读取每个sheet页服务信息
         int start = tranSheet.getFirstRowNum();
         int end = tranSheet.getLastRowNum();
+
+        Interface inter = new Interface();
+        inter.setInterfaceId(tranSheet.getSheetName());
+
         com.dc.esb.servicegov.entity.Service service = new com.dc.esb.servicegov.entity.Service();
         Operation oper = new Operation();
         for (int j = start; j <= end; j++) {

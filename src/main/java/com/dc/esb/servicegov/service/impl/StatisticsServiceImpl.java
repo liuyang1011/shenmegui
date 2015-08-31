@@ -219,8 +219,11 @@ public class StatisticsServiceImpl implements StatisticsService{
             return bigCount.longValue();
 
         }else{
-            long count = (Long)query.uniqueResult();
-            return count;
+            BigDecimal a = (BigDecimal)query.uniqueResult();
+            BigInteger count = new BigInteger(""+a.intValue());
+            return count.longValue();
+//            long count = (Long)query.uniqueResult();
+//            return count;
         }
     }
 
@@ -280,6 +283,11 @@ public class StatisticsServiceImpl implements StatisticsService{
         if(values.get("systemId") != null && values.get("systemId").length > 0){
             if (StringUtils.isNotEmpty(values.get("systemId")[0])) {
                 hql += " and si.systemId like '%" + values.get("systemId")[0] + "%'";
+            }
+        }
+        if(values.get("systemName") != null && values.get("systemName").length > 0){
+            if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
+                hql += " and si.systemName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
         hql += " group by si.systemId, si.type";
@@ -365,7 +373,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         for(int i = 0; i < pkList.size(); i++){
             OperationPK pk = (OperationPK)pkList.get(i);
             String hql2 = " select count(*) from " + OperationHis.class.getName() + " as o where o.serviceId=? and operationId=?";
-            long count = operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
+            long count = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
             if(count > 0){
                 operationReleaseNum ++;
                 if(!serviceIds.contains(pk.getServiceId())){

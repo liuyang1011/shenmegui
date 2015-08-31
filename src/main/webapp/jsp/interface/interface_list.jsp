@@ -109,7 +109,7 @@
 					<th data-options="field:'protocolName',width:'10%'">
 						接口协议
 					</th>
-					<th data-options="field:'status',width:'9%',align:'right'">
+					<th data-options="field:'status',width:'9%',align:'right'" formatter='formatter.interfaceState'>
 						交易状态
 					</th>
 					<th data-options="field:'version',width:'10%'">
@@ -321,6 +321,17 @@
              $('#tg').datagrid('options').queryParams = queryParams;//传递值
              $("#tg").datagrid('reload');//重新加载table  
 		 }
+
+		 var formatter = {
+			 interfaceState: function (value, row, index) {
+				 if (value == 0) {
+					 return "<font color='green'>投产</font>";
+				 }
+				 if (value == 1) {
+					 return "<font color='red'>废弃</font>";
+				 }
+			 }
+		 };
 		</script>
 
 	</body>

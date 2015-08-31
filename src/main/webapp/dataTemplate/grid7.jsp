@@ -11,6 +11,7 @@
 </head>
 
 <body>
+<form id="searchForm">
 <fieldset>
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
@@ -47,10 +48,13 @@
             <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
             <th> 创建结束日期</th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
-            <td align="right"><a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
+            <td align="right">
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
+                <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
         </tr>
     </table>
 </fieldset>
+</form>
 <table id="metadataList" title="元数据管理"
         style="height:400px; width:auto;">
     <thead>

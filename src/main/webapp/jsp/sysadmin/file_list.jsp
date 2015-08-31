@@ -40,13 +40,6 @@
                 <input class="easyui-textbox" type="text" id="fileName">
             </td>
             <th>
-                文件名称
-            </th>
-            <td>
-                <input class="easyui-textbox" type="text" id="fileName">
-            </td>
-
-            <th>
                 文件描述
             </th>
             <td>
