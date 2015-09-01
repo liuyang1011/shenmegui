@@ -160,6 +160,9 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
 
     public boolean addMetadata(Metadata metadata) {
         String userName = (String) SecurityUtils.getSubject().getPrincipal();
+        if(StringUtils.isEmpty(metadata.getCategoryWordId())){
+            metadata.setCategoryWordId(null);
+        }
         metadata.setOptUser(userName);
 		metadata.setOptDate(DateUtils.format(new Date()));
         metadataDAOImpl.save(metadata);

@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
@@ -46,31 +46,134 @@
                     message: '已存在相同场景编号'
                 },
                 english : {// 验证英语
-                        validator : function(value) {
-                            //return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
-                            return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
-                        },
-                        message : '请输入英文字母、下划线或数字'
-                    }
+                    validator : function(value) {
+                        //return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                        return /^\d{2}$/.test(value);
+                    },
+                    message : '请输入两位数字'
+                }
             });
-            loadSystem("systemList1", ${systemList}, "systemId", "systemChineseName");
-            loadSystem("systemList2", ${systemList}, "systemId", "systemChineseName");
         });
+        var toolbar = [{
+            text: '新增',
+            iconCls: 'icon-add',
+            handler: function () {
+                if (!$("#operationForm").form('validate')) {
+                    alert("请先完善基础信息!");
+                    return false;
+                }
+                $('#interfaceDlg').dialog({
+                    title: '添加消费者-提供者关系',
+                    width: 500,
+                    height: 500,
+                    closed: false,
+                    cache: false,
+                    href: '/jsp/service/operation/consumer_provider_add.jsp',
+                    modal: true
+                });
+            }},{
+            text: '清空',
+            iconCls: 'icon-remove',
+            handler: function () {
+                $("#resultList").datagrid('loadData',{total:0,rows:[]});
+                invokeList = new Array();
+            }}
+        ];
+        var systemList = ${systemList};
+        var consumerList = new Array();
+        var providerList = new Array();
+        var invokeList = new Array();
+        /*在接口选完服务提供者消费者关系点击确定执行*/
+        function addInterfaceContent(){
+            var consumerNames = "";
+            var consumerNameIds = "";
+            var standardConsumerNames = "";
+            var standardConsumerIds = "";
+            for(var i = 0; i < consumerList.length; i++){
+                var csi = consumerList[i];
+                if(i > 0){
+                    consumerNames += ", ";
+                    consumerNameIds += ", ";
+                }
+                consumerNames += csi.systemChineseName;
+                consumerNameIds += csi.systemId;
+                if(csi.interfaceId == ""){
+                    if(i > 0){
+                        standardConsumerNames += ",";
+                        standardConsumerIds += ",";
+                    }
+                    standardConsumerNames += csi.systemChineseName;
+                    standardConsumerIds += csi.systemId;
+                }
+                invokeList.push(csi);
+            }
+            var standardProviderNames = "";
+            var standardProviderIds = "";
+            for(var i = 0; i < providerList.length; i++){
+                var psi = providerList[i];
+                if(psi.interfaceId == ""){
+                    if(i > 0){
+                        standardProviderNames += ", ";
+                        standardProviderIds += ", ";
+                    }
+                    standardProviderNames += psi.systemChineseName;
+                    standardProviderIds += psi.systemId;
+                }
+                invokeList.push(psi);
+            }
+            for(var i = 0; i < providerList.length; i++){
+                var psi = providerList[i];
+                if(psi.interfaceId != ""){//如果提供者是非标准接口
+                    //添加一条记录
+                    var row =  genderRow(consumerNames, consumerNameIds, psi.systemChineseName, psi.systemId, psi.interfaceName, psi.interfaceId);
+                    $("#resultList").datagrid("appendRow", row);
+                }else{//如果是标准接口
+                    for(var j = 0; j < consumerList.length; j++){
+                        var csi = consumerList[j];
+                        if(csi.interfaceId != ""){ //如果消费者是非标接口
+                            var row = genderRow(csi.systemChineseName, csi.systemId, standardProviderNames, standardProviderIds, csi.interfaceName, csi.interfaceId);
+                            $("#resultList").datagrid("appendRow", row);
+                        }
+                    }
+                }
+            }
+            if(standardConsumerIds !="" && standardProviderIds !=""){
+                var row = genderRow(standardConsumerNames, standardConsumerIds, standardProviderNames, standardProviderIds, "", "");
+                $("#resultList").datagrid("appendRow", row);
+            }
+            consumerList = new Array();
+            providerList = new Array();
+            $("#interfaceDlg").dialog("close");
+        }
+        function genderRow(consumerNames, consumerIds, providerNames, providerIds, interfaceName, interfaceId){
+            var row = {};
+            row.consumerNames= consumerNames;
+            row.consumerIds= consumerIds;
+            row.providerNames= providerNames;
+            row.providerIds= providerIds;
+            row.interfaceName= interfaceName;
+            row.interfaceId= interfaceId;
+            return row;
+        }
     </script>
 
 </head>
 
 <body>
 <form class="formui" id="operationForm">
+    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="clean()">取消</a><a href="#"
+                                                                                  onclick="save('operationForm',0)"
+                                                                                  class="easyui-linkbutton"
+                                                                                  iconCls="icon-save">保存</a></div>
     <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
-        <input id="serviceId" name="serviceId" type="hidden" value="${service.serviceId }"/>
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <th>服务代码</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" value="${service.serviceId }"/></td>
+                <td><input id="serviceId" name="serviceId" class="easyui-textbox" readonly="true" type="text" value="${service.serviceId }"/></td>
 
                 <th>服务名称</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name="serviceName"
+                <td><input class="easyui-textbox" readonly="true" type="text" name="serviceName"
                            value="${service.serviceName }"/>
                 </td>
             </tr>
@@ -111,70 +214,36 @@
 
 
     </div>
-    <div style="margin-top:10px;"></div>
 
-    <div id="p" class="easyui-panel" title="服务消费方应用管理" style="width:100%;height:auto;padding:10px;">
-        <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
-            <tr>
-                <th align="center">已经应用</th>
-                <td width="50" align="center">&nbsp;</td>
-                <th align="center">应用系统列表</th>
-            </tr>
 
-            <tr>
-                <th align="center"><select name="select2" id="consumer" size="10" multiple
-                                           style="width:155px;height:160px" panelHeight="auto">
-                </select></th>
-                <td align="center" valign="middle"><a href="#" class="easyui-linkbutton" iconCls="icon-select-add"
-                                                      onClick="selectex('consumer','systemList1')"></a><br>
-                    <br>
-                    <br>
-                    <a href="#" class="easyui-linkbutton" iconCls="icon-select-remove"
-                       onClick="chooseInterface('systemList1','consumer')"></a></td>
-                <td align="center">
-                    <select name="select" id="systemList1" size="10" multiple style="width:155px;height:160px"
-                            panelHeight="auto"/>
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div style="margin-top:10px;"></div>
-    <div class="easyui-panel" title="服务提供方应用管理" style="width:100%;height:auto;padding:10px;">
-        <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
-            <tr>
-                <th align="center">已经应用</th>
-                <td width="50" align="center">&nbsp;</td>
-                <th align="center">应用系统列表</th>
-            </tr>
-
-            <tr>
-                <th align="center"><select name="select2" id="provider" size="10" multiple
-                                           style="width:155px;height:160px" panelHeight="auto">
-                </select></th>
-                <td align="center" valign="middle"><a href="#" class="easyui-linkbutton" iconCls="icon-select-add"
-                                                      onClick="selectex('provider','systemList2')"></a><br>
-                    <br>
-                    <br>
-                    <a href="#" class="easyui-linkbutton" iconCls="icon-select-remove"
-                       onClick="chooseInterface('systemList2','provider')"></a></td>
-                <td align="center"><select name="select" id="systemList2" size="10" multiple
-                                           style="width:155px;height:160px" panelHeight="auto">
-
-                </select></td>
-            </tr>
-        </table>
-    </div>
-    <div style="margin-top:10px;"></div>
-
-    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="clean()">取消</a><a href="#"
-                                                                                  onclick="save('operationForm',0)"
-                                                                                  class="easyui-linkbutton"
-                                                                                  iconCls="icon-save">保存</a></div>
-    <div id="opDlg" class="easyui-dialog"
-         style="width:400px;height:280px;padding:10px 20px" closed="true"
-         resizable="true"></div>
 </form>
+<div  class="easyui-panel" title="消费者-提供者列表" style="width:100%;height:auto;padding:10px;">
+    <table id="resultList" class="easyui-datagrid"
+           data-options="
+			rownumbers:true,
+			singleSelect:true,
+			fitColumns:false,
+			method:'get',toolbar:toolbar,
+			pagination:true,
+				"
+           style="height:370px; width:100%;">
+        <thead>
+        <tr>
+            <th data-options="field:'',checkbox:true,width:50"></th>
+            <th data-options="field:'consumerNames',width:250">消费者名称</th>
+            <th data-options="field:'consumerIds',width:150">消费者编码</th>
+            <th data-options="field:'interfaceName',width:100">接口名称</th>
+            <th data-options="field:'interfaceId',width:100">接口代码</th>
+            <th data-options="field:'providerNames',width:250">提供者名称</th>
+            <th data-options="field:'providerIds',width:150">提供者编码</th>
+
+        </tr>
+        </thead>
+    </table>
+</div>
+<div style="margin-top:10px;"></div>
+<div id="interfaceDlg" class="easyui-dialog"
+     style="width:400px;height:280px;padding:10px 20px" closed="true"
+     resizable="true"></div>
 </body>
 </html>

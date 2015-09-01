@@ -103,26 +103,29 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 			ServiceInvoke si = list.get(i);
 
 			if(si != null){
-				for(int j = 0; j < list.size(); j++){
+				for(int j = i+1; j < list.size(); j++){
 					ServiceInvoke sj = list.get(j);
 					if(sj != null){
 						if(si.getSystemId().equals(sj.getSystemId()) ){
 							if(StringUtils.isNotEmpty(si.getInterfaceId())&& StringUtils.isNotEmpty(sj.getInterfaceId())&& si.getInterfaceId().equals(sj.getInterfaceId())){
 								if(i != j){
-									sj = null;
-									list.set(j, sj);
+									list.set(j, null);
 								}
 							}
+						}
+						if(si.getInterfaceId() == null && sj.getInterfaceId() == null){
+							list.set(j, null);
 						}
 					}
 				}
 			}
 
 		}
-		list.remove(null);
 		for(int i = 0; i < list.size(); i++){
-			ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
-			voList.add(svo);
+			if(list.get(i) != null){
+				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
+				voList.add(svo);
+			}
 		}
 		return voList;
 	}

@@ -903,8 +903,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * @return
      */
     public List<InterfaceInvokeVO> getVOList(String serviceId, String operationId){
-        //TODO 提供方和调用方全是标准接口的场景怎么办？
-
         List<Object[]> list = interfaceInvokeDAO.getVOBySO(serviceId, operationId);
         List<InterfaceInvokeVO> result = new ArrayList<InterfaceInvokeVO>();
         for(Object[] strs : list){

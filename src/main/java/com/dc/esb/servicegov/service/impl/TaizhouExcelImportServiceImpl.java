@@ -41,6 +41,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         Operation oper = new Operation();
         for (int j = start; j <= end; j++) {
             Row sheetRow = tranSheet.getRow(j);
+            if(sheetRow == null) continue;
             String serviceName = "";
             String serviceId = "";
             String operId = "";
@@ -136,24 +137,24 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     } else if ("服务描述".equals(cell)) {
                         serviceDesc = sheetRow.getCell(k + 1)
                                 .getStringCellValue();
-                        if (serviceDesc == null || "".equals(serviceDesc)) {
-                            logger.error(tranSheet.getSheetName()
-                                    + "sheet页，服务描述为空");
-                            logInfoService.saveLog(tranSheet.getSheetName()
-                                    + "sheet页，服务描述为空", "导入");
-                            flag = false;
-                        }
+//                        if (serviceDesc == null || "".equals(serviceDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，服务描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，服务描述为空", "导入");
+//                            flag = false;
+//                        }
                         service.setDesc(serviceDesc);
                         break;
                     } else if ("服务操作描述".equals(cell)) {
                         operDesc = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (operDesc == null || "".equals(operDesc)) {
-                            logger.error(tranSheet.getSheetName()
-                                    + "sheet页，服务操作描述为空");
-                            logInfoService.saveLog(tranSheet.getSheetName()
-                                    + "sheet页，服务操作描述为空", "导入");
-                            flag = false;
-                        }
+//                        if (operDesc == null || "".equals(operDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，服务操作描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，服务操作描述为空", "导入");
+//                            flag = false;
+//                        }
                         oper.setOperationDesc(operDesc);
                         break;
                     } else if ("原始接口".equals(cell)) {
@@ -192,7 +193,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -291,7 +292,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -390,7 +391,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -456,7 +457,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             Ida ida = new Ida();
             SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -599,7 +600,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -803,6 +804,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         int outIndex = 0;
         for (int i = 0; i <= end; i++) {
             Row sheetRow = sheet.getRow(i);
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -819,6 +821,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int i = inputIndex; i < outIndex - 1; i++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(i);
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -872,6 +875,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = outIndex; j <= end; j++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(j);
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -1203,6 +1207,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         inter.setInterfaceId(tranSheet.getSheetName());
         for (int j = start; j <= end; j++) {
             Row sheetRow = tranSheet.getRow(j);
+            if(sheetRow == null) continue;
             String tranCode = "";
             String tranName = "";
             String interfaceDesc = "";

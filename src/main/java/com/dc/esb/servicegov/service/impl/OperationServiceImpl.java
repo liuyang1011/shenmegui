@@ -1,5 +1,6 @@
 package com.dc.esb.servicegov.service.impl;
 
+import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceCategoryDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
@@ -57,6 +58,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     private VersionServiceImpl versionServiceImpl;
     @Autowired
     private ServiceCategoryDAOImpl scDao;
+    @Autowired
+    private InterfaceInvokeDAOImpl interfaceInvokeDAO;
 
     public List<Operation> getOperationByServiceId(String serviceId) {
         return operationDAOImpl.findBy("serviceId", serviceId);
@@ -181,7 +184,57 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
         return mv;
     }
+    //添加接口映射关系
+    public boolean addInvokeMapping(List<LinkedHashMap> serviceInvokes){
+        //清空原有接口关系
+        if(serviceInvokes != null && serviceInvokes.size() > 0){
+            LinkedHashMap<String, String> map0 = serviceInvokes.get(0);
+            String serviceId = map0.get("serviceId");
+            String operationId = map0.get("operationId");
+            serviceInvokeService.deleteByOperationId(operationId, serviceId);
 
+            List<ServiceInvoke> consumserList = new ArrayList<ServiceInvoke>();
+            List<ServiceInvoke> providerrList = new ArrayList<ServiceInvoke>();
+            for(int i = 0; i < serviceInvokes.size(); i++){
+                LinkedHashMap<String, String> map = serviceInvokes.get(i);
+                ServiceInvoke serviceInvoke = new ServiceInvoke();
+
+                serviceInvoke.setServiceId(map.get("serviceId"));
+                serviceInvoke.setOperationId(map.get("operationId"));
+                serviceInvoke.setSystemId(map.get("systemId"));
+
+                String interfaceId = map.get("interfaceId");
+                if(StringUtils.isNotEmpty(interfaceId)){
+                    serviceInvoke.setInterfaceId(interfaceId);
+                    serviceInvoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_N);
+                }else{
+                    serviceInvoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
+                    serviceInvoke.setRemark("标准");
+                }
+                serviceInvoke.setType(map.get("type"));
+                serviceInvokeService.save(serviceInvoke);
+                if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
+                    consumserList.add(serviceInvoke);
+                }
+                if(Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())){
+                    providerrList.add(serviceInvoke);
+                }
+            }
+            for(int i = 0; i < consumserList.size(); i++){
+                ServiceInvoke consumer = consumserList.get(i);
+                for(int j = 0; j < providerrList.size(); j++){
+                    ServiceInvoke provider = providerrList.get(j);
+                    InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
+                    interfaceInvoke.setConsumerInvokeId(consumer.getInvokeId());
+                    interfaceInvoke.setProviderInvokeId(provider.getInvokeId());
+                    interfaceInvokeDAO.save(interfaceInvoke);
+                }
+            }
+
+        }
+
+        return true;
+    }
     /**
      * @param req
      * @param serviceId
