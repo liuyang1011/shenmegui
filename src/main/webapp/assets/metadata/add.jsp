@@ -92,7 +92,7 @@
         </tr>
         <tr>
             <th>任务id</th>
-            <td><input class="easyui-textbox" type="text" name="processId" id="taskIdInput"></td>
+            <td><input class="easyui-textbox" disabled="disabled" type="text" name="processId" id="taskIdInput"></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
