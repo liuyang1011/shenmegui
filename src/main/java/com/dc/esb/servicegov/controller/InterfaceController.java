@@ -384,6 +384,10 @@ public class InterfaceController {
             map.put("id", "");
             map.put("text", "全部");
             resList.add(map);
+        }else{
+            map.put("id", "");
+            map.put("text", "不关联");
+            resList.add(map);
         }
 
         for (InterfaceHead head : heads) {
@@ -416,6 +420,10 @@ public class InterfaceController {
     public
     @ResponseBody
     boolean headRelate(@PathVariable String interfaceId, @PathVariable String headIds) {
+        if(headIds.equals("none")){
+            interfaceHeadRelateService.deleteRelate(interfaceId);
+            return true;
+        }
         if (interfaceId != null && headIds != null) {
             interfaceHeadRelateService.relateSave(interfaceId, headIds);
         }

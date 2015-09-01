@@ -52,11 +52,18 @@
 							url: "/system/getChecked/${param.systemId}",
 							dataType: "json",
 							success: function(result) {
-								 //alert(result);
 								 $('#protocolIdRelate').combobox("setValues",result);
 							}
 						});
 
+				},
+				onSelect : function(rec){
+					if(rec.text == "不关联"){
+						$('#protocolIdRelate').combobox("clear");
+						$('#protocolIdRelate').combobox("select",rec.text);
+					}else{
+						$('#protocolIdRelate').combobox("unselect","不关联");
+					}
 				}
             });
 	});
@@ -66,9 +73,8 @@
 
         var systemId = "${param.systemId}";
         var protocolIds = $("#protocolIdRelate").combobox('getValues');
-		if(protocolIds == ""){
-			alert("不关联无需保存");
-			return;
+		if(protocolIds == "不关联"){
+			protocolIds = "none";
 		}
 		$.ajax({
 			type: "GET",

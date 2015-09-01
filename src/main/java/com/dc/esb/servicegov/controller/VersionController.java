@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +40,25 @@ public class VersionController {
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
 
+        String serviceId = req.getParameter("serviceId");
+        if(null == serviceId) serviceId = "";
+        String serviceName = req.getParameter("serviceName");
+        if(null != serviceName && !"".equals(serviceName)){
+            try{
+                serviceName = URLDecoder.decode(req.getParameter("serviceName"), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }else{
+            serviceName = "";
+        }
 //        Page page = operationService.getAll(rowCount);
-        String hql = "select count(*) from Operation a where a.state=? and a.version.optType !=?";
-        Page page = operationService.getPageBy(hql,rowCount, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE);
+        String hql = "from Operation a where a.state=? and a.version.optType !=? and a.service.serviceId like ? and a.service.serviceName like ?";
+        Page page = operationService.getPageBy(hql,rowCount, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE,"%"+serviceId+"%","%"+serviceName+"%");
         page.setPage(pageNo);
 
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Operation> list = operationService.getReleased(page);
+        List<Operation> list = operationService.getReleased(page,serviceId,serviceName);
         result.put("total", page.getResultCount());
         result.put("rows", list);
         return result;

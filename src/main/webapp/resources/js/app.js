@@ -12,7 +12,8 @@ var LOAD_URL = {
     SERVICEUI: '/dataTemplate/serviceadmin/index.html',
     SERVICEUI2: '/dataTemplate/serviceadmin/fwcjmx.html',
     SERVICEUI_LW: '/jsp/service/servicePage.jsp',
-    USERADD:'/jsp/user/useradd.jsp'
+    USERADD:'/jsp/user/useradd.jsp',
+    SEARCH:'/jsp/service/search.jsp'
 
 };
 var SYSMENU = {
@@ -236,7 +237,19 @@ var SYSMENU = {
                         }
                     },
                     onClick: function (node) {
-                        if (node.type == 'service') {//打开服务场景
+                        if(node.type == 'root'){
+                            var title = "服务检索";
+                            var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH + '" style="width:100%;height:100%;"></iframe>';
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            }else{
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
+                                });
+                            }
+                        }else if (node.type == 'service') {//打开服务场景
                             if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
                                 var mid = node.id;
                                 var title = node.text;

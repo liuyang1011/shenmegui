@@ -20,7 +20,7 @@ public class Interface {
 	@Column(name = "ECODE")
 	private String ecode;
 	
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION",length = 1000)
 	private String desc;
 	
 	@Column(name = "REMARK")

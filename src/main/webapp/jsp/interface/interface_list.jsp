@@ -195,18 +195,18 @@
 						text:'导入',
 						iconCls:'icon-save',
 						handler:function(){
-							var row = $("#tg").treegrid("getSelected");
-							if(row){
-								var interfaceId = row.interfaceId;
+//							var row = $("#tg").treegrid("getSelected");
+//							if(row){
+//								var interfaceId = row.interfaceId;
 								uiinit.win({
 									w:500,
 									iconCls:'icon-add',
 									title:"导入接口",
 									url : "/jsp/interface/interface_import.jsp"
 								});
-							}else{
-								alert("请选择要关联的行");
-							}
+//							}else{
+//								alert("请选择要关联的行");
+//							}
 
 						}
 					},{

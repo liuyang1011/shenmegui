@@ -81,9 +81,9 @@ public class SystemController {
             searchConds.add(search);
         }
         if(principal1!=null&&!"".equals(principal1)){
-            hql.append(" and (t1.principal1 = ? or t1.principal2 = ?)");
+            hql.append(" and (t1.principal1 like ? or t1.principal2 like ?)");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue(principal1);
+            search.setFieldValue("%" + principal1 + "%");
             searchConds.add(search);
             searchConds.add(search);
         }
@@ -235,6 +235,10 @@ public class SystemController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/protocolRelate/{systemId}/{protocols}", headers = "Accept=application/json")
     public @ResponseBody boolean protocolRelate(@PathVariable String systemId,@PathVariable String protocols) {
+        if(protocols.equals("none")){
+            systemProtocolService.deleteSystemProtocol(systemId);
+            return true;
+        }
         if(protocols!=null && systemId!=null){
             try {
                 systemProtocolService.deleteSystemProtocol(systemId);

@@ -50,11 +50,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<thead>
 			<tr>
 				<th data-options="field:'operationId',checkbox:true"></th>
-				<th data-options="field:'operationName'">场景名称</th>
-				<th data-options="field:'operationDesc'">功能描述</th>
-				<th data-options="field:'version'" formatter='ff.version'>版本号</th>
-				<th data-options="field:'optDate'">更新时间</th>
-				<th data-options="field:'optUser'">更新用户</th>
+				<th data-options="field:'operationName'" width="100">场景名称</th>
+				<th data-options="field:'operationDesc'" width="460">功能描述</th>
+				<th data-options="field:'version'" formatter='ff.version' width="100">版本号</th>
+				<th data-options="field:'optDate'" width="130">更新时间</th>
+				<th data-options="field:'optUser'" width="100">更新用户</th>
 			</tr>
 		</thead>
 	</table>

@@ -46,18 +46,10 @@ public class CategoryWordParserImpl implements IResourceParser {
 			Row row = sheet.getRow(rowNum);
 			CategoryWord categoryWord =parseRow(row);
 			//判断是否重复
-			List<CategoryWord> list = categoryWordService.findBy("englishWord",categoryWord.getEnglishWord());
-			if(list.size() > 0){
+			CategoryWord categoryWord1 = categoryWordService.findUniqueBy("englishWord", categoryWord.getEnglishWord());
+			if(null != categoryWord1){
 				//重复则覆盖
-				categoryWord.setId(list.get(0).getId());
-				try{
-					categoryWordService.save(categoryWord);
-				}catch(NonUniqueObjectException e){
-					log.error("类别词["+categoryWord.getId()+"]重复,执行覆盖！",e);
-					CategoryWord categoryWordToDel = categoryWordService.getById(categoryWord.getId());
-					categoryWordService.delete(categoryWordToDel);
-					categoryWordService.save(categoryWord);
-				}
+				categoryWordService.save(categoryWord1);
 				continue;
 			}
 			try{

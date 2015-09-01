@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.ExcelTool;
 import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,7 +23,7 @@ import java.util.Map;
 @Transactional
 public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
     /**
-     * 获取服务,场景信息
+     * 获取接口、服务,场景信息
      * @param tranSheet
      * @return
      */
@@ -47,6 +48,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             String operName = "";
             String serviceDesc = "";
             String operDesc = "";
+            String tranCode = "";
+            String tranName = "";
+            String tranDesc = "";
             int cellStart = sheetRow.getFirstCellNum();
             int cellEnd = sheetRow.getLastCellNum();
 
@@ -57,7 +61,32 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
                     String cell = ExcelTool.getInstance().getCellContent(
                             cellObj);
-                    if ("服务名称".equals(cell)) {
+                    if ("交易码".equals(cell) && k==0) {
+                        //TODO 类型报错
+                        sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
+                        tranCode = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (tranCode == null || "".equals(tranCode)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，交易码为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，交易码为空", "导入");
+                            flag = false;
+                        }
+                        inter.setEcode(tranCode);
+                    } else if ("交易名称".equals(cell) && k==0) {
+                        tranName = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (tranName == null || "".equals(tranName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，交易名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，交易名称为空", "导入");
+                            flag = false;
+                        }
+                        inter.setInterfaceName(tranName);
+                    } else if ("接口功能描述".equals(cell) && k==0) {
+                        tranDesc = sheetRow.getCell(k + 1).getStringCellValue();
+                        inter.setDesc(tranDesc);
+                    } else if ("服务名称".equals(cell)) {
                         serviceName = sheetRow.getCell(k + 1)
                                 .getStringCellValue();
                         if (serviceName == null || "".equals(serviceName)) {
@@ -143,6 +172,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         }
         Map<String, Object> resMap = new HashMap<String, Object>();
 
+        //标准也要有interface,用于记录交易码和交易名称
+        resMap.put("interface", inter);
         resMap.put("service", service);
         resMap.put("operation", oper);
 
@@ -917,6 +948,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
     public List executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap) {
         com.dc.esb.servicegov.entity.Service service = (com.dc.esb.servicegov.entity.Service) infoMap.get("service");
         Operation operation = (Operation) infoMap.get("operation");
+        Interface inter = (Interface)infoMap.get("interface");
 
         List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
         List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
@@ -950,12 +982,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             }
             //获取调用关系
             //TODO 接口id为null
-            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,null);
+//            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,null);
+            ServiceInvoke provider_invoke = serviceInvokeProviderQuery(service, operation, systemId, interfacepoint,inter.getInterfaceId());
             //获取消费关系
             //ServiceInvoke cusumer_invoke = serviceInvokeCusumerQuery(service, operation, cusumerSystem);
             //导入接口相关信息
             logger.info("导入接口定义信息...");
-            List list1 = insertStrandardInvoke(service, operation, provider_invoke, systemId, type);
+            List list1 = insertStrandardInvoke(inter,service, operation, provider_invoke, systemId, type);
             boolean exists = (Boolean)list1.get(0);
             provider_invoke = (ServiceInvoke)list1.get(1);
 
@@ -976,16 +1009,52 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
     }
 
     @Override
-    protected List insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+    protected List insertStrandardInvoke(Interface inter,com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
         Map<String, String> paramMap = new HashMap<String, String>();
         boolean exists = false;
         List list = new ArrayList();
         //已存在提供系统关系
         if (provider_invoke != null) {
-            exists = true;
-            provider_invoke.setIsStandard("0");
-            serviceInvokeDAO.save(provider_invoke);
+            String interfaceId = provider_invoke.getInterfaceId();
+            if (interfaceId != null && !"".equals(interfaceId)) {
+                Interface interfaceDB = interfaceDao.getEntity(interfaceId);
+                //覆盖
+                if (GlobalImport.operateFlag) {
+                    interfaceDB.setInterfaceName(inter.getInterfaceName());
+                    interfaceDB.setEcode(inter.getEcode());
+                    String version = interfaceDB.getVersion();
+                    if (version == null || "".equals(version)) {
+                        version = initVersion;
+                    } else {
+                        //interfaceDB.setVersion(Utils.modifyversionno(version));
+                    }
+                    interfaceDB.setVersion(version);
+                } else {
+
+                    String version = interfaceDB.getVersion();
+                    if (version == null || "".equals(version)) {
+                        version = initVersion;
+                    }
+                    interfaceDB.setVersion(version);
+
+                }
+                interfaceDao.save(interfaceDB);
+                inter.setInterfaceId(interfaceDB.getInterfaceId());
+                exists = true;
+            }else {
+                inter.setVersion(initVersion);
+                inter.setInterfaceId(inter.getEcode());
+                interfaceDao.save(inter);
+                provider_invoke.setInterfaceId(inter.getInterfaceId());
+                provider_invoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
+                serviceInvokeDAO.save(provider_invoke);
+                exists = true;
+            }
         } else {
+            inter.setVersion(initVersion);
+            inter.setInterfaceId(inter.getInterfaceId());
+            //建立调用关系
+            interfaceDao.save(inter);
             //建立调用关系
             provider_invoke = new ServiceInvoke();
             //TODO 已经改为id格式
@@ -995,7 +1064,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             provider_invoke.setServiceId(service.getServiceId());
             provider_invoke.setOperationId(operation.getOperationId());
             provider_invoke.setType(type);
-            provider_invoke.setIsStandard("0");
+            provider_invoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
+            provider_invoke.setInterfaceId(inter.getInterfaceId());
             //添加协议==================
             // provider_invoke.setProtocolId("");
             serviceInvokeDAO.save(provider_invoke);
@@ -1060,6 +1130,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             Row row = indexSheet.getRow(i);
             // 读取每一行第一列，获取每个交易sheet名称
             String sheetName = getCell(row, INDEX_SHEET_NAME_COL);
+            if("".equals(sheetName)) continue;
             //接口消费方
 //            String consumerSystem = getCell(row, INDEX_CONSUMER_COL);
             //形式：name,name
@@ -1154,13 +1225,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                         //TODO 类型报错
                         sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
                         tranCode = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (tranCode == null || "".equals(tranCode)) {
-                            logger.error(tranSheet.getSheetName()
-                                    + "sheet页，交易码为空");
-                            logInfoService.saveLog(tranSheet.getSheetName()
-                                    + "sheet页，交易码为空", "导入");
-                            flag = false;
-                        }
+//                        if (tranCode == null || "".equals(tranCode)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，交易码为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，交易码为空", "导入");
+//                            flag = false;
+//                        }
                         inter.setEcode(tranCode);
                     } else if ("交易名称".equals(cell) && k==0) {
                         tranName = sheetRow.getCell(k + 1).getStringCellValue();

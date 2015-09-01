@@ -19,7 +19,7 @@
 				报文头
 			</th>
 			<td>
-				<select class="easyui-combobox" id="headerRelate" style="width:155px" panelHeight="auto" data-options="editable:true,multiple:true">
+				<select class="easyui-combobox" id="headerRelate" style="width:155px" panelHeight="auto" data-options="editable:false,multiple:true">
 				</select>
 			</td>
 		</tr>
@@ -56,6 +56,14 @@
 							}
 						});
 
+				},
+				onSelect : function(rec){
+					if(rec.text == "不关联"){
+						$('#headerRelate').combobox("clear");
+						$('#headerRelate').combobox("select",rec.text);
+					}else{
+						$('#headerRelate').combobox("unselect","不关联");
+					}
 				}
             });
 	});
@@ -65,14 +73,15 @@
 
         var systemId = "${param.interfaceId}";
         var headId = $("#headerRelate").combobox('getValues');
-
+		if(headId == "不关联"){
+			headId = "none";
+		}
 		$.ajax({
 			type: "GET",
 			contentType: "application/json; charset=utf-8",
 			url: "/interface/headRelate/${param.interfaceId}/"+headId,
 			dataType: "json",
 			success: function(result) {
-				 //alert(result);
 				 if(true){
 				 	alert("关联成功");
 				 	$('#w').window('close');

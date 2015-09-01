@@ -23,6 +23,7 @@
 	var addArray = new Array();
 	var editArray = new Array();
 	var parentIdAry = new Array();
+	var headId;
 	var toolbar = [{
 			text:'刪除',
 			iconCls:'icon-remove',
@@ -119,7 +120,10 @@
 				 
 				 sysManager.addIDA(reqAry,function(result){
 						if(result){
-							$('#tg').treegrid('reload');
+//							$('#tg').treegrid('reload');
+							$('#tg').treegrid({
+								url:'/ida/getHeads/'+headId+'?t='+ (new Date()).valueOf(),
+							});
 							alert("保存成功");
 						}else{
 							alert("保存失败");
@@ -392,9 +396,9 @@
 		}
 
 		function loadData(){
-			var headId = "${param.headId}"
+			headId = "${param.headId}"
 			$('#tg').treegrid({
-				url:'/ida/getHeads/'+headId,
+				url:'/ida/getHeads/'+headId+'?t='+ (new Date()).valueOf(),
 				onAfterEdit:function(row,changes){
 					//alert(row.name);
 				}

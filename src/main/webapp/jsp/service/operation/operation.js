@@ -149,7 +149,7 @@ function auditPass(listId) {
     if (checkedItems != null && checkedItems.length > 0) {
         var ids = [];
         $.each(checkedItems, function (index, item) {
-            ids.push(item.operationId);
+            ids.push(""+item.operationId+","+item.serviceId);
         });
         $.ajax({
             type: "post",

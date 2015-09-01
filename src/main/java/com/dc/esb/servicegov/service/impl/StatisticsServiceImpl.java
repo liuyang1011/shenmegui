@@ -126,7 +126,9 @@ public class StatisticsServiceImpl implements StatisticsService{
 //                nt.setMinimumFractionDigits(2);
 //                vo.setReuseRate(nt.format(r));
             if(operationReuseNum > 0){
-                float r = (operationReuseNum + 0f)/sum;
+//                float r = (operationReuseNum + 0f)/sum;
+                //行方要求改为：
+                float r = (operationReuseNum + 0f)/operationNum;
                 NumberFormat nt = NumberFormat.getPercentInstance();
                 nt.setMinimumFractionDigits(2);
                 vo.setReuseRate(nt.format(r));
@@ -453,7 +455,9 @@ public class StatisticsServiceImpl implements StatisticsService{
         treeNode.setAppend5(String.valueOf(sum));//场景总数
 
         if(operationReuseNum > 0){
-            float r = (operationReuseNum + 0f)/sum;
+//            float r = (operationReuseNum + 0f)/sum;
+            //行方要求改为：
+            float r = (operationReuseNum + 0f)/operationNum;
             NumberFormat nt = NumberFormat.getPercentInstance();
             nt.setMinimumFractionDigits(2);
             treeNode.setAppend6(nt.format(r));//复用率

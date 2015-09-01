@@ -1313,7 +1313,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }
     }
 
-    protected List insertStrandardInvoke(com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
+    protected List insertStrandardInvoke(Interface inter,com.dc.esb.servicegov.entity.Service service, Operation operation, ServiceInvoke provider_invoke, String providerSystem, String type) {
         return null;
     }
 

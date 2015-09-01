@@ -75,7 +75,7 @@
 
 </div>
 
-<ul class="easyui-tree mslinktree" style="overflow:scroll;height:100%" data-options="url:'/system/getTree',method:'get',animate:true"></ul>
+<ul class="easyui-tree mslinktree" style="overflow:scroll;height:90%" data-options="url:'/system/getTree',method:'get',animate:true"></ul>
 <%
     }
     if (mid.equals("6")) {

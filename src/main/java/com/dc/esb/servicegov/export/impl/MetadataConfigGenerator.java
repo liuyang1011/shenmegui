@@ -40,6 +40,7 @@ public class MetadataConfigGenerator implements IConfigGenerator {
 					.getMetadataId());
 			//向根节点下面的子节点插入属性
 			info.addAttribute("type", metadatas.get(i).getType());
+			if(null == metadatas.get(i).getType()) continue;
 			if (!metadatas.get(i).getType().equals("array")) {//判断子节点是否为数组
 				info.addAttribute("length", metadatas.get(i).getLength());
 				info.addAttribute("chinese_name", metadatas.get(i)

@@ -52,7 +52,7 @@ public class BaseLineController {
     public Map<String, Object> getBaseLine(String code, String blDesc,HttpServletRequest req) {
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
-        String hql = "select count(*) from "+ BaseLine.class.getName() +" where 1=1 ";
+        String hql = "from "+ BaseLine.class.getName() +" where 1=1 ";
         if (StringUtils.isNotEmpty(code)) {
             hql += "and code like '%" + code + "%' ";
         }

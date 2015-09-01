@@ -79,6 +79,7 @@
                         var metadataId = row.metadataId;
                         var scale = row.scale;
                         var required = row.required;
+                        var remark = row.remark;
                         var seq = row.seq;
                         var data = {};
                         data.structName = structName;
@@ -89,6 +90,7 @@
                         data.scale = scale;
                         data._parentId = parentIdAry[i];
                         data.required = required;
+                        data.remark = remark;
                         data.headId = "${param.headId}";
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
@@ -108,6 +110,7 @@
                         var metadataId = row.metadataId;
                         var scale = row.scale;
                         var required = row.required;
+                        var remark = row.remark;
                         var seq = row.seq;
                         var data = {};
                         data.structName = structName;
@@ -118,6 +121,7 @@
                         data.scale = scale;
                         //data._parentId = parentId;
                         data.required = required;
+                        data.remark = remark;
                         data.headId = "${param.headId}";
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
@@ -187,6 +191,7 @@
                             metadataId: row.metadataId,
                             scale: row.scale,
                             required: row.required,
+                            remark:row.remark,
                             seq: prevrow.seq,
                             id: row.id
                         }
@@ -203,6 +208,7 @@
                             metadataId: prevrow.metadataId,
                             scale: prevrow.scale,
                             required: prevrow.required,
+                            remark:prevrow.remark,
                             seq: row.seq,
                             id: prevrow.id
                         }
@@ -268,6 +274,7 @@
                             metadataId: row.metadataId,
                             scale: row.scale,
                             required: row.required,
+                            remark:row.remark,
                             seq: nextrow.seq,
                             id: row.id
                         }
@@ -284,6 +291,7 @@
                             metadataId: nextrow.metadataId,
                             scale: nextrow.scale,
                             required: nextrow.required,
+                            remark:nextrow.remark,
                             seq: row.seq,
                             id: nextrow.id
                         }
