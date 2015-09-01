@@ -287,7 +287,7 @@ public class HibernateDAO<T, PK extends Serializable> {
         }
 
         List countlist = query.list();
-        long totalCount = (Long) countlist.get(0);
+        long totalCount = countlist.size();
 
         // 返回分页对象
         if (totalCount < 1) {

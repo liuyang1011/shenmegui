@@ -85,10 +85,10 @@
 		<table id="tg" style="height: 300px; width: 100%" data-options="pageSize:2">
 			<thead>
 				<tr>
-					<th data-options="field:'systemId',width:'15%'">
+					<th data-options="field:'systemId',width:'10%'">
 						系统ID
 					</th>
-					<th data-options="field:'systemAb',width:'15%'">
+					<th data-options="field:'systemAb',width:'12%'">
 						系统简称
 					</th>
 					<th data-options="field:'systemChineseName',width:'15%'">
@@ -97,13 +97,13 @@
 					<th data-options="field:'protocolName',width:'15%',align:'center'">
                     	系统协议
                     </th>
-                    <th data-options="field:'principal1',width:'20%'">
+                    <th data-options="field:'principal1',width:'10%'">
                     	联系人
                     </th>
 					<th data-options="field:'featureDesc',align:'right',width:'20%'">
 						系统描述
 					</th>
-					<th data-options="field:'workRange',width:'15%',align:'right'">
+					<th data-options="field:'workRange',width:'15%',align:'left'">
 						工作范围
 					</th>
 

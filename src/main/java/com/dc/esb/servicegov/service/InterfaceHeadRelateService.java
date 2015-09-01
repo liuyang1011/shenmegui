@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface InterfaceHeadRelateService  extends BaseService<InterfaceHeadRelate, String> {
 	public void relateSave(String interfaceId,String headIds);
+	public void deleteRelate(String interfaceId);
 
 }

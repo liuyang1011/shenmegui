@@ -27,6 +27,11 @@ public class InterfaceHeadRelateServiceImpl extends AbstractBaseService<Interfac
     }
 
     @Override
+    public void deleteRelate(String interfaceId){
+        String hql = "delete from InterfaceHeadRelate where interfaceId=?";
+        interfaceHeadRelateDAO.exeHql(hql,interfaceId);
+    }
+    @Override
     public void relateSave(String interfaceId,String headIds) {
         String hql = "delete from InterfaceHeadRelate where interfaceId=?";
         interfaceHeadRelateDAO.exeHql(hql,interfaceId);

@@ -235,6 +235,10 @@ public class SystemController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/protocolRelate/{systemId}/{protocols}", headers = "Accept=application/json")
     public @ResponseBody boolean protocolRelate(@PathVariable String systemId,@PathVariable String protocols) {
+        if(protocols.equals("none")){
+            systemProtocolService.deleteSystemProtocol(systemId);
+            return true;
+        }
         if(protocols!=null && systemId!=null){
             try {
                 systemProtocolService.deleteSystemProtocol(systemId);

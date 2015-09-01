@@ -25,6 +25,17 @@
 				pagination:true,
 				pageSize:10
 			});
+			$("#search").click(function(){
+				var queryParams = $('#operationList').datagrid('options').queryParams;
+				queryParams.serviceId = $("#serviceId").textbox("getValue");
+				queryParams.serviceName = encodeURI($("#serviceName").textbox("getValue"));
+				if (queryParams.serviceId || queryParams.serviceName) {
+					$("#operationList").datagrid('options').queryParams = queryParams;//传递值
+					$("#operationList").datagrid('reload');//重新加载table
+				} else {
+					$("#operationList").datagrid('reload');
+				}
+			});
 		});
 		$.extend($.fn.validatebox.defaults.rules, {
 			length : {
@@ -112,6 +123,19 @@
 					</td>
 					<td><a href="javascript:void(0)" onclick="releaseBatch()" class="easyui-linkbutton" plain="true"
 						iconCls="icon-save">发布</a>
+					</td>
+
+					<th>服务代码</th>
+					<td>
+						<input class="easyui-textbox" id="serviceId"/>
+					</td>
+					<th>服务名称</th>
+					<td>
+						<input class="easyui-textbox" id="serviceName"/>
+					</td>
+					<td>
+						<%--<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>--%>
+						<a href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search" style="margin-left:1em">查询</a>
 					</td>
 				</tr>
 		</table>
