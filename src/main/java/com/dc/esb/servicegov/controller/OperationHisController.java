@@ -60,7 +60,7 @@ public class OperationHisController {
 	public Map<String, Object> operationHisList(HttpServletRequest req) {
 		int pageNo = Integer.parseInt(req.getParameter("page"));
 		int rowCount = Integer.parseInt(req.getParameter("rows"));
-		String hql = "select count(*) from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
+		String hql = "from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
 		Page page = operationHisServiceImpl.getPageBy(hql, rowCount);
 		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();

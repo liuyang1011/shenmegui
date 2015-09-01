@@ -38,7 +38,7 @@ public class VersionController {
         int rowCount = Integer.parseInt(req.getParameter("rows"));
 
 //        Page page = operationService.getAll(rowCount);
-        String hql = "select count(*) from Operation a where a.state=? and a.version.optType !=?";
+        String hql = "from Operation a where a.state=? and a.version.optType !=?";
         Page page = operationService.getPageBy(hql,rowCount, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE);
         page.setPage(pageNo);
 

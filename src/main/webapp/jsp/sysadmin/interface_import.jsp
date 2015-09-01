@@ -80,7 +80,6 @@
             }
           }
         });
-//                    console.log(eval(a).responseText);
       }
     }else{
       alert("没有选中项！");

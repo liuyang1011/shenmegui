@@ -202,9 +202,8 @@ jsPlumb.ready(function() {
 	//instance.draggable(jsPlumb.getSelector(".window"), { containment:".demo"});    
 	instance.draggable(jsPlumb.getSelector(".window"), {
 		drag:function() {
-			//console.log("DRAG")
 		}
-	});    
+	});
 
 	jsPlumb.fire("jsPlumbDemoLoaded", instance);
 });	

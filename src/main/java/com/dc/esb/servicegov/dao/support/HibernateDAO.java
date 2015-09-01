@@ -240,9 +240,7 @@ public class HibernateDAO<T, PK extends Serializable> {
         Query query = getSession().createQuery(hql);
 
         List countlist = query.list();
-        long totalCount = (Long) countlist.get(0);
-//        long totalCount = countlist.size();
-
+        long totalCount = countlist.size();
         // 返回分页对象
         if (totalCount < 1) {
             totalCount = 0;
