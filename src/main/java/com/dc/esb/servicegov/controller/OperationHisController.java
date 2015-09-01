@@ -64,7 +64,7 @@ public class OperationHisController {
 		Page page = operationHisServiceImpl.getPageBy(hql, rowCount);
 		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();
-		hql = "from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
+		hql = "from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"' order by t.versionHis.optDate desc";
 		List<?> rows = operationHisServiceImpl.findBy(hql,page);
 
 		result.put("total", page.getResultCount());

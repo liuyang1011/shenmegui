@@ -152,7 +152,6 @@ var serviceUIHelper = {
         }
         var type =  node.type;
         var id = node.id;
-        console.log(node);
         if(node.type == "serviceCategory"){
             if(node.children != null && node.children.length == 0){
                 alert("该服务分类下没有服务数据！");

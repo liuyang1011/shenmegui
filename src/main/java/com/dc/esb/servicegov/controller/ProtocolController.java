@@ -48,15 +48,15 @@ public class ProtocolController {
             searchConds.add(search);
         }
         if(encoding!=null&&!"".equals(encoding)){
-            hql.append(" AND t1.encoding = ?");
+            hql.append(" AND t1.encoding like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue(encoding);
+            search.setFieldValue("%" +encoding+ "%");
             searchConds.add(search);
         }
         if(msgType!=null&&!"".equals(msgType)){
-            hql.append(" AND t1.msgType = ?");
+            hql.append(" AND t1.msgType like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue(msgType);
+            search.setFieldValue("%"+msgType+"%");
             searchConds.add(search);
         }
         if(remark!=null&&!"".equals(remark)){

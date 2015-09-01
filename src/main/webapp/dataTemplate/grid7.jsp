@@ -224,13 +224,13 @@
                 });
             }
         },
-        {
-            text: '检出',
-            iconCls: 'icon-qxfp',
-            handler: function () {
-
-            }
-        },
+//        {
+//            text: '检出',
+//            iconCls: 'icon-qxfp',
+//            handler: function () {
+//
+//            }
+//        },
         {
             text: '提交任务',
             iconCls: 'icon-qxfp',

@@ -41,7 +41,9 @@ public class VersionHisController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String hql = " from VersionHis";
 		if(StringUtils.isNotEmpty(keyValue)){
-			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%'";
+			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%' order by optDate desc";
+		}else {
+			hql += " order by optDate desc";
 		}
 		List<VersionHisServiceImpl.VersionHisBean> rows = versionHisServiceImpl.findVersionBeanBy(hql, page);
 //		List<VersionHis> rows = versionHisServiceImpl.findBy(hql,page);

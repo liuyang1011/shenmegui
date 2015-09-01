@@ -164,7 +164,9 @@ public class StatisticsServiceImpl implements StatisticsService{
 //                nt.setMinimumFractionDigits(2);
 //                vo.setReuseRate(nt.format(r));
             if(operationReuseNum > 0){
-                float r = (operationReuseNum + 0f)/sum;
+//                float r = (operationReuseNum + 0f)/sum;
+                //行方要求改为：
+                float r = (operationReuseNum + 0f)/operationNum;
                 NumberFormat nt = NumberFormat.getPercentInstance();
                 nt.setMinimumFractionDigits(2);
                 vo.setReuseRate(nt.format(r));
@@ -285,11 +287,38 @@ public class StatisticsServiceImpl implements StatisticsService{
                 hql += " and si.systemId like '%" + values.get("systemId")[0] + "%'";
             }
         }
-        if(values.get("systemName") != null && values.get("systemName").length > 0){
-            if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
-                hql += " and si.systemName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
+        String systemName = "";
+        String[] str = values.get("systemName");
+        if (str != null){
+            try {
+                systemName = URLDecoder.decode(str[0], "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
+        String systemIds = "";
+        if(!"".equals(systemName)){
+            Map<String,String> map = new HashMap<String, String>();
+            map.put("systemChineseName",systemName);
+            List<System> list = systemDAO.findLike(map, MatchMode.ANYWHERE);
+            for (int i = 0; i < list.size(); i++) {
+                if (i==0){
+                    systemIds = "'"+list.get(i).getSystemId()+"'";
+                }else{
+                    systemIds += ",'"+list.get(i).getSystemId()+"'";
+                }
+            }
+        }
+
+        if(!"".equals(systemIds)){
+            hql += " and si.systemId in (" + systemIds + ")";
+        }
+//        if(values.get("systemName") != null && values.get("systemName").length > 0){
+//            if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
+//                hql += " and si.systemName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
+//            }
+//        }
         hql += " group by si.systemId, si.type";
         long count = serviceInvokeDAO.find(hql).size();
         return count;
@@ -480,7 +509,9 @@ public class StatisticsServiceImpl implements StatisticsService{
         treeNode.setAppend5(String.valueOf(sum));//场景总数
 
         if(operationReuseNum > 0){
-            float r = (operationReuseNum + 0f)/sum;
+//            float r = (operationReuseNum + 0f)/sum;
+            //行方要求改为：
+            float r = (operationReuseNum + 0f)/operationNum;
             NumberFormat nt = NumberFormat.getPercentInstance();
             nt.setMinimumFractionDigits(2);
             treeNode.setAppend6(nt.format(r));//复用率

@@ -18,6 +18,7 @@ import com.dc.esb.servicegov.service.impl.ExcelImportServiceImpl;
 import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
@@ -244,7 +245,7 @@ public class ExcelImportController {
                     // 读取每个交易sheet页
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);
-                    //服务、场景信息
+                    //交易、服务、场景信息
                     Map<String, Object> infoMap = excelImportService.getServiceInfo(sheet);
                     //获取 服务 输入 参数
                     Map<String, Object> inputMap = excelImportService.getStandardInputArg(sheet);
@@ -276,7 +277,7 @@ public class ExcelImportController {
                     String providerSystem = indexDO.getProviderSystem();
                     String providerSystemId = indexDO.getProviderSystemId();
                     String invokeSystemId = "";
-                    String isStandard = "0";
+                    String isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
                     String serviceId = indexDO.getServiceId();
                     if("Provider".equalsIgnoreCase(type)){
                         type = "1";

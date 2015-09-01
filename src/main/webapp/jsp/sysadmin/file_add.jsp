@@ -20,7 +20,7 @@
 				系统<br/><br/>
 			</th>
 			<td>
-				<select class="easyui-combobox" id="systemId" name="systemId" style="width:155px" panelHeight="auto" data-options="editable:false">
+				<select class="easyui-combobox" id="systemId" name="systemId" style="width:155px" panelHeight="200px" data-options="editable:false">
 				</select>
 			</td>
 		</tr>

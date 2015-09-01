@@ -78,7 +78,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</tr>
 			<tr>
 				<th>精度</th>
-				<td><input class="easyui-textbox" type="text" name="SCALE" value="${entity.scale }"></td>
+				<td><input class="easyui-textbox" type="text" name="scale" value="${entity.scale }"></td>
 			</tr>
 			<tr>
 				<th>数据项分类</th>

@@ -166,7 +166,8 @@
       "systemId":$("#systemId").textbox("getValue"),
       "type":$("#type").combobox("getValue"),
       "startDate":$("#startDate").datebox("getValue"),
-      "endDate":$("#endDate").datebox("getValue")
+      "endDate":$("#endDate").datebox("getValue"),
+      "systemName":$("#systemName").datebox("getValue")
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');

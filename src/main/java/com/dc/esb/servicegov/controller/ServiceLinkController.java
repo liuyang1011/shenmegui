@@ -2,14 +2,8 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
-import com.dc.esb.servicegov.entity.InvokeConnection;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.Service;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
-import com.dc.esb.servicegov.service.impl.InvokeConnectionServiceImpl;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceInvokeServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -40,6 +34,8 @@ public class ServiceLinkController {
     private OperationServiceImpl operationService;
     @Autowired
     private ServiceServiceImpl serviceService;
+    @Autowired
+    private InterfaceServiceImpl interfaceService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/getServiceLink/system/{systemId}", headers = "Accept=application/json")
     public
@@ -48,7 +44,28 @@ public class ServiceLinkController {
         int pageNo = Integer.parseInt(req.getParameter("page"));
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         String interfaceId = req.getParameter("interfaceId");
-//        String interfaceName = req.getParameter("interfaceName");
+        String interfaceName = req.getParameter("interfaceName");
+        if(null != interfaceName){
+            try {
+                interfaceName = URLDecoder.decode(interfaceName, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        //根据接口名查交易码
+        Map<String,String> map1 = new HashMap<String, String>();
+        map1.put("interfaceName",interfaceName);
+        List<Interface> interfaceList = interfaceService.findLikeAnyWhere(map1);
+        String interIds = "";
+        for (int i = 0; i < interfaceList.size(); i++) {
+            if(i==0){
+                interIds = "'"+interfaceList.get(i).getInterfaceId()+"'";
+            }else{
+                interIds += ",'"+interfaceList.get(i).getInterfaceId()+"'";
+            }
+        }
+
         String serviceId = req.getParameter("serviceId");
         String serviceName = req.getParameter("serviceName");
         String _systemId = systemId;
@@ -62,6 +79,9 @@ public class ServiceLinkController {
         if (null != serviceId && !"".equals(serviceId)) {
             hql.append(" and serviceId like ?");
             searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
+        }
+        if(null != interfaceName && !"".equals(interfaceName)){
+            hql.append(" and interfaceId in("+interIds+")");
         }
 
 
