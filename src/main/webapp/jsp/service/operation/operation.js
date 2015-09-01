@@ -27,11 +27,11 @@ var ff = {
         }
     },
     version:function(value, row, index){
- 		try {
-			return row.version.code
-		} catch (exception) {
-		}
- 	}
+        try {
+            return row.version.code
+        } catch (exception) {
+        }
+    }
 }
 
 function save(formId, operation) {
@@ -57,32 +57,26 @@ function save(formId, operation) {
         data: params,
         success: function (data) {
             if (data == true) {
-                var consumerList = new Array();
-                var consumerOptions = $('#consumer option');
-                for (var i = 0; i < consumerOptions.length; i++) {
-                    // 添加到数组里
-                    consumerList.push(consumerOptions.eq(i).val());
-                }
-                var providerList = new Array();
-                var providerOptions = $('#provider option');
-                for (var i = 0; i < providerOptions.length; i++) {
-                    // 添加到数组里
-                    providerList.push(providerOptions.eq(i).val());
-                }
-
                 var serviceId = $("#serviceId").attr("value");
                 var operationId = $("#operationId").textbox("getValue");
+                var serviceInvokeList = new Array();
+                for(var i = 0; i < invokeList.length; i++){
+                    var si = invokeList[i];
+                    var serviceInvoke = {};
+                    serviceInvoke.serviceId = serviceId;
+                    serviceInvoke.operationId = operationId;
+                    serviceInvoke.systemId = si.systemId;
+                    serviceInvoke.interfaceId = si.interfaceId;
+                    serviceInvoke.type = si.type;
+                    serviceInvokeList.push(serviceInvoke);
+                }
                 $.ajax({
                     type: "post",
                     async: false,
-                    url: "/operation/afterAdd",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/operation/addInvokeMapping",
                     dataType: "json",
-                    data: {
-                        "serviceId": serviceId,
-                        "operationId": operationId,
-                        "consumerStr": consumerList.join(","),
-                        "providerStr": providerList.join(",")
-                    },
+                    data: JSON.stringify(serviceInvokeList),
                     success: function (data) {
                         alert("操作成功 ！");
                         //清空页面数据
@@ -93,7 +87,7 @@ function save(formId, operation) {
                 });
 
             } else {
-                alert("场景号已存在或其他异常");
+                alert("保存出现异常 ，操作失败！");
             }
 
         },
@@ -106,7 +100,6 @@ function save(formId, operation) {
         }
     });
 }
-
 function clean() {
     $("#operationId").textbox("setValue", "");
     $("#operationName").textbox("setValue", "");
@@ -137,17 +130,17 @@ function choseService(id) {
  * 刷新table
  */
 function selectService() {
-      var node = $("#serviceTree").tree("getSelected");
-      if(node.type != "service"){
-      	alert("请选择服务！");
-      	return false;
-      }
+    var node = $("#serviceTree").tree("getSelected");
+    if(node.type != "service"){
+        alert("请选择服务！");
+        return false;
+    }
     $('#dlg').dialog('close');
-                  $("#serviceId").textbox("setValue", node.service.serviceId);
-                  $("#serviceId").textbox("setText", node.service.serviceName);
-               $("#operationAuditList").datagrid({
-                url:'/operation/getAudits/'+ node.service.serviceId
-               });
+    $("#serviceId").textbox("setValue", node.service.serviceId);
+    $("#serviceId").textbox("setText", node.service.serviceName);
+    $("#operationAuditList").datagrid({
+        url:'/operation/getAudits/'+ node.service.serviceId
+    });
 }
 
 //审核通过方法
@@ -217,8 +210,9 @@ function loadSelect(id, items) {
         });
     }
 }
-//从系统选择消费者接口
-function chooseInterface(oldListId, newListId) {
+
+//从系统列表中选中系统点击向左移按钮，如果没有接口直接移动，如果有弹出接口选择界面
+function chooseInterface(oldListId, newListId, type) {
     $('#' + oldListId + ' option:selected').each(function () {
         var value = $(this).val();
         var text = this.text;
@@ -237,7 +231,15 @@ function chooseInterface(oldListId, newListId) {
                     if (exsit.length > 0) {
                         alert("应经被选中！");
                     } else {
-                        $("#" + newListId).append("<option value='" + value + "'>" + text + "</option>");
+                        var invoekId = new Date().getTime();
+                        $("#" + newListId).append("<option value='" + invoekId + "'>" + text + "</option>");
+                        var si = genderServiceInvoke(invoekId, value,text, "","", type );
+                        if(type == "1"){
+                            consumerList.push(si);
+                        }
+                        if(type =="0"){
+                            providerList.push(si);
+                        }
                     }
 
                 } else {
@@ -247,7 +249,7 @@ function chooseInterface(oldListId, newListId) {
                         width: 700,
                         closed: false,
                         cache: false,
-                        href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId,
+                        href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId+"&type=" + type,
                         modal: true
                     });
                 }
@@ -258,28 +260,60 @@ function chooseInterface(oldListId, newListId) {
 
 }
 
-function selectex(oldDataUi, newDataUi) {
-    var oldData = ""
-
+function selectex(oldDataUi, newDataUi, type) {
     $('#' + oldDataUi + ' option:selected').each(function () {
         var value = $(this).val();
         $("#" + oldDataUi + " option[value=" + value + "]").remove();
+        if(type == "1"){
+            for(var i = 0; i < consumerList.length ; i ++){
+                var si = consumerList[i];
+                if(si.invokeId == value){
+                    consumerList.splice(i,1);
+                }
+            }
+        }
+        if(type == "0"){
+            for(var i = 0; i < providerList.length ; i ++){
+                var si = providerList[i];
+                if(si.invokeId == value){
+                    providerList.splice(i,1);
+                }
+            }
+        }
 //			$("#"+newDataUi).append("<option value='"+$(this).val()+"'>"+this.text+"</option>");
     });
 }
 
-function selectInterface(listId) {
+function selectInterface(listId, type) {
     var checkedItems = $('#intefaceList').datagrid('getChecked');
     if (checkedItems != null && checkedItems.length > 0) {
         $.each(checkedItems, function (index, item) {
-            var exsit = $("#" + listId + " option[value='__invoke__" + item.invokeId + "']");
+            var exsit = $("#" + listId + " option[value='" + item.invokeId + "']");
             if (exsit.length > 0) {
                 alert("该接口已经被选中！");
             } else {
-                $("#" + listId).append("<option value='__invoke__" + item.invokeId + "'>" + item.systemChineseName + "::" + item.interfaceName + "</option>");
+                $("#" + listId).append("<option value='" + item.invokeId + "'>" + item.systemChineseName + "::" + item.interfaceName + "</option>");
+                var si = genderServiceInvoke(item.invokeId, item.systemId, item.systemChineseName, item.interfaceId, item.interfaceName, type);
+                if(type == "1"){
+                    consumerList.push(si);
+                }
+                if(type =="0"){
+                    providerList.push(si);
+                }
             }
 
         });
     }
     $('#opDlg').dialog('close');
+}
+function genderServiceInvoke(invokeId, systemId,systemChineseName, interfaceId, interfaceName, type){
+    var serviceInvoke = {};
+    serviceInvoke.invokeId = invokeId;
+    serviceInvoke.systemId = systemId;
+    serviceInvoke.systemChineseName = systemChineseName;
+    serviceInvoke.interfaceId = interfaceId;
+    serviceInvoke.interfaceName = interfaceName;
+    serviceInvoke.type = type;
+    return serviceInvoke;
+
 }

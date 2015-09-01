@@ -57,8 +57,8 @@ public class Metadata implements Serializable {
     @Column(name = "DATA_CATEGORY", length = 255)
     private String dataCategory;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CATEGORY_WORD_ID",referencedColumnName = "ENGLISH_WORD",insertable=false,updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "CATEGORY_WORD_ID",referencedColumnName = "ENGLISH_WORD", insertable = false, updatable = false)
     private CategoryWord categoryWord;
 
     public CategoryWord getCategoryWord() {

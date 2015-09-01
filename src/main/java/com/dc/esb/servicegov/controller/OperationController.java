@@ -3,15 +3,15 @@ package com.dc.esb.servicegov.controller;
 import static com.dc.esb.servicegov.service.support.Constants.STATE_PASS;
 import static com.dc.esb.servicegov.service.support.Constants.STATE_UNPASS;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.OperationPK;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.TreeNode;
+import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -33,10 +33,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.Service;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceInvokeServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
-import com.dc.esb.servicegov.service.impl.SystemServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
 import net.sf.json.JSONArray;
@@ -67,6 +63,8 @@ public class OperationController {
     private ServiceInvokeServiceImpl serviceInvokeService;
     @Autowired
     private SystemServiceImpl systemService;
+    @Autowired
+    private ExcelExportServiceImpl excelExportService;
 
     /**
      * 获取所有的服务场景
@@ -175,9 +173,9 @@ public class OperationController {
     public
     @ResponseBody
     boolean add(Operation operation) {
-        if(Integer.parseInt(operation.getOperationId()) < 10){
-            operation.setOperationId("0"+Integer.parseInt(operation.getOperationId()));
-        }
+//        if(Integer.parseInt(operation.getOperationId()) < 10){
+//            operation.setOperationId("0"+Integer.parseInt(operation.getOperationId()));
+//        }
         Map<String,String> map = new HashMap<String, String>();
         map.put("operationId", operation.getOperationId());
         map.put("serviceId",operation.getServiceId());
@@ -189,6 +187,27 @@ public class OperationController {
             return true;
         }
     }
+    @RequiresPermissions({"service-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/addInvokeMapping", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean addInvokeMapping(@RequestBody List<LinkedHashMap> serviceInvokes) {
+
+        return operationServiceImpl.addInvokeMapping(serviceInvokes);
+    }
+    @RequiresPermissions({"service-add"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getInvokeMapping(String serviceId, String operationId) {
+        //处理标准数据
+        List<InterfaceInvokeVO> standardVOs = excelExportService.getStandardVOList(serviceId, operationId);
+        //处理非标准数据
+        List<InterfaceInvokeVO> interfaceInvokeVOs = excelExportService.getVOList(serviceId, operationId);
+        interfaceInvokeVOs.addAll(standardVOs);
+        return interfaceInvokeVOs;
+    }
+
 
     /**
      * TODO 场景基本信息保存后，保存相关的接口映射关系。
@@ -205,9 +224,9 @@ public class OperationController {
     public
     @ResponseBody
     boolean afterAdd(HttpServletRequest req, String serviceId, String operationId, String consumerStr, String providerStr) {
-        if(Integer.parseInt(operationId) < 10){
-            operationId = "0"+Integer.parseInt(operationId);
-        }
+//        if(Integer.parseInt(operationId) < 10){
+//            operationId = "0"+Integer.parseInt(operationId);
+//        }
         return operationServiceImpl.addInvoke(req, serviceId, operationId, consumerStr, providerStr);
     }
 
@@ -257,13 +276,16 @@ public class OperationController {
 
             params.put("type", Constants.INVOKE_TYPE_CONSUMER);
             List<ServiceInvoke> consumerInvokes = serviceInvokeService.findBy(params);
-
-            mv.addObject("consumerList", JSONUtil.getInterface().convert(consumerInvokes, ServiceInvoke.simpleFields()));
+           // mv.addObject("consumerList", JSONUtil.getInterface().convert(consumerInvokes, ServiceInvoke.simpleFields()));
 
             params.put("type", Constants.INVOKE_TYPE_PROVIDER);
             List<ServiceInvoke> providerInvokes = serviceInvokeService.findBy(params);
+            //mv.addObject("providerList", JSONUtil.getInterface().convert(providerInvokes, ServiceInvoke.simpleFields()));
 
-            mv.addObject("providerList", JSONUtil.getInterface().convert(providerInvokes, ServiceInvoke.simpleFields()));
+            List<ServiceInvoke> invokeList = new ArrayList<ServiceInvoke>();
+            invokeList.addAll(consumerInvokes);
+            invokeList.addAll(providerInvokes);
+            mv.addObject("invokeList", JSONUtil.getInterface().convert(invokeList, ServiceInvoke.simpleFields()));
         }
         return mv;
     }

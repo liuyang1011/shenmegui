@@ -294,7 +294,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             Ida ida = new Ida();
             SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -425,7 +425,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             Ida ida = new Ida();
             SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
-
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
 
             if (cellObj != null) {
@@ -666,24 +666,24 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                     } else if ("服务描述".equals(cell)) {
                         serviceDesc = sheetRow.getCell(k + 1)
                                 .getStringCellValue();
-                        if (serviceDesc == null || "".equals(serviceDesc)) {
-                            logger.error(tranSheet.getSheetName()
-                                    + "sheet页，服务描述为空");
-                            logInfoService.saveLog(tranSheet.getSheetName()
-                                    + "sheet页，服务描述为空", "导入");
-                            flag = false;
-                        }
+//                        if (serviceDesc == null || "".equals(serviceDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，服务描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，服务描述为空", "导入");
+//                            flag = false;
+//                        }
                         service.setDesc(serviceDesc);
                         break;
                     } else if ("服务操作描述".equals(cell)) {
                         operDesc = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (operDesc == null || "".equals(operDesc)) {
-                            logger.error(tranSheet.getSheetName()
-                                    + "sheet页，服务操作描述为空");
-                            logInfoService.saveLog(tranSheet.getSheetName()
-                                    + "sheet页，服务操作描述为空", "导入");
-                            flag = false;
-                        }
+//                        if (operDesc == null || "".equals(operDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，服务操作描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，服务操作描述为空", "导入");
+//                            flag = false;
+//                        }
                         oper.setOperationDesc(operDesc);
                         break;
                     } else if ("原始接口".equals(cell)) {
@@ -719,6 +719,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         int outIndex = 0;
         for (int i = 0; i <= end; i++) {
             Row sheetRow = sheet.getRow(i);
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -735,6 +736,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         for (int i = inputIndex; i < outIndex - 1; i++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(i);
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -788,6 +790,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         for (int j = outIndex; j <= end; j++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(j);
+            if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);

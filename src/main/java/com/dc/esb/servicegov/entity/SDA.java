@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.entity;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -37,10 +39,10 @@ public class SDA implements Serializable {
 	@Column(name = "SERVICE_ID")
 	private String serviceId;
 
-	@Column(name = "OPT_USER")
+	@Column(name = "OPT_USER", length = 100)
 	private String optUser;
 
-	@Column(name = "OPT_DATE")
+	@Column(name = "OPT_DATE", length = 50)
 	private String optDate;
 
 	@Column(name = "OPERATION_ID")
@@ -49,7 +51,7 @@ public class SDA implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String desc;
 
-	@Column(name = "REMARK",length=1000)
+	@Column(name = "REMARK",length=1024)
 	private String remark;
 
 	@Column(name = "HEAD_ID")
@@ -58,16 +60,16 @@ public class SDA implements Serializable {
 	@Column(name = "VERSION")
 	private String version;
 
-	@Column(name = "TYPE")
+	@Column(name = "TYPE", length = 50)
 	private String type;
 
-	@Column(name = "LENGTH")
+	@Column(name = "LENGTH", length = 50)
 	private String length;
 
-	@Column(name = "REQUIRED")
+	@Column(name = "REQUIRED", length = 50)
 	private String required;
 
-	@Column(name = "ARG_TYPE")
+	@Column(name = "ARG_TYPE", length = 50)
 	//参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
 	private String argType;
 
@@ -183,6 +185,12 @@ public class SDA implements Serializable {
 	}
 
 	public void setRemark(String remark) {
+		if(StringUtils.isNotEmpty(remark)){
+			if(remark.length() > 1024){
+				this.remark = remark.substring(0, 1023);
+				return;
+			}
+		}
 		this.remark = remark;
 	}
 

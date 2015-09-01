@@ -1,15 +1,15 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" pageEncoding="utf-8" %>
 <%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>列表页</title>
+    <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>列表页</title>
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
     <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
@@ -25,124 +25,209 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
-<script type="text/javascript">
-	 $(document).ready(function(){
-    	loadSystem("systemList1", ${systemList}, "systemId", "systemChineseName");
-    	loadSystem("systemList2", ${systemList}, "systemId", "systemChineseName");
-    	loadSelect("consumer", ${consumerList});
-    	loadSelect("provider", ${providerList});
-	});
-</script>
+    <script type="text/javascript">
+        var toolbar = [{
+            text: '新增',
+            iconCls: 'icon-add',
+            handler: function () {
+                if (!$("#operationForm").form('validate')) {
+                    alert("请先完善基础信息!");
+                    return false;
+                }
+                $('#interfaceDlg').dialog({
+                    title: '添加消费者-提供者关系',
+                    width: 500,
+                    height: 500,
+                    closed: false,
+                    cache: false,
+                    href: '/jsp/service/operation/consumer_provider_add.jsp',
+                    modal: true
+                });
+            }},{
+            text: '删除',
+            iconCls: 'icon-remove',
+            handler: function () {
+                $("#resultList").datagrid('loadData',{total:0,rows:[]});
+                invokeList = new Array();
+            }}
+        ];
+        var systemList = ${systemList};
+        var consumerList = new Array();
+        var providerList = new Array();
+        var invokeList = ${invokeList};
+        /*在接口选完服务提供者消费者关系点击确定执行*/
+        function addInterfaceContent(){
+            var consumerNames = "";
+            var consumerNameIds = "";
+            var standardConsumerNames = "";
+            var standardConsumerIds = "";
+            for(var i = 0; i < consumerList.length; i++){
+                var csi = consumerList[i];
+                if(i > 0){
+                    consumerNames += ", ";
+                    consumerNameIds += ", ";
+                }
+                consumerNames += csi.systemChineseName;
+                consumerNameIds += csi.systemId;
+                if(csi.interfaceId == ""){
+                    if(i > 0){
+                        standardConsumerNames += ",";
+                        standardConsumerIds += ",";
+                    }
+                    standardConsumerNames += csi.systemChineseName;
+                    standardConsumerIds += csi.systemId;
+                }
+                invokeList.push(csi);
+            }
+            var standardProviderNames = "";
+            var standardProviderIds = "";
+            for(var i = 0; i < providerList.length; i++){
+                var psi = providerList[i];
+                if(psi.interfaceId == ""){
+                    if(i > 0){
+                        standardProviderNames += ", ";
+                        standardProviderIds += ", ";
+                    }
+                    standardProviderNames += psi.systemChineseName;
+                    standardProviderIds += psi.systemId;
+                }
+                invokeList.push(psi);
+            }
+            for(var i = 0; i < providerList.length; i++){
+                var psi = providerList[i];
+                if(psi.interfaceId != ""){//如果提供者是非标准接口
+                    //添加一条记录
+                    var row =  genderRow(consumerNames, consumerNameIds, psi.systemChineseName, psi.systemId, psi.interfaceName, psi.interfaceId);
+                    $("#resultList").datagrid("appendRow", row);
+                }else{//如果是标准接口
+                    for(var j = 0; j < consumerList.length; j++){
+                        var csi = consumerList[j];
+                        if(csi.interfaceId != ""){ //如果消费者是非标接口
+                            var row = genderRow(csi.systemChineseName, csi.systemId, standardProviderNames, standardProviderIds, csi.interfaceName, csi.interfaceId);
+                            $("#resultList").datagrid("appendRow", row);
+                        }
+                    }
+                }
+            }
+            if(standardConsumerIds !="" && standardProviderIds !=""){
+                var row = genderRow(standardConsumerNames, standardConsumerIds, standardProviderNames, standardProviderIds, "", "");
+                $("#resultList").datagrid("appendRow", row);
+            }
+            consumerList = new Array();
+            providerList = new Array();
+            $("#interfaceDlg").dialog("close");
+        }
+        function genderRow(consumerNames, consumerIds, providerNames, providerIds, interfaceName, interfaceId){
+            var row = {};
+            row.consumers= consumerNames;
+            row.consumerIds= consumerIds;
+            row.providers= providerNames;
+            row.providerIds= providerIds;
+            row.interfaceName= interfaceName;
+            row.interfaceId= interfaceId;
+            return row;
+        }
+    </script>
 
 </head>
 
-<body >
-<form class="formui" id="operationEdit">
- <div  class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
- <input type="hidden" id="serviceId" name="serviceId" value="${service.serviceId }" />
- <input type="hidden" name="versionId" value="${operation.versionId }" />
- <input type="hidden" name="deleted" value="${operation.deleted }" />
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-      <th>服务代码</th>
-    <td> <input class="easyui-textbox" disabled="disabled"  type="text" value="${service.serviceId }" ></td>
-   
-  <th>服务名称</th>
-    <td> <input class="easyui-textbox" disabled="disabled"  type="text" name="serviceName" value="${service.serviceName }" >
-    </td>
-  </tr>
-  <tr>
-     <th>场景号</th>
-    <td><input id="operationId" readonly="true" name="operationId"  value="${operation.operationId }" class="easyui-textbox"  type="text" data-options="required:true" ></td>
-    <th>场景名称</th>
-    <td><input id="operationName" name="operationName" value="${operation.operationName }" class="easyui-textbox"  type="text" ></td>
-    </tr>
-  <tr>
-     <th>功能描述</th>
-    <td colspan="3"><input id="operationDesc" value="${operation.operationDesc }" name="operationDesc"  class="easyui-textbox"  style="width:100%" type="text"></td>
-    </tr>
-  <tr>
-      <th>场景关键词</th>
-    <td> <input class="easyui-textbox" disabled="disabled"  type="text" name=""></td>
-   
-  <th>状态</th>
-    <td>
-    	<input type="hidden" name="state" value="0" />
-    	<input	name=""
-				class="easyui-combobox"
-				value="${operation.state }"
-				data-options="readonly:true, valueField: 'value',textField: 'label',
+<body>
+<form class="formui" id="operationForm">
+    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="clean()">取消</a><a href="#"
+                                                                                  onclick="save('operationForm',1)"
+                                                                                  class="easyui-linkbutton"
+                                                                                  iconCls="icon-save">保存</a></div>
+    <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
+        <input type="hidden" name="versionId" value="${operation.versionId }" />
+        <input type="hidden" name="deleted" value="${operation.deleted }" />
+        <input type="hidden" name="state" value="0" />
+        <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>服务代码</th>
+                <td><input id="serviceId" name="serviceId" class="easyui-textbox" readonly="true" type="text" value="${service.serviceId }"/></td>
+
+                <th>服务名称</th>
+                <td><input class="easyui-textbox" readonly="true" type="text" name="serviceName"
+                           value="${service.serviceName }"/>
+                </td>
+            </tr>
+            <tr>
+                <th>场景号</th>
+                <td><input id="operationId" name="operationId" class="easyui-textbox" type="text" readonly="true" value="${operation.operationId}"
+                           data-options="required:true, validType:['unique','english']"/></td>
+                <th>场景名称</th>
+                <td><input id="operationName" name="operationName" value="${operation.operationName}" class="easyui-textbox" type="text"/></td>
+            </tr>
+            <tr>
+                <th>功能描述</th>
+                <td colspan="3"><input id="operationDesc" name="operationDesc" value="${operation.operationDesc}" class="easyui-textbox" style="width:100%"
+                                       type="text"/></td>
+            </tr>
+            <tr>
+                <th>场景关键词</th>
+                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+
+                <th>状态</th>
+                <td>
+                    <input
+                              class="easyui-combobox"
+                              value="${operation.state }"
+                              data-options="readonly:true, valueField: 'value',textField: 'label',
 						data: [{label: '待审核',value: '0'},
 						{label: '审核通过',value: '1'},
 						{label: '审核未通过',value: '2'}
 							]"
-					 />
-    </td>
-  </tr>
-   <tr>
-      <th>使用范围</th>
-    <td> <input class="easyui-textbox"  disabled="disabled" type="text" name="" ></td>
-   
-  <th>备注</th>
-    <td> <input id="operationRemark" name="operationRemark" value="${operation.operationRemark }" class="easyui-textbox"  type="text" >
-    </td>
-  </tr>
-</table>
+                            />
+                </td>
+            </tr>
+            <tr>
+                <th>使用范围</th>
+                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+
+                <th>备注</th>
+                <td><input id="operationRemark" name="operationRemark"  value="${operation.operationRemark}" class="easyui-textbox" type="text"/>
+                </td>
+            </tr>
+            <tr>
+                <th>场景关键字:</th>
+                <td colspan="2"><ul id="tags"></ul></td>
+            </tr>
+        </table>
 
 
+    </div>
+
+
+</form>
+<div  class="easyui-panel" title="消费者-提供者列表" style="width:100%;height:auto;padding:10px;">
+    <table id="resultList" class="easyui-datagrid"
+           data-options="
+			rownumbers:true,
+			singleSelect:true,
+			fitColumns:false,
+			url:'/operation/getInvokeMapping?serviceId=${operation.serviceId}&operationId=${operation.operationId}',
+			method:'get',toolbar:toolbar,
+			pagination:true,
+				"
+           style="height:370px; width:100%;">
+        <thead>
+        <tr>
+            <th data-options="field:'',checkbox:true,width:50"></th>
+            <th data-options="field:'consumers',width:250">消费者名称</th>
+            <th data-options="field:'consumerIds',width:150">消费者编码</th>
+            <th data-options="field:'interfaceName',width:100">接口名称</th>
+            <th data-options="field:'interfaceId',width:100">接口代码</th>
+            <th data-options="field:'providers',width:250">提供者名称</th>
+            <th data-options="field:'providerIds',width:150">提供者编码</th>
+
+        </tr>
+        </thead>
+    </table>
 </div>
-    <div style="margin-top:10px;"></div>
-
-<div id="p" class="easyui-panel" title="服务消费方应用管理" style="width:100%;height:auto;padding:10px;">
-<table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
-  <tr>
-      <th align="center">已经应用</th>
-    <td width="50" align="center">&nbsp;</td>
-    <th align="center">应用系统列表</th>
-  </tr>
-  
-  <tr>
-    <th align="center"><select name="select2" id="consumer" size="10" multiple  style="width:155px;height:160px" panelHeight="auto">
-    </select></th>
-    <td align="center" valign="middle"><a href="#" class="easyui-linkbutton"  iconCls="icon-select-add" onClick="selectex('consumer','systemList1')"></a><br>
-<br>
-<br>
-<a href="#" class="easyui-linkbutton"  iconCls="icon-select-remove" onClick="chooseInterface('systemList1','consumer')"></a></td>
-   <td align="center">
-    <select name="select" id="systemList1" size="10" multiple  style="width:155px;height:160px" panelHeight="auto"/>
-    </select>
-    </td>
-  </tr>
-  </table>
-  </div>
-  <div style="margin-top:10px;"></div>
- <div  class="easyui-panel" title="服务提供方应用管理" style="width:100%;height:auto;padding:10px;">
-<table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
-  <tr>
-      <th align="center">已经应用</th>
-    <td width="50" align="center">&nbsp;</td>
-    <th align="center">应用系统列表</th>
-  </tr>
-  
-  <tr>
-    <th align="center"><select name="select2" id="provider" size="10" multiple  style="width:155px;height:160px" panelHeight="auto">
-    </select></th>
-    <td align="center" valign="middle"><a href="#" class="easyui-linkbutton"  iconCls="icon-select-add" onClick="selectex('provider','systemList2')"></a><br>
-<br>
-<br>
-<a href="#" class="easyui-linkbutton"  iconCls="icon-select-remove" onClick="chooseInterface('systemList2','provider')"></a></td>
-    <td align="center"><select name="select" id="systemList2" size="10" multiple  style="width:155px;height:160px" panelHeight="auto">
-     
-    </select></td>
-  </tr>
-  </table>
-  </div>
-    <div style="margin-top:10px;"></div>
-
-  <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="clean()">取消</a><a href="#" onclick="save('operationEdit',1)" class="easyui-linkbutton"  iconCls="icon-save">保存</a></div>
-  <div id="opDlg" class="easyui-dialog"
-		style="width:400px;height:280px;padding:10px 20px" closed="true"
-		resizable="true"></div>
-  </form>
+<div style="margin-top:10px;"></div>
+<div id="interfaceDlg" class="easyui-dialog"
+     style="width:400px;height:280px;padding:10px 20px" closed="true"
+     resizable="true"></div>
 </body>
 </html>

@@ -63,26 +63,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         }
         if(values.get("systemName") != null && values.get("systemName").length > 0){
             if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
-                Map<String,String> map = new HashMap<String, String>();
-                try {
-                    map.put("systemChineseName", URLDecoder.decode(values.get("systemName")[0], "utf-8"));
-                }catch (UnsupportedEncodingException e){
-                    e.printStackTrace();
-                }
-                List<System> list = systemDAO.findLike(map, MatchMode.ANYWHERE);
-                String systemsStr = "";
-                for (int i = 0; i < list.size(); i++) {
-                    if(i == 0){
-                        systemsStr += list.get(i).getSystemId();
-                    }else{
-                        systemsStr += ","+list.get(i).getSystemId();
-                    }
-                }
-                if(!"".equals(systemsStr)){
-                    hql += " and si.systemId in (" + systemsStr + ")";
-                }else{
-                    hql += " and si.systemId in (1)";
-                }
+                hql += " and si.system.systemChineseName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
         hql += " group by si.systemId, si.type";
@@ -106,26 +87,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         }
         if(values.get("systemName") != null && values.get("systemName").length > 0){
             if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
-                Map<String,String> map = new HashMap<String, String>();
-                try {
-                    map.put("systemChineseName", URLDecoder.decode(values.get("systemName")[0], "utf-8"));
-                }catch (UnsupportedEncodingException e){
-                    e.printStackTrace();
-                }
-                List<System> list = systemDAO.findLike(map, MatchMode.ANYWHERE);
-                String systemsStr = "";
-                for (int i = 0; i < list.size(); i++) {
-                    if(i == 0){
-                        systemsStr += list.get(i).getSystemId();
-                    }else{
-                        systemsStr += ","+list.get(i).getSystemId();
-                    }
-                }
-                if(!"".equals(systemsStr)){
-                    hql += " and si.systemId in (" + systemsStr + ")";
-                }else{
-                    hql += " and si.systemId in (1)";
-                }
+                hql += " and si.system.systemChineseName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
         hql += " group by systemId, type";
@@ -196,10 +158,20 @@ public class StatisticsServiceImpl implements StatisticsService{
         query.setParameter(i, type);
         query.setParameter(1, systemId);
         query.setParameter(2, Constants.INVOKE_TYPE_CONSUMER);
-//        BigInteger count = (BigInteger)query.uniqueResult();
-        BigDecimal a = (BigDecimal)query.uniqueResult();
-        BigInteger count = new BigInteger(""+a.intValue());
-        return count.longValue();
+        //db2 返回Integer，mysql返回BigInteger
+        Object result = query.uniqueResult();
+        if(result != null && result instanceof  BigInteger){
+            BigInteger bigCount = (BigInteger)query.uniqueResult();
+            return bigCount.longValue();
+
+        }else if(result != null && result instanceof  BigDecimal){
+            BigDecimal a = (BigDecimal)query.uniqueResult();
+            BigInteger count = new BigInteger(""+a.intValue());
+            return count.longValue();
+        }else{
+            long count = (Long)query.uniqueResult();
+            return count;
+        }
     }
     //根据系统id，type计算服务场景 消费者数量大于1的场景数
     public long getOperationReuseCount(List<String> serviceIds){
@@ -218,12 +190,13 @@ public class StatisticsServiceImpl implements StatisticsService{
             BigInteger bigCount = (BigInteger)query.uniqueResult();
             return bigCount.longValue();
 
-        }else{
+        }else if(result != null && result instanceof  BigDecimal){
             BigDecimal a = (BigDecimal)query.uniqueResult();
             BigInteger count = new BigInteger(""+a.intValue());
             return count.longValue();
-//            long count = (Long)query.uniqueResult();
-//            return count;
+        }else{
+            long count = (Long)query.uniqueResult();
+            return count;
         }
     }
 
@@ -287,7 +260,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         }
         if(values.get("systemName") != null && values.get("systemName").length > 0){
             if (StringUtils.isNotEmpty(values.get("systemName")[0])) {
-                hql += " and si.systemName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
+                hql += " and si.system.systemChineseName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
         hql += " group by si.systemId, si.type";

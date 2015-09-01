@@ -114,7 +114,6 @@
     }
     function appendTreeNode(form, node, nodename){
         var fields = ["id", "text", "append2", "append3", "append4", "append5"];
-        console.log(nodename);
         for (var j = 0; j < fields.length; j++) {
             try {
                 var input1 = $("<input>");

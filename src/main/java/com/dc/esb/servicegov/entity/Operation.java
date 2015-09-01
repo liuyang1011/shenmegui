@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.entity;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -21,7 +23,7 @@ public class Operation implements Serializable {
     @Column(name = "OPERATION_NAME")
     private String operationName;
 
-    @Column(name = "OPERATION_DESC")
+    @Column(name = "OPERATION_DESC", length=1024)
     private String operationDesc;
 
     @Column(name = "OPERATION_REMARK")
@@ -30,21 +32,21 @@ public class Operation implements Serializable {
     @Column(name = "VERSION_ID")
     private String versionId;
 
-    @Column(name = "STATE")
+    @Column(name = "STATE", length = 20)
     private String state;
 
-    @Column(name = "LIFE_CYCLE_STATE")
+    @Column(name = "LIFE_CYCLE_STATE", length = 20)
     private String lifeCyscleState;
 
-    @Column(name = "OPT_USER")
+    @Column(name = "OPT_USER", length = 100)
     private String optUser;
 
-    @Column(name = "OPT_DATE")
+    @Column(name = "OPT_DATE", length = 50)
     private String optDate;
 
     @Column(name = "HEAD_ID")
     private String headId;
-    @Column(name = "DELETED")
+    @Column(name = "DELETED", length = 10)
     private String deleted;
     @ManyToOne(targetEntity = Service.class)
     @JoinColumns({
@@ -88,6 +90,12 @@ public class Operation implements Serializable {
     }
 
     public void setOperationDesc(String operationDesc) {
+        if(StringUtils.isNotEmpty(operationDesc)){
+            if(operationDesc.length() > 1024){
+                this.operationDesc = operationDesc.substring(0, 1023);
+                return;
+            }
+        }
         this.operationDesc = operationDesc;
     }
 

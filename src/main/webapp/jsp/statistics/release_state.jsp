@@ -160,7 +160,7 @@
   function query(){
     var params = {
       "systemId":$("#systemId").textbox("getValue"),
-      "systemName":$("#systemName").textbox("getText"),
+      "systemName":encodeURI($("#systemName").textbox("getText")),
       "type":$("#type").combobox("getValue")
     }
     $("#resultList").datagrid('options').queryParams = params;
