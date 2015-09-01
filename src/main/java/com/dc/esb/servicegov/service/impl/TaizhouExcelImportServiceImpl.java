@@ -1126,6 +1126,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             Row row = indexSheet.getRow(i);
             // 读取每一行第一列，获取每个交易sheet名称
             String sheetName = getCell(row, INDEX_SHEET_NAME_COL);
+            if("".equals(sheetName)) continue;
             //接口消费方
 //            String consumerSystem = getCell(row, INDEX_CONSUMER_COL);
             //形式：name,name

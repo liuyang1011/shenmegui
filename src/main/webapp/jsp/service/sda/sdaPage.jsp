@@ -260,7 +260,7 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140, editor:'text'" editor="{ type : 'validatebox', options : { required : true, validType:'unique'} } ">字段名</th>
+				<th data-options="field:'text',width:140" readOnly="true">字段名</th>
 				<th data-options="field:'append1',width:60,align:'right',editor:'text'">字段别名</th>
 				<th data-options="field:'append2',width:50,editor:'text'">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>

@@ -16,7 +16,7 @@
   </tr>
   <tr>
     <th>服务分类</th>
-    <td><input class="easyui-textbox" type="text" id="serviceCategory" ></td>
+    <td><input class="easyui-textbox" type="text" id="serviceCategory" disabled="disabled"></td>
   </tr>
 <tr>
     <th>version</th>

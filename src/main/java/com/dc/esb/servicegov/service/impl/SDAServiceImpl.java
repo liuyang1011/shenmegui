@@ -355,6 +355,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                     sda.setLength(type.split("[()]+")[1]);
                 }
                 sda.setOptDate(DateUtils.format(new Date()));
+                //TODO TZB元数据修改对应sda的structName修改
+                sda.setStructName(sda.getMetadataId());
                 sdaDAO.save(sda);
             }
             operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());

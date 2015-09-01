@@ -85,6 +85,7 @@ public class ExcelImportController {
         InputStream is = null;
         java.io.PrintWriter writer = null;
         StringBuffer msg = new StringBuffer();
+        boolean success = true;
         try {
             writer = response.getWriter();
             is = file.getInputStream();
@@ -154,6 +155,7 @@ public class ExcelImportController {
             logger.error("导入出现异常:异常信息：" + e.getMessage());
             logInfoService.saveLog("导入出现异常:异常信息：" + e.getMessage(), "导入");
             writer.println("alert('导入失败，请查看日志!');");
+            success = false;
         } finally {
             if (null != is) {
                 try {

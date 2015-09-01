@@ -26,12 +26,23 @@ public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
 	}
 	public boolean auditOperation(String state, String[] operationIds) {
 		if (operationIds != null && operationIds.length > 0) {
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("state", state);
-			params.put("operationIds", operationIds);
-			batchExecute(
-					" update Operation set state =(:state) where operationId in (:operationIds)",
-					params);
+			for (int i = 0; i < operationIds.length; i++) {
+				String[] per = operationIds[i].split(",");
+				String operationId = per[0];
+				String serviceId = per[1];
+				Map<String,String> map = new HashMap<String, String>();
+				map.put("operationId",operationId);
+				map.put("serviceId",serviceId);
+				Operation ope = findUniqureBy(map);
+				ope.setState(state);
+				save(ope);
+			}
+//			Map<String, Object> params = new HashMap<String, Object>();
+//			params.put("state", state);
+//			params.put("operationIds", operationIds);
+//			batchExecute(
+//					" update Operation set state =(:state) where operationId in (:operationIds)",
+//					params);
 			return true;
 		}
 		return false;
