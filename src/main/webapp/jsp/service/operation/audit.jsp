@@ -103,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$.each(checkedItems, function (index, item) {
 				ids.push(""+item.operationId+","+item.serviceId);
 			});
-			var auditRemark = encodeURI($("#auditRemark").val());
+			var auditRemark = encodeURI(encodeURI($("#auditRemark").val()));
 			if(type ==2 && auditRemark == ""){
 				alert("必须输入不通过原因!");
 				return false;

@@ -345,7 +345,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
     }
 
-    public boolean auditOperation(String state, String auditRemark, String[] operationIds){
+    public boolean auditOperation(String state, String auditRemark, String[] operationIds) throws  Throwable{
         if (operationIds != null && operationIds.length > 0) {
             for (int i = 0; i < operationIds.length; i++) {
                 String[] per = operationIds[i].split(",");
@@ -358,6 +358,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 ope.setState(state);
                 save(ope);
                 Version version = ope.getVersion();
+                if(StringUtils.isNotEmpty(auditRemark)){
+                    auditRemark = URLDecoder.decode(auditRemark, "utf-8");
+                }
                 version.setRemark(auditRemark);
                 versionServiceImpl.save(version);
 

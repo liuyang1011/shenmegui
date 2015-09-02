@@ -344,7 +344,7 @@ public class OperationController {
     @RequiresPermissions({"service-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/auditSave", headers = "Accept=application/json")
     @ResponseBody
-    public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) {
+    public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) throws  Throwable{
         return operationServiceImpl.auditOperation(state, auditRemark, operationIds);
     }
 
