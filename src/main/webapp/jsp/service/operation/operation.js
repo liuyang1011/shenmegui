@@ -142,54 +142,6 @@ function selectService() {
         url:'/operation/getAudits/'+ node.service.serviceId
     });
 }
-
-//审核通过方法
-function auditPass(listId) {
-    var checkedItems = $('#' + listId).datagrid('getChecked');
-    if (checkedItems != null && checkedItems.length > 0) {
-        var ids = [];
-        $.each(checkedItems, function (index, item) {
-            ids.push(""+item.operationId+","+item.serviceId);
-        });
-        $.ajax({
-            type: "post",
-            async: false,
-            contentType: "application/json; charset=utf-8",
-            url: "/operation/auditPass",
-            dataType: "json",
-            data: JSON.stringify(ids),
-            success: function (data) {
-                alert("操作成功");
-                $('#' + listId).datagrid('reload');
-            }
-        });
-    }
-}
-
-//审核不通过方法
-function auditUnPass(listId) {
-    var checkedItems = $('#' + listId).datagrid('getChecked');
-    if (checkedItems != null && checkedItems.length > 0) {
-        var ids = [];
-        $.each(checkedItems, function (index, item) {
-            ids.push(item.operationId);
-        });
-        $.ajax({
-            type: "post",
-            async: false,
-            contentType: "application/json; charset=utf-8",
-            url: "/operation/auditUnPass",
-            dataType: "json",
-            data: JSON.stringify(ids),
-            success: function (data) {
-                alert("操作成功");
-                $('#' + listId).datagrid('reload');
-            }
-        });
-    }
-    //如果有任务在执行，则更新任务的状态
-    parent.PROCESS_INFO.approved = false;
-}
 //加载系统列表
 function loadSystem(id, items, valueField, textField) {
     if (items.length > 0) {

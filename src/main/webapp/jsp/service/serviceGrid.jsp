@@ -251,7 +251,7 @@
             }
         }
     }, '-',
-        /*{
+        {
             text: '场景明细',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -268,7 +268,7 @@
                     alert("请只选中场景后再查看！");
                 }
             }
-        },*/
+        },
         {
             text: '历史版本',
             iconCls: 'icon-qxfp',
@@ -322,9 +322,19 @@
             iconCls: 'icon-audit',
             handler: function () {
                 var urlPath = "/operation/auditPage?serviceId=${entity.serviceId }";
-                var checkedItems = $('#operationList').datagrid('getChecked');
-                if (checkedItems != null && checkedItems.length > 0) {
-                    urlPath += "&operationId=" + checkedItems[0].operationId;
+                var items = $('#operationList').datagrid('getData').rows;
+                var flag = false;
+                if (items != null && items.length > 0) {
+                    for(var i = 0; i < items.length; i++){
+                        if(items[i].optState == 0){
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if(!flag){
+                    alert("该服务下没有要审核的数据！");
+                    return false;
                 }
                 var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
 

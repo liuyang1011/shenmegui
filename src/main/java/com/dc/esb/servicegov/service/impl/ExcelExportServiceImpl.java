@@ -648,7 +648,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
-
+                        if(interfaceInvokeVO == null) continue;
                         values3[6] = interfaceInvokeVO.getConsumers();
                         values3[7] = interfaceInvokeVO.getEcode();
                         values3[8] = interfaceInvokeVO.getInterfaceName();
@@ -892,7 +892,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             }
         }
-
         return result;
     }
     /**

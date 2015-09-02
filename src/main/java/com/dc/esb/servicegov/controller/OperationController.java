@@ -342,18 +342,12 @@ public class OperationController {
     }
 
     @RequiresPermissions({"service-update"})
-    @RequestMapping(method = RequestMethod.POST, value = "/auditPass", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/auditSave", headers = "Accept=application/json")
     @ResponseBody
-    public boolean auditPass(@RequestBody String[] operationIds) {
-        return operationServiceImpl.auditOperation(STATE_PASS, operationIds);
+    public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) {
+        return operationServiceImpl.auditOperation(state, auditRemark, operationIds);
     }
 
-    @RequiresPermissions({"service-update"})
-    @RequestMapping(method = RequestMethod.POST, value = "/auditUnPass", headers = "Accept=application/json")
-    @ResponseBody
-    public boolean auditUnPass(@RequestBody String[] operationIds) {
-        return operationServiceImpl.auditOperation(STATE_UNPASS, operationIds);
-    }
 
     // 根据系统id查询该系统过是有接口
     @RequiresPermissions({"service-get"})
