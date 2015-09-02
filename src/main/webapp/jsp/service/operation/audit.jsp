@@ -104,7 +104,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				ids.push(""+item.operationId+","+item.serviceId);
 			});
 			var auditRemark = encodeURI($("#auditRemark").val());
-			alert(auditRemark);
+			if(type ==2 && auditRemark == ""){
+				alert("必须输入不通过原因!");
+				return false;
+			}
 			$.ajax({
 				type: "post",
 				async: false,
