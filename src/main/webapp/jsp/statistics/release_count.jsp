@@ -73,7 +73,7 @@
         <th> 起始日期</th>
         <td><input class="easyui-datebox" style="width:80px" type="text" name="startDate" id="startDate"></td>
         <th> 结束日期</th>
-        <td><input class="easyui-datebox" style="width:80px" type="text" name="endDate" id="endDate"></td>
+        <td><input class="easyui-datebox" style="width:80px" type="text" name="endDate" id="endDate" ></td>
         <th style="width:200px">
           <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
@@ -167,7 +167,7 @@
       "type":$("#type").combobox("getValue"),
       "startDate":$("#startDate").datebox("getValue"),
       "endDate":$("#endDate").datebox("getValue"),
-      "systemName":$("#systemName").datebox("getValue")
+      "systemName": encodeURI($("#systemName").datebox("getValue"))
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');

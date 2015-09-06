@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.hibernate.NonUniqueObjectException;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
      * @return
      */
     @Override
-    public Map<String, Object> getServiceInfo(Sheet tranSheet) {
+    public Map<String, Object> getServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
         boolean flag = true;
         // 读取每个sheet页服务信息
         int start = tranSheet.getFirstRowNum();
@@ -39,6 +40,11 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         com.dc.esb.servicegov.entity.Service service = new com.dc.esb.servicegov.entity.Service();
         Operation oper = new Operation();
+
+        String interfaceStatus = indexDO.getInterfaceStatus();
+        String operationState = indexDO.getOperationState();
+        inter.setStatus(interfaceStatus);
+        oper.setState(operationState);
         for (int j = start; j <= end; j++) {
             Row sheetRow = tranSheet.getRow(j);
             if(sheetRow == null) continue;
@@ -65,13 +71,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                         //TODO 类型报错
                         sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
                         tranCode = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (tranCode == null || "".equals(tranCode)) {
+                        /*if (tranCode == null || "".equals(tranCode)) {
                             logger.error(tranSheet.getSheetName()
                                     + "sheet页，交易码为空");
                             logInfoService.saveLog(tranSheet.getSheetName()
                                     + "sheet页，交易码为空", "导入");
                             flag = false;
-                        }
+                        }*/
                         inter.setEcode(tranCode);
                     } else if ("交易名称".equals(cell) && k==0) {
                         tranName = sheetRow.getCell(k + 1).getStringCellValue();
@@ -1022,6 +1028,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 if (GlobalImport.operateFlag) {
                     interfaceDB.setInterfaceName(inter.getInterfaceName());
                     interfaceDB.setEcode(inter.getEcode());
+                    interfaceDB.setStatus(inter.getStatus());
                     String version = interfaceDB.getVersion();
                     if (version == null || "".equals(version)) {
                         version = initVersion;
@@ -1054,7 +1061,12 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             inter.setVersion(initVersion);
             inter.setInterfaceId(inter.getInterfaceId());
             //建立调用关系
-            interfaceDao.save(inter);
+            try{
+                //TODO 两个提供方都调用同一个接口时候
+                interfaceDao.save(inter);
+            }catch (NonUniqueObjectException e){
+                e.printStackTrace();
+            }
             //建立调用关系
             provider_invoke = new ServiceInvoke();
             //TODO 已经改为id格式
@@ -1103,11 +1115,37 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 msg.append("" + systemAb + "系统不存在");
                 continue;
             }
-
+            String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+            if ("投产".equals(interfaceStatus)){
+                interfaceStatus = Constants.INTERFACE_STATUS_TC;
+            }else if ("废弃".equals(interfaceStatus)){
+                interfaceStatus = Constants.INTERFACE_STATUS_FQ;
+            }else{
+                interfaceStatus = "";
+            }
+            //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
+            String operationState = getCell(row, INDEX_OPERATION_STATE);
+            if("服务定义".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_UNAUDIT;
+            }else if("审核通过".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_PASS;
+            }else if("审核不通过".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_UNPASS;
+            }else if("已发布".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED;
+            }else if("已上线".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_ONLINE;
+            }else if("已下线".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
+            }else {
+                operationState = "";
+            }
             IndexDO indexDO = new IndexDO();
             indexDO.setSheetName(sheetName);
             indexDO.setSystemAb(systemAb);
             indexDO.setSystemId(system.getSystemId());
+            indexDO.setInterfaceStatus(interfaceStatus);
+            indexDO.setOperationState(operationState);
             indexDOs.add(indexDO);
         }
         List list = new ArrayList();
@@ -1163,6 +1201,31 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
                 String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
                 String operationId = getCell(row, INDEX_OPERATION_ID_COL);
+                String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+                if ("投产".equals(interfaceStatus)){
+                    interfaceStatus = Constants.INTERFACE_STATUS_TC;
+                }else if ("废弃".equals(interfaceStatus)){
+                    interfaceStatus = Constants.INTERFACE_STATUS_FQ;
+                }else{
+                    interfaceStatus = "";
+                }
+                //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
+                String operationState = getCell(row, INDEX_OPERATION_STATE);
+                if("服务定义".equals(operationState)){
+                    operationState = Constants.Operation.OPT_STATE_UNAUDIT;
+                }else if("审核通过".equals(operationState)){
+                    operationState = Constants.Operation.OPT_STATE_PASS;
+                }else if("审核不通过".equals(operationState)){
+                    operationState = Constants.Operation.OPT_STATE_UNPASS;
+                }else if("已发布".equals(operationState)){
+                    operationState = Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED;
+                }else if("已上线".equals(operationState)){
+                    operationState = Constants.Operation.LIFE_CYCLE_STATE_ONLINE;
+                }else if("已下线".equals(operationState)){
+                    operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
+                }else {
+                    operationState = "";
+                }
                 String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
                 String serviceId = temp.split("[()]+")[1];
                 String systemId = consumerSystemId;
@@ -1183,6 +1246,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 indexDO.setOperationId(operationId);
                 indexDO.setServiceId(serviceId);
                 indexDO.setSystemAb(systemAb);
+                indexDO.setInterfaceStatus(interfaceStatus);
+                indexDO.setOperationState(operationState);
                 indexDOs.add(indexDO);
             }
         }
@@ -1389,5 +1454,166 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             }
         }
 
+    }
+
+    /**
+     * 获取交易、服务、场景信息
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+        boolean flag = true;
+        // 读取每个sheet页交易信息与服务信息
+        int start = tranSheet.getFirstRowNum();
+        int end = tranSheet.getLastRowNum();
+        Interface inter = new Interface();
+        inter.setInterfaceId(tranSheet.getSheetName());
+        com.dc.esb.servicegov.entity.Service service = new com.dc.esb.servicegov.entity.Service();
+        Operation oper = new Operation();
+        String interfaceStatus = indexDO.getInterfaceStatus();
+        String operationState =indexDO.getOperationState();
+        inter.setStatus(interfaceStatus);
+        oper.setState(operationState);
+        for (int j = start; j <= end; j++) {
+            Row sheetRow = tranSheet.getRow(j);
+            if(sheetRow == null){
+                continue;
+            }
+            String tranCode = "";
+            String tranName = "";
+            String tranDesc = "";
+            String serviceName = "";
+            String serviceId = "";
+            String operId = "";
+            String operName = "";
+            String serviceDesc = "";
+            String operDesc = "";
+            int cellStart = sheetRow.getFirstCellNum();
+            int cellEnd = sheetRow.getLastCellNum();
+
+            for (int k = cellStart; k < cellEnd; k++) {
+
+                Cell cellObj = sheetRow.getCell(k);
+                if (cellObj != null) {
+
+                    String cell = ExcelTool.getInstance().getCellContent(
+                            cellObj);
+                    if ("交易码".equals(cell) && k==0) {
+                        //TODO 类型报错
+                        sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
+                        tranCode = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (tranCode == null || "".equals(tranCode)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，交易码为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，交易码为空", "导入");
+                            flag = false;
+                        }
+                        inter.setEcode(tranCode);
+                    } else if ("服务名称".equals(cell)) {
+                        serviceName = sheetRow.getCell(k + 1)
+                                .getStringCellValue();
+                        if (serviceName == null || "".equals(serviceName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，服务名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务名称为空", "导入");
+                            flag = false;
+                        }
+
+                        try {
+                            String[] req = getContext(serviceName);
+                            serviceName = req[0];
+                            serviceId = req[1];
+                            service.setServiceName(serviceName);
+                            service.setServiceId(serviceId);
+                        } catch (Exception e) {
+                            logger.error("服务名称格式不正确，格式应为为：服务名称(服务ID)");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务名称格式不正确，格式应为为：服务名称(服务ID)", "导入");
+                            flag = false;
+                        }
+
+                        break;
+                    } else if ("交易名称".equals(cell) && k==0) {
+                        tranName = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (tranName == null || "".equals(tranName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，交易名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，交易名称为空", "导入");
+                            flag = false;
+                        }
+                        inter.setInterfaceName(tranName);
+                    } else if ("接口功能描述".equals(cell) && k==0) {
+                        tranDesc = sheetRow.getCell(k + 1).getStringCellValue();
+                        inter.setDesc(tranDesc);
+                    } else if ("服务操作名称".equals(cell)) {
+                        operName = sheetRow.getCell(k + 1).getStringCellValue();
+                        if (operName == null || "".equals(operName)) {
+                            logger.error(tranSheet.getSheetName()
+                                    + "sheet页，服务操作名称为空");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务操作名称为空", "导入");
+                            flag = false;
+                        }
+
+                        try {
+                            String[] req = getContext(operName);
+                            operName = req[0];
+                            operId = req[1];
+                            oper.setOperationId(operId);
+                            oper.setOperationName(operName);
+                        } catch (Exception e) {
+                            logger.error("服务操作名称格式不正确，格式应为为：服务操作名称(操作ID)");
+                            logInfoService.saveLog(tranSheet.getSheetName()
+                                    + "sheet页，服务操作名称格式不正确，格式应为为：服务操作名称(操作ID)", "导入");
+                            flag = false;
+                        }
+                        break;
+                    } else if ("服务描述".equals(cell)) {
+                        serviceDesc = sheetRow.getCell(k + 1)
+                                .getStringCellValue();
+//                        if (serviceDesc == null || "".equals(serviceDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，服务描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，服务描述为空", "导入");
+//                            flag = false;
+//                        }
+                        service.setDesc(serviceDesc);
+                        break;
+                    } else if ("服务操作描述".equals(cell)) {
+                        operDesc = sheetRow.getCell(k + 1).getStringCellValue();
+//                        if (operDesc == null || "".equals(operDesc)) {
+//                            logger.error(tranSheet.getSheetName()
+//                                    + "sheet页，服务操作描述为空");
+//                            logInfoService.saveLog(tranSheet.getSheetName()
+//                                    + "sheet页，服务操作描述为空", "导入");
+//                            flag = false;
+//                        }
+                        oper.setOperationDesc(operDesc);
+                        break;
+                    } else if ("原始接口".equals(cell)) {
+                        // 将表头跳过,获取接口字段信息
+                        readline = j += 3;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //信息不正确返回空
+        if (!flag) {
+            return null;
+        }
+        Map<String, Object> resMap = new HashMap<String, Object>();
+
+        resMap.put("interface", inter);
+        resMap.put("service", service);
+        resMap.put("operation", oper);
+
+        return resMap;
     }
 }

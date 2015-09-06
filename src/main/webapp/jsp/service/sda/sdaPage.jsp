@@ -261,8 +261,8 @@ var delIds = [];
 		<thead>
 			<tr>
 				<th data-options="field:'text',width:140" readOnly="true">字段名</th>
-				<th data-options="field:'append1',width:60,align:'right',editor:'text'">字段别名</th>
-				<th data-options="field:'append2',width:50,editor:'text'">类型/长度</th>
+				<th data-options="field:'append1',width:60,align:'right'" readOnly="true">字段别名</th>
+				<th data-options="field:'append2',width:50" readOnly="true">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
 				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId'}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>

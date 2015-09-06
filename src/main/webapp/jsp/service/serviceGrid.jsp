@@ -374,7 +374,6 @@
 //            iconCls: 'icon-qxfp',
 //            handler: function () {
 //                var checkedItems = $('#operationList').datagrid('getChecked');
-//                console.log()
 //                if (checkedItems != null && checkedItems.length > 0) {
 //                    if (checkedItems.length > 1) {
 //                        alert("请只选中一个要导出的场景！");

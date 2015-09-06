@@ -13,10 +13,15 @@
 <body>
 <div class="container">
   <h3>导入原始接口Excel</h3>
-  <form id="uploadimg-form"  action="/excelHelper/interfaceimport" method="post" enctype="multipart/form-data">
+  <form id="uploadimg-form"  action="/excelHelper/interfaceimport/noSystem" method="post" enctype="multipart/form-data">
     <input type="file" title="选择文件" name="file" id="file"/><br /><br />
     <br /><br />
     <input id="fileBtn" type="submit" class="btn" value="文件上传"/><br /><br />
+    <%--<tr style="display:none">
+      <td>
+        <input style="display:none" type="text" id="systemId" name="systemId">
+      </td>
+    </tr>--%>
   </form>
 
 </div>

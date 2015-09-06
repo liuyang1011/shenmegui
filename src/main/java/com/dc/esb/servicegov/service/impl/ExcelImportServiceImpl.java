@@ -36,6 +36,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected static final int INDEX_PROVIDER_COL = 6;
     protected static final int INDEX_INTERFACE_POINT_COL = 7;
     protected static final int INDEX_INTERFACE_HEAD_COL = 18;
+    protected static final int INDEX_INTERFACE_STATUS = 19;
+    protected static final int INDEX_OPERATION_STATE = 20;
 
     protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
@@ -211,6 +213,31 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
             String operationId = getCell(row, INDEX_OPERATION_ID_COL);
+            String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+            if ("投产".equals(interfaceStatus)){
+                interfaceStatus = Constants.INTERFACE_STATUS_TC;
+            }else if ("废弃".equals(interfaceStatus)){
+                interfaceStatus = Constants.INTERFACE_STATUS_FQ;
+            }else{
+                interfaceStatus = "";
+            }
+            //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
+            String operationState = getCell(row, INDEX_OPERATION_STATE);
+            if("服务定义".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_UNAUDIT;
+            }else if("审核通过".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_PASS;
+            }else if("审核不通过".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_UNPASS;
+            }else if("已发布".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED;
+            }else if("已上线".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_ONLINE;
+            }else if("已下线".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
+            }else {
+                operationState = "";
+            }
             String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
             String serviceId = temp.split("[()]+")[1];
             String systemId = consumerSystemId;
@@ -231,6 +258,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             indexDO.setOperationId(operationId);
             indexDO.setServiceId(serviceId);
             indexDO.setSystemAb(systemAb);
+            indexDO.setInterfaceStatus(interfaceStatus);
+            indexDO.setOperationState(operationState);
             indexDOs.add(indexDO);
         }
         List list = new ArrayList();
@@ -539,7 +568,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
-    public Map<String, Object> getServiceInfo(Sheet tranSheet) {
+    public Map<String, Object> getServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
 
         return null;
     }
@@ -708,6 +737,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
+    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+        return null;
+    }
     protected Map<String, Object> getInterfaceHead(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -873,6 +905,24 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String operationId;
         private String serviceId;
         private String systemAb;
+        private String interfaceStatus;
+        private String operationState;
+
+        public String getInterfaceStatus() {
+            return interfaceStatus;
+        }
+
+        public void setInterfaceStatus(String interfaceStatus) {
+            this.interfaceStatus = interfaceStatus;
+        }
+
+        public String getOperationState() {
+            return operationState;
+        }
+
+        public void setOperationState(String operationState) {
+            this.operationState = operationState;
+        }
 
         public String getSheetName() {
             return sheetName;
@@ -1330,6 +1380,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                 if (GlobalImport.operateFlag) {
                     interfaceDB.setInterfaceName(inter.getInterfaceName());
                     interfaceDB.setEcode(inter.getEcode());
+                    interfaceDB.setStatus(inter.getStatus());
                     String version = interfaceDB.getVersion();
                     if (version == null || "".equals(version)) {
                         version = initVersion;
@@ -1429,6 +1480,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             if (GlobalImport.operateFlag) {
                 operationDB.setOperationName(operation.getOperationName());
                 operationDB.setOperationDesc(operation.getOperationDesc());
+                operationDB.setState(operation.getState());
                 /**
                  * TODO 版本等李旺完成后进行
                  */
@@ -1448,7 +1500,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_OPERATION, operation.getOperationId(), Constants.Version.TYPE_ELSE);
             operation.setServiceId(service.getServiceId());
             operation.setVersionId(versionId);
-            operation.setState(AuditUtil.submit);
+//            operation.setState(AuditUtil.submit);
             operationDAO.save(operation);
         }
         return exists;

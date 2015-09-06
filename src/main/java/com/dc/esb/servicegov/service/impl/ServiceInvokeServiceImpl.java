@@ -79,6 +79,16 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		serviceInvokeDAOImpl.exeHql(hql,args);
 
 	}
+	public void deleteEntity(List<ServiceInvoke> serviceInvokeList){
+		for (ServiceInvoke serviceInvoke : serviceInvokeList) {
+			//先删除interfaceInvoke数据
+			List<InterfaceInvoke> list = interfaceInvokeDAO.findBy("providerInvokeId", serviceInvoke.getInvokeId());
+			list.addAll(interfaceInvokeDAO.findBy("consumerInvokeId", serviceInvoke.getInvokeId()));
+			interfaceInvokeDAO.delete(list);
+			//删serviceInvoke
+			delete(serviceInvoke);
+		}
+	}
 	public List<?> findJsonBySO(String serviceId, String operationId){
 		return serviceInvokeDAOImpl.findJsonBySO(serviceId, operationId);
 	}

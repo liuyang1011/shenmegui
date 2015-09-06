@@ -58,7 +58,25 @@ var exportManager = {
             $.fileDownload(url,{
                 failCallback: function (responseHtml, url) {
                     //TODO 怎么显示返回string？
-                    //console.log(responseHtml);
+                    var str = responseHtml;
+                    if(str.indexOf("提供方接口未关联协议，导出失败") > 0){
+                        alert("提供方接口未关联协议，导出失败");
+                    }else if(str.indexOf("消费方接口未关联协议，导出失败") > 0){
+                        alert("消费方接口未关联协议，导出失败");
+                    }else if(str.indexOf("消费方接口协议报文生成类实例化失败,导出失败") > 0){
+                        alert("消费方接口协议报文生成类实例化失败,导出失败");
+                    }else if(str.indexOf("消费方接口协议报文生成类构造方法是不可访问,导出失败") > 0){
+                        alert("消费方接口协议报文生成类构造方法是不可访问,导出失败");
+                    }else if(str.indexOf("消费方接口协议报文生成类未找到，导出失败") > 0){
+                        alert("消费方接口协议报文生成类未找到，导出失败");
+                    }else if(str.indexOf("提供方接口协议报文生成类实例化失败,导出失败") > 0){
+                        alert("提供方接口协议报文生成类实例化失败,导出失败");
+                    }else if(str.indexOf("提供方接口协议报文生成类构造方法是不可访问,导出失败") > 0){
+                        alert("提供方接口协议报文生成类构造方法是不可访问,导出失败");
+                    }else if(str.indexOf("提供方接口协议报文生成类未找到，导出失败") > 0){
+                        alert("提供方接口协议报文生成类未找到，导出失败");
+                    }
+
                 },
                 prepareCallback: function (url) {
                     $('#w').window('close');

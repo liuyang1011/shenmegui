@@ -15,7 +15,7 @@
 <div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
      class="easyui-tabs " id="sysContentTabs">
       <div title="系统管理" style="padding:0px">
-      		<iframe scrolling="auto" frameborder="0"  src="system_manager.jsp" style="width:100%;height:100%;"></iframe>
+      		<iframe scrolling="auto" frameborder="0" id="sm" src="system_manager.jsp" style="width:100%;height:100%;"></iframe>
       </div>
 </div>
 </body>

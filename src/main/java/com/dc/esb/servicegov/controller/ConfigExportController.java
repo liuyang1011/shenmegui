@@ -64,7 +64,9 @@ public class ConfigExportController {
 
     @RequiresPermissions({"config-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/exportHandle/{serviceId}/{operationId}/{providerSystemId}/{providerInterfaceId}/{providerIsStandard}/{consumerSystemId}/{consumerInterfaceId}/{consumerIsStandard}/{providerStandardType}/{consumerStandardType}", headers = "Accept=application/json")
-    public List<String> export(@PathVariable String serviceId, @PathVariable String operationId, @PathVariable String providerSystemId, @PathVariable String providerInterfaceId, @PathVariable boolean providerIsStandard,
+    public
+    @ResponseBody
+    List<String> export(@PathVariable String serviceId, @PathVariable String operationId, @PathVariable String providerSystemId, @PathVariable String providerInterfaceId, @PathVariable boolean providerIsStandard,
                          @PathVariable String consumerInterfaceId, @PathVariable String consumerSystemId, @PathVariable boolean consumerIsStandard, @PathVariable String providerStandardType, @PathVariable String consumerStandardType, HttpServletResponse response) {
         File in_file = null;
         ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId, providerIsStandard, consumerSystemId, consumerInterfaceId, consumerIsStandard);
@@ -123,7 +125,9 @@ public class ConfigExportController {
                     logger.error("消费方接口未关联协议，导出失败");
 //                    return "消费方提供方接口未关联协议，导出失败";
                     logInfoService.saveLog("消费方接口未关联协议，导出失败","导出");
-                    return null;
+                    List<String> list = new ArrayList<String>();
+                    list.add("消费方接口未关联协议，导出失败");
+                    return list;
                 } else {
 
 
@@ -139,19 +143,25 @@ public class ConfigExportController {
                             logger.error("消费方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
 //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
                             logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败","导出");
-                            return null;
+                            List<String> list = new ArrayList<String>();
+                            list.add("消费方接口协议报文生成类实例化失败,导出失败");
+                            return list;
                         } catch (IllegalAccessException e) {
 
                             logger.error("消费方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
                             logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败","导出");
 //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败";
-                            return null;
+                            List<String> list = new ArrayList<String>();
+                            list.add("消费方接口协议报文生成类构造方法是不可访问,导出失败");
+                            return list;
                         }
                     } catch (ClassNotFoundException e) {
                         logger.error("消费方接口协议报文生成类未找到，导出失败");
                         logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败","导出");
 //                        return "消费方接口协议报文生成类未找到，导出失败";
-                        return null;
+                        List<String> list = new ArrayList<String>();
+                        list.add("消费方接口协议报文生成类未找到，导出失败");
+                        return list;
                     }
 
                 }

@@ -131,8 +131,8 @@
 	      <input class="easyui-textbox" id="code" name="code"type="text" ></td>
 	    <th>版本描述</th>
 	    <td><input class="easyui-textbox" id="blDesc" name="blDesc" type="text" name="desc"></td>
-	    <td><a href="#" onclick="getBaseLine()" class="easyui-linkbutton" plain="true" iconcls="icon-search">历史基线版本</a>
-	    	&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-save">版本下载</a>
+	    <td><a href="#" onclick="getBaseLine()" class="easyui-linkbutton" plain="true" iconcls="icon-search">查询</a>
+	    	<%--&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-save">版本下载</a>--%>
 	    </td>
 	    <td>&nbsp;</td>
 	    </tr>
@@ -176,9 +176,9 @@
 				</th>
 				<th data-options="field:'service.serviceName'"
 					formatter='service.serviceName'>服务名称</th>
-				<th data-options="field:'operationId',align:'right'">服务场景</th>
+				<th data-options="field:'operationId' ,width:40,align:'left'">服务场景</th>
 				<th data-options="field:'operationName',width:80,align:'right'">服务场景名称</th>
-				<th data-options="field:'desc',width:80,align:'right'">场景描述</th>
+				<th data-options="field:'operationDesc',width:280,align:'left'">场景描述</th>
 				<th data-options="field:'versionHis.optType'" formatter="versionHis.optType">修订类型</th>
 				<th data-options="field:'versionHis.optUser'" formatter="versionHis.optUser">发布用户</th>
 				<th data-options="field:'versionHis.optDate'" formatter="versionHis.optDate">发布时间</th>

@@ -171,15 +171,15 @@ var formatter = {
 		<thead>
 			<tr>
 				<th data-options="field:'autoId',checkbox:true"></th>
-				<th data-options="field:'operationId'">场景编号</th>
-				<th data-options="field:'operationName'">场景名称</th>
-				<th data-options="field:'operationDesc'">功能描述</th>
-				<th data-options="field:'operationRemark'">备注</th>
-				<th data-options="field:'versionHis'" formatter='formatter.versionHis'>版本号</th>
+				<th data-options="field:'operationId',width:40">场景编号</th>
+				<th data-options="field:'operationName',width:70">场景名称</th>
+				<th data-options="field:'operationDesc',width:360">功能描述</th>
+				<%--<th data-options="field:'operationRemark',width:50">备注</th>--%>
+				<th data-options="field:'versionHis',width:50" formatter='formatter.versionHis'>版本号</th>
 				<%--<th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>--%>
-				<th data-options="field:'optDate'">更新时间</th>
-				<th data-options="field:'optUser'">更新用户</th>
-				<th data-options="field:' ',formatter:formatConsole">操作</th>
+				<th data-options="field:'optDate',width:120">更新时间</th>
+				<th data-options="field:'optUser',width:50">更新用户</th>
+				<th data-options="field:' ',formatter:formatConsole,width:190">操作</th>
 			</tr>
 		</thead>
 	</table>

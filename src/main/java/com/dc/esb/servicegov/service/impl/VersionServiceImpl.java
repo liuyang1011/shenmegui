@@ -79,14 +79,15 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 	public String releaseVersion(String versionId, String targetId, String versionDesc) {
 		Version ov = daoImpl.findUniqueBy("id", versionId);
 		ov.setVersionDesc(versionDesc);
-		
+		String userName = (String) SecurityUtils.getSubject().getPrincipal();
 		VersionHis nv = new VersionHis(ov, targetId);
+		nv.setOptUser(userName);
+		nv.setOptDate(DateUtils.format(new Date()));
 		versionHisServiceImpl.save(nv);
 		
 		ov.setCode(releaseVersionCode(ov.getCode()));
 		ov.setOptType(Constants.Version.OPT_TYPE_RELEASE);
 		ov.setOptDate(DateUtils.format(new Date()));
-		String userName = (String) SecurityUtils.getSubject().getPrincipal();
 		ov.setOptUser(userName);
 		daoImpl.save(ov);
 		
