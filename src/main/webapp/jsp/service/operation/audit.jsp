@@ -61,8 +61,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="tb" style="padding:5px;height:auto">
     	<table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><a href="javascript:void(0)" onclick="auditUnPass('operationAuditList');" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">审核不通过</a>&nbsp;&nbsp;
-	    <a href="javascript:void(0)" onclick="auditPass('operationAuditList');" class="easyui-linkbutton" iconCls="icon-ok" plain="true">审核通过</a>
+    <td><a href="javascript:void(0)" onclick="auditPage(2);" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">审核不通过</a>&nbsp;&nbsp;
+	    <a href="javascript:void(0)" onclick="auditPage(1);" class="easyui-linkbutton" iconCls="icon-ok" plain="true">审核通过</a>
     </td>
     </tr>
     </table>
@@ -76,4 +76,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		resizable="true"></div>
   
   </body>
+<script type="text/javascript">
+	function auditPage(type){
+		var checkedItems = $('#operationAuditList').datagrid('getChecked');
+		if (checkedItems != null && checkedItems.length > 0) {
+			var text = type ==2 ? "不通过" : "通过";
+			$('#dlg').dialog({
+				title: '审核意见-'+text,
+				width: 500,
+				height: 300,
+				closed: false,
+				cache: false,
+				href: '/jsp/service/operation/audit_remark.jsp?type='+type,
+				modal: true
+			});
+		}else{
+			alert("没有选中数据！");
+		}
+
+	}
+
+	function auditSave(type) {
+		var checkedItems = $('#operationAuditList').datagrid('getChecked');
+		if (checkedItems != null && checkedItems.length > 0) {
+			var ids = [];
+			$.each(checkedItems, function (index, item) {
+				ids.push(""+item.operationId+","+item.serviceId);
+			});
+			var auditRemark = encodeURI(encodeURI($("#auditRemark").val()));
+			if(type ==2 && auditRemark == ""){
+				alert("必须输入不通过原因!");
+				return false;
+			}
+			$.ajax({
+				type: "post",
+				async: false,
+				contentType: "application/json; charset=utf-8",
+				url: "/operation/auditSave?state="+type+"&auditRemark="+auditRemark,
+				dataType: "json",
+				data: JSON.stringify(ids),
+				success: function (data) {
+					$("#dlg").dialog("close");
+					alert("操作成功");
+					$('#operationAuditList').datagrid('reload');
+				}
+			});
+		}
+		//如果有任务在执行，则更新任务的状态
+		parent.PROCESS_INFO.approved = false;
+	}
+
+</script>
 </html>

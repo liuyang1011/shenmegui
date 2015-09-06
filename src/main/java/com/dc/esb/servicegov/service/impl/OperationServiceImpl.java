@@ -345,8 +345,29 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
     }
 
-    public boolean auditOperation(String state, String[] operationIds){
-        return operationDAOImpl.auditOperation(state, operationIds);
+    public boolean auditOperation(String state, String auditRemark, String[] operationIds) throws  Throwable{
+        if (operationIds != null && operationIds.length > 0) {
+            for (int i = 0; i < operationIds.length; i++) {
+                String[] per = operationIds[i].split(",");
+                String operationId = per[0];
+                String serviceId = per[1];
+                Map<String,String> map = new HashMap<String, String>();
+                map.put("operationId", operationId);
+                map.put("serviceId", serviceId);
+                Operation ope = operationDAOImpl.findUniqureBy(map);
+                ope.setState(state);
+                save(ope);
+                Version version = ope.getVersion();
+                if(StringUtils.isNotEmpty(auditRemark)){
+                    auditRemark = URLDecoder.decode(auditRemark, "utf-8");
+                }
+                version.setRemark(auditRemark);
+                versionServiceImpl.save(version);
+
+            }
+            return true;
+        }
+        return false;
     }
     
     public List<Operation> getReleased(Page page,String serviceId,String serviceName){

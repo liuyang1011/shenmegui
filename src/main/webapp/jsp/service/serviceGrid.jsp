@@ -78,23 +78,6 @@
        style="height:370px; width:auto;">
     <thead>
     <tr>
-<%--<<<<<<< HEAD
-        <th data-options="field:'',checkbox:true"></th>
-        <th data-options="field:'operationId'">服务场景</th>
-        <th data-options="field:'operationName'">场景名称</th>
-        <th data-options="field:'operationDesc'">功能描述</th>
-
-        <th data-options="field:'providerSystems'">提供方</th>
-        <th data-options="field:'consumerSystems'">消费方</th>
-
-        <th data-options="field:'operationRemark'">关键字</th>
-        <th data-options="field:'headId'">适用范围说明</th>
-        <th data-options="field:' '" formatter='formatter.version'>版本号</th>
-        <th data-options="field:'optDate'">更新时间</th>
-        <th data-options="field:'optUser'">更新用户</th>
-        <th data-options="field:'state'" formatter='formatter.operationState'>状态</th>
-    </tr>
-=======--%>
         <th data-options="field:'',checkbox:true,width:50"></th>
         <th data-options="field:'operationId',width:100">场景代码</th>
         <th data-options="field:'operationName',width:120">场景名称</th>
@@ -251,7 +234,7 @@
             }
         }
     }, '-',
-        /*{
+        {
             text: '场景明细',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -268,7 +251,7 @@
                     alert("请只选中场景后再查看！");
                 }
             }
-        },*/
+        },
         {
             text: '历史版本',
             iconCls: 'icon-qxfp',
@@ -322,9 +305,19 @@
             iconCls: 'icon-audit',
             handler: function () {
                 var urlPath = "/operation/auditPage?serviceId=${entity.serviceId }";
-                var checkedItems = $('#operationList').datagrid('getChecked');
-                if (checkedItems != null && checkedItems.length > 0) {
-                    urlPath += "&operationId=" + checkedItems[0].operationId;
+                var items = $('#operationList').datagrid('getData').rows;
+                var flag = false;
+                if (items != null && items.length > 0) {
+                    for(var i = 0; i < items.length; i++){
+                        if(items[i].optState == 0){
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if(!flag){
+                    alert("该服务下没有要审核的数据！");
+                    return false;
                 }
                 var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
 

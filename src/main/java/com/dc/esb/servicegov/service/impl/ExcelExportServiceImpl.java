@@ -892,7 +892,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             }
         }
-
         return result;
     }
     /**

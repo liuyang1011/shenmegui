@@ -58,8 +58,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    		 <td>${operation.operationDesc }</td>
    	 <th>备注</th>
     <td>${operation.operationRemark }</td>
-     <th></th>
-    <td> </td>
+     <th>版本描述</th>
+    <td>${operation.version.remark} </td>
    </tr>
    <tr>
      <th>最后更新时间</th>
