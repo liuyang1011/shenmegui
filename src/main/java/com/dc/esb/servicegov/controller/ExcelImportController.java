@@ -263,7 +263,7 @@ public class ExcelImportController {
             }
         }
 //        GlobalImport.headMap.clear();//清空本次导入的业务报文头
-        writer.println("window.location='/jsp/sysadmin/interface_import.jsp");
+        writer.println("window.location='/jsp/sysadmin/interface_import.jsp'");
         writer.println("</script>");
         writer.flush();
         writer.close();

@@ -1503,13 +1503,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                         //TODO 类型报错
                         sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
                         tranCode = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (tranCode == null || "".equals(tranCode)) {
+                        /*if (tranCode == null || "".equals(tranCode)) {
                             logger.error(tranSheet.getSheetName()
                                     + "sheet页，交易码为空");
                             logInfoService.saveLog(tranSheet.getSheetName()
                                     + "sheet页，交易码为空", "导入");
                             flag = false;
-                        }
+                        }*/
                         inter.setEcode(tranCode);
                     } else if ("服务名称".equals(cell)) {
                         serviceName = sheetRow.getCell(k + 1)
