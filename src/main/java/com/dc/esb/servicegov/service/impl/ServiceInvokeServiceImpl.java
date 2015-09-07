@@ -1,5 +1,6 @@
 package com.dc.esb.servicegov.service.impl;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
@@ -19,6 +20,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @Transactional
 public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke, String> implements ServiceInvokeService{
@@ -105,8 +109,13 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	}
 
-	public List<ServiceInvokeJson> getDistinctInter(String systemId){
-		List<ServiceInvoke> list = this.findBy("systemId", systemId);
+	public List<ServiceInvokeJson> getDistinctInter(String systemId, String text) throws  Throwable{
+		String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"'";
+		if(StringUtils.isNotEmpty(text)){
+			text = URLDecoder.decode(text, "utf-8");
+			hql += " and( si.interfaceId like '%" + text + "%' or si.inter.interfaceName like '%" + text + "%') ";
+		}
+		List<ServiceInvoke> list = this.find(hql);
 		List<ServiceInvokeJson> voList = new ArrayList<ServiceInvokeJson>();
 
 		for(int i = 0; i < list.size(); i++){
@@ -133,8 +142,23 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		}
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i) != null){
+				ServiceInvoke si = list.get(i);
 				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
-				voList.add(svo);
+				//将标准接口放在第一位
+				if(si.getInterfaceId() == null){
+					svo.setRemark("标准接口");
+					if(voList.size() == 0 ){
+						voList.add(svo);
+					}else{
+						ServiceInvokeJson temp = voList.get(0);
+						voList.set(0, svo);
+						voList.set(i, temp);
+					}
+				}
+				else{
+					voList.add(svo);
+				}
+
 			}
 		}
 		return voList;

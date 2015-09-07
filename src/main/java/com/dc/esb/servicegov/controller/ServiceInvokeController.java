@@ -18,6 +18,8 @@ import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.impl.ServiceInvokeServiceImpl;
 import com.dc.esb.servicegov.vo.ServiceInvokeViewBean;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by vincentfxz on 15/7/8.
  */
@@ -48,8 +50,8 @@ public class ServiceInvokeController {
      */
     @RequestMapping("/getInterface")
     @ResponseBody
-    public Map<String, Object> getInterface(String systemId) {
-        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter( systemId);
+    public Map<String, Object> getInterface(String systemId, String text) throws  Throwable{
+        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter(systemId, text);
 
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", rows.size());
