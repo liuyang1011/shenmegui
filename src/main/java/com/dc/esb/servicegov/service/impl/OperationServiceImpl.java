@@ -292,6 +292,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public OperationHis backUpOperation(String serviceId, String operationId, String versionDesc) {
         Operation operation = getOperation(serviceId, operationId);
         OperationHis operationHis = new OperationHis(operation);
+        operationHisService.save(operationHis);
         //修改operationHis 版本
         String versionHisId = versionServiceImpl.releaseVersion(operation.getVersionId(), operationHis.getAutoId(), versionDesc);
         operationHis.setVersionHisId(versionHisId);

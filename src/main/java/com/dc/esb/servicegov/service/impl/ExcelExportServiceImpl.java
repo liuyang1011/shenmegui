@@ -809,17 +809,18 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 + " where ii.providerInvokeId = ? and si.invokeId = ii.consumerInvokeId";
             String consumers = "";
             String consumerIds = "";
+            List<ServiceInvoke> consumerList = new ArrayList<ServiceInvoke>();
             for(int i=0; i < provList.size(); i++){
                 ServiceInvoke si = provList.get(i);
                 List<ServiceInvoke> consList =  siDao.find( hql, si.getInvokeId());
-                if(i > 0){
-                    consumers += ",";
-                    consumerIds += ",";
+                for(int j = 0; j < consList.size(); j++){
+                    if(!consumerList.contains(consList.get(j))){
+                        consumerList.add(consList.get(j));
+                    }
                 }
-                consumers +=  joinServiceInvokeSystemName(consList, "systemChineseName");
-                consumerIds +=  joinServiceInvokeSystemName(consList,  "systemId");
-
             }
+            consumers +=  joinServiceInvokeSystemName(consumerList, "systemChineseName");
+            consumerIds +=  joinServiceInvokeSystemName(consumerList,  "systemId");
             interfaceInvokeVO.setConsumers(consumers);
             interfaceInvokeVO.setConsumerIds(consumerIds);
         }
