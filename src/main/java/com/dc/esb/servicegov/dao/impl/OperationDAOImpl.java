@@ -26,9 +26,10 @@ public class OperationDAOImpl extends HibernateDAO<Operation, OperationPK> {
 		return operation;
 	}
 
-	public List<Operation> getReleased(Page page,String serviceId,String serviceName) {
-		String hql = "select a from Operation a where a.state=? and a.version.optType !=? and a.service.serviceId like ? and a.service.serviceName like ? order by a.optDate desc";
-		List<Operation> list = findBy(hql.toString(), page,Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE,"%"+serviceId+"%","%"+serviceName+"%");
+	public List<Operation> getReleased(Page page,String serviceId,String serviceName,String operationId,String operationName) {
+		String hql = "select a from Operation a where a.state=? and a.version.optType !=? and a.service.serviceId like ? and a.service.serviceName like ?";
+		hql += " and a.operationId like ? and a.operationName like ? order by a.optDate desc";
+		List<Operation> list = findBy(hql.toString(), page,Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE,"%"+serviceId+"%","%"+serviceName+"%","%"+operationId+"%","%"+operationName+"%");
 		return list;
 	}
 
