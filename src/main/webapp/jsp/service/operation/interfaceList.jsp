@@ -40,6 +40,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <td><a href="javascript:void(0)" onclick="$('#opDlg').dialog('close');" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">取消</a>&nbsp;&nbsp;
 	    <a href="javascript:void(0)" onclick="selectInterface('${param.newListId}', '${param.type }');" class="easyui-linkbutton" iconCls="icon-ok" plain="true">确定</a>
     </td>
+	  <td>
+		  </td>
+	  <td>
+	  </td>
+	  <td>
+		  <input id="interfaceText" class="easyui-textbox" /> <a href="javascript:void(0)" onclick="queryInterfaceList()" class="easyui-linkbutton"  iconCls="icon-search">查询</a>
+
+	  </td>
     </tr>
     </table>
     </div>
