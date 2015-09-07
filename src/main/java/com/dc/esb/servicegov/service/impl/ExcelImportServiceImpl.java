@@ -71,6 +71,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     @Autowired
     protected MetadataServiceImpl metadataService;
     @Autowired
+    protected OperationServiceImpl operationService;
+    @Autowired
+    protected OperationHisDAOImpl operationHisDAO;
+    @Autowired
     protected LogInfoServiceImpl logInfoService;
     protected String initVersion = "1.0.0";
     protected static int readline = 0;
@@ -1480,19 +1484,19 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             if (GlobalImport.operateFlag) {
                 operationDB.setOperationName(operation.getOperationName());
                 operationDB.setOperationDesc(operation.getOperationDesc());
+
+                /*如果已经存在了场景，导入数据为发布或者上线状态，在当前基础上发布一次*/
+                if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
+                    Map<String, String> param = new HashMap<String, String>();
+                    param.put("serviceId", operation.getServiceId());
+                    param.put("operationId", operation.getOperationId());
+                    List<OperationHis> hisList = operationHisDAO.findBy(param);
+                    if(hisList == null || hisList.size() == 0){
+                        operationService.release( operationDB.getOperationId(), operationDB.getServiceId(), "导入发布");
+                    }
+                }
+
                 operationDB.setState(operation.getState());
-                /**
-                 * TODO 版本等李旺完成后进行
-                 */
-//				String version = operationDB.getVersion();
-//				if(version==null ||"".equals(version)){
-//					version = initVersion;
-//				}
-//				if (AuditUtil.passed.equals(operationDB.getState())) {
-//					//operationDB.setVersion(Utils.modifyversionno(version));
-//				} else {
-//					operationDB.setVersion(version);
-//				}
                 operationDAO.save(operationDB);
             }
             exists = true;
@@ -1501,8 +1505,16 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             operation.setServiceId(service.getServiceId());
             operation.setVersionId(versionId);
 //            operation.setState(AuditUtil.submit);
+            /*如果系统中不存在当前场景，发布该场景新发布I一次*/
+            if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
+                String state = operation.getState();
+                operationService.release( operation.getOperationId(),operation.getServiceId(), "导入发布");
+                operation.setState(state);
+            }
             operationDAO.save(operation);
         }
+
+
         return exists;
 
     }
