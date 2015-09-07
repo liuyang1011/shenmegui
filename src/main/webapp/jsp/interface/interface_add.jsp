@@ -60,14 +60,14 @@
 				<input class="easyui-textbox" type="text" id="desc">
 			</td>
 		</tr>
-		<tr>
+		<%--<tr>
 			<th>
 				备注说明
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="remark">
 			</td>
-		</tr>
+		</tr>--%>
 
 
 		<tr>
@@ -117,10 +117,10 @@
 		 }
 		 var ecode = $("#ecodeText").val();
 		 var interfaceName = $("#interfaceNameText").val();
-		 if(ecode==null || ecode == ''){
+		 /*if(ecode==null || ecode == ''){
 			alert("交易码不能为空");
 			return;
-		 }
+		 }*/
 		 if(interfaceName==null || interfaceName == ''){
 			alert("交易名称不能为空");
 			return;

@@ -139,7 +139,7 @@
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
-	        singleSelect:false,//是否单选
+	        singleSelect:true,//是否单选
 	        pagination:true,//分页控件 
 	        pageSize: 10,//每页显示的记录条数，默认为10
 		    pageList: [10,15,20],//可以设置每页记录条数的列表
@@ -168,6 +168,9 @@
 						handler:function(){
 							var row = $("#tg").treegrid("getSelected");
 							if(row){
+								if (!confirm("确定要删除选中的记录吗？")) {
+									return;
+								}
 								interfaceManager.remove(row.interfaceId,row.interfaceName);
 							}else{
 								alert("请选择要删除的行");
@@ -202,7 +205,7 @@
 									w:500,
 									iconCls:'icon-add',
 									title:"导入接口",
-									url : "/jsp/interface/interface_import.jsp"
+									url : "/jsp/interface/interface_import.jsp?systemId=${param.systemId }"
 								});
 //							}else{
 //								alert("请选择要关联的行");

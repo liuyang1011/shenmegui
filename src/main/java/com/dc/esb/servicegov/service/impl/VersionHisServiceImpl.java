@@ -43,11 +43,13 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 
 	public List<VersionHisBean> findVersionBeanBy(String hql,Page page){
 		//TODO 关联(基线版本号根据BaseLineVersionHisMapping查找基线版本号 code）
-		List<VersionHis> list = hisDaoImpl.findBy(hql,page);
+		ArrayList<Object[]> list = (ArrayList)hisDaoImpl.findBy(hql,page);
 		List<VersionHisBean> beanList = new ArrayList<VersionHisBean>();
-		for(VersionHis vh : list){
+		for(Object[] objects : list){
 //			Map<String,String> map = new HashMap<String, String>();
 //			map.put("versionHisId",vh.getAutoId());
+			VersionHis vh = (VersionHis)objects[0];
+			OperationHis operationHis = (OperationHis)objects[1];
 			List<BaseLineVersionHisMapping> mapping = baselineVersionHisMappingDAO.findBy("versionHisId",vh.getAutoId());
 			String baseLineNum = "";
 			for (int i = 0; i < mapping.size(); i++) {
@@ -59,7 +61,7 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 			}
 			//场景信息
 			String operationHisId = vh.getTargetId();
-			OperationHis operationHis = operationHisService.getById(operationHisId);
+//			OperationHis operationHis = operationHisService.getById(operationHisId);
 			String serviceName = operationHis.getService().getServiceName();
 			String serviceId = operationHis.getService().getServiceId();
 			String operationName = operationHis.getOperationName();

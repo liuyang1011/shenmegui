@@ -78,23 +78,6 @@
        style="height:370px; width:auto;">
     <thead>
     <tr>
-<%--<<<<<<< HEAD
-        <th data-options="field:'',checkbox:true"></th>
-        <th data-options="field:'operationId'">服务场景</th>
-        <th data-options="field:'operationName'">场景名称</th>
-        <th data-options="field:'operationDesc'">功能描述</th>
-
-        <th data-options="field:'providerSystems'">提供方</th>
-        <th data-options="field:'consumerSystems'">消费方</th>
-
-        <th data-options="field:'operationRemark'">关键字</th>
-        <th data-options="field:'headId'">适用范围说明</th>
-        <th data-options="field:' '" formatter='formatter.version'>版本号</th>
-        <th data-options="field:'optDate'">更新时间</th>
-        <th data-options="field:'optUser'">更新用户</th>
-        <th data-options="field:'state'" formatter='formatter.operationState'>状态</th>
-    </tr>
-=======--%>
         <th data-options="field:'',checkbox:true,width:50"></th>
         <th data-options="field:'operationId',width:100">场景代码</th>
         <th data-options="field:'operationName',width:120">场景名称</th>
@@ -384,7 +367,6 @@
 //            iconCls: 'icon-qxfp',
 //            handler: function () {
 //                var checkedItems = $('#operationList').datagrid('getChecked');
-//                console.log()
 //                if (checkedItems != null && checkedItems.length > 0) {
 //                    if (checkedItems.length > 1) {
 //                        alert("请只选中一个要导出的场景！");

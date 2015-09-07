@@ -35,7 +35,7 @@
 		</tr>
 	</table>
 </form>
-
+<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function (){
 
@@ -86,6 +86,7 @@
 				 if(true){
 				 	alert("关联成功");
 				 	$('#w').window('close');
+//					parent.$('#tg').datagrid('reload');
 				 }else{
 
 				 }

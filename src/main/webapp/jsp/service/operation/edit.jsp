@@ -26,6 +26,38 @@
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
     <script type="text/javascript">
+        var serviceId;
+        var operationId;
+        $(function(){
+            /**
+             *  初始化接口标签
+             * @param result
+             */
+            var initTags = function initTags(result){
+                console.log(result);
+                result.forEach(function(tag){
+                    $("#tags").append("<li>" + tag.tagName + "</li>");
+                });
+                $("#tags").tagit();
+
+            };
+            serviceId = ${operation.serviceId};
+            operationId = ${operation.operationId};
+            tagManager.getTagForOperation(serviceId,operationId,initTags);
+
+            $("#saveTagBtn").click(function () {
+                var tagNames = $("#tags").tagit("assignedTags");
+                var tags = [];
+                tagNames.forEach(function (tagName){
+                    var tagToAdd = {};
+                    tagToAdd.tagName = tagName;
+                    tags.push(tagToAdd);
+                });
+                tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+                    alert("标签保存成功");
+                });
+            });
+        })
         var toolbar = [{
             text: '新增',
             iconCls: 'icon-add',
@@ -165,8 +197,8 @@
                                        type="text"/></td>
             </tr>
             <tr>
-                <th>场景关键词</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+                <%--<th>场景关键词</th>
+                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>--%>
 
                 <th>状态</th>
                 <td>
@@ -183,7 +215,7 @@
             </tr>
             <tr>
                 <th>使用范围</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+                <td><input class="easyui-textbox" value="${operation.range}" type="text" name="range"/></td>
 
                 <th>备注</th>
                 <td><input id="operationRemark" name="operationRemark"  value="${operation.operationRemark}" class="easyui-textbox" type="text"/>
@@ -191,7 +223,12 @@
             </tr>
             <tr>
                 <th>场景关键字:</th>
-                <td colspan="2"><ul id="tags"></ul></td>
+                <td >
+                    <ul id="tags"></ul>
+                </td>
+                <th>
+                    <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+                </th>
             </tr>
         </table>
 
