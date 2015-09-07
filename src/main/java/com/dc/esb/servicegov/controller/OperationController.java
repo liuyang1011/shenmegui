@@ -204,8 +204,20 @@ public class OperationController {
         List<InterfaceInvokeVO> standardVOs = excelExportService.getStandardVOList(serviceId, operationId);
         //处理非标准数据
         List<InterfaceInvokeVO> interfaceInvokeVOs = excelExportService.getVOList(serviceId, operationId);
-        interfaceInvokeVOs.addAll(standardVOs);
-        return interfaceInvokeVOs;
+        List<InterfaceInvokeVO> result = new ArrayList<InterfaceInvokeVO>();
+        for(int i = 0; i < standardVOs.size(); i++){
+            InterfaceInvokeVO iiv = standardVOs.get(i);
+            if(iiv != null){
+                result.add(iiv);
+            }
+        }
+        for(int i = 0; i < interfaceInvokeVOs.size(); i++){
+            InterfaceInvokeVO iiv = interfaceInvokeVOs.get(i);
+            if(iiv != null){
+                result.add(iiv);
+            }
+        }
+        return result;
     }
 
 

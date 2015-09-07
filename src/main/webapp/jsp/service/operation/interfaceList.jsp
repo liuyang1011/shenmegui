@@ -25,11 +25,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<thead>
 			<tr>
 				<th data-options="field:'invokeId',checkbox:true"></th>
-				<th data-options="field:'systemId', width:50">系统id</th>
+				<th data-options="field:'systemId', width:80">系统id</th>
 				<th data-options="field:'systemChineseName', width:100">系统名称</th>
-				<th data-options="field:'interfaceId', width:50">接口id</th>
-				<th data-options="field:'interfaceName', width:100">接口名称</th>
-				<th data-options="field:'remark', width:50">备注</th>
+				<th data-options="field:'interfaceId', width:150">接口id</th>
+				<th data-options="field:'interfaceName', width:150">接口名称</th>
+				<th data-options="field:'remark', width:100">备注</th>
 			</tr>
 		</thead>
 	</table>
