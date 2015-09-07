@@ -44,7 +44,7 @@ public class EasyUiTreeUtil {
 			String text = fields.get("text");
 			String iconCls = fields.get("iconCls");
 			String checked = fields.get("checked");
-			String state = fields.get("idstate");
+			String state = fields.get("state");
 			String attributes = fields.get("attributes");
 			String target = fields.get("target");
 			String parentId = fields.get("parentId");

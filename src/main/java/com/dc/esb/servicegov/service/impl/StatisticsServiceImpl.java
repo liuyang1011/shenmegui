@@ -379,6 +379,11 @@ public class StatisticsServiceImpl implements StatisticsService{
         genderCategoryService(root);
         genderServiceReuseRate(root);
 
+        for(int i = 0; i < categoryNodes.size(); i++){//将分类下节点收缩
+            TreeNode t = categoryNodes.get(i);
+            t.setState("closed");
+        }
+
         List<TreeNode> result = new ArrayList<TreeNode>();
         result.add(root);
         return result;

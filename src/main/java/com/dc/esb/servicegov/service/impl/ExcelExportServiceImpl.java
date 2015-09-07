@@ -295,6 +295,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             ServiceInvoke si = siList.get(i);
             //TODO taizhou 标准没有interfaceId
             if (null == si.getInterfaceId()) continue;
+            if(null != workbook.getSheet(si.getInterfaceId())) continue;//如果已经有同名sheet
             HSSFSheet sheet = workbook.cloneSheet(workbook.getSheetIndex(mappingSheet));//复制模板中mapping页
             workbook.setSheetName(workbook.getSheetIndex(sheet), si.getInterfaceId());//修改sheet名称
 //            MappingSheetTask msTask = new MappingSheetTask(sheet, si, this);
@@ -622,8 +623,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for (Service service : services) {
                 int serviceStart = counter;
                 String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
-
-                List<Operation> operations = operationDAO.findBy("serviceId", service.getServiceId());//查询场景
+                String operationHql = " from " + Operation.class.getName() + " where serviceId=? order by operationId asc";
+                List<Operation> operations = operationDAO.find(operationHql, service.getServiceId());//查询场景
                 if (operations.size() == 0) {
                     HSSFRow row = sheet.createRow(counter);
                     counter++;
@@ -646,9 +647,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         continue;
                     }
                     for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
+                        if(interfaceInvokeVO == null) continue;
                         HSSFRow row = sheet.createRow(counter);
                         counter++;
-                        if(interfaceInvokeVO == null) continue;
                         values3[6] = interfaceInvokeVO.getConsumers();
                         values3[7] = interfaceInvokeVO.getEcode();
                         values3[8] = interfaceInvokeVO.getInterfaceName();
@@ -690,7 +691,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 HSSFRow R = sheet.getRow( serviceStart);//居中
                 HSSFCell C = R.getCell(2);
                 C.setCellStyle(cellStyle);
-                sheet.getRow(counter - operations.size()).getCell(3).setCellStyle(cellStyle);//居中
+                sheet.getRow(serviceStart).getCell(3).setCellStyle(cellStyle);//居中
             }
             CellRangeAddress region1 = new CellRangeAddress(start, counter - 1, (short) 1, (short) 1);
             sheet.addMergedRegion(region1);//合并单元格：子类
@@ -861,9 +862,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 ServiceInvoke consumer = interfaceInvoke.getConsumer();
                 if(!providerIds.contains(provider.getInvokeId())){
                     InterfaceInvokeVO vo = new InterfaceInvokeVO();
-                    vo.setProviderIds(provider.getInvokeId());
+                    vo.setProviderIds(provider.getSystemId());
                     vo.setProviders(provider.getSystem().getSystemChineseName());
-                    vo.setConsumerIds(consumer.getInvokeId());
+                    vo.setConsumerIds(consumer.getSystemId());
                     vo.setConsumers(consumer.getSystem().getSystemChineseName());
                     providerIds.add(provider.getInvokeId());
                     result.add(vo);
