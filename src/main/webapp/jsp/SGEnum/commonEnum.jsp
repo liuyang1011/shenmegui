@@ -89,7 +89,51 @@
 	<script type="text/javascript">
 		var processId = parent.processId;
 		var taskId = parent.taskId;
-		$(document).ready(function(){
+//		$(document).ready(function(){
+//			$('#dg').datagrid({
+//				rownumbers:true,
+//				singleSelect:true,
+//				collapsible:true,
+//				url:"/enum/getAll",
+//				method:'POST',
+//				toolbar:toolbar,
+//				pagination:true,
+//				pageSize:'10',
+//				onLoadError: function (responce) {
+//					var resText = responce.responseText;
+//					if(resText.toString().charAt(0) == "<"){
+////                    alert("没有权限！");
+//						window.location.href = "/jsp/403.jsp";
+//					}
+//				}
+//			});
+//		});
+//		$('#isStandard').combobox({
+//			valueField: 'value',
+//			textField: 'label',
+//			data: [{
+//				label: '是',
+//				value: '1',
+//				selected:true
+//			},{
+//				label: '否',
+//				value: '0'
+//			}]
+//		});
+//		$('#status').combobox({
+//			valueField: 'value',
+//			textField: 'label',
+//			data: [{
+//				label: '使用',
+//				value: '1',
+//				selected:true
+//			},{
+//				label: '退役',
+//				value: '0'
+//			}]
+//		});
+		
+		$(function(){
 			$('#dg').datagrid({
 				rownumbers:true,
 				singleSelect:true,
@@ -107,34 +151,30 @@
 					}
 				}
 			});
-		});
-		$('#isStandard').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '是',
-				value: '1',
-				selected:true
-			},{
-				label: '否',
-				value: '0'
-			}]
-		});
-		$('#status').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '使用',
-				value: '1',
-				selected:true
-			},{
-				label: '退役',
-				value: '0'
-			}]
-		});
-		
-		$(function(){
-			
+			$('#isStandard').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '是',
+					value: '1',
+					selected:true
+				},{
+					label: '否',
+					value: '0'
+				}]
+			});
+			$('#status').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '使用',
+					value: '1',
+					selected:true
+				},{
+					label: '退役',
+					value: '0'
+				}]
+			});
 			$('#searchBtn').click(function(){
 				var queryParams = $('#dg').datagrid('options').queryParams;  
 				queryParams.name = $('#name').val();
@@ -147,16 +187,15 @@
 		})
 		var toolbar = [
 				{
-					text : '元数据映射',
-					iconCls : 'icon-qxfp',
-					handler : function(event) {
+					text : '新增代码',
+					iconCls : 'icon-add',
+					handler : function() {
 						uiinit.win({
 							w : 500,
 							iconCls : 'icon-add',
 							title : "新增代码",
 							url : "/pages/SGEnum/form/enumAppandForm.jsp"
 						});
-						event.stopPropagation();
 					}
 				},
 				{

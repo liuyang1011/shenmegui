@@ -459,6 +459,9 @@
 					<th data-options="field:'metadataId',width:100,editor:'text'">
 						元数据ID
 					</th>
+					<th data-options="field:'constraintAlias',width:100,editor:'text'">
+						约束条件
+					</th>
 					<th data-options="field:'scale',width:100,editor:'text'">
 						精度
 					</th>

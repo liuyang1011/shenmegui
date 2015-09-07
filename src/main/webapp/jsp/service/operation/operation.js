@@ -38,6 +38,20 @@ function save(formId, operation) {
     if (!$("#" + formId).form('validate')) {
         return false;
     }
+    //保存标签
+    var tagNames = $("#tags").tagit("assignedTags");
+    var tags = [];
+    tagNames.forEach(function (tagName){
+        var tagToAdd = {};
+        tagToAdd.tagName = tagName;
+        tags.push(tagToAdd);
+    });
+    var serviceId = $("#serviceId").attr("value");
+    var operationId = $("#operationId").textbox("getValue");
+    tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+    });
+
+
     var params = $("#" + formId).serialize();
     params = decodeURIComponent(params, true);
     var processId = parent.parent.PROCESS_INFO.processId;
@@ -57,8 +71,8 @@ function save(formId, operation) {
         data: params,
         success: function (data) {
             if (data == true) {
-                var serviceId = $("#serviceId").attr("value");
-                var operationId = $("#operationId").textbox("getValue");
+                //var serviceId = $("#serviceId").attr("value");
+                //var operationId = $("#operationId").textbox("getValue");
                 var serviceInvokeList = new Array();
                 for(var i = 0; i < invokeList.length; i++){
                     var si = invokeList[i];

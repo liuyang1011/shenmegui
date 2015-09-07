@@ -34,15 +34,14 @@
              * @param result
              */
             var initTags = function initTags(result){
-                console.log(result);
                 result.forEach(function(tag){
                     $("#tags").append("<li>" + tag.tagName + "</li>");
                 });
                 $("#tags").tagit();
 
             };
-            serviceId = ${operation.serviceId};
-            operationId = ${operation.operationId};
+            serviceId = $("#serviceId").attr("value");
+            operationId = $("#operationId").textbox("getValue");
             tagManager.getTagForOperation(serviceId,operationId,initTags);
 
             $("#saveTagBtn").click(function () {
@@ -226,9 +225,9 @@
                 <td >
                     <ul id="tags"></ul>
                 </td>
-                <th>
+                <%--<th>
                     <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
-                </th>
+                </th>--%>
             </tr>
         </table>
 
