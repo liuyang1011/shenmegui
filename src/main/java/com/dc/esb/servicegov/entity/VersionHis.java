@@ -48,9 +48,17 @@ public class VersionHis implements Serializable {
 	@Column(name = "TARGET_ID")
 	private String targetId;
 
-	@OneToOne
+	/*@OneToOne
 	@JoinColumn(name = "TARGET_ID",referencedColumnName = "AUTO_ID", insertable = false, updatable = false)
 	private OperationHis operationHis;
+
+	public OperationHis getOperationHis() {
+		return operationHis;
+	}
+
+	public void setOperationHis(OperationHis operationHis) {
+		this.operationHis = operationHis;
+	}*/
 
 	public VersionHis() {
 

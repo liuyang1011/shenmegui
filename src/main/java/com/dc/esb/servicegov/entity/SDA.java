@@ -53,7 +53,7 @@ public class SDA implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String desc;
 
-	@Column(name = "REMARK",length=1024)
+	@Column(name = "REMARK",length=3072)
 	private String remark;
 
 	@Column(name = "HEAD_ID")

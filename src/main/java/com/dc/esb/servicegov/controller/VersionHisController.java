@@ -66,18 +66,30 @@ public class VersionHisController {
 			}
 		}
 
-		String hql = " from VersionHis v left join v.operationHis";
+		String hql = " from OperationHis oh left join oh.versionHis";
 		if(StringUtils.isNotEmpty(keyValue)){
-//			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%' order by optDate desc";
-			hql += " where v.operationHis.operationId like '%"+keyValue+"%' or v.operationHis.operationName like '%"+keyValue+"%'";
+			hql += " where oh.operationId like '%"+keyValue+"%' or oh.operationName like '%"+keyValue+"%'";
 			if ("".equals(serviceStr)) {
-				hql += " order by v.optDate desc";
+				hql += " order by oh.versionHis.optDate desc";
 			}else{
-				hql += " or v.operationHis.serviceId in ("+serviceStr+") order by v.optDate desc";
+				hql += " or oh.serviceId in ("+serviceStr+") order by oh.versionHis.optDate desc";
 			}
-		}else {
-			hql += " order by v.optDate desc";
+		} else {
+			hql += " order by oh.versionHis.optDate desc";
 		}
+
+//		String hql = " from VersionHis v left join v.operationHis";
+//		if(StringUtils.isNotEmpty(keyValue)){
+////			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%' order by optDate desc";
+//			hql += " where v.operationHis.operationId like '%"+keyValue+"%' or v.operationHis.operationName like '%"+keyValue+"%'";
+//			if ("".equals(serviceStr)) {
+//				hql += " order by v.optDate desc";
+//			}else{
+//				hql += " or v.operationHis.serviceId in ("+serviceStr+") order by v.optDate desc";
+//			}
+//		}else {
+//			hql += " order by v.optDate desc";
+//		}
 		Page page = versionHisServiceImpl.getPageBy(hql,rowCount);
 		page.setPage(pageNo);
 		List<VersionHisServiceImpl.VersionHisBean> rows = versionHisServiceImpl.findVersionBeanBy(hql, page);

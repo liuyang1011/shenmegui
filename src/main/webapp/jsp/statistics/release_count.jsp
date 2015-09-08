@@ -167,7 +167,7 @@
       "type":$("#type").combobox("getValue"),
       "startDate":$("#startDate").datebox("getValue"),
       "endDate":$("#endDate").datebox("getValue"),
-      "systemName": encodeURI($("#systemName").datebox("getValue"))
+      "systemName": encodeURI($("#systemName").textbox("getText"))
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');

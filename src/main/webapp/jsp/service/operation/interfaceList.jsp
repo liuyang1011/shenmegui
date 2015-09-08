@@ -16,7 +16,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		data-options="
 				rownumbers:true,
 				singleSelect:true,
-				url:'/serviceLink/getInterface?systemId=${param.systemId}',
+				url:'/serviceLink/getInterface?systemId=${param.systemId}&type=${param.type}',
 				method:'post',
 				toolbar:'#tb',
 				pagination:true,

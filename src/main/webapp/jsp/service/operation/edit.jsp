@@ -34,15 +34,14 @@
              * @param result
              */
             var initTags = function initTags(result){
-                console.log(result);
                 result.forEach(function(tag){
                     $("#tags").append("<li>" + tag.tagName + "</li>");
                 });
                 $("#tags").tagit();
 
             };
-            serviceId = ${operation.serviceId};
-            operationId = ${operation.operationId};
+            serviceId = $("#serviceId").attr("value");
+            operationId = $("#operationId").textbox("getValue");
             tagManager.getTagForOperation(serviceId,operationId,initTags);
 
             $("#saveTagBtn").click(function () {
@@ -79,8 +78,23 @@
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
-                $("#resultList").datagrid('loadData',{total:0,rows:[]});
-                invokeList = new Array();
+//                $("#resultList").datagrid('get',{total:0,rows:[]});
+                var row = $("#resultList").datagrid('getSelected');
+                var index =  $("#resultList").datagrid('getRowIndex',row);
+                console.log(row);
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    contentType: "application/json; charset=utf-8",
+                    url: "/serviceLink/deleteInvoke",
+                    dataType: "json",
+                    data : JSON.stringify(row),
+                    success: function (data) {
+                        $("#resultList").datagrid('deleteRow',index);
+                        alert("删除成功");
+                    }
+                });
+//                invokeList = new Array();
             }}
         ];
         var systemList = ${systemList};
@@ -229,9 +243,9 @@
                 <td >
                     <ul id="tags"></ul>
                 </td>
-                <th>
+                <%--<th>
                     <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
-                </th>
+                </th>--%>
             </tr>
         </table>
 

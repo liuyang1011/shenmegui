@@ -52,13 +52,27 @@ public class VersionController {
         }else{
             serviceName = "";
         }
+        String operationId = req.getParameter("operationId");
+        if(null == operationId) operationId = "";
+        String operationName = req.getParameter("operationName");
+        if(null != operationName && !"".equals(operationName)){
+            try{
+                operationName = URLDecoder.decode(req.getParameter("operationName"), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }else{
+            operationName = "";
+        }
 //        Page page = operationService.getAll(rowCount);
         String hql = "from Operation a where a.state=? and a.version.optType !=? and a.service.serviceId like ? and a.service.serviceName like ?";
-        Page page = operationService.getPageBy(hql,rowCount, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE,"%"+serviceId+"%","%"+serviceName+"%");
+        hql += " and a.operationId like ? and a.operationName like ?";
+        Page page = operationService.getPageBy(hql,rowCount, Constants.Operation.OPT_STATE_PASS, Constants.Version.OPT_TYPE_RELEASE,"%"+serviceId+"%","%"+serviceName+"%",
+                                                "%"+operationId+"%","%"+operationName+"%");
         page.setPage(pageNo);
 
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Operation> list = operationService.getReleased(page,serviceId,serviceName);
+        List<Operation> list = operationService.getReleased(page,serviceId,serviceName,operationId,operationName);
         result.put("total", page.getResultCount());
         result.put("rows", list);
         return result;

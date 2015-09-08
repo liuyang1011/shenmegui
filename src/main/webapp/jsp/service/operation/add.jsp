@@ -54,6 +54,23 @@
                 }
             });
         });
+        $(function(){
+            /**
+             *  初始化接口标签
+             * @param result
+             */
+            $("#tags").tagit();
+            /*var initTags = function initTags(result){
+                result.forEach(function(tag){
+                    $("#tags").append("<li>" + tag.tagName + "</li>");
+                });
+                $("#tags").tagit();
+
+            };
+            serviceId = ${operation.serviceId};
+            operationId = ${operation.operationId};
+            tagManager.getTagForOperation(serviceId,operationId,initTags);*/
+        })
         var toolbar = [{
             text: '新增',
             iconCls: 'icon-add',
@@ -208,7 +225,9 @@
             </tr>
             <tr>
                 <th>场景关键字:</th>
-                <td colspan="2"><ul id="tags"></ul></td>
+                <td >
+                    <ul id="tags"></ul>
+                </td>
             </tr>
         </table>
 

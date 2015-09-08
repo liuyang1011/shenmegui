@@ -48,8 +48,8 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 		for(Object[] objects : list){
 //			Map<String,String> map = new HashMap<String, String>();
 //			map.put("versionHisId",vh.getAutoId());
-			VersionHis vh = (VersionHis)objects[0];
-			OperationHis operationHis = (OperationHis)objects[1];
+			VersionHis vh = (VersionHis)objects[1];
+			OperationHis operationHis = (OperationHis)objects[0];
 			List<BaseLineVersionHisMapping> mapping = baselineVersionHisMappingDAO.findBy("versionHisId",vh.getAutoId());
 			String baseLineNum = "";
 			for (int i = 0; i < mapping.size(); i++) {
