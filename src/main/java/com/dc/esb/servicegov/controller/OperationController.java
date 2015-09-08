@@ -365,8 +365,8 @@ public class OperationController {
     @RequiresPermissions({"service-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/judgeInterface", headers = "Accept=application/json")
     @ResponseBody
-    public boolean judgeInterface(String systemId) {
-        boolean result = systemService.containsInterface(systemId);
+    public boolean judgeInterface(String systemId,String type) {
+        boolean result = systemService.containsInterface(systemId,type);
         return result;
     }
 

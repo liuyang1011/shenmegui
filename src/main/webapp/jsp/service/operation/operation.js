@@ -84,7 +84,7 @@ function save(formId, operation) {
                     serviceInvoke.type = si.type;
                     serviceInvokeList.push(serviceInvoke);
                 }
-                $.ajax({
+               /* $.ajax({
                     type: "post",
                     async: false,
                     contentType: "application/json; charset=utf-8",
@@ -98,7 +98,7 @@ function save(formId, operation) {
                         //刷新查询列表
                         parent.serviceInfo.reloadData();
                     }
-                });
+                });*/
 
             } else {
                 alert("保存出现异常 ，操作失败！");
@@ -237,7 +237,7 @@ function chooseInterface(oldListId, newListId, type) {
             contentType: "application/json; charset=utf-8",
             url: "/operation/judgeInterface",
             dataType: "json",
-            data: {"systemId": $(this).val()},
+            data: {"systemId": $(this).val(),"type":type},
             success: function (data) {
                 //如果系统没有接口，直接转移
                 if (!data) {
@@ -249,6 +249,7 @@ function chooseInterface(oldListId, newListId, type) {
                         var invoekId = new Date().getTime();
                         $("#" + newListId).append("<option value='" + invoekId + "'>" + text + "</option>");
                         var si = genderServiceInvoke(invoekId, value,text, "","", type );
+                        si.isStandard = "0";
                         if(type == "1"){
                             consumerList.push(si);
                         }
@@ -329,6 +330,8 @@ function genderServiceInvoke(invokeId, systemId,systemChineseName, interfaceId, 
     serviceInvoke.interfaceId = interfaceId;
     serviceInvoke.interfaceName = interfaceName;
     serviceInvoke.type = type;
+    serviceInvoke.serviceId = $("#serviceId").textbox("getValue");
+    serviceInvoke.operationId = $("#operationId").textbox("getValue");
     return serviceInvoke;
 
 }

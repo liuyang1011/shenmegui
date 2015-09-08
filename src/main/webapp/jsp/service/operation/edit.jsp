@@ -78,8 +78,23 @@
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
-                $("#resultList").datagrid('loadData',{total:0,rows:[]});
-                invokeList = new Array();
+//                $("#resultList").datagrid('get',{total:0,rows:[]});
+                var row = $("#resultList").datagrid('getSelected');
+                var index =  $("#resultList").datagrid('getRowIndex',row);
+                console.log(row);
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    contentType: "application/json; charset=utf-8",
+                    url: "/serviceLink/deleteInvoke",
+                    dataType: "json",
+                    data : JSON.stringify(row),
+                    success: function (data) {
+                        $("#resultList").datagrid('deleteRow',index);
+                        alert("删除成功");
+                    }
+                });
+//                invokeList = new Array();
             }}
         ];
         var systemList = ${systemList};

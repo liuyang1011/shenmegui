@@ -4,14 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.shiro.SecurityUtils;
@@ -61,7 +54,7 @@ public class OperationHis implements Serializable{
     @JoinColumn(name="SERVICE_ID", insertable = false, updatable = false)
 	private Service service;
 
-	@ManyToOne(cascade={CascadeType.REFRESH}, optional=true)
+	@OneToOne(cascade={CascadeType.REFRESH}, optional=true)
     @JoinColumn(name="VERSION_HIS_ID", insertable = false, updatable = false)
 	private VersionHis versionHis;
 

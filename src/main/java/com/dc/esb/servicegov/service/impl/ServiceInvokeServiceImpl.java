@@ -109,8 +109,8 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	}
 
-	public List<ServiceInvokeJson> getDistinctInter(String systemId, String text) throws  Throwable{
-		String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"'";
+	public List<ServiceInvokeJson> getDistinctInter(String systemId,String type, String text) throws  Throwable{
+		String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"' and type = '"+type	+"'";
 		if(StringUtils.isNotEmpty(text)){
 			text = URLDecoder.decode(text, "utf-8");
 			hql += " and( si.interfaceId like '%" + text + "%' or si.inter.interfaceName like '%" + text + "%') ";
@@ -145,22 +145,20 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 				ServiceInvoke si = list.get(i);
 				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
 				//将标准接口放在第一位
-				if(si.getInterfaceId() == null){
+				if(null == si.getIsStandard()) continue;
+//				if(si.getInterfaceId() == null){
+				if(si.getIsStandard().equals("0")){
 					svo.setRemark("标准接口");
-					if(voList.size() == 0 ){
-						voList.add(svo);
-					}else{
-						ServiceInvokeJson temp = voList.get(0);
-						voList.set(0, svo);
-						voList.set(i, temp);
-					}
 				}
-				else{
-					voList.add(svo);
-				}
-
+				voList.add(svo);
 			}
 		}
+		Collections.sort(voList, new Comparator<ServiceInvokeJson>() {
+			@Override
+			public int compare(ServiceInvokeJson o1, ServiceInvokeJson o2) {
+				return (""+o1.getIsStandard()).compareTo(""+o2.getIsStandard());
+			}
+		});
 		return voList;
 	}
 

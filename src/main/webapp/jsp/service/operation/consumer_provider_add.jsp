@@ -6,7 +6,8 @@
 <form class="formui">
     <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
                                                        onClick="$('#interfaceDlg').dialog('close')">取消</a><a href="#"
-                                                                                                             onclick="addInterfaceContent()"
+                                                                                                             <%--onclick="addInterfaceContent()"--%>
+                                                                                                             onclick="addInterfaceInvoke()"
                                                                                                              class="easyui-linkbutton"
                                                                                                              iconCls="icon-save">确定</a></div>
     <fieldset>
@@ -63,87 +64,15 @@
             </tr>
         </table>
     </fieldset>
-    <!--
-    <div style="margin:20px">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <th>消费者系统：</th>
-                <td><input id="consumerId" class="easyui-combobox"
-                           data-options="
-                                                panelHeight:'300',
-                         						url:'/system/getSystemAll',
-                         				 		 method:'get',
-                         				 		 valueField: 'id',
-                         				 		 textField: 'chineseName',
-                         				 		 onChange:function(newValue, oldValue){
-                         							this.value=newValue;
-                         							$('#consumerInterfaceId').combobox('setValue','');
-                         							$('#consumerInterfaceId').combobox('setText','');
-                         							$('#consumerInterfaceId').combobox({url:'/interface/getInterfaceJson?systemId='+newValue});
-                         						}"/>
-                </td>
-
-            </tr>
-            <tr>
-                <th>消费者接口：</th>
-                <td><input id="consumerInterfaceId" class="easyui-combobox"
-                           data-options="
-                                                panelHeight:'300',
-                         				 		 method:'get',
-                         				 		 valueField: 'interfaceId',
-                         				 		 textField: 'interfaceName',
-                         				 		 onChange:function(newValue, oldValue){
-                         							this.value=newValue;
-                         						 }
-                         						"/>
-                </td>
-            </tr>
-            <tr>
-                <th>提供者系统：</th>
-                <td><input id="providerId" class="easyui-combobox"
-                           data-options="
-                                                 panelHeight:'300',
-                          						url:'/system/getSystemAll',
-                          				 		 method:'get',
-                          				 		 valueField: 'id',
-                          				 		 textField: 'chineseName',
-                          				 		 onChange:function(newValue, oldValue){
-                          							this.value=newValue;
-                          							$('#providerInterfaceId').combobox('setValue','');
-                          							$('#providerInterfaceId').combobox('setText','');
-                          							$('#providerInterfaceId').combobox({url:'/interface/getInterfaceJson?systemId='+newValue});
-                          						}"/>
-                </td>
-
-            </tr>
-            <tr>
-                <th>提供者接口：</th>
-                <td><input id="providerInterfaceId" class="easyui-combobox"
-                           data-options="
-                                                  panelHeight:'300',
-                           				 		 method:'get',
-                           				 		 valueField: 'interfaceId',
-                           				 		 textField: 'interfaceName',
-                           				 		 onChange:function(newValue, oldValue){
-                           							this.value=newValue;
-                           						 }
-                           						"/>
-                </td>
-            </tr>
-            <tr>
-                <th>描述：</th>
-                <td><input id="mappdesc" class="easyui-textbox"/>
-                </td>
-            </tr>
-
-        </table>
-    </div>
-    -->
     <div id="opDlg" class="easyui-dialog"
          style="width:400px;height:280px;padding:10px 20px" closed="true"
          resizable="true"></div>
 </form>
 <script type="text/javascript">
+    $(function(){
+        consumerList = new Array();
+        providerList = new Array();
+    })
     loadSystem("systemList1", systemList, "systemId", "systemChineseName");
     loadSystem("systemList2", systemList, "systemId", "systemChineseName");
     function queryInterfaceList(){
@@ -152,5 +81,23 @@
         };
         $("#intefaceList").datagrid('options').queryParams = params;
         $("#intefaceList").datagrid('reload');
+    }
+    function addInterfaceInvoke(){
+        //保存调用关系
+        var params = [];
+        console.log(consumerList);
+        params.push(consumerList);
+        params.push(providerList);
+        $.ajax({
+            type: "POST",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            url: "/serviceLink/addServiceLink",
+            dataType: "json",
+            data : JSON.stringify(params),
+            success: function (data) {
+                alert("保存成功");
+            }
+        });
     }
 </script>

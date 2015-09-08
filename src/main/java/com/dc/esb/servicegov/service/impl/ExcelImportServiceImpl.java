@@ -1505,13 +1505,13 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             operation.setServiceId(service.getServiceId());
             operation.setVersionId(versionId);
 //            operation.setState(AuditUtil.submit);
+            operationDAO.save(operation);
             /*如果系统中不存在当前场景，发布该场景新发布I一次*/
             if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
                 String state = operation.getState();
                 operationService.release( operation.getOperationId(),operation.getServiceId(), "导入发布");
                 operation.setState(state);
             }
-            operationDAO.save(operation);
         }
 
 

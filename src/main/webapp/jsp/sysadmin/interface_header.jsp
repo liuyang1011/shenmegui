@@ -75,6 +75,7 @@
 		                var scale = row.scale;
 		                var required = row.required;
 		                var seq = row.seq;
+						var remark = row.remark;
 		                var data = {};
 						data.structName = structName;
 						data.structAlias = structAlias;
@@ -86,6 +87,7 @@
 						data.required = required;
 						data.headId = "${param.headId}";
 						data.seq = seq;
+						data.remark = remark;
 						reqAry.push(data);
 				 	}
 				 }
@@ -103,6 +105,7 @@
 		                var scale = row.scale;
 		                var required = row.required;
 		                var seq = row.seq;
+						var remark = row.remark;
 		                var data = {};
 						data.structName = structName;
 						data.structAlias = structAlias;
@@ -114,6 +117,7 @@
 						data.headId = "${param.headId}";
 						data.seq = seq;
 						data.id = row.id;
+						data.remark = remark;
 						reqAry.push(data);
 				 	}
 				 }
@@ -459,7 +463,7 @@
 					<th data-options="field:'metadataId',width:100,editor:'text'">
 						元数据ID
 					</th>
-					<th data-options="field:'constraintAlias',width:100,editor:'text'">
+					<th data-options="field:'remark',width:100,editor:'text'">
 						约束条件
 					</th>
 					<th data-options="field:'scale',width:100,editor:'text'">
