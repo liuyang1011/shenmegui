@@ -208,7 +208,10 @@
                               data-options="readonly:true, valueField: 'value',textField: 'label',
 						data: [{label: '待审核',value: '0'},
 						{label: '审核通过',value: '1'},
-						{label: '审核未通过',value: '2'}
+						{label: '审核未通过',value: '2'},
+						{label: '已发布',value: '3'},
+						{label: '已上线',value: '4'},
+						{label: '已下线',value: '5'}
 							]"
                             />
                 </td>

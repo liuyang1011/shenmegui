@@ -66,11 +66,14 @@
         <th data-options="field:'fileSize',width:'10%'">
             文件大小
         </th>
-        <th data-options="field:'filePath',width:'35%',title:true">
+        <th data-options="field:'filePath',width:'30%',title:true">
             文件路径
         </th>
-        <th data-options="field:'fileDesc',width:'30%'">
+        <th data-options="field:'fileDesc',width:'25%'">
             文件描述
+        </th>
+        <th data-options="field:'fileId',width:'25%', formatter:downloadFormatter">
+            下载
         </th>
         <th data-options="field:'fileId',hidden:true">
             文件id
@@ -182,6 +185,12 @@
         queryParams.systemId = systemId;
         $('#tg').datagrid('options').queryParams = queryParams;//传递值
         $("#tg").datagrid('reload');//重新加载table
+    }
+
+    function downloadFormatter(value){
+        alert(value);
+        var s = '<a iconcls="icon-save"  style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="/fileManager/download?fileId='+value+'" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">下载</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
+        return s;
     }
 </script>
 

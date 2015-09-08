@@ -7,18 +7,24 @@ import com.dc.esb.servicegov.entity.Interface;
 import com.dc.esb.servicegov.service.FileManagerService;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.Utils;
+import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -134,6 +140,21 @@ public class FileManagerController {
         }
         fileManagerService.delete(fm);
         return true;
+    }
+
+    @RequestMapping("download")
+    public ResponseEntity<byte[]> download(String fileId) throws IOException {
+        FileManager fm = fileManagerService.findUniqueBy("fileId", fileId);
+        if(fm != null){
+            File file=new File(fm.getFilePath());
+            HttpHeaders headers = new HttpHeaders();
+            String fileName=new String(fm.getFileName().getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题
+            headers.setContentDispositionFormData("attachment", fileName);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
+                    headers, HttpStatus.CREATED);
+        }
+       return null;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

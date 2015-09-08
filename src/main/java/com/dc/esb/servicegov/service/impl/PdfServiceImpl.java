@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.PdfUtils;
+import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
 import com.dc.esb.servicegov.vo.OperationPKVO;
 import com.dc.esb.servicegov.vo.SDAVO;
 import com.lowagie.text.*;
@@ -42,6 +43,8 @@ public class PdfServiceImpl {
     private SDADAOImpl sdadao;
     @Autowired
     private ServiceCategoryDAOImpl serviceCategoryDAO;
+    @Autowired
+    private ExcelExportServiceImpl excelExportService;
     int maxWidth = 520;
 
     private static final String serviceType = "service";
@@ -187,6 +190,7 @@ public class PdfServiceImpl {
                     Phrase opDescPhrase = new Phrase("              场景描述："+operation.getOperationDesc(), PdfUtils.ST_SONG_MIDDLE_BOLD_FONT);
                     document.add(opDescPhrase);
                     document.add(Chunk.NEWLINE);
+
                     //服务提供者
                     List<ServiceInvoke> providers = serviceInvokeDAO.getByOperationAndType(operation, Constants.INVOKE_TYPE_PROVIDER);
                     Phrase opConsumerPhrase = new Phrase("              服务提供者："+ joinBy(providers), PdfUtils.ST_SONG_MIDDLE_BOLD_FONT);
@@ -223,7 +227,7 @@ public class PdfServiceImpl {
         if (!pdfDirFile.exists()) {
             pdfDirFile.mkdirs();
         }
-        String pdfPath = pdfDir + File.separator + "银行服务手册-" + fileName + ".pdf";
+        String pdfPath = pdfDir + File.separator + "银行服务手册-" + fileName + new Date().getTime()+ ".pdf";
         pdfFile = new File(pdfPath);
         if (pdfFile.exists()) {
             log.error("file path:" + pdfFile.getAbsolutePath());
@@ -384,7 +388,7 @@ public class PdfServiceImpl {
         String sdaNodeType = "";
         String sdaNodeChineseName = sda.getValue().getStructAlias();
         String sdaNodeRequired = sda.getValue().getRequired();
-        String sdaNodeResist = "";
+        String sdaNodeResist = sda.getValue().getConstraint();
         String sdaNodeRemark = sda.getValue().getRemark();
 
         String metadataId = sda.getValue().getMetadataId();
@@ -431,7 +435,7 @@ public class PdfServiceImpl {
         PdfUtils.renderLatinTableData(sdaNodeRequired, requiredCell);
 
         PdfPCell resistCell = new PdfPCell();
-        PdfUtils.renderChineseTableData(sdaNodeResist, requiredCell);
+        PdfUtils.renderChineseTableData(sdaNodeResist, resistCell);
 
         PdfPCell remarkCell = new PdfPCell();
 
@@ -486,20 +490,21 @@ public class PdfServiceImpl {
     }
 
     public String joinBy(List<ServiceInvoke> serviceInvokes){
-        String result = "";
+        String consumer = "";
+        List<String> temp = new ArrayList<String>();
         for(int i = 0; i < serviceInvokes.size(); i++){
-            ServiceInvoke serviceInvoke = serviceInvokes.get(i);
-            if(serviceInvoke.getSystem() != null){
-                if(StringUtils.isNotEmpty(serviceInvoke.getSystem().getSystemChineseName())){
-                    if(i == 0){
-                        result += serviceInvoke.getSystem().getSystemChineseName();
-                    }else{
-                        result += ", "+ serviceInvoke.getSystem().getSystemChineseName();
+            ServiceInvoke si = serviceInvokes.get(i);
+            if(si.getSystem() != null){
+                if(!temp.contains(si.getSystem().getSystemId())){
+                    temp.add(si.getSystem().getSystemId());
+                    if(i != 0){
+                        consumer += ", ";
                     }
+                    consumer += si.getSystem().getSystemChineseName();
                 }
+
             }
         }
-
-        return result;
+        return consumer;
     }
 }

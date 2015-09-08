@@ -3,6 +3,8 @@ package com.dc.esb.servicegov.entity;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+import java.lang.*;
+import java.lang.System;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -186,8 +188,9 @@ public class SDA implements Serializable {
 
 	public void setRemark(String remark) {
 		if(StringUtils.isNotEmpty(remark)){
-			if(remark.length() > 1024){
-				this.remark = remark.substring(0, 1023);
+			byte[] bytes = remark.getBytes();
+			if(bytes.length> 1024){
+				this.remark = remark.substring(0, 511);
 				return;
 			}
 		}

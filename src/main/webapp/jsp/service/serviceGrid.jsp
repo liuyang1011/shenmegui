@@ -85,6 +85,7 @@
         <th data-options="field:'consumers',width:150">消费者</th>
         <th data-options="field:'providers',width:150">提供者</th>
         <th data-options="field:'version', width:80" >版本号</th>
+        <th data-options="field:'versionRemark', width:80" >版本说明</th>
         <th data-options="field:'optDate',width:120">更新时间</th>
         <th data-options="field:'optUser', width:80">更新用户</th>
         <th data-options="field:'optState',width:80"  formatter='formatter.operationState'>状态</th>

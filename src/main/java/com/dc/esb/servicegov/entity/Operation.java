@@ -44,7 +44,7 @@ public class Operation implements Serializable {
     @Column(name = "OPT_DATE", length = 50)
     private String optDate;
 
-    @Column(name = "RANGE")
+    @Column(name = "RANGE_AREA")
     private String range;
 
     @Column(name = "HEAD_ID")

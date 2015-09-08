@@ -15,6 +15,7 @@ public class OperationExpVO {
     private String consumers;
     private String providers;
     private String version;
+    private String versionRemark;
     private String optDate;
     private String optUser;
     private String optState;
@@ -28,6 +29,7 @@ public class OperationExpVO {
         this.operationDesc = o.getOperationDesc();
         if(o.getVersion() != null){
             this.version = o.getVersion().getCode();
+            this.versionRemark = o.getVersion().getRemark();
         }
         this.optDate = o.getOptDate();
         this.optUser = o.getOptUser();
@@ -128,5 +130,13 @@ public class OperationExpVO {
 
     public void setServiceDesc(String serviceDesc) {
         this.serviceDesc = serviceDesc;
+    }
+
+    public String getVersionRemark() {
+        return versionRemark;
+    }
+
+    public void setVersionRemark(String versionRemark) {
+        this.versionRemark = versionRemark;
     }
 }
