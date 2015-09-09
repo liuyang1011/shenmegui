@@ -341,7 +341,8 @@ function chooseInterface(oldListId, newListId, type) {
                     //如果有接口弹出接口选择页面
                     $('#opDlg').dialog({
                         title: '接口选择',
-                        width: 800,
+                        width: '750px',
+                        height:'463px',
                         closed: false,
                         cache: false,
                         href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId+"&type=" + type,

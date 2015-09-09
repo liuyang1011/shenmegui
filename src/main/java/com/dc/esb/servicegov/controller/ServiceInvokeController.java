@@ -1,7 +1,9 @@
 package com.dc.esb.servicegov.controller;
 
+import java.net.URLDecoder;
 import java.util.*;
 
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
@@ -9,6 +11,7 @@ import com.dc.esb.servicegov.service.impl.InterfaceServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -54,11 +57,21 @@ public class ServiceInvokeController {
      */
     @RequestMapping("/getInterface")
     @ResponseBody
-    public Map<String, Object> getInterface(String systemId, String type, String text) throws  Throwable{
-        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter(systemId, type,text);
+    public Map<String, Object> getInterface(String systemId, String type, String text,HttpServletRequest req) throws  Throwable{
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"' and type = '"+type	+"'";
+        if(StringUtils.isNotEmpty(text)){
+            text = URLDecoder.decode(text, "utf-8");
+            hql += " and( si.interfaceId like '%" + text + "%' or si.inter.interfaceName like '%" + text + "%') ";
+        }
+        Page page = serviceInvokeService.getPageBy(hql,rowCount);
+        page.setPage(pageNo);
+        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInterBy(hql, page);
+//        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter(systemId, type,text);
 
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("total", rows.size());
+        result.put("total", page.getResultCount());
         result.put("rows", rows);
         return result;
     }

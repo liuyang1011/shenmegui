@@ -13,14 +13,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
    <table id="intefaceList" class="easyui-datagrid"
-		data-options="
-				rownumbers:true,
-				singleSelect:true,
-				url:'/serviceLink/getInterface?systemId=${param.systemId}&type=${param.type}',
-				method:'post',
-				toolbar:'#tb',
-				pagination:true,
-				pageSize:10"
 		style="height:370px; width:auto;">
 		<thead>
 			<tr>
@@ -51,6 +43,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </tr>
     </table>
     </div>
-	
+   <script type="text/javascript">
+	   $(function(){
+		   $("#intefaceList").datagrid({
+			   rownumbers:true,
+			   singleSelect:true,
+			   url:'/serviceLink/getInterface?systemId=${param.systemId}&type=${param.type}',
+			   method:'post',
+			   toolbar:'#tb',
+			   pagination:true,
+			   pageSize:10
+		   });
+	   });
+	   function queryInterfaceList(){
+		   var params = {
+			   "text" : $("#interfaceText").textbox("getValue")
+		   };
+		   $("#intefaceList").datagrid('options').queryParams = params;
+		   $("#intefaceList").datagrid('reload');
+	   }
+   </script>
   </body>
 </html>

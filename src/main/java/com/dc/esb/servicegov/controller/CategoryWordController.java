@@ -207,7 +207,7 @@ public class CategoryWordController {
     boolean saveCategoryWord(@RequestBody List list,@PathVariable String type) {//type 1 insert  2 update
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
-            List<CategoryWord> list1 = categoryWordService.findBy("englishWord", map.get("englishWord"));
+            List<CategoryWord> list1 = categoryWordService.findBy("englishWord", map.get("esglisgAb"));
             List<CategoryWord> list2 = categoryWordService.findBy("chineseWord", map.get("chineseWord"));
             if((list1.size() > 0 || list2.size() > 0) && type.equals("1")){
                 return false;

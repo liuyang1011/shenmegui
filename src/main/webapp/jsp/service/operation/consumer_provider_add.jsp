@@ -75,13 +75,7 @@
     })
     loadSystem("systemList1", systemList, "systemId", "systemChineseName");
     loadSystem("systemList2", systemList, "systemId", "systemChineseName");
-    function queryInterfaceList(){
-        var params = {
-            "text" : $("#interfaceText").textbox("getValue")
-        };
-        $("#intefaceList").datagrid('options').queryParams = params;
-        $("#intefaceList").datagrid('reload');
-    }
+
     function addInterfaceInvoke(){
         //保存调用关系
         var params = [];
