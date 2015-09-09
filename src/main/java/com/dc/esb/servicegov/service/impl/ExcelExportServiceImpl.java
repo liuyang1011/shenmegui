@@ -157,7 +157,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * @return
      */
     public HSSFWorkbook genderServiceExcel(String serviceId) {
-        List<ServiceInvoke> siList = siDao.findBy("serviceId", serviceId);
+        String hql = " from " + ServiceInvoke.class.getName() + " where serviceId=? order by operationId asc";
+        List<ServiceInvoke> siList = siDao.find(hql, serviceId);
         HSSFWorkbook workbook = fillExcel(siList);
         return workbook;
     }

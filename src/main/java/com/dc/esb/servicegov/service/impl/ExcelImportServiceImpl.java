@@ -11,6 +11,7 @@ import com.dc.esb.servicegov.util.AuditUtil;
 import com.dc.esb.servicegov.util.ExcelTool;
 import com.dc.esb.servicegov.util.GlobalImport;
 import com.dc.esb.servicegov.util.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
@@ -116,6 +117,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         List<Ida> idaoutput = (List<Ida>) outMap.get("idas");
         List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
         List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
+        List<OperationPK>  operationPKs = (List<OperationPK>)infoMap.get("operationPKs");
 
         ServiceInvoke provider_invoke = null;
         List list = new ArrayList();
@@ -124,7 +126,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         if (insertService(service)) {
             //导入服务场景相关信息
             logger.info("导入服务场景信息...");
-            boolean existsOper = insertOperation(service, operation);
+            boolean existsOper = insertOperation(service, operation, operationPKs);
             //维护调用关系
             //接口提供方 service_invoke 中 type=0
             String providerSystem = publicMap.get("providerSystem");
@@ -1472,30 +1474,32 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return provider_invoke;
     }
 
-    protected boolean insertOperation(com.dc.esb.servicegov.entity.Service service, Operation operation) {
+    protected boolean insertOperation(com.dc.esb.servicegov.entity.Service service, Operation operation, List<OperationPK> operationPKs) {
 
         boolean exists = false;
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("serviceId", service.getServiceId());
+
         Operation operationDB = operationDAO.findUniqureBy(paramMap);
         if (operationDB != null) {
             //覆盖
             if (GlobalImport.operateFlag) {
                 operationDB.setOperationName(operation.getOperationName());
                 operationDB.setOperationDesc(operation.getOperationDesc());
-
-                /*如果已经存在了场景，导入数据为发布或者上线状态，在当前基础上发布一次*/
-                if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
-                    Map<String, String> param = new HashMap<String, String>();
-                    param.put("serviceId", operation.getServiceId());
-                    param.put("operationId", operation.getOperationId());
-                    List<OperationHis> hisList = operationHisDAO.findBy(param);
-                    if(hisList == null || hisList.size() == 0){
-                        operationService.release( operationDB.getOperationId(), operationDB.getServiceId(), "导入发布");
+                OperationPK pk = new OperationPK(service.getServiceId(), operation.getOperationId());
+                if(!operationPKs.contains(pk)){
+                    operationPKs.add(pk);//第一次发现一个场景
+                    /*如果已经存在了场景，导入数据为发布或者上线状态，在当前基础上发布一次*/
+                    if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
+                        String state = operation.getState();//保存当前状态
+                        operationDB.setState(Constants.Operation.OPT_STATE_PASS);//为了发布将状态修改为审核通过
+                        operationDAO.save(operationDB);
+                        operationService.release(operationDB.getOperationId(), operationDB.getServiceId(), "导入发布");
+                        operationDB.setState(state);
+                        operationDAO.save(operationDB);
                     }
                 }
-
                 operationDB.setState(operation.getState());
                 operationDAO.save(operationDB);
             }
@@ -1508,7 +1512,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             operationDAO.save(operation);
             /*如果系统中不存在当前场景，发布该场景新发布I一次*/
             if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
-                String state = operation.getState();
+                String state = operation.getState();//保存当前状态
+                operation.setState(Constants.Operation.OPT_STATE_PASS);//为了发布将状态修改为审核通过
+                operationDAO.save(operation);
                 operationService.release( operation.getOperationId(),operation.getServiceId(), "导入发布");
                 operation.setState(state);
                 operationDAO.save(operation);

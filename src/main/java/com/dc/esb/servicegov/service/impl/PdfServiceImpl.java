@@ -114,7 +114,8 @@ public class PdfServiceImpl {
      * @return
      */
     public void genderPdfByServiceCategoryRoot(String serviceCategoryId, Document document) throws Exception {
-        List<ServiceCategory> children = serviceCategoryDAO.find(" from ServiceCategory where parentId is null");
+        String hql = " from " + ServiceCategory.class.getName() +" where parentId is null order by categoryId asc";
+        List<ServiceCategory> children = serviceCategoryDAO.find(hql);
         if(children.size() > 0){
             for(int i = 0; i< children.size(); i++){
                 ServiceCategory child = children.get(i);
@@ -135,7 +136,8 @@ public class PdfServiceImpl {
         Phrase opDescPhrase = new Phrase(tab + "  "+sc.getCategoryName(), PdfUtils.ST_SONG_BIG_FONT);
         document.add(opDescPhrase);
         document.add(Chunk.NEWLINE);
-        List<ServiceCategory> children = serviceCategoryDAO.findBy("parentId", serviceCategoryId);
+        String hql = " from " + ServiceCategory.class.getName() +" where parentId = ? order by categoryId asc";
+        List<ServiceCategory> children = serviceCategoryDAO.find(hql, serviceCategoryId);
         if(children.size() > 0){
             for(int i = 0; i< children.size(); i++){
                 ServiceCategory child = children.get(i);
@@ -143,7 +145,8 @@ public class PdfServiceImpl {
             }
         }
         else{
-            List<com.dc.esb.servicegov.entity.Service> services = serviceDAO.findBy("categoryId", serviceCategoryId);
+            String hql2 = " from " + com.dc.esb.servicegov.entity.Service.class.getName() +" where categoryId = ? order by serviceId asc";
+            List<com.dc.esb.servicegov.entity.Service> services = serviceDAO.find(hql2, serviceCategoryId);
             if(services.size() > 0){
                 for(int i = 0; i < services.size(); i++){
                     com.dc.esb.servicegov.entity.Service service = services.get(i);
@@ -156,7 +159,8 @@ public class PdfServiceImpl {
     public void genderPdfByService(String serviceId, Document document, String tab) throws Exception{
         com.dc.esb.servicegov.entity.Service service = serviceDAO.findUniqueBy("serviceId", serviceId);
         printServiceTitle(service, document, tab);
-        List<Operation> operations = operationDAO.findBy("serviceId", serviceId);
+        String hql = " from " + Operation.class.getName() +" where serviceId = ? order by operationId asc";
+        List<Operation> operations = operationDAO.find(hql, serviceId);
         printOperationInfo(operations, document);
     }
 

@@ -67,8 +67,13 @@ public class ProcessController {
     boolean doCreate(@PathVariable("user") String user, @PathVariable("type") String type, @RequestBody Map<String, Object> params, Model model) {
         log.info(user + " create a process [" + type + "]");
         StatefulKnowledgeSession ksession = jbpmSupport.getKsession();
-        ksession.startProcess("com.dc.esb.servicegov.process." + type, params);
-        ksession.fireAllRules();
+        try{
+            ksession.startProcess("com.dc.esb.servicegov.process." + type, params);
+            ksession.fireAllRules();
+        }catch (Exception e){
+            log.error(e, e);
+        }
+
         return true;
     }
 
