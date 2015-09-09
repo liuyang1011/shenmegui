@@ -85,7 +85,6 @@
     function addInterfaceInvoke(){
         //保存调用关系
         var params = [];
-        console.log(consumerList);
         params.push(consumerList);
         params.push(providerList);
         $.ajax({
@@ -97,6 +96,9 @@
             data : JSON.stringify(params),
             success: function (data) {
                 alert("保存成功");
+                //刷新数据
+                $("#resultList").datagrid('reload');
+                $('#interfaceDlg').dialog('close');
             }
         });
     }

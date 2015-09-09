@@ -65,16 +65,7 @@
     </fieldset>
 </form>
 <div style="width:100%">
-    <table id="resultList" class="easyui-treegrid"
-           data-options="
-			rownumbers:true,
-			url:'/statistics/serviceReuseRate',
-			singleSelect:true,
-			fitColumns:false,
-			method:'get',
-			idField: 'id',
-			treeField: 'text'"
-           style="height:auto; width:100%;">
+    <table id="resultList" class="easyui-treegrid" style="height:auto; width:100%;">
         <thead>
         <tr>
 
@@ -99,6 +90,17 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
+    $(function(){
+        $("#resultList").treegrid({
+            rownumbers:true,
+            url:'/statistics/serviceReuseRate?time='+(new Date()).valueOf(),
+            singleSelect:true,
+            fitColumns:false,
+            method:'get',
+            idField: 'id',
+            treeField: 'text'
+        });
+    });
     function exportExcel(){
         var data = $("#resultList").treegrid("getData");
         var form = $("<form>");//定义一个form表单

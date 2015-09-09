@@ -38,8 +38,9 @@ function save(formId, operation) {
     if (!$("#" + formId).form('validate')) {
         return false;
     }
+    //TODO IE8不能用，先注释了
     //保存标签
-    var tagNames = $("#tags").tagit("assignedTags");
+    /*var tagNames = $("#tags").tagit("assignedTags");
     var tags = [];
     tagNames.forEach(function (tagName){
         var tagToAdd = {};
@@ -49,7 +50,7 @@ function save(formId, operation) {
     var serviceId = $("#serviceId").attr("value");
     var operationId = $("#operationId").textbox("getValue");
     tagManager.addTagForOperation(serviceId,operationId, tags, function (){
-    });
+    });*/
 
 
     var params = $("#" + formId).serialize();
@@ -84,6 +85,7 @@ function save(formId, operation) {
                     serviceInvoke.type = si.type;
                     serviceInvokeList.push(serviceInvoke);
                 }
+                alert("操作成功 ！");
                /* $.ajax({
                     type: "post",
                     async: false,
@@ -99,6 +101,83 @@ function save(formId, operation) {
                         parent.serviceInfo.reloadData();
                     }
                 });*/
+
+            } else {
+                alert("保存出现异常 ，操作失败！");
+            }
+
+        },
+        complete:function(responce){
+            var resText = responce.responseText;
+            if(resText.toString().charAt(0) == "<"){
+                alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+            }
+        }
+    });
+}
+function saveAdd(formId, operation) {
+    if (!$("#" + formId).form('validate')) {
+        return false;
+    }
+    //TODO IE8不能用，先注释了
+    ////保存标签
+    //var tagNames = $("#tags").tagit("assignedTags");
+    //var tags = [];
+    //tagNames.forEach(function (tagName){
+    //    var tagToAdd = {};
+    //    tagToAdd.tagName = tagName;
+    //    tags.push(tagToAdd);
+    //});
+    //var serviceId = $("#serviceId").attr("value");
+    //var operationId = $("#operationId").textbox("getValue");
+    //tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+    //});
+
+
+    var params = $("#" + formId).serialize();
+    params = decodeURIComponent(params, true);
+    var processId = parent.parent.PROCESS_INFO.processId;
+    params = params + "&processId=" + processId;
+    var urlPath;
+    if (operation == 0) {
+        urlPath = "/operation/add";
+    }
+    if (operation == 1) {
+        urlPath = "/operation/edit";
+    }
+    $.ajax({
+        type: "post",
+        async: false,
+        url: urlPath,
+        dataType: "json",
+        data: params,
+        success: function (data) {
+            if (data == true) {
+                //var serviceId = $("#serviceId").attr("value");
+                //var operationId = $("#operationId").textbox("getValue");
+                var serviceInvokeList = new Array();
+                for(var i = 0; i < invokeList.length; i++){
+                    var si = invokeList[i];
+                    var serviceInvoke = {};
+                    serviceInvoke.serviceId = serviceId;
+                    serviceInvoke.operationId = operationId;
+                    serviceInvoke.systemId = si.systemId;
+                    serviceInvoke.interfaceId = si.interfaceId;
+                    serviceInvoke.type = si.type;
+                    serviceInvokeList.push(serviceInvoke);
+                }
+                alert("操作成功 ！");
+                isSave = 1;
+                //跳转到edit.jsp
+                var urlPath = "/operation/editPage?serviceId="+$('#serviceId').textbox("getValue")+"&operationId=" + $('#operationId').textbox("getValue");
+                var currTab = parent.$('#subtab').tabs('getSelected');
+                parent.$('#subtab').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                    }
+                });
 
             } else {
                 alert("保存出现异常 ，操作失败！");
@@ -262,7 +341,7 @@ function chooseInterface(oldListId, newListId, type) {
                     //如果有接口弹出接口选择页面
                     $('#opDlg').dialog({
                         title: '接口选择',
-                        width: 700,
+                        width: 800,
                         closed: false,
                         cache: false,
                         href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId+"&type=" + type,

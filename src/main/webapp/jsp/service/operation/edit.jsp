@@ -44,7 +44,7 @@
             operationId = $("#operationId").textbox("getValue");
             tagManager.getTagForOperation(serviceId,operationId,initTags);
 
-            $("#saveTagBtn").click(function () {
+            /*$("#saveTagBtn").click(function () {
                 var tagNames = $("#tags").tagit("assignedTags");
                 var tags = [];
                 tagNames.forEach(function (tagName){
@@ -55,7 +55,7 @@
                 tagManager.addTagForOperation(serviceId,operationId, tags, function (){
                     alert("标签保存成功");
                 });
-            });
+            });*/
         })
         var toolbar = [{
             text: '新增',
@@ -80,8 +80,8 @@
             handler: function () {
 //                $("#resultList").datagrid('get',{total:0,rows:[]});
                 var row = $("#resultList").datagrid('getSelected');
-                var index =  $("#resultList").datagrid('getRowIndex',row);
                 console.log(row);
+                var index =  $("#resultList").datagrid('getRowIndex',row);
                 $.ajax({
                     type: "POST",
                     async: false,

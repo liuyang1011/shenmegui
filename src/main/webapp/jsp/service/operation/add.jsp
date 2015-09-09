@@ -26,6 +26,7 @@
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
     <script type="text/javascript">
+        var isSave = 0;
         $(document).ready(function () {
             $.extend($.fn.validatebox.defaults.rules, {
                 unique: {
@@ -54,29 +55,23 @@
                 }
             });
         });
-        $(function(){
-            /**
+        /*$(function(){
+            *//**
              *  初始化接口标签
              * @param result
-             */
+             *//*
             $("#tags").tagit();
-            /*var initTags = function initTags(result){
-                result.forEach(function(tag){
-                    $("#tags").append("<li>" + tag.tagName + "</li>");
-                });
-                $("#tags").tagit();
-
-            };
-            serviceId = ${operation.serviceId};
-            operationId = ${operation.operationId};
-            tagManager.getTagForOperation(serviceId,operationId,initTags);*/
-        })
+        });*/
         var toolbar = [{
             text: '新增',
             iconCls: 'icon-add',
             handler: function () {
                 if (!$("#operationForm").form('validate')) {
                     alert("请先完善基础信息!");
+                    return false;
+                }
+                if(isSave == 0){
+                    alert("请先保存场景，再增加调用关系!");
                     return false;
                 }
                 $('#interfaceDlg').dialog({
@@ -179,8 +174,8 @@
 <body>
 <form class="formui" id="operationForm">
     <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="clean()">取消</a><a href="#"
-                                                                                  onclick="save('operationForm',0)"
+                                                       onClick="clean()">取消</a><a href="#" id="saveBtn"
+                                                                                  onclick="saveAdd('operationForm',0)"
                                                                                   class="easyui-linkbutton"
                                                                                   iconCls="icon-save">保存</a></div>
     <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">

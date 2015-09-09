@@ -105,33 +105,34 @@
 					}
 				}
 			});
+			$('#isStandard').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '是',
+					value: '1',
+					selected : "${master.isStandard}" =="1"
+				},{
+					label: '否',
+					value: '0',
+					selected : "${master.isStandard}" =="0"
+				}]
+			});
+			$('#status').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '使用',
+					value: '1',
+					selected : "${master.status}" =="1"
+				},{
+					label: '退役',
+					value: '0',
+					selected : "${master.status}" =="0"
+				}]
+			});
 		});
-		$('#isStandard').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '是',
-				value: '1',
-				selected : "${master.isStandard}" =="1"
-			},{
-				label: '否',
-				value: '0',
-				selected : "${master.isStandard}" =="0"
-			}]
-		});
-		$('#status').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '使用',
-				value: '1',
-				selected : "${master.status}" =="1"
-			},{
-				label: '退役',
-				value: '0',
-				selected : "${master.status}" =="0"
-			}]
-		});
+
 		var toolbar2 =[{
 			text : '删除',
 			iconCls : 'icon-remove',

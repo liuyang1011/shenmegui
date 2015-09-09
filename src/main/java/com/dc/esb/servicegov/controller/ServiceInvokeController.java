@@ -87,10 +87,55 @@ public class ServiceInvokeController {
         String operationId = map.get("operationId").toString();
         String[] consumers = map.get("consumers").toString().replaceAll("，", ",").split(",");
         String[] providers = map.get("providers").toString().replaceAll("，",",").split(",");
-        String type = map.get("type").toString();
-        String interfaceId = map.get("interfaceId").toString();
+        String interfaceId ="";
+        if(null != map.get("interfaceId")){
+            interfaceId = map.get("interfaceId").toString();
+        }
+
         String[] consumerIds = map.get("consumerIds").toString().replaceAll("，", ",").split(",");
         String[] providerIds = map.get("providerIds").toString().replaceAll("，",",").split(",");
+
+        for (int i = 0; i < providerIds.length; i++) {
+            Map<String,String> params = new HashMap<String, String>();
+            params.put("serviceId",serviceId);
+            params.put("systemId",providerIds[i]);
+            params.put("operationId",operationId);
+            params.put("type",Constants.INVOKE_TYPE_PROVIDER);
+            List<ServiceInvoke> providerInvokes = serviceInvokeService.findBy(params);
+            ServiceInvoke provider = null;
+            //map里面interfaceId=null怎么查
+            if("".equals(interfaceId)){
+                for (ServiceInvoke p : providerInvokes){
+                    if(null == p.getInterfaceId()){
+                        provider =p;
+                    }
+                }
+            }else {
+                for (ServiceInvoke p : providerInvokes){
+                    if(null != p.getInterfaceId() && p.getInterfaceId().equals(interfaceId)){
+                        provider =p;
+                    }
+                }
+            }
+            if(null == provider) return false;
+            for (int j = 0; j < consumerIds.length; j++) {
+                Map<String,String> params2 = new HashMap<String, String>();
+                params2.put("serviceId",serviceId);
+                params2.put("systemId",consumerIds[j]);
+                params2.put("operationId",operationId);
+                params2.put("type",Constants.INVOKE_TYPE_CONSUMER);
+                ServiceInvoke consumer = serviceInvokeService.findUniqueBy(params2);
+                if(null == consumer) return false;
+                //不能删除serviceInvoke ，可能存在别的调用关系
+                //删除interfaceInvoke
+                Map<String,String> map2 = new HashMap<String, String>();
+                map2.put("providerInvokeId",provider.getInvokeId());
+                map2.put("consumerInvokeId",consumer.getInvokeId());
+                InterfaceInvoke invoke = interfaceInvokeService.findUniqueBy(map2);
+                if(null == invoke) return false;
+                interfaceInvokeService.delete(invoke);
+            }
+        }
         return true;
     }
     @RequestMapping(method = RequestMethod.POST, value = "/addServiceLink", headers = "Accept=application/json")
@@ -158,6 +203,7 @@ public class ServiceInvokeController {
                     p = list1.get(0);
                 }else{
 
+                    //TODO 怎么判断是否标准
                     p = new ServiceInvoke();
                     if("".equals(interfaceId2)){
                        p.setIsStandard("0");
