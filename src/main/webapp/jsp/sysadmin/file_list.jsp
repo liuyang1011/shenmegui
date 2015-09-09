@@ -188,7 +188,6 @@
     }
 
     function downloadFormatter(value){
-        alert(value);
         var s = '<a iconcls="icon-save"  style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="/fileManager/download?fileId='+value+'" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">下载</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
         return s;
     }

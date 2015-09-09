@@ -1492,7 +1492,12 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                     param.put("operationId", operation.getOperationId());
                     List<OperationHis> hisList = operationHisDAO.findBy(param);
                     if(hisList == null || hisList.size() == 0){
-                        operationService.release( operationDB.getOperationId(), operationDB.getServiceId(), "导入发布");
+                        String state = operation.getState();//保存当前状态
+                        operationDB.setState(Constants.Operation.OPT_STATE_PASS);//为了发布将状态修改为审核通过
+                        operationDAO.save(operationDB);
+                        operationService.release(operationDB.getOperationId(), operationDB.getServiceId(), "导入发布");
+                        operationDB.setState(state);
+                        operationDAO.save(operationDB);
                     }
                 }
 
@@ -1508,7 +1513,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             operationDAO.save(operation);
             /*如果系统中不存在当前场景，发布该场景新发布I一次*/
             if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
-                String state = operation.getState();
+                String state = operation.getState();//保存当前状态
+                operation.setState(Constants.Operation.OPT_STATE_PASS);//为了发布将状态修改为审核通过
+                operationDAO.save(operation);
                 operationService.release( operation.getOperationId(),operation.getServiceId(), "导入发布");
                 operation.setState(state);
                 operationDAO.save(operation);
