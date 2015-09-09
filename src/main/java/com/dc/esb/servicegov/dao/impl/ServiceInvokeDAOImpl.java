@@ -78,7 +78,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
      */
     public List<ServiceInvoke> getByServiceCagegoryId2(String categoryId){
         String hql = "select si from " + ServiceInvoke.class.getName() + " as si, " + Service.class.getName()
-                + " as s where si.serviceId = s.serviceId  and s.categoryId = ?";
+                + " as s where si.serviceId = s.serviceId  and s.categoryId = ?  order by si.serviceId, si.operationId asc";
         List<ServiceInvoke> list = this.find(hql, categoryId);
         return list;
     }
@@ -87,7 +87,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
      */
     public List<ServiceInvoke> getByServiceCagegoryId1(String categoryId){
         String hql = "select si from " + ServiceInvoke.class.getName() + " as si, " + Service.class.getName()
-                + " as s, " + ServiceCategory.class.getName() + " sc where si.serviceId = s.serviceId  and s.categoryId = sc.categoryId and sc.parentId = ?";
+                + " as s, " + ServiceCategory.class.getName() + " sc where si.serviceId = s.serviceId  and s.categoryId = sc.categoryId and sc.parentId = ?  order by si.serviceId, si.operationId asc";
         List<ServiceInvoke> list = this.find(hql , categoryId);
         return list;
     }
@@ -96,7 +96,7 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
      */
     public List<ServiceInvoke> getByServiceCagegoryId0(){
         String hql = "select si from " + ServiceInvoke.class.getName() + " as si, " + Service.class.getName()
-                + " as s, " + ServiceCategory.class.getName() + " sc where si.serviceId = s.serviceId  and s.categoryId = sc.categoryId";
+                + " as s, " + ServiceCategory.class.getName() + " sc where si.serviceId = s.serviceId  and s.categoryId = sc.categoryId order by si.serviceId, si.operationId asc";
         List<ServiceInvoke> list = this.find(hql);
         return list;
     }

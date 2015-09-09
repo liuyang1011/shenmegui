@@ -21,6 +21,7 @@ import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
@@ -310,6 +311,7 @@ public class ExcelImportController {
             // 从第一行开始读，获取所有交易行
             List list = excelImportService.parseIndexSheet(indexSheet);
             List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)list.get(0);
+            List<OperationPK> operationPKs = new ArrayList<OperationPK>();//场景主键列表，用来定位某个场景是否已经被发布过
             msg.append(list.get(1));
             for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
                 //TODO 提供和消费系统都要判断
@@ -352,6 +354,7 @@ public class ExcelImportController {
                     }
                     //交易、服务、场景信息
                     Map<String, Object> infoMap = excelImportService.getServiceInfo(sheet,indexDO);
+                    infoMap.put("operationPKs", operationPKs);
                     //获取 服务 输入 参数
                     Map<String, Object> inputMap = excelImportService.getStandardInputArg(sheet);
                     //获取接口、服务 输出 参数
@@ -426,6 +429,7 @@ public class ExcelImportController {
                     Sheet sheet = workbook.getSheet(sheetName);
                     //获取交易、服务、场景信息
                     Map<String, Object> infoMap = excelImportService.getInterfaceAndServiceInfo(sheet,indexDO);
+                    infoMap.put("operationPKs", operationPKs);
                     //获取接口、服务 输入 参数
                     Map<String, Object> inputMap = excelImportService.getInputArg(sheet);
                     //获取接口、服务 输出 参数

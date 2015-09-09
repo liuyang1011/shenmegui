@@ -958,6 +958,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
         List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
+        List<OperationPK>  operationPKs = (List<OperationPK>)infoMap.get("operationPKs");
 
         //导入服务定义相关信息
         logger.info("导入服务定义信息...");
@@ -965,7 +966,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         if (insertService(service)) {
             //导入服务场景相关信息
             logger.info("导入服务场景信息...");
-            boolean existsOper = insertOperation(service, operation);
+            boolean existsOper = insertOperation(service, operation, operationPKs);
             //维护调用关系
             //接口提供方 service_invoke 中 type=0
             String providerSystem = publicMap.get("providerSystem");

@@ -170,7 +170,11 @@ public class StatisticsServiceImpl implements StatisticsService{
             BigDecimal a = (BigDecimal)query.uniqueResult();
             BigInteger count = new BigInteger(""+a.intValue());
             return count.longValue();
-        }else{
+        }else if(result != null && result instanceof  Integer){
+            long count = (Integer)query.uniqueResult();
+            return count;
+        }
+        else{
             long count = (Long)query.uniqueResult();
             return count;
         }
@@ -196,7 +200,11 @@ public class StatisticsServiceImpl implements StatisticsService{
             BigDecimal a = (BigDecimal)query.uniqueResult();
             BigInteger count = new BigInteger(""+a.intValue());
             return count.longValue();
-        }else{
+        }else if(result != null && result instanceof  Integer) {
+            long count = (Integer) query.uniqueResult();
+            return count;
+        }
+        else{
             long count = (Long)query.uniqueResult();
             return count;
         }

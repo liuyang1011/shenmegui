@@ -109,9 +109,10 @@ public class FileManagerController {
 
             //设置保存路径
             String path = new File(request.getRealPath(request.getRequestURI())).getParentFile().getParent()+"/data/"+ dateformat.format(new Date());
-            fm.setFilePath(path+"/"+fileName);
+            String fileStoreName = "" + new Date().getTime();
+            fm.setFilePath(path+"/"+fileStoreName);
 
-            File destFile = new File(path,fileName);
+            File destFile = new File(path,fileStoreName);
 
             if(!destFile.exists()){
                 destFile.mkdirs();
