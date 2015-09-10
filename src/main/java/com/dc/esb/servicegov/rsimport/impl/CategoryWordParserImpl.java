@@ -1,11 +1,13 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
 
+import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.shiro.SecurityUtils;
 import org.hibernate.NonUniqueObjectException;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.CategoryWordServiceImpl;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -46,8 +49,14 @@ public class CategoryWordParserImpl implements IResourceParser {
 			Row row = sheet.getRow(rowNum);
 			CategoryWord categoryWord =parseRow(row);
 			//判断是否重复
-			CategoryWord categoryWord1 = categoryWordService.findUniqueBy("englishWord", categoryWord.getEnglishWord());
+			CategoryWord categoryWord1 = categoryWordService.findUniqueBy("esglisgAb", categoryWord.getEsglisgAb());
 			if(null != categoryWord1){
+				categoryWord1.setRemark(categoryWord.getRemark());
+				categoryWord1.setChineseWord(categoryWord.getChineseWord());
+				categoryWord1.setEnglishWord(categoryWord.getEnglishWord());
+				categoryWord1.setOptDate(DateUtils.format(new Date()));
+				String userName = (String) SecurityUtils.getSubject().getPrincipal();
+				categoryWord1.setOptUser(userName);
 				//重复则覆盖
 				categoryWordService.save(categoryWord1);
 				continue;

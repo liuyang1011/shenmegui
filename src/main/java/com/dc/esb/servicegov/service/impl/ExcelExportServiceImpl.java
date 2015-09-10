@@ -114,10 +114,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         try {
             is = new FileInputStream(file);
             wb = new HSSFWorkbook(is);
-//            in = new BufferedInputStream(new FileInputStream(file));
-//            POIFSFileSystem fs = new POIFSFileSystem(in);
-//
-//            wb = new HSSFWorkbook(fs);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

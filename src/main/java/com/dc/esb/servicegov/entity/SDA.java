@@ -53,7 +53,7 @@ public class SDA implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String desc;
 
-	@Column(name = "REMARK",length=3072)
+	@Column(name = "REMARK",length=2048)
 	private String remark;
 
 	@Column(name = "HEAD_ID")
@@ -187,13 +187,6 @@ public class SDA implements Serializable {
 	}
 
 	public void setRemark(String remark) {
-		if(StringUtils.isNotEmpty(remark)){
-			byte[] bytes = remark.getBytes();
-			if(bytes.length> 1024){
-				this.remark = remark.substring(0, 511);
-				return;
-			}
-		}
 		this.remark = remark;
 	}
 
