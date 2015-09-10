@@ -2,11 +2,19 @@ package com.dc.esb.servicegov.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.entity.InterfaceInvoke;
+import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.vo.InterfaceExVO;
+import com.dc.esb.servicegov.vo.OperationExpVO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +65,10 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
 		hql.append(" or t.ecode like ?");
 		List<Interface> list = interfaceDAOImpl.find(hql.toString(), condition, condition, condition,condition);
 		return list;
+	}
+
+	@Override
+	public List<InterfaceExVO> queryByCondition(Map<String, String[]> values, Page page) {
+		return new ArrayList<InterfaceExVO>();
 	}
 }

@@ -7,7 +7,7 @@
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>交易链路</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" href="/plugin/jsPlumb/css/jsplumb.css">
@@ -19,7 +19,7 @@
 </head>
 <body data-demo-id="statemachine" data-library="dom">
 
-<div id="userId" style="display: none"><shiro:principal /></div>
+<div id="userId" style="display: none"><shiro:principal/></div>
 <div>
     <div class="form-group">
         <table>
@@ -94,22 +94,22 @@
 <script src="/assets/serviceLink/serviceLinkManager.js" type="text/javascript"></script>
 <script type="text/javascript">
     var userId = $("#userId").text();
-    var containBlock = function containBlock(blocks, obj){
+    var containBlock = function containBlock(blocks, obj) {
 
         var i = blocks.length;
         while (i--) {
-            if(blocks[i].blockId == obj.blockId){
-               return true;
+            if (blocks[i].blockId == obj.blockId) {
+                return true;
             }
             return false;
         }
 
     };
 
-    var getBlock = function getBlock(blocks, id){
+    var getBlock = function getBlock(blocks, id) {
         var i = blocks.length;
         while (i--) {
-            if(blocks[i].blockId == id){
+            if (blocks[i].blockId == id) {
                 return blocks[i];
             }
             return false;
@@ -140,7 +140,16 @@
         var initComboBox = function (result) {
             for (var i = 0; i < result.length; i++) {
                 data[result[i].invokeId] = result[i];
-                $(".select2").append('<option value="' + result[i].invokeId + '" >接口:' + result[i].interfaceId + '服务:' + result[i].serviceId + '</option>');
+                var interfaceLabel = '';
+                var serviceLabel = '';
+                if (null != result[i].interfaceId) {
+                    interfaceLabel = "接口:" + result[i].interfaceId;
+                }
+                if (null != result[i].serviceId) {
+                    serviceLabel = '服务:' + result[i].serviceId;
+                }
+
+                $(".select2").append('<option value="' + result[i].invokeId + '" >' + interfaceLabel + serviceLabel + '</option>');
             }
             $(".select2").select2();
             //在初始化完成数据框之后初始化图标表
@@ -152,7 +161,7 @@
          * 初始化图表
          * @param row
          */
-        var initDiagram = function initDiagram (){
+        var initDiagram = function initDiagram() {
             serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
         };
 
@@ -167,14 +176,24 @@
             var systemId = row.systemName;
             var invokeId = row.invokeId;
             var operationId = row.operationId;
+
             var type = row.type;
-            if(type=="0"){
+            if (type == "0") {
                 type = "提供方";
-            }else if(type=="1"){
+            } else if (type == "1") {
                 type = "消费方";
             }
 
-            context += '<div class="w" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + interfaceId + interfaceName
+            var backgroundColor = "white";
+
+            if (null != interfaceId) {
+                var contextName = interfaceId + interfaceName;
+            } else {
+                var contextName = serviceId + operationId;
+                backgroundColor = "antiquewhite";
+            }
+
+            context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
             + '<div class="ep"></div>'
             + '<div>'
             + '<div class="btn-group">'
@@ -211,9 +230,9 @@
                     positionX: initPosX,
                     positionY: initPosY
                 };
-                if(!containBlock(blocks,sourceBlock)){
+                if (!containBlock(blocks, sourceBlock)) {
                     var sourceRow = data[sourceId];
-                    constructBlock(sourceRow,sourceBlock);
+                    constructBlock(sourceRow, sourceBlock);
                     blocks.push(sourceBlock);
                     initPosY = 100;
                 }
@@ -224,7 +243,7 @@
                     positionX: sourceBlock.positionX + 300,
                     positionY: initPosY
                 };
-                if(!containBlock(blocks,targetBlock)){
+                if (!containBlock(blocks, targetBlock)) {
                     var targetRow = data[targetId];
                     constructBlock(targetRow, targetBlock);
                     blocks.push(targetBlock);
@@ -248,7 +267,7 @@
                             length: 5,
                             foldback: 0.3
                         }],
-                        ["Label", {label: "FOO", id: "label", cssClass: "aLabel"}]
+                        ["Label", { id: "label", cssClass: "aLabel"}]
                     ],
                     Container: "statemachine-demo"
                 });
@@ -258,14 +277,14 @@
                 instance.bind("click", function (c) {
                     connectionsToDel.push({
                         sourceId: c.sourceId,
-                        sourceType :"",
+                        sourceType: "",
                         targetId: c.targetId,
                         targetType: ""
                     });
                     instance.detach(c);
                 });
                 instance.bind("connection", function (info) {
-                    info.connection.getOverlay("label").setLabel("调用");
+//                    info.connection.getOverlay("label").setLabel("");
                 });
                 instance.batch(function () {
                     instance.makeSource(windows, {
@@ -298,13 +317,13 @@
         };
 
         /**
-        * 添加按钮的事件
+         * 添加按钮的事件
          */
         $("#add").click(function () {
             context = "";
             serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
             var addInterfaceIds = $(".select2").val();
-            if(null == addInterfaceIds){
+            if (null == addInterfaceIds) {
                 return;
             }
             if (instance) {
@@ -359,7 +378,7 @@
                 instance.bind("click", function (c) {
                     connectionsToDel.push({
                         sourceId: c.sourceId,
-                        sourceType :"",
+                        sourceType: "",
                         targetId: c.targetId,
                         targetType: ""
                     });
@@ -403,25 +422,25 @@
                 jsPlumb.fire("jsPlumbDemoLoaded", instance);
             });
         });
-        $("#save").click(function(){
+        $("#save").click(function () {
             //先删除 需要删除的连接 然后再保存
             var connectionsToSave = [];
             $.each(instance.getConnections(), function (idx, connection) {
                 connectionsToSave.push({
                     sourceId: connection.sourceId,
-                    sourceType :"",
+                    sourceType: "",
                     targetId: connection.targetId,
                     targetType: ""
                 });
             });
-            var saveConnectionCallBack = function saveConnectionCallBack(result){
-                if(result){
+            var saveConnectionCallBack = function saveConnectionCallBack(result) {
+                if (result) {
                     alert("保存成功");
-                }else{
+                } else {
                     alert("不能调用自己");
                 }
             }
-            var delConnectionCallBack = function delConnectionCallBack(){
+            var delConnectionCallBack = function delConnectionCallBack() {
                 serviceLinkManager.saveConnections(connectionsToSave, saveConnectionCallBack);
             }
             serviceLinkManager.delConnections(connectionsToDel, delConnectionCallBack);
@@ -435,7 +454,7 @@
         var o = e.srcElement || e.target;
 
         var my = document.getElementById(o.id);
-        if (o != null){
+        if (o != null) {
             o.type = "1";
             o.parentNode.removeChild(o);
         }

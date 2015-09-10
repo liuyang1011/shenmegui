@@ -126,8 +126,36 @@
 		data.msgTemplate = msgTemplate;
 		sysManager.addProtocol(data,function(result){
 			if(result){
+				var systemId;
+				var selectNode = $('.msinterfacetree').tree("getSelected");
+				if(selectNode){
+					systemId = selectNode.id;
+					if(systemId){
+						$.ajax({
+							type: "GET",
+							contentType: "application/json; charset=utf-8",
+							url: "/system/protocolRelate/"+systemId+"/"+result.protocolId,
+							dataType: "json",
+							success: function(result) {
+								if(true){
+									alert("关联成功");
+									$('#w').window('close');
+								}else{
+
+								}
+							},
+							complete:function(responce){
+								var resText = responce.responseText;
+								if(resText.toString().charAt(0) == "<"){
+									alert("没有权限！");
+								}
+							}
+						});
+					}
+				}
 				$('#w').window('close');
 				$('#tg').datagrid("reload");
+				$('.msinterfacetree').tree("reload");
 			}else{
 				alert("保存失败");
 			}

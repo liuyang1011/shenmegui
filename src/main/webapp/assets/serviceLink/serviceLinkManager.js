@@ -58,5 +58,16 @@ var serviceLinkManager = {
                 callBack(result);
             }
         });
+    },
+    "getExtInfo" : function getExtInfo(invokeId, callBack){
+        $.ajax({
+            "type": "GET",
+            "contentType": "application/json; charset=utf-8",
+            "url": "/serviceLink/getExtInfo/" + invokeId,
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            }
+        });
     }
 };

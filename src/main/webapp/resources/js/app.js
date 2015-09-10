@@ -137,6 +137,28 @@ var SYSMENU = {
                                     top: e.pageY
                                 });
 
+                            }else if(node.click =="heads"){
+                                $('#mm-mxsysadmintree').menu('show', {
+                                    left: e.pageX,
+                                    top: e.pageY
+                                });
+
+                            }else if(node.click =="protocols"){
+
+                                $('#mm-mxprotocols').menu('show', {
+                                    left: e.pageX,
+                                    top: e.pageY
+                                });
+                            }else if(node.click == "head"){
+                                $('#mm-syshead').menu('show', {
+                                    left: e.pageX,
+                                    top: e.pageY
+                                });
+                            }else if(node.click = "protocol"){
+                                $('#mm-mxprotocol').menu('show', {
+                                    left: e.pageX,
+                                    top: e.pageY
+                                });
                             }else{
                                 $('#mm-mxinterfacetree1').menu('show', {
                                     left: e.pageX,
@@ -160,6 +182,20 @@ var SYSMENU = {
                                     closable:true
                                 });
                             }
+                        }else if(node.click == "interfaces"){
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)){
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {//SYSADMINUIEDIT
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add',{
+                                    title:title,
+                                    content:content,
+                                    closable:true
+                                });
+                            }
+
                         }else if(node.click == 'disable'){
                             var mid = node.id;
                             var title = node.text;
@@ -173,6 +209,37 @@ var SYSMENU = {
                                     closable:true
                                 });
                             }
+
+                        }else if(node.click == "head"){
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {//LOAD_URL.SYSADMINUI+
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
+                                });
+                            }
+
+                        }else if(node.click == "protocol") {
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId='+mid+'"  style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
+                                });
+                            }
+                        } else if(node.click == "protocols"){
+
+                        } else if(node.click == "heads"){
 
                         }else{
                             var mid = node.id;
