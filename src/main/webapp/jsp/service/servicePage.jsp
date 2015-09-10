@@ -38,8 +38,8 @@
     </div>
     <div title="服务接口映射" style="padding:0px;">
     </div>
-    <div title="服务检索" style="padding:0px;">
-    </div>
+    <%--<div title="服务检索" style="padding:0px;">
+    </div>--%>
 </div>
 
 <script type="text/javascript">
@@ -139,7 +139,7 @@
                     $('#subtab').tabs('select', '服务基本信息');
                 }
             }
-            if (index == 6  && p == 0) {
+           /* if (index == 6  && p == 0) {
                 var currTab = $('#subtab').tabs('getSelected');
                 var urlPath = "jsp/service/search.jsp";
                 $('#subtab').tabs('update', {
@@ -148,7 +148,7 @@
                         content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
                     }
                 });
-            }
+            }*/
             //if(title+' is selected');
 
         }

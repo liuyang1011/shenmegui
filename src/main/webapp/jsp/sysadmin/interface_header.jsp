@@ -75,6 +75,7 @@
 		                var scale = row.scale;
 		                var required = row.required;
 		                var seq = row.seq;
+						var remark = row.remark;
 		                var data = {};
 						data.structName = structName;
 						data.structAlias = structAlias;
@@ -86,6 +87,7 @@
 						data.required = required;
 						data.headId = "${param.headId}";
 						data.seq = seq;
+						data.remark = remark;
 						reqAry.push(data);
 				 	}
 				 }
@@ -103,6 +105,7 @@
 		                var scale = row.scale;
 		                var required = row.required;
 		                var seq = row.seq;
+						var remark = row.remark;
 		                var data = {};
 						data.structName = structName;
 						data.structAlias = structAlias;
@@ -114,6 +117,7 @@
 						data.headId = "${param.headId}";
 						data.seq = seq;
 						data.id = row.id;
+						data.remark = remark;
 						reqAry.push(data);
 				 	}
 				 }
@@ -424,7 +428,7 @@
 
 		</div>
 		<table title="报文头管理" class="easyui-treegrid" id="tg"
-			style="height: 440px; width: auto;"
+			style="height: 560px; width: auto;"
 			data-options="
 				iconCls: 'icon-folder',
 				rownumbers: false,
@@ -458,6 +462,9 @@
 					</th>
 					<th data-options="field:'metadataId',width:100,editor:'text'">
 						元数据ID
+					</th>
+					<th data-options="field:'remark',width:100,editor:'text'">
+						约束条件
 					</th>
 					<th data-options="field:'scale',width:100,editor:'text'">
 						精度

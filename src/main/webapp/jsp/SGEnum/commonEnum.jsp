@@ -66,12 +66,12 @@
 			<tr>
 				<th data-options="field:'productid',checkbox:true"></th>
 				<th data-options="field:'name',sortable:true">代码名称</th>
-				<th data-options="field:'isStandard'">是否标准代码</th>
-				<th data-options="field:'status'">代码状态</th>
+				<th data-options="field:'remark',width:60">中文名称</th>
+				<th data-options="field:'isStandard'" formatter='formatter.isStandard'>是否标准代码</th>
+				<th data-options="field:'status'" formatter='formatter.status'>代码状态</th>
 				<th data-options="field:'dataSource'">主代码数据来源</th>
 				<!-- <th data-options="field:'isMaster'">是否主代码</th>
-				<th data-options="field:'version'">代码版本</th>
-				<th data-options="field:'remark',width:60">备注</th> -->
+				<th data-options="field:'version'">代码版本</th> -->
 				<th data-options="field:'optUser',width:60">修订人</th>
 				<th data-options="field:'optDate',width:100">修订时间</th>
 			</tr>
@@ -89,7 +89,8 @@
 	<script type="text/javascript">
 		var processId = parent.processId;
 		var taskId = parent.taskId;
-		$(document).ready(function(){
+
+		$(function(){
 			$('#dg').datagrid({
 				rownumbers:true,
 				singleSelect:true,
@@ -107,34 +108,30 @@
 					}
 				}
 			});
-		});
-		$('#isStandard').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '是',
-				value: '1',
-				selected:true
-			},{
-				label: '否',
-				value: '0'
-			}]
-		});
-		$('#status').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '使用',
-				value: '1',
-				selected:true
-			},{
-				label: '退役',
-				value: '0'
-			}]
-		});
-		
-		$(function(){
-			
+			$('#isStandard').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '是',
+					value: '1',
+					selected:true
+				},{
+					label: '否',
+					value: '0'
+				}]
+			});
+			$('#status').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '使用',
+					value: '1',
+					selected:true
+				},{
+					label: '退役',
+					value: '0'
+				}]
+			});
 			$('#searchBtn').click(function(){
 				var queryParams = $('#dg').datagrid('options').queryParams;  
 				queryParams.name = $('#name').val();
@@ -144,19 +141,36 @@
 				$("#dg").datagrid('options').queryParams = queryParams;//传递值  
 				$("#dg").datagrid('reload');//重新加载table  
 			});
-		})
+		});
+		var formatter = {
+			isStandard: function (value, row, index) {
+				if (value == 0) {
+					return "<font>否</font>";
+				}
+				if (value == 1) {
+					return "<font>是</font>";
+				}
+			},
+			status: function (value, row, index) {
+				if (value == 0) {
+					return "<font>退役</font>";
+				}
+				if (value == 1) {
+					return "<font>使用</font>";
+				}
+			}
+		};
 		var toolbar = [
 				{
-					text : '元数据映射',
-					iconCls : 'icon-qxfp',
-					handler : function(event) {
+					text : '新增代码',
+					iconCls : 'icon-add',
+					handler : function() {
 						uiinit.win({
 							w : 500,
 							iconCls : 'icon-add',
 							title : "新增代码",
 							url : "/pages/SGEnum/form/enumAppandForm.jsp"
 						});
-						event.stopPropagation();
 					}
 				},
 				{

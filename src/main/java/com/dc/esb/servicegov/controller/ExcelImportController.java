@@ -21,6 +21,7 @@ import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
@@ -77,6 +78,103 @@ public class ExcelImportController {
 
     @RequiresPermissions({"system-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport")
+    public void importInterfaceField(@RequestParam("systemId")String systemId, @RequestParam("file") MultipartFile file, HttpServletResponse response){
+        response.setContentType("text/html");
+        response.setCharacterEncoding("GB2312");
+        Workbook workbook = null;
+        String extensionName = FilenameUtils.getExtension(file.getOriginalFilename());
+        InputStream is = null;
+        java.io.PrintWriter writer = null;
+        StringBuffer msg = new StringBuffer();
+        boolean success = true;
+        try {
+            writer = response.getWriter();
+            is = file.getInputStream();
+            if (extensionName.toLowerCase().equals(XLS)) {
+                workbook = new HSSFWorkbook(is);
+            } else if (extensionName.toLowerCase().equals(XLSX)) {
+                workbook = new XSSFWorkbook(is);
+            } else {
+                outPutError(writer,systemId);
+                return;
+            }
+            // 读取交易索引Sheet页
+            Sheet indexSheet = workbook.getSheet("INDEX");
+            if (indexSheet == null) {
+                logger.error("缺少INDEX sheet页");
+                logInfoService.saveLog("缺少INDEX sheet页", "导入");
+                outPutError(writer,systemId);
+                return;
+            }
+            // 从第一行开始读，获取所有接口行
+            List list = excelImportService.parseInterfaceIndexSheet(indexSheet);
+            List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)list.get(0);
+            msg.append(list.get(1));
+
+            for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
+                //开始解析每一个页面
+                String sheetName = indexDO.getSheetName();
+                if (sheetName != null && !"".equals(sheetName)) {
+                    // 读取每个交易sheet页
+                    logger.debug("开始获取" + sheetName + "交易信息=========================");
+                    Sheet sheet = workbook.getSheet(sheetName);
+                    if(null == sheet){
+                        msg.append(sheetName + "导入失败，sheet页不存在");
+                        continue;
+                    }
+                    //获取接口,系统信息
+                    Map<String, Object> infoMap = excelImportService.getInterfaceInfo(sheet);
+                    //获取接口 输入 参数
+                    Map<String, Object> inputMap = excelImportService.getInterfaceInputArg(sheet);
+                    //获取接口 输出 参数
+                    Map<String, Object> outMap = excelImportService.getInterfaceOutputArg(sheet);
+
+                    if (infoMap == null || inputMap == null || outMap == null) {
+                        msg.append(sheetName + "导入失败，");
+                        continue;
+                    }
+                    logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
+                    long time = java.lang.System.currentTimeMillis();
+                    List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO.getSystemId());
+                    if ((Boolean)result.get(0)) {
+                        logger.info("===========接口[" + sheetName + "],导入失败=============");
+                        msg.append(result.get(1).toString());
+                        logInfoService.saveLog(result.get(1).toString(), "导入");
+                        continue;
+                    }
+                    long useTime = java.lang.System.currentTimeMillis() - time;
+                    logger.info("===========接口[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
+                } else {
+                    logger.error("交易代码为空。");
+                    logInfoService.saveLog("第交易代码为空。", "导入");
+                }
+
+            }
+            //组织返回
+            outPut(writer, msg);
+        } catch (IOException e) {
+            logger.error("导入出现异常:异常信息：" + e.getMessage());
+            logInfoService.saveLog("导入出现异常:异常信息：" + e.getMessage(), "导入");
+            writer.println("alert('导入失败，请查看日志!');");
+            success = false;
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (Exception e) {
+
+                }
+            }
+        }
+//        GlobalImport.headMap.clear();//清空本次导入的业务报文头
+        writer.println("window.location='/jsp/sysadmin/interface_import.jsp?systemId="+systemId+"'");
+        writer.println("</script>");
+        writer.flush();
+        writer.close();
+    }
+
+    @RequiresPermissions({"system-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport/noSystem")
     public void importInterfaceField(@RequestParam("file") MultipartFile file, HttpServletResponse response){
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
@@ -94,7 +192,7 @@ public class ExcelImportController {
             } else if (extensionName.toLowerCase().equals(XLSX)) {
                 workbook = new XSSFWorkbook(is);
             } else {
-                outPutError(writer);
+                outPutError(writer,null);
                 return;
             }
             // 读取交易索引Sheet页
@@ -102,7 +200,7 @@ public class ExcelImportController {
             if (indexSheet == null) {
                 logger.error("缺少INDEX sheet页");
                 logInfoService.saveLog("缺少INDEX sheet页", "导入");
-                outPutError(writer);
+                outPutError(writer,null);
                 return;
             }
             // 从第一行开始读，获取所有接口行
@@ -198,7 +296,7 @@ public class ExcelImportController {
             } else if (extensionName.toLowerCase().equals(XLSX)) {
                 workbook = new XSSFWorkbook(is);
             } else {
-                outPutError(writer);
+                outPutError(writer,null);
                 return;
             }
             // 读取交易索引Sheet页
@@ -206,13 +304,14 @@ public class ExcelImportController {
             if (indexSheet == null) {
                 logger.error("缺少INDEX sheet页");
                 logInfoService.saveLog("缺少INDEX sheet页", "导入");
-                outPutError(writer);
+                outPutError(writer,null);
                 return;
             }
             //TODO parse的时候不存在系统
             // 从第一行开始读，获取所有交易行
             List list = excelImportService.parseIndexSheet(indexSheet);
             List<ExcelImportServiceImpl.IndexDO> indexDOs = (List<ExcelImportServiceImpl.IndexDO>)list.get(0);
+            List<OperationPK> operationPKs = new ArrayList<OperationPK>();//场景主键列表，用来定位某个场景是否已经被发布过
             msg.append(list.get(1));
             for (ExcelImportServiceImpl.IndexDO indexDO : indexDOs) {
                 //TODO 提供和消费系统都要判断
@@ -247,8 +346,15 @@ public class ExcelImportController {
                     // 读取每个交易sheet页
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);
+                    if(null == sheet){
+                        logger.error("交易[" + indexDO.getSheetName() + "]," + indexDO.getProviderSystem() + "页签不存在");
+                        logInfoService.saveLog("交易[" + indexDO.getSheetName() + "]," + indexDO.getProviderSystem() + "页签不存在", "导入");
+                        msg.append("交易[" + indexDO.getSheetName() + "]," + indexDO.getProviderSystem() + "页签不存在，");
+                        continue;
+                    }
                     //交易、服务、场景信息
-                    Map<String, Object> infoMap = excelImportService.getServiceInfo(sheet);
+                    Map<String, Object> infoMap = excelImportService.getServiceInfo(sheet,indexDO);
+                    infoMap.put("operationPKs", operationPKs);
                     //获取 服务 输入 参数
                     Map<String, Object> inputMap = excelImportService.getStandardInputArg(sheet);
                     //获取接口、服务 输出 参数
@@ -322,7 +428,8 @@ public class ExcelImportController {
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);
                     //获取交易、服务、场景信息
-                    Map<String, Object> infoMap = excelImportService.getInterfaceAndServiceInfo(sheet);
+                    Map<String, Object> infoMap = excelImportService.getInterfaceAndServiceInfo(sheet,indexDO);
+                    infoMap.put("operationPKs", operationPKs);
                     //获取接口、服务 输入 参数
                     Map<String, Object> inputMap = excelImportService.getInputArg(sheet);
                     //获取接口、服务 输出 参数
@@ -424,10 +531,14 @@ public class ExcelImportController {
         return "403";
     }
 
-    public void outPutError(java.io.PrintWriter writer) {
+    public void outPutError(java.io.PrintWriter writer,String systemId) {
         writer.println("<script language=\"javascript\">");
         writer.println("alert('缺少INDEX sheet页!');");
-        writer.println("window.location='/jsp/sysadmin/fieldmapping_import.jsp'");
+        if(null == systemId){
+            writer.println("window.location='/jsp/sysadmin/fieldmapping_import.jsp'");
+        }else{
+            writer.println("window.location='/jsp/interface/interface_list.jsp?systemId="+systemId+"'");
+        }
         writer.println("</script>");
         writer.flush();
         writer.close();

@@ -8,6 +8,12 @@
   <input type="file" title="选择文件" name="file" id="file"/><br /><br />
   <br /><br />
   <input id="fileBtn" type="submit" class="btn" value="文件上传"/><br /><br />
+  <tr style="display:none">
+    <td>
+      <input style="display:none" type="text" id="systemId" name="systemId" value="${param.systemId }">
+    </td>
+  </tr>
+
 </form>
 
 <script type="text/javascript">

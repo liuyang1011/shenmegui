@@ -50,10 +50,13 @@
 		} ];
 		function release() {
 			if(!$("#baseForm").form('validate')){
+				alert(0);
 				return false;
 			}
+			alert(1)
 			var opItems = $('#operationList').datagrid('getChecked');
 			var pcItems = $('#pcList').datagrid('getChecked');
+			alert(2)
 			var versionIds = new Array();
 			$.each(opItems, function(index, item) {
 				versionIds.push(item.versionHis.autoId);
@@ -83,7 +86,7 @@
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<th>基线版本号</th>
-					<td><label for="textfield"></label> <input id="code"
+					<td> <input id="code"
 						class="easyui-textbox" type="text" name="code"
 						data-options="required:true">
 					</td>

@@ -6,6 +6,8 @@ var uiinit = {
 			$(".window").remove();
 			$("body").append(h);
 			$('#w').window({
+				top:arg.top,
+				left:arg.left,
 				width:arg.w,
 				title:arg.title,
 				iconCls:arg.iconCls,

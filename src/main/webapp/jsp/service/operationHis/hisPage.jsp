@@ -140,14 +140,14 @@ var formatter = {
   <tr>
      <th>服务</th>
     <td >
-    	<input class="easyui-textbox" id="serviceId" value="${service.serviceName }" />&nbsp;&nbsp;
-    	<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="choseService()"  href="javascript:void(0)" >选择服务</a>
+    	<input class="easyui-textbox" id="serviceId" value="${service.serviceName }(${service.serviceId})" style="width:240px;" />&nbsp;&nbsp;
+    	<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="choseService()" href="javascript:void(0)" >选择服务</a>
     	</td>
      </tr>
   <tr>
      <th>场景</th>
     <td>
-    	<input class="easyui-textbox" id="operationId" value="${operation.operationName }" />&nbsp;&nbsp;
+    	<input class="easyui-textbox" id="operationId" value="${operation.operationName }" style="width:240px;"/>&nbsp;&nbsp;
     	<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="choseOperation()"  href="javascript:void(0)" >选择场景</a>
     	</td>
      </tr>
@@ -171,15 +171,15 @@ var formatter = {
 		<thead>
 			<tr>
 				<th data-options="field:'autoId',checkbox:true"></th>
-				<th data-options="field:'operationId'">场景编号</th>
-				<th data-options="field:'operationName'">场景名称</th>
-				<th data-options="field:'operationDesc'">功能描述</th>
-				<th data-options="field:'operationRemark'">备注</th>
-				<th data-options="field:'versionHis'" formatter='formatter.versionHis'>版本号</th>
+				<th data-options="field:'operationId',width:40">场景编号</th>
+				<th data-options="field:'operationName',width:70">场景名称</th>
+				<th data-options="field:'operationDesc',width:360">功能描述</th>
+				<%--<th data-options="field:'operationRemark',width:50">备注</th>--%>
+				<th data-options="field:'versionHis',width:50" formatter='formatter.versionHis'>版本号</th>
 				<%--<th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>--%>
-				<th data-options="field:'optDate'">更新时间</th>
-				<th data-options="field:'optUser'">更新用户</th>
-				<th data-options="field:' ',formatter:formatConsole">操作</th>
+				<th data-options="field:'optDate',width:120">更新时间</th>
+				<th data-options="field:'optUser',width:50">更新用户</th>
+				<th data-options="field:' ',formatter:formatConsole,width:190">操作</th>
 			</tr>
 		</thead>
 	</table>

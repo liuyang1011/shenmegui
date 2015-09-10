@@ -1,10 +1,12 @@
 package com.dc.esb.servicegov.service.impl;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
@@ -19,6 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @Transactional
 public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke, String> implements ServiceInvokeService{
@@ -79,6 +84,16 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		serviceInvokeDAOImpl.exeHql(hql,args);
 
 	}
+	public void deleteEntity(List<ServiceInvoke> serviceInvokeList){
+		for (ServiceInvoke serviceInvoke : serviceInvokeList) {
+			//先删除interfaceInvoke数据
+			List<InterfaceInvoke> list = interfaceInvokeDAO.findBy("providerInvokeId", serviceInvoke.getInvokeId());
+			list.addAll(interfaceInvokeDAO.findBy("consumerInvokeId", serviceInvoke.getInvokeId()));
+			interfaceInvokeDAO.delete(list);
+			//删serviceInvoke
+			delete(serviceInvoke);
+		}
+	}
 	public List<?> findJsonBySO(String serviceId, String operationId){
 		return serviceInvokeDAOImpl.findJsonBySO(serviceId, operationId);
 	}
@@ -95,8 +110,8 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	}
 
-	public List<ServiceInvokeJson> getDistinctInter(String systemId){
-		List<ServiceInvoke> list = this.findBy("systemId", systemId);
+	public List<ServiceInvokeJson> getDistinctInterBy(String hql,Page page){
+		List<ServiceInvoke> list = this.findBy(hql, page);
 		List<ServiceInvokeJson> voList = new ArrayList<ServiceInvokeJson>();
 
 		for(int i = 0; i < list.size(); i++){
@@ -123,10 +138,76 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		}
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i) != null){
+				ServiceInvoke si = list.get(i);
 				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
+				//将标准接口放在第一位
+				if(null == si.getIsStandard()) continue;
+//				if(si.getInterfaceId() == null){
+				if(si.getIsStandard().equals("0")){
+					svo.setRemark("标准接口");
+				}
 				voList.add(svo);
 			}
 		}
+		Collections.sort(voList, new Comparator<ServiceInvokeJson>() {
+			@Override
+			public int compare(ServiceInvokeJson o1, ServiceInvokeJson o2) {
+				return (""+o1.getIsStandard()).compareTo(""+o2.getIsStandard());
+			}
+		});
+		return voList;
+	}
+
+	public List<ServiceInvokeJson> getDistinctInter(String systemId,String type, String text) throws  Throwable{
+		String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"' and type = '"+type	+"'";
+		if(StringUtils.isNotEmpty(text)){
+			text = URLDecoder.decode(text, "utf-8");
+			hql += " and( si.interfaceId like '%" + text + "%' or si.inter.interfaceName like '%" + text + "%') ";
+		}
+		List<ServiceInvoke> list = this.find(hql);
+		List<ServiceInvokeJson> voList = new ArrayList<ServiceInvokeJson>();
+
+		for(int i = 0; i < list.size(); i++){
+			ServiceInvoke si = list.get(i);
+
+			if(si != null){
+				for(int j = i+1; j < list.size(); j++){
+					ServiceInvoke sj = list.get(j);
+					if(sj != null){
+						if(si.getSystemId().equals(sj.getSystemId()) ){
+							if(StringUtils.isNotEmpty(si.getInterfaceId())&& StringUtils.isNotEmpty(sj.getInterfaceId())&& si.getInterfaceId().equals(sj.getInterfaceId())){
+								if(i != j){
+									list.set(j, null);
+								}
+							}
+						}
+						if(si.getInterfaceId() == null && sj.getInterfaceId() == null){
+							list.set(j, null);
+						}
+					}
+				}
+			}
+
+		}
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i) != null){
+				ServiceInvoke si = list.get(i);
+				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
+				//将标准接口放在第一位
+				if(null == si.getIsStandard()) continue;
+//				if(si.getInterfaceId() == null){
+				if(si.getIsStandard().equals("0")){
+					svo.setRemark("标准接口");
+				}
+				voList.add(svo);
+			}
+		}
+		Collections.sort(voList, new Comparator<ServiceInvokeJson>() {
+			@Override
+			public int compare(ServiceInvokeJson o1, ServiceInvokeJson o2) {
+				return (""+o1.getIsStandard()).compareTo(""+o2.getIsStandard());
+			}
+		});
 		return voList;
 	}
 

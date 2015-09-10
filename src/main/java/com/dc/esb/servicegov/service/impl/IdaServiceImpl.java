@@ -46,6 +46,17 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		}
 	}
 
+	@Override
+	public List findIdas(Map<String,String> reqMap, String orderStr){
+		List<Ida> idas = findBy(reqMap, orderStr);
+		List<IdaMappingBean> beans = new ArrayList<IdaMappingBean>();
+		for (int i = 0; i < idas.size(); i++) {
+			String metadataId = idas.get(i).getMetadataId();
+//			 sdadao.findUniqueBy("metadataId",metadataId);
+		}
+		return null;
+	}
+
     @Override
     public boolean updateMetadataId(String metadataId, String id) {
         String hql = " update "+ Ida.class.getName() + " set metadataId = ? where id = ?";
@@ -115,6 +126,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		private String SDAStructAlias;
 		private String SDAType;
 		private String SDARemark;
+		private String SDAConstraintAlias;
 
 		public IdaMappingBean(Ida ida,SDA sda){
 			setId(ida.getId());
@@ -141,6 +153,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setVersion(ida.getVersion());
 			setRemark(ida.getRemark());
 			setSDAStructAlias(sda.getStructAlias());
+			setSDAConstraintAlias(sda.getConstraint());
 			if(sda.getType() != null){
 				if(sda.getLength() != null){
 					setSDAType(sda.getType() + "(" + sda.getLength() + ")");
@@ -174,6 +187,14 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setHeadId(ida.getHeadId());
 			setVersion(ida.getVersion());
 			setRemark(ida.getRemark());
+		}
+
+		public String getSDAConstraintAlias() {
+			return SDAConstraintAlias;
+		}
+
+		public void setSDAConstraintAlias(String SDAConstraintAlias) {
+			this.SDAConstraintAlias = SDAConstraintAlias;
 		}
 
 		public String getSDAStructAlias() {

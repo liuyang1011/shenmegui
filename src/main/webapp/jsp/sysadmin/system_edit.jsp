@@ -68,7 +68,7 @@
 		</tr>
 		<tr>
 			<th>
-				备注说明
+				系统描述
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="featureDescText" value="${system.featureDesc}">

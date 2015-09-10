@@ -159,6 +159,9 @@ var sysManager = {
 
     deleteSystem:function(){
          var node = $('.msinterfacetree').tree("getSelected");
+        if (!confirm("确定要删除该系统吗？")) {
+            return;
+        }
          $.ajax({
                 type: "GET",
                 contentType: "application/json; charset=utf-8",

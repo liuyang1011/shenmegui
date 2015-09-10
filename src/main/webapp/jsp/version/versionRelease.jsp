@@ -29,6 +29,8 @@
 				var queryParams = $('#operationList').datagrid('options').queryParams;
 				queryParams.serviceId = $("#serviceId").textbox("getValue");
 				queryParams.serviceName = encodeURI($("#serviceName").textbox("getValue"));
+				queryParams.operationId = $("#operationId").textbox("getValue");
+				queryParams.operationName = encodeURI($("#operationName").textbox("getValue"));
 				if (queryParams.serviceId || queryParams.serviceName) {
 					$("#operationList").datagrid('options').queryParams = queryParams;//传递值
 					$("#operationList").datagrid('reload');//重新加载table
@@ -124,7 +126,8 @@
 					<td><a href="javascript:void(0)" onclick="releaseBatch()" class="easyui-linkbutton" plain="true"
 						iconCls="icon-save">发布</a>
 					</td>
-
+				</tr>
+				<tr>
 					<th>服务代码</th>
 					<td>
 						<input class="easyui-textbox" id="serviceId"/>
@@ -132,6 +135,16 @@
 					<th>服务名称</th>
 					<td>
 						<input class="easyui-textbox" id="serviceName"/>
+					</td>
+					<th>场景代码</th>
+					<td>
+						<input class="easyui-textbox" id="operationId"/>
+					</td>
+				</tr>
+				<tr>
+					<th>场景名称</th>
+					<td>
+						<input class="easyui-textbox" id="operationName"/>
 					</td>
 					<td>
 						<%--<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>--%>
@@ -181,7 +194,7 @@
 				<th data-options="field:'attr1'">交易名称</th>
 				<th data-options="field:'attr1'">提供方</th>
 				<th data-options="field:'attr1'">修订类型</th>
-				<th data-options="field:''"">版本号</th>
+				<th data-options="field:''">版本号</th>
 			</tr>
 		</thead>
 	</table>

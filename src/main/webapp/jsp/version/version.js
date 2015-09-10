@@ -157,10 +157,10 @@ var invoke = {
 		}
 	},
 	typeText : function(value, row, index) {
-		if ("0" == value) {
+		if ("1" == value) {
 			return "消费者";
 		}
-		if ("1" == value) {
+		if ("0" == value) {
 			return "提供者";
 		}
 	}

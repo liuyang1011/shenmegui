@@ -44,6 +44,9 @@ public class Operation implements Serializable {
     @Column(name = "OPT_DATE", length = 50)
     private String optDate;
 
+    @Column(name = "RANGE_AREA")
+    private String range;
+
     @Column(name = "HEAD_ID")
     private String headId;
     @Column(name = "DELETED", length = 10)
@@ -60,6 +63,14 @@ public class Operation implements Serializable {
 
     @Column(name = "PROCESS_ID", length = 50)
     private String processId;
+
+    public String getRange() {
+        return range;
+    }
+
+    public void setRange(String range) {
+        this.range = range;
+    }
 
     public String getOperationId() {
         return operationId;

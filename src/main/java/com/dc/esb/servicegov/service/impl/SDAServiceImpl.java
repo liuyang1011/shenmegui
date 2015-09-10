@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.SDADAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.entity.SDAHis;
@@ -36,6 +37,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     private ServiceServiceImpl serviceService;
     @Autowired
     private SDAHisServiceImpl sdaHisService;
+    @Autowired
+    private MetadataServiceImpl metadataService;
     @Autowired
     private VersionServiceImpl versionService;
     public boolean genderSDAAuto(Operation operation){
@@ -355,8 +358,12 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                     sda.setLength(type.split("[()]+")[1]);
                 }
                 sda.setOptDate(DateUtils.format(new Date()));
-                //TODO TZB元数据修改对应sda的structName修改
+                //TODO TZB元数据修改对应sda的structName修改,长度，类型，精度
                 sda.setStructName(sda.getMetadataId());
+                Metadata metadata = metadataService.getById(sda.getMetadataId());
+                sda.setType(metadata.getType());
+                sda.setLength(metadata.getLength());
+                sda.setStructAlias(metadata.getChineseName());
                 sdaDAO.save(sda);
             }
             operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());

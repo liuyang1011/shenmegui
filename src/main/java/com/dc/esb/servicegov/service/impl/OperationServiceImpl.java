@@ -74,7 +74,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public List<Operation> getUnAuditOperationByServiceId(String serviceId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("serviceId", serviceId);
-        params.put("state", "0");
+        params.put("state", Constants.Operation.OPT_STATE_UNAUDIT);
         return findBy(params);
 
     }
@@ -292,6 +292,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public OperationHis backUpOperation(String serviceId, String operationId, String versionDesc) {
         Operation operation = getOperation(serviceId, operationId);
         OperationHis operationHis = new OperationHis(operation);
+        operationHisService.save(operationHis);
         //修改operationHis 版本
         String versionHisId = versionServiceImpl.releaseVersion(operation.getVersionId(), operationHis.getAutoId(), versionDesc);
         operationHis.setVersionHisId(versionHisId);
@@ -370,8 +371,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return false;
     }
     
-    public List<Operation> getReleased(Page page,String serviceId,String serviceName){
-    	return operationDAOImpl.getReleased(page,serviceId,serviceName);
+    public List<Operation> getReleased(Page page,String serviceId,String serviceName,String operationId,String operationName){
+    	return operationDAOImpl.getReleased(page,serviceId,serviceName,operationId,operationName);
     }
     public boolean judgeByMetadataId(String metadataId){
         //查找场景列表

@@ -170,7 +170,11 @@ public class StatisticsServiceImpl implements StatisticsService{
             BigDecimal a = (BigDecimal)query.uniqueResult();
             BigInteger count = new BigInteger(""+a.intValue());
             return count.longValue();
-        }else{
+        }else if(result != null && result instanceof  Integer){
+            long count = (Integer)query.uniqueResult();
+            return count;
+        }
+        else{
             long count = (Long)query.uniqueResult();
             return count;
         }
@@ -196,7 +200,11 @@ public class StatisticsServiceImpl implements StatisticsService{
             BigDecimal a = (BigDecimal)query.uniqueResult();
             BigInteger count = new BigInteger(""+a.intValue());
             return count.longValue();
-        }else{
+        }else if(result != null && result instanceof  Integer) {
+            long count = (Integer) query.uniqueResult();
+            return count;
+        }
+        else{
             long count = (Long)query.uniqueResult();
             return count;
         }
@@ -378,6 +386,11 @@ public class StatisticsServiceImpl implements StatisticsService{
         root.setChildren(categoryNodes);
         genderCategoryService(root);
         genderServiceReuseRate(root);
+
+        for(int i = 0; i < categoryNodes.size(); i++){//将分类下节点收缩
+            TreeNode t = categoryNodes.get(i);
+            t.setState("closed");
+        }
 
         List<TreeNode> result = new ArrayList<TreeNode>();
         result.add(root);

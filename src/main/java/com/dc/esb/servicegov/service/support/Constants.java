@@ -10,6 +10,10 @@ public class Constants {
     public static final String DELTED_FALSE = "0";//0:未删除，1：已删除
     public static final String DELTED_TRUE = "1";
 
+    public static final String INTERFACE_STATUS_TC = "0";//0投产  1废弃
+    public static final String INTERFACE_STATUS_FQ = "1";
+
+
     public static final String INVOKE_TYPE_CONSUMER = "1";//接口映射类型，1：消费者，0：提供者
     public static final String INVOKE_TYPE_PROVIDER = "0";
     public static final String INVOKE_TYPE_STANDARD_Y = "0";//是否标准接口，1：否，0：是

@@ -11,6 +11,7 @@ import com.dc.esb.servicegov.util.AuditUtil;
 import com.dc.esb.servicegov.util.ExcelTool;
 import com.dc.esb.servicegov.util.GlobalImport;
 import com.dc.esb.servicegov.util.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
@@ -36,6 +37,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected static final int INDEX_PROVIDER_COL = 6;
     protected static final int INDEX_INTERFACE_POINT_COL = 7;
     protected static final int INDEX_INTERFACE_HEAD_COL = 18;
+    protected static final int INDEX_INTERFACE_STATUS = 19;
+    protected static final int INDEX_OPERATION_STATE = 20;
 
     protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
@@ -68,6 +71,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected VersionServiceImpl versionService;
     @Autowired
     protected MetadataServiceImpl metadataService;
+    @Autowired
+    protected OperationServiceImpl operationService;
+    @Autowired
+    protected OperationHisDAOImpl operationHisDAO;
     @Autowired
     protected LogInfoServiceImpl logInfoService;
     protected String initVersion = "1.0.0";
@@ -110,6 +117,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         List<Ida> idaoutput = (List<Ida>) outMap.get("idas");
         List<SDA> sdainput = (List<SDA>) inputMap.get("sdas");
         List<SDA> sdaoutput = (List<SDA>) outMap.get("sdas");
+        List<OperationPK>  operationPKs = (List<OperationPK>)infoMap.get("operationPKs");
 
         ServiceInvoke provider_invoke = null;
         List list = new ArrayList();
@@ -118,7 +126,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         if (insertService(service)) {
             //导入服务场景相关信息
             logger.info("导入服务场景信息...");
-            boolean existsOper = insertOperation(service, operation);
+            boolean existsOper = insertOperation(service, operation, operationPKs);
             //维护调用关系
             //接口提供方 service_invoke 中 type=0
             String providerSystem = publicMap.get("providerSystem");
@@ -211,6 +219,31 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
             String operationId = getCell(row, INDEX_OPERATION_ID_COL);
+            String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+            if ("投产".equals(interfaceStatus)){
+                interfaceStatus = Constants.INTERFACE_STATUS_TC;
+            }else if ("废弃".equals(interfaceStatus)){
+                interfaceStatus = Constants.INTERFACE_STATUS_FQ;
+            }else{
+                interfaceStatus = "";
+            }
+            //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
+            String operationState = getCell(row, INDEX_OPERATION_STATE);
+            if("服务定义".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_UNAUDIT;
+            }else if("审核通过".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_PASS;
+            }else if("审核不通过".equals(operationState)){
+                operationState = Constants.Operation.OPT_STATE_UNPASS;
+            }else if("已发布".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED;
+            }else if("已上线".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_ONLINE;
+            }else if("已下线".equals(operationState)){
+                operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
+            }else {
+                operationState = "";
+            }
             String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
             String serviceId = temp.split("[()]+")[1];
             String systemId = consumerSystemId;
@@ -231,6 +264,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             indexDO.setOperationId(operationId);
             indexDO.setServiceId(serviceId);
             indexDO.setSystemAb(systemAb);
+            indexDO.setInterfaceStatus(interfaceStatus);
+            indexDO.setOperationState(operationState);
             indexDOs.add(indexDO);
         }
         List list = new ArrayList();
@@ -539,7 +574,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
-    public Map<String, Object> getServiceInfo(Sheet tranSheet) {
+    public Map<String, Object> getServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
 
         return null;
     }
@@ -708,6 +743,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
+    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+        return null;
+    }
     protected Map<String, Object> getInterfaceHead(Sheet sheet) {
         boolean flag = true;
         StringBuffer msg = new StringBuffer();
@@ -873,6 +911,24 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String operationId;
         private String serviceId;
         private String systemAb;
+        private String interfaceStatus;
+        private String operationState;
+
+        public String getInterfaceStatus() {
+            return interfaceStatus;
+        }
+
+        public void setInterfaceStatus(String interfaceStatus) {
+            this.interfaceStatus = interfaceStatus;
+        }
+
+        public String getOperationState() {
+            return operationState;
+        }
+
+        public void setOperationState(String operationState) {
+            this.operationState = operationState;
+        }
 
         public String getSheetName() {
             return sheetName;
@@ -1330,6 +1386,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                 if (GlobalImport.operateFlag) {
                     interfaceDB.setInterfaceName(inter.getInterfaceName());
                     interfaceDB.setEcode(inter.getEcode());
+                    interfaceDB.setStatus(inter.getStatus());
                     String version = interfaceDB.getVersion();
                     if (version == null || "".equals(version)) {
                         version = initVersion;
@@ -1417,40 +1474,57 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return provider_invoke;
     }
 
-    protected boolean insertOperation(com.dc.esb.servicegov.entity.Service service, Operation operation) {
+    protected boolean insertOperation(com.dc.esb.servicegov.entity.Service service, Operation operation, List<OperationPK> operationPKs) {
 
         boolean exists = false;
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("serviceId", service.getServiceId());
+
         Operation operationDB = operationDAO.findUniqureBy(paramMap);
+        OperationPK pk = new OperationPK(service.getServiceId(), operation.getOperationId());
         if (operationDB != null) {
             //覆盖
             if (GlobalImport.operateFlag) {
                 operationDB.setOperationName(operation.getOperationName());
                 operationDB.setOperationDesc(operation.getOperationDesc());
-                /**
-                 * TODO 版本等李旺完成后进行
-                 */
-//				String version = operationDB.getVersion();
-//				if(version==null ||"".equals(version)){
-//					version = initVersion;
-//				}
-//				if (AuditUtil.passed.equals(operationDB.getState())) {
-//					//operationDB.setVersion(Utils.modifyversionno(version));
-//				} else {
-//					operationDB.setVersion(version);
-//				}
+                if(!operationPKs.contains(pk)){
+                    operationPKs.add(pk);//第一次发现一个场景
+                    /*如果已经存在了场景，导入数据为发布或者上线状态，在当前基础上发布一次*/
+                    if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
+                        String state = operation.getState();//保存当前状态
+                        operationDB.setState(Constants.Operation.OPT_STATE_PASS);//为了发布将状态修改为审核通过
+                        operationDAO.save(operationDB);
+                        operationService.release(operationDB.getOperationId(), operationDB.getServiceId(), "导入发布");
+                        operationDB.setState(state);
+                        operationDAO.save(operationDB);
+                    }
+                }
+                operationDB.setState(operation.getState());
                 operationDAO.save(operationDB);
             }
             exists = true;
         } else {
+            if(!operationPKs.contains(pk)) {
+                operationPKs.add(pk);
+            }
             String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_OPERATION, operation.getOperationId(), Constants.Version.TYPE_ELSE);
             operation.setServiceId(service.getServiceId());
             operation.setVersionId(versionId);
-            operation.setState(AuditUtil.submit);
+//            operation.setState(AuditUtil.submit);
             operationDAO.save(operation);
+            /*如果系统中不存在当前场景，发布该场景新发布I一次*/
+            if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
+                String state = operation.getState();//保存当前状态
+                operation.setState(Constants.Operation.OPT_STATE_PASS);//为了发布将状态修改为审核通过
+                operationDAO.save(operation);
+                operationService.release(operation.getOperationId(), operation.getServiceId(), "导入发布");
+                operation.setState(state);
+                operationDAO.save(operation);
+            }
         }
+
+
         return exists;
 
     }

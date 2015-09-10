@@ -176,7 +176,8 @@ public class EnumController {
     List getElementMapping(@PathVariable(value = "masterId") String masterId, @PathVariable(value = "slaveId") String slaveId) {
         StringBuffer sql = new StringBuffer();
 
-        sql.append("SELECT m.element_name as masterName,s.element_name slaveName,m.element_id as masterId,s.element_id as slaveId");
+        sql.append("SELECT m.REMARK as remark, m.element_name as masterName,s.element_name slaveName,m.element_id as masterId,s.element_id as slaveId");
+//        sql.append("SELECT m.REMARK as masterName,s.REMARK slaveName,m.element_id as masterId,s.element_id as slaveId");
         sql.append(",mp.direction as direction,mp.mapping_relation as mappingRelation");
         sql.append(" FROM ENUM_ELEMENTS m left join");
         sql.append(" (select * from ENUM_ELEMENT_MAP t1 where t1.slave_element_id");
@@ -287,6 +288,7 @@ public class EnumController {
             elementMap.setMappingRelation(map.get("MAPPINGRELATION"));
             elementMap.setMasterElementId(map.get("MASTERID"));
             //因为前端combobox值，所以SLAVENAME
+            if (null == map.get("SLAVENAME") || "".equals(map.get("SLAVENAME"))) continue;
             elementMap.setSlaveElementId(map.get("SLAVENAME"));
             if (map.get("SLAVEID") != null) {
                 //删掉旧mapping

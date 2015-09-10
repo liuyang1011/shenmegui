@@ -248,6 +248,9 @@ public class InterfaceController {
     @ResponseBody
     boolean delete(@PathVariable
                    String interfaceId) {
+        //TODO 删除接口要删除serviceInvoke（外键）
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy("interfaceId", interfaceId);
+        serviceInvokeService.deleteEntity(serviceInvokes);
         //TODO 删除接口要删除ida
         interfaceService.deleteById(interfaceId);
         Map map = new HashMap();

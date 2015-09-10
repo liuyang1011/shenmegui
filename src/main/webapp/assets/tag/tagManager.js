@@ -65,7 +65,7 @@ var tagManager = {
         $.ajax({
             "type": "GET",
             "contentType": "application/json; charset=utf-8",
-            "url": getTagForServiceUrl,
+            "url": getTagForOperationUrl,
             "dataType": "json",
             "success": function (result) {
                 callBack(result);
@@ -77,7 +77,7 @@ var tagManager = {
         $.ajax({
             "type": "POST",
             "contentType": "application/json; charset=utf-8",
-            "url": addTagForServiceUrl,
+            "url": addTagForOperationUrl,
             "data": JSON.stringify(tags),
             "dataType": "json",
             "success": function (result) {

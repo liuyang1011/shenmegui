@@ -3,10 +3,7 @@ package com.dc.esb.servicegov.entity;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "version_his")
@@ -50,6 +47,18 @@ public class VersionHis implements Serializable {
 
 	@Column(name = "TARGET_ID")
 	private String targetId;
+
+	/*@OneToOne
+	@JoinColumn(name = "TARGET_ID",referencedColumnName = "AUTO_ID", insertable = false, updatable = false)
+	private OperationHis operationHis;
+
+	public OperationHis getOperationHis() {
+		return operationHis;
+	}
+
+	public void setOperationHis(OperationHis operationHis) {
+		this.operationHis = operationHis;
+	}*/
 
 	public VersionHis() {
 

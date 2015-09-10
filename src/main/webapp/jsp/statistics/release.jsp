@@ -19,8 +19,22 @@
   <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
   <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
   <script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
+</head>
+
+<body style="margin:0px;">
+
+<div class="easyui-tabs" id="releaseTab" name="subtab" data-options="tools:'#tab-tools'">
+  <div title="发布状况" style="padding:0px;">
+    <iframe id="systemReuse" name="serviceInfo" scrolling="auto" frameborder="0"
+            src="/jsp/statistics/release_state.jsp"
+            style="width:100%;height:100%;"></iframe>
+  </div>
+
+  <div title="发布次数" style="padding:0px;">
+
+  </div>
+</div>
+  <script type="text/javascript">
     var k = 1;
     $('#releaseTab').tabs({
       border: false,
@@ -41,25 +55,7 @@
       }
     });
     k = 0;
-  });
-
-</script>
-</head>
-
-<body style="margin:0px;">
-
-<div class="easyui-tabs" id="releaseTab" name="subtab" data-options="tools:'#tab-tools'">
-  <div title="发布状况" style="padding:0px;">
-    <iframe id="systemReuse" name="serviceInfo" scrolling="auto" frameborder="0"
-            src="/jsp/statistics/release_state.jsp"
-            style="width:100%;height:100%;"></iframe>
-  </div>
-
-  <div title="发布次数" style="padding:0px;">
-
-  </div>
-</div>
-
+  </script>
 </body>
 </html>
 

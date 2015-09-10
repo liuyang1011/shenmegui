@@ -68,6 +68,7 @@
 				pageSize:10,
 				columns:[[
 			        {field:'productid',checkbox:true},
+					{field:'REMARK',title:'主代码中文名称'},
 			        {field:'MASTERNAME',title:'主代码枚举名称'},
 					{field:'SLAVENAME',title:'从代码枚举名称',required : true,
 						editor:{  
@@ -77,7 +78,8 @@
 								method : 'get',
 								valueField : 'elementId',
 								textField : 'elementName',
-								panelHeight : 'auto'
+//								textField : 'remark',
+								panelHeight : '150px'
 			                }
 			            }
 			        },

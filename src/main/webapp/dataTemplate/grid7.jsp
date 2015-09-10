@@ -67,6 +67,7 @@
         <th data-options="field:'type'">类型</th>
         <th data-options="field:'length'">长度</th>
         <th data-options="field:'scale'">精度</th>
+        <th data-options="field:'metadataAlias'">别名</th>
         <th data-options="field:'dataCategory'">数据项分类</th>
         <th data-options="field:'buzzCategory'">业务项分类</th>
         <th data-options="field:'bussDefine'">业务定义</th>
@@ -120,6 +121,8 @@
         iconCls: 'icon-add',
         handler: function () {
             uiinit.win({
+                top:"130px",
+                left:"250px",
                 w: 500,
                 iconCls: 'icon-add',
                 title: "新增元数据",

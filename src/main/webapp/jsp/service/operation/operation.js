@@ -38,6 +38,21 @@ function save(formId, operation) {
     if (!$("#" + formId).form('validate')) {
         return false;
     }
+    //TODO IE8不能用，先注释了
+    //保存标签
+    /*var tagNames = $("#tags").tagit("assignedTags");
+    var tags = [];
+    tagNames.forEach(function (tagName){
+        var tagToAdd = {};
+        tagToAdd.tagName = tagName;
+        tags.push(tagToAdd);
+    });
+    var serviceId = $("#serviceId").attr("value");
+    var operationId = $("#operationId").textbox("getValue");
+    tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+    });*/
+
+
     var params = $("#" + formId).serialize();
     params = decodeURIComponent(params, true);
     var processId = parent.parent.PROCESS_INFO.processId;
@@ -57,8 +72,8 @@ function save(formId, operation) {
         data: params,
         success: function (data) {
             if (data == true) {
-                var serviceId = $("#serviceId").attr("value");
-                var operationId = $("#operationId").textbox("getValue");
+                //var serviceId = $("#serviceId").attr("value");
+                //var operationId = $("#operationId").textbox("getValue");
                 var serviceInvokeList = new Array();
                 for(var i = 0; i < invokeList.length; i++){
                     var si = invokeList[i];
@@ -70,7 +85,8 @@ function save(formId, operation) {
                     serviceInvoke.type = si.type;
                     serviceInvokeList.push(serviceInvoke);
                 }
-                $.ajax({
+                alert("操作成功 ！");
+               /* $.ajax({
                     type: "post",
                     async: false,
                     contentType: "application/json; charset=utf-8",
@@ -83,6 +99,83 @@ function save(formId, operation) {
                         clean();
                         //刷新查询列表
                         parent.serviceInfo.reloadData();
+                    }
+                });*/
+
+            } else {
+                alert("保存出现异常 ，操作失败！");
+            }
+
+        },
+        complete:function(responce){
+            var resText = responce.responseText;
+            if(resText.toString().charAt(0) == "<"){
+                alert("没有权限！");
+//                              window.location.href = "/jsp/403.jsp";
+            }
+        }
+    });
+}
+function saveAdd(formId, operation) {
+    if (!$("#" + formId).form('validate')) {
+        return false;
+    }
+    //TODO IE8不能用，先注释了
+    ////保存标签
+    //var tagNames = $("#tags").tagit("assignedTags");
+    //var tags = [];
+    //tagNames.forEach(function (tagName){
+    //    var tagToAdd = {};
+    //    tagToAdd.tagName = tagName;
+    //    tags.push(tagToAdd);
+    //});
+    //var serviceId = $("#serviceId").attr("value");
+    //var operationId = $("#operationId").textbox("getValue");
+    //tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+    //});
+
+
+    var params = $("#" + formId).serialize();
+    params = decodeURIComponent(params, true);
+    var processId = parent.parent.PROCESS_INFO.processId;
+    params = params + "&processId=" + processId;
+    var urlPath;
+    if (operation == 0) {
+        urlPath = "/operation/add";
+    }
+    if (operation == 1) {
+        urlPath = "/operation/edit";
+    }
+    $.ajax({
+        type: "post",
+        async: false,
+        url: urlPath,
+        dataType: "json",
+        data: params,
+        success: function (data) {
+            if (data == true) {
+                //var serviceId = $("#serviceId").attr("value");
+                //var operationId = $("#operationId").textbox("getValue");
+                var serviceInvokeList = new Array();
+                for(var i = 0; i < invokeList.length; i++){
+                    var si = invokeList[i];
+                    var serviceInvoke = {};
+                    serviceInvoke.serviceId = serviceId;
+                    serviceInvoke.operationId = operationId;
+                    serviceInvoke.systemId = si.systemId;
+                    serviceInvoke.interfaceId = si.interfaceId;
+                    serviceInvoke.type = si.type;
+                    serviceInvokeList.push(serviceInvoke);
+                }
+                alert("操作成功 ！");
+                isSave = 1;
+                //跳转到edit.jsp
+                var urlPath = "/operation/editPage?serviceId="+$('#serviceId').textbox("getValue")+"&operationId=" + $('#operationId').textbox("getValue");
+                var currTab = parent.$('#subtab').tabs('getSelected');
+                parent.$('#subtab').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
                     }
                 });
 
@@ -142,6 +235,55 @@ function selectService() {
         url:'/operation/getAudits/'+ node.service.serviceId
     });
 }
+
+//审核通过方法
+function auditPass(listId) {
+    var checkedItems = $('#' + listId).datagrid('getChecked');
+    if (checkedItems != null && checkedItems.length > 0) {
+        var ids = [];
+        $.each(checkedItems, function (index, item) {
+            ids.push(""+item.operationId+","+item.serviceId);
+        });
+        $.ajax({
+            type: "post",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            url: "/operation/auditPass",
+            dataType: "json",
+            data: JSON.stringify(ids),
+            success: function (data) {
+                alert("操作成功");
+                $('#' + listId).datagrid('reload');
+            }
+        });
+    }
+}
+
+//审核不通过方法
+function auditUnPass(listId) {
+    var checkedItems = $('#' + listId).datagrid('getChecked');
+    if (checkedItems != null && checkedItems.length > 0) {
+        var ids = [];
+        $.each(checkedItems, function (index, item) {
+            ids.push(""+item.operationId+","+item.serviceId);
+        });
+        $.ajax({
+            type: "post",
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            url: "/operation/auditUnPass",
+            dataType: "json",
+            data: JSON.stringify(ids),
+            success: function (data) {
+                alert("操作成功");
+                $('#' + listId).datagrid('reload');
+            }
+        });
+    }
+    //如果有任务在执行，则更新任务的状态
+    parent.PROCESS_INFO.approved = false;
+}
+
 //加载系统列表
 function loadSystem(id, items, valueField, textField) {
     if (items.length > 0) {
@@ -174,7 +316,7 @@ function chooseInterface(oldListId, newListId, type) {
             contentType: "application/json; charset=utf-8",
             url: "/operation/judgeInterface",
             dataType: "json",
-            data: {"systemId": $(this).val()},
+            data: {"systemId": $(this).val(),"type":type},
             success: function (data) {
                 //如果系统没有接口，直接转移
                 if (!data) {
@@ -186,6 +328,7 @@ function chooseInterface(oldListId, newListId, type) {
                         var invoekId = new Date().getTime();
                         $("#" + newListId).append("<option value='" + invoekId + "'>" + text + "</option>");
                         var si = genderServiceInvoke(invoekId, value,text, "","", type );
+                        si.isStandard = "0";
                         if(type == "1"){
                             consumerList.push(si);
                         }
@@ -198,7 +341,8 @@ function chooseInterface(oldListId, newListId, type) {
                     //如果有接口弹出接口选择页面
                     $('#opDlg').dialog({
                         title: '接口选择',
-                        width: 700,
+                        width: '750px',
+                        height:'463px',
                         closed: false,
                         cache: false,
                         href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId+"&type=" + type,
@@ -266,6 +410,8 @@ function genderServiceInvoke(invokeId, systemId,systemChineseName, interfaceId, 
     serviceInvoke.interfaceId = interfaceId;
     serviceInvoke.interfaceName = interfaceName;
     serviceInvoke.type = type;
+    serviceInvoke.serviceId = $("#serviceId").textbox("getValue");
+    serviceInvoke.operationId = $("#operationId").textbox("getValue");
     return serviceInvoke;
 
 }

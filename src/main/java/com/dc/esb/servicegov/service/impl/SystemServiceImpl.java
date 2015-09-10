@@ -54,9 +54,10 @@ public class SystemServiceImpl extends AbstractBaseService<System, String> imple
 	 * 是否包含接口
 	 * @return
 	 */
-	public boolean containsInterface(String systemId){
+	public boolean containsInterface(String systemId,String type){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("systemId", systemId);
+		params.put("type",type);
 		List<ServiceInvoke> list =  serviceInvokeService.findBy(params);
 		if(list != null && list.size() > 0){
 			for(ServiceInvoke si : list){

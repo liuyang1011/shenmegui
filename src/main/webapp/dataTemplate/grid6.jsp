@@ -21,16 +21,14 @@
             <td>
                 <input class="easyui-textbox" id="chineseWord"/>
             </td>
-            <th>类别词英文名称</th>
-            <td>
+           <%--<th>类别词英文名称</th>--%>
+            <td style="display: none">
                 <input class="easyui-textbox" type="text" id="englishWord">
             </td>
-            <th>类别词英文缩写</th>
+            <th>类别词英文</th>
             <td>
                 <input class="easyui-textbox" id="esglisgAb"/>
             </td>
-        </tr>
-        <tr>
             <th>备注</th>
             <td>
                 <input class="easyui-textbox" id="remark"/>
@@ -49,8 +47,8 @@
     <thead>
     <tr>
         <th field="chineseWord" width="100" editor="{type:'validatebox',options:{required:true}}">类别词中文名称</th>
-        <th field="englishWord" width="100" editor="text">类别词英文名称</th>
-        <th field="esglisgAb" width="100" align="right" editor="{type:'text',options:{}}">类别词英文缩写</th>
+        <%--<th field="englishWord" width="100" editor="text">类别词英文名称</th>--%>
+        <th field="esglisgAb" width="100" align="right" editor="{type:'text',options:{}}">类别词英文</th>
         <!-- <th field="esglisgab" width="100" align="right" editor="{type:'numberbox',options:{precision:1}}">类别词英文缩写</th> -->
         <th field="remark" width="100" align="right" editor="text">备注</th>
         <th field="optUser" width="150" editor="text">修订人</th>

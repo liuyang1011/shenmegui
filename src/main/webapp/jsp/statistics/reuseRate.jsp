@@ -18,32 +18,6 @@
     <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var k = 1;
-            $('#reuseRateTab').tabs({
-                border: false,
-                border: false,
-                width: "auto",
-                height: $("body").height(),
-                onSelect: function (title, index) {
-                    if (index == 1 && k == 0) {
-                        var currTab = $('#reuseRateTab').tabs('getSelected');
-                        var urlPath= '/jsp/statistics/service_reuserate.jsp';
-                        $('#reuseRateTab').tabs('update', {
-                            tab: currTab,
-                            options: {
-                                content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
-                            }
-                        });
-                    }
-                }
-
-            });
-            k = 0;
-        });
-
-    </script>
 </head>
 
 <body style="margin:0px;">
@@ -59,7 +33,29 @@
 
     </div>
 </div>
+    <script type="text/javascript">
+        var k = 1;
+        $('#reuseRateTab').tabs({
+            border: false,
+            border: false,
+            width: "auto",
+            height: $("body").height(),
+            onSelect: function (title, index) {
+                if (index == 1 && k == 0) {
+                    var currTab = $('#reuseRateTab').tabs('getSelected');
+                    var urlPath= '/jsp/statistics/service_reuserate.jsp';
+                    $('#reuseRateTab').tabs('update', {
+                        tab: currTab,
+                        options: {
+                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                        }
+                    });
+                }
+            }
 
+        });
+        k = 0;
+    </script>
 </body>
 </html>
 

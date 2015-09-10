@@ -172,6 +172,7 @@ public class OperationLogAspect {
                     rs.append("[参数:null]");
                 }
                 //获取对象类型
+                if(null == info) continue;
                 className = info.getClass().getName();
                 className = className.substring(className.lastIndexOf(".") + 1);
                 rs.append("[参数" + index + "，类型：" + className + "，值：");

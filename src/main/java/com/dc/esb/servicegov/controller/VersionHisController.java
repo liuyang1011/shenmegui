@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,21 +35,64 @@ public class VersionHisController {
 	@RequestMapping("/hisVersionList")
 	@ResponseBody
 	public Map<String, Object> hisVersionList(String keyValue,HttpServletRequest req) {
+		if(null == keyValue){
+			keyValue = "";
+		}
+		try{
+			keyValue = URLDecoder.decode(keyValue, "utf-8");
+		}catch (UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+
 		int pageNo = Integer.parseInt(req.getParameter("page"));
 		int rowCount = Integer.parseInt(req.getParameter("rows"));
-		Page page = versionHisServiceImpl.getAll(rowCount);
-//		Page page = versionHisServiceImpl.getPageBy(hql);
-		page.setPage(pageNo);
+//		Page page = versionHisServiceImpl.getAll(rowCount);
+
 		Map<String, Object> result = new HashMap<String, Object>();
-		String hql = " from VersionHis";
-		if(StringUtils.isNotEmpty(keyValue)){
-			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%' order by optDate desc";
-		}else {
-			hql += " order by optDate desc";
+		//过滤按钮功能不对。过滤按照服务码，服务名称，场景码，场景名称进行。
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("serviceId",keyValue);
+		List<Service> serviceList = serviceService.findLikeAnyWhere(map);
+		Map<String,String> map2 = new HashMap<String, String>();
+		map2.put("serviceName",keyValue);
+		List<Service> serviceList2 = serviceService.findLikeAnyWhere(map2);
+		serviceList.addAll(serviceList2);
+		String serviceStr = "";
+		for (int i = 0; i < serviceList.size(); i++) {
+			if(i==0){
+				serviceStr += "'" + serviceList.get(i).getServiceId() + "'";
+			}else{
+				serviceStr += ",'" +serviceList.get(i).getServiceId() + "'";
+			}
 		}
+
+		String hql = " from OperationHis oh left join oh.versionHis";
+		if(StringUtils.isNotEmpty(keyValue)){
+			hql += " where oh.operationId like '%"+keyValue+"%' or oh.operationName like '%"+keyValue+"%'";
+			if ("".equals(serviceStr)) {
+				hql += " order by oh.versionHis.optDate desc";
+			}else{
+				hql += " or oh.serviceId in ("+serviceStr+") order by oh.versionHis.optDate desc";
+			}
+		} else {
+			hql += " order by oh.versionHis.optDate desc";
+		}
+
+//		String hql = " from VersionHis v left join v.operationHis";
+//		if(StringUtils.isNotEmpty(keyValue)){
+////			hql += " where code like '%"+keyValue+"%' or versionDesc like '%"+keyValue+"%' or remark like '%"+keyValue+"%' order by optDate desc";
+//			hql += " where v.operationHis.operationId like '%"+keyValue+"%' or v.operationHis.operationName like '%"+keyValue+"%'";
+//			if ("".equals(serviceStr)) {
+//				hql += " order by v.optDate desc";
+//			}else{
+//				hql += " or v.operationHis.serviceId in ("+serviceStr+") order by v.optDate desc";
+//			}
+//		}else {
+//			hql += " order by v.optDate desc";
+//		}
+		Page page = versionHisServiceImpl.getPageBy(hql,rowCount);
+		page.setPage(pageNo);
 		List<VersionHisServiceImpl.VersionHisBean> rows = versionHisServiceImpl.findVersionBeanBy(hql, page);
-//		List<VersionHis> rows = versionHisServiceImpl.findBy(hql,page);
-//		List<VersionHis> rows = versionHisServiceImpl.hisVersionList(keyValue);
 		result.put("total", page.getResultCount());
 		result.put("rows", rows);
 		return result;

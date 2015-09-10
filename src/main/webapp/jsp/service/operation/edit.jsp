@@ -26,6 +26,37 @@
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
     <script type="text/javascript">
+        var serviceId;
+        var operationId;
+        $(function(){
+            /**
+             *  初始化接口标签
+             * @param result
+             */
+            var initTags = function initTags(result){
+                result.forEach(function(tag){
+                    $("#tags").append("<li>" + tag.tagName + "</li>");
+                });
+                $("#tags").tagit();
+
+            };
+            serviceId = $("#serviceId").attr("value");
+            operationId = $("#operationId").textbox("getValue");
+            tagManager.getTagForOperation(serviceId,operationId,initTags);
+
+            /*$("#saveTagBtn").click(function () {
+                var tagNames = $("#tags").tagit("assignedTags");
+                var tags = [];
+                tagNames.forEach(function (tagName){
+                    var tagToAdd = {};
+                    tagToAdd.tagName = tagName;
+                    tags.push(tagToAdd);
+                });
+                tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+                    alert("标签保存成功");
+                });
+            });*/
+        })
         var toolbar = [{
             text: '新增',
             iconCls: 'icon-add',
@@ -47,8 +78,23 @@
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
-                $("#resultList").datagrid('loadData',{total:0,rows:[]});
-                invokeList = new Array();
+//                $("#resultList").datagrid('get',{total:0,rows:[]});
+                var row = $("#resultList").datagrid('getSelected');
+                console.log(row);
+                var index =  $("#resultList").datagrid('getRowIndex',row);
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    contentType: "application/json; charset=utf-8",
+                    url: "/serviceLink/deleteInvoke",
+                    dataType: "json",
+                    data : JSON.stringify(row),
+                    success: function (data) {
+                        $("#resultList").datagrid('deleteRow',index);
+                        alert("删除成功");
+                    }
+                });
+//                invokeList = new Array();
             }}
         ];
         var systemList = ${systemList};
@@ -165,8 +211,8 @@
                                        type="text"/></td>
             </tr>
             <tr>
-                <th>场景关键词</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+                <%--<th>场景关键词</th>
+                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>--%>
 
                 <th>状态</th>
                 <td>
@@ -176,14 +222,17 @@
                               data-options="readonly:true, valueField: 'value',textField: 'label',
 						data: [{label: '待审核',value: '0'},
 						{label: '审核通过',value: '1'},
-						{label: '审核未通过',value: '2'}
+						{label: '审核未通过',value: '2'},
+						{label: '已发布',value: '3'},
+						{label: '已上线',value: '4'},
+						{label: '已下线',value: '5'}
 							]"
                             />
                 </td>
             </tr>
             <tr>
                 <th>使用范围</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+                <td><input class="easyui-textbox" value="${operation.range}" type="text" name="range"/></td>
 
                 <th>备注</th>
                 <td><input id="operationRemark" name="operationRemark"  value="${operation.operationRemark}" class="easyui-textbox" type="text"/>
@@ -191,7 +240,12 @@
             </tr>
             <tr>
                 <th>场景关键字:</th>
-                <td colspan="2"><ul id="tags"></ul></td>
+                <td >
+                    <ul id="tags"></ul>
+                </td>
+                <%--<th>
+                    <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+                </th>--%>
             </tr>
         </table>
 

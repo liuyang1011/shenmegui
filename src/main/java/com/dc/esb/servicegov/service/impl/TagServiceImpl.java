@@ -168,6 +168,7 @@ public class TagServiceImpl extends AbstractBaseService<Tag, String> {
                 OperationTag operationTag = new OperationTag();
                 operationTag.setServiceId(serviceId);
                 operationTag.setTagId(tag.getTagId());
+                operationTag.setOperationId(operationId);
                 operationTagDAO.save(operationTag);
             }
         }
