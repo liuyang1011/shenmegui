@@ -50,10 +50,10 @@
 			<tr>
 				<th data-options="field:'productid',checkbox:true"></th>
 				<th data-options="field:'name'">代码名称</th>
-				<th data-options="field:'isStandard'">是否标准代码</th>
-				<th data-options="field:'isMaster',align:'right'">是否主代码</th>
+				<th data-options="field:'isStandard'" formatter='formatter.isStandard'>是否标准代码</th>
+				<th data-options="field:'isMaster',align:'right'" formatter='formatter.isMaster'>是否主代码</th>
 				<th data-options="field:'dataSource'">数据来源</th>
-				<th data-options="field:'status'">代码状态</th>
+				<th data-options="field:'status'" formatter='formatter.status'>代码状态</th>
 				<th data-options="field:'version',align:'center'">代码版本</th>
 				<th data-options="field:'remark'">备注</th>
 				<th data-options="field:'optUser'">操作用户</th>
@@ -72,7 +72,7 @@
 	<script type="text/javascript">
 		var processId = parent.processId;
 		var taskId = parent.taskId;
-		$(document).ready(function() {
+		$(function(){
 			$('#slavedatagrid').datagrid({
 				rownumbers : true,
 				singleSelect : true,
@@ -90,20 +90,47 @@
 					}
 				}
 			});
+			$('#isStandard').combobox({
+				valueField: 'value',
+				textField: 'label',
+				data: [{
+					label: '是',
+					value: '1',
+					selected : "${master.isStandard}" =="1"
+				},{
+					label: '否',
+					value: '0',
+					selected : "${master.isStandard}" =="0"
+				}]
+			});
 		});
-		$('#isStandard').combobox({
-			valueField: 'value',
-			textField: 'label',
-			data: [{
-				label: '是',
-				value: '1',
-				selected : "${master.isStandard}" =="1"
-			},{
-				label: '否',
-				value: '0',
-				selected : "${master.isStandard}" =="0"
-			}]
-		});
+
+		var formatter = {
+			isStandard: function (value, row, index) {
+				if (value == 0) {
+					return "<font>否</font>";
+				}
+				if (value == 1) {
+					return "<font>是</font>";
+				}
+			},
+			status: function (value, row, index) {
+				if (value == 0) {
+					return "<font>退役</font>";
+				}
+				if (value == 1) {
+					return "<font>使用</font>";
+				}
+			},
+			isMaster: function (value, row, index) {
+				if (value == 0) {
+					return "<font>否</font>";
+				}
+				if (value == 1) {
+					return "<font>是</font>";
+				}
+			}
+		};
 		var toolbar = [
 				{
 					text : '删除',

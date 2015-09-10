@@ -869,6 +869,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     vo.setConsumerIds(consumer.getSystemId());
                     vo.setConsumers(consumer.getSystem().getSystemChineseName());
                     providerIds.add(provider.getInvokeId());
+                    vo.setServiceId(serviceId);
+                    vo.setOperationId(operationId);
                     result.add(vo);
                 }else{
                     int index = providerIds.indexOf(provider.getInvokeId());
@@ -886,7 +888,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         if(vo2 != null){
                             if(vo1.getConsumers().equals(vo2.getConsumers())){
                                 String providers = vo1.getProviders() + "," + vo2.getProviders();
+                                String providerIds_ = vo1.getProviderIds() + "," + vo2.getProviderIds();
                                 vo1.setProviders(providers);
+                                vo1.setProviderIds(providerIds_);
                                 result.set(j, null);
                             }
                         }

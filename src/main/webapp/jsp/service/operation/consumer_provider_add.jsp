@@ -75,17 +75,10 @@
     })
     loadSystem("systemList1", systemList, "systemId", "systemChineseName");
     loadSystem("systemList2", systemList, "systemId", "systemChineseName");
-    function queryInterfaceList(){
-        var params = {
-            "text" : $("#interfaceText").textbox("getValue")
-        };
-        $("#intefaceList").datagrid('options').queryParams = params;
-        $("#intefaceList").datagrid('reload');
-    }
+
     function addInterfaceInvoke(){
         //保存调用关系
         var params = [];
-        console.log(consumerList);
         params.push(consumerList);
         params.push(providerList);
         $.ajax({
@@ -97,6 +90,9 @@
             data : JSON.stringify(params),
             success: function (data) {
                 alert("保存成功");
+                //刷新数据
+                $("#resultList").datagrid('reload');
+                $('#interfaceDlg').dialog('close');
             }
         });
     }

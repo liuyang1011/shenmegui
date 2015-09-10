@@ -6,6 +6,7 @@ import java.util.*;
 import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
@@ -109,6 +110,54 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	}
 
+	public List<ServiceInvokeJson> getDistinctInterBy(String hql,Page page){
+		List<ServiceInvoke> list = this.findBy(hql, page);
+		List<ServiceInvokeJson> voList = new ArrayList<ServiceInvokeJson>();
+
+		for(int i = 0; i < list.size(); i++){
+			ServiceInvoke si = list.get(i);
+
+			if(si != null){
+				for(int j = i+1; j < list.size(); j++){
+					ServiceInvoke sj = list.get(j);
+					if(sj != null){
+						if(si.getSystemId().equals(sj.getSystemId()) ){
+							if(StringUtils.isNotEmpty(si.getInterfaceId())&& StringUtils.isNotEmpty(sj.getInterfaceId())&& si.getInterfaceId().equals(sj.getInterfaceId())){
+								if(i != j){
+									list.set(j, null);
+								}
+							}
+						}
+						if(si.getInterfaceId() == null && sj.getInterfaceId() == null){
+							list.set(j, null);
+						}
+					}
+				}
+			}
+
+		}
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i) != null){
+				ServiceInvoke si = list.get(i);
+				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
+				//将标准接口放在第一位
+				if(null == si.getIsStandard()) continue;
+//				if(si.getInterfaceId() == null){
+				if(si.getIsStandard().equals("0")){
+					svo.setRemark("标准接口");
+				}
+				voList.add(svo);
+			}
+		}
+		Collections.sort(voList, new Comparator<ServiceInvokeJson>() {
+			@Override
+			public int compare(ServiceInvokeJson o1, ServiceInvokeJson o2) {
+				return (""+o1.getIsStandard()).compareTo(""+o2.getIsStandard());
+			}
+		});
+		return voList;
+	}
+
 	public List<ServiceInvokeJson> getDistinctInter(String systemId,String type, String text) throws  Throwable{
 		String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"' and type = '"+type	+"'";
 		if(StringUtils.isNotEmpty(text)){
@@ -144,7 +193,6 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 			if(list.get(i) != null){
 				ServiceInvoke si = list.get(i);
 				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
-				voList.add(svo);
 				//将标准接口放在第一位
 				if(null == si.getIsStandard()) continue;
 //				if(si.getInterfaceId() == null){

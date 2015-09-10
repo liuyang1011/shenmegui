@@ -7,8 +7,8 @@
 --%>
 <%@ page language="java" pageEncoding="utf-8" %>
 <div style="text-align:center">
-  <div ><a href="javascrit:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                     onClick="javascript:$('#dlg').dialog('close')">取消</a><a href="javascript:void(0)"
+  <div ><a href="javascript:void(0)" onclick="$('#dlg').dialog('close');" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">取消</a>&nbsp;&nbsp;
+      <a href="javascript:void(0)"
                                                                                 onclick="auditSave('${param.type}')"
                                                                                 class="easyui-linkbutton"
                                                                                 iconCls="icon-save">确定</a></div>

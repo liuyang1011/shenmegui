@@ -203,7 +203,19 @@ public class OperationController {
         //处理标准数据
         List<InterfaceInvokeVO> standardVOs = excelExportService.getStandardVOList(serviceId, operationId);
         //处理非标准数据
+        //TODO 调用关系没有判断
         List<InterfaceInvokeVO> interfaceInvokeVOs = excelExportService.getVOList(serviceId, operationId);
+        //去掉没用调用方的记录
+        int size = interfaceInvokeVOs.size();
+        List<InterfaceInvokeVO> temp = new ArrayList<InterfaceInvokeVO>();
+        for (int i = 0; i < size; i++) {
+            if(interfaceInvokeVOs.get(i).getConsumerIds().equals("")){
+                temp.add(interfaceInvokeVOs.get(i));
+            }
+        }
+        for (int i = 0; i < temp.size(); i++) {
+            interfaceInvokeVOs.remove(temp.get(i));
+        }
         List<InterfaceInvokeVO> result = new ArrayList<InterfaceInvokeVO>();
         for(int i = 0; i < standardVOs.size(); i++){
             InterfaceInvokeVO iiv = standardVOs.get(i);

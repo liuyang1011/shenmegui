@@ -23,6 +23,8 @@ public class InterfaceInvokeVO {
     private String consumerIds;
     private String providerIds;
 
+    private String consumerInterfaceId;
+
     public InterfaceInvokeVO(){}
 
     public InterfaceInvokeVO(String serviceId, String operationId, String type, Interface inter) {
@@ -32,6 +34,14 @@ public class InterfaceInvokeVO {
         this.interfaceId = inter.getInterfaceId();
         this.ecode = inter.getEcode();
         this.interfaceName = inter.getInterfaceName();
+    }
+
+    public String getConsumerInterfaceId() {
+        return consumerInterfaceId;
+    }
+
+    public void setConsumerInterfaceId(String consumerInterfaceId) {
+        this.consumerInterfaceId = consumerInterfaceId;
     }
 
     public String getServiceId() {

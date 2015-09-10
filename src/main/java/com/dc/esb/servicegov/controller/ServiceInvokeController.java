@@ -1,7 +1,9 @@
 package com.dc.esb.servicegov.controller;
 
+import java.net.URLDecoder;
 import java.util.*;
 
+import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
@@ -9,6 +11,7 @@ import com.dc.esb.servicegov.service.impl.InterfaceServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -54,11 +57,21 @@ public class ServiceInvokeController {
      */
     @RequestMapping("/getInterface")
     @ResponseBody
-    public Map<String, Object> getInterface(String systemId, String type, String text) throws  Throwable{
-        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter(systemId, type,text);
+    public Map<String, Object> getInterface(String systemId, String type, String text,HttpServletRequest req) throws  Throwable{
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        String hql = " from " + ServiceInvoke.class.getName() +" as si where si.systemId='"+systemId+"' and type = '"+type	+"'";
+        if(StringUtils.isNotEmpty(text)){
+            text = URLDecoder.decode(text, "utf-8");
+            hql += " and( si.interfaceId like '%" + text + "%' or si.inter.interfaceName like '%" + text + "%') ";
+        }
+        Page page = serviceInvokeService.getPageBy(hql,rowCount);
+        page.setPage(pageNo);
+        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInterBy(hql, page);
+//        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter(systemId, type,text);
 
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("total", rows.size());
+        result.put("total", page.getResultCount());
         result.put("rows", rows);
         return result;
     }
@@ -87,10 +100,55 @@ public class ServiceInvokeController {
         String operationId = map.get("operationId").toString();
         String[] consumers = map.get("consumers").toString().replaceAll("，", ",").split(",");
         String[] providers = map.get("providers").toString().replaceAll("，",",").split(",");
-        String type = map.get("type").toString();
-        String interfaceId = map.get("interfaceId").toString();
+        String interfaceId ="";
+        if(null != map.get("interfaceId")){
+            interfaceId = map.get("interfaceId").toString();
+        }
+
         String[] consumerIds = map.get("consumerIds").toString().replaceAll("，", ",").split(",");
         String[] providerIds = map.get("providerIds").toString().replaceAll("，",",").split(",");
+
+        for (int i = 0; i < providerIds.length; i++) {
+            Map<String,String> params = new HashMap<String, String>();
+            params.put("serviceId",serviceId);
+            params.put("systemId",providerIds[i]);
+            params.put("operationId",operationId);
+            params.put("type",Constants.INVOKE_TYPE_PROVIDER);
+            List<ServiceInvoke> providerInvokes = serviceInvokeService.findBy(params);
+            ServiceInvoke provider = null;
+            //map里面interfaceId=null怎么查
+            if("".equals(interfaceId)){
+                for (ServiceInvoke p : providerInvokes){
+                    if(null == p.getInterfaceId()){
+                        provider =p;
+                    }
+                }
+            }else {
+                for (ServiceInvoke p : providerInvokes){
+                    if(null != p.getInterfaceId() && p.getInterfaceId().equals(interfaceId)){
+                        provider =p;
+                    }
+                }
+            }
+            if(null == provider) return false;
+            for (int j = 0; j < consumerIds.length; j++) {
+                Map<String,String> params2 = new HashMap<String, String>();
+                params2.put("serviceId",serviceId);
+                params2.put("systemId",consumerIds[j]);
+                params2.put("operationId",operationId);
+                params2.put("type",Constants.INVOKE_TYPE_CONSUMER);
+                ServiceInvoke consumer = serviceInvokeService.findUniqueBy(params2);
+                if(null == consumer) return false;
+                //不能删除serviceInvoke ，可能存在别的调用关系
+                //删除interfaceInvoke
+                Map<String,String> map2 = new HashMap<String, String>();
+                map2.put("providerInvokeId",provider.getInvokeId());
+                map2.put("consumerInvokeId",consumer.getInvokeId());
+                InterfaceInvoke invoke = interfaceInvokeService.findUniqueBy(map2);
+                if(null == invoke) return false;
+                interfaceInvokeService.delete(invoke);
+            }
+        }
         return true;
     }
     @RequestMapping(method = RequestMethod.POST, value = "/addServiceLink", headers = "Accept=application/json")
@@ -158,6 +216,7 @@ public class ServiceInvokeController {
                     p = list1.get(0);
                 }else{
 
+                    //TODO 怎么判断是否标准
                     p = new ServiceInvoke();
                     if("".equals(interfaceId2)){
                        p.setIsStandard("0");
