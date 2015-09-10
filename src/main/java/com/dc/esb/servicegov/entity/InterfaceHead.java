@@ -35,6 +35,9 @@ public class InterfaceHead {
 	@Column(name = "HEAD_REMARK")
 	private String headRemark;
 
+	@Column(name= "SYSTEM_ID")
+	private String systemId;
+
 //	@OneToMany(targetEntity=Ida.class,cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 //	 @JoinColumns({
 //            @JoinColumn(name = "HEAD_ID", referencedColumnName = "HEAD_ID", insertable = false, updatable = false)
@@ -105,5 +108,13 @@ public class InterfaceHead {
 
 	public void setIdas(List<Ida> idas) {
 		this.idas = idas;
+	}
+
+	public String getSystemId() {
+		return systemId;
+	}
+
+	public void setSystemId(String systemId) {
+		this.systemId = systemId;
 	}
 }

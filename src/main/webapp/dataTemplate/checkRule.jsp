@@ -156,3 +156,12 @@
 	}
 
 %>
+
+<%
+	if(mid.equals("13.1")){
+%>
+{"success":true,"url":"/jsp/statistics/release.jsp","title":"发布统计"}
+<%
+	}
+
+%>
