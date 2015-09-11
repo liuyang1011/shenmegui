@@ -39,7 +39,7 @@ public class FileManagerController {
     @Autowired
     FileManagerService fileManagerService;
 
-    @RequiresPermissions({"system-add"})
+    @RequiresPermissions({"file-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getAll", headers = "Accept=application/json")
     public @ResponseBody
     Map<String,Object> getAll(HttpServletRequest req){
@@ -94,6 +94,7 @@ public class FileManagerController {
 
     }
 
+    @RequiresPermissions({"file-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addfile")
     public String uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("fileDesc") String fileDesc,@RequestParam("systemId") String systemId,HttpServletRequest request){
         String fileName = file.getOriginalFilename();
@@ -128,6 +129,7 @@ public class FileManagerController {
         return "forward:/jsp/sysadmin/file_list.jsp";
     }
 
+    @RequiresPermissions({"file-delete"})
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{fileId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete(@PathVariable
@@ -143,6 +145,7 @@ public class FileManagerController {
         return true;
     }
 
+    @RequiresPermissions({"file-download"})
     @RequestMapping("download")
     public ResponseEntity<byte[]> download(String fileId) throws IOException {
         FileManager fm = fileManagerService.findUniqueBy("fileId", fileId);

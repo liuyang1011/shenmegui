@@ -32,6 +32,7 @@ public class VersionHisController {
 	@Autowired
 	private ServiceServiceImpl serviceService;
 
+	@RequiresPermissions({"versionHis-get"})
 	@RequestMapping("/hisVersionList")
 	@ResponseBody
 	public Map<String, Object> hisVersionList(String keyValue,HttpServletRequest req) {
@@ -98,7 +99,7 @@ public class VersionHisController {
 		return result;
 	}
 
-	//	@RequiresPermissions({"version-get"})
+	@RequiresPermissions({"versionHis-get"})
 	@RequestMapping("/hisDetailPage")
 	public ModelAndView hisDetailPage(String serviceId, String operationId) {
 		ModelAndView mv = new ModelAndView("version/versionHisDetail");

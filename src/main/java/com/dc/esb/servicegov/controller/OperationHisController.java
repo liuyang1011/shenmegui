@@ -54,7 +54,7 @@ public class OperationHisController {
 		return operationHisServiceImpl.getByAutoId(autoId);
 	}
 
-	@RequiresPermissions({"service-get"})
+	@RequiresPermissions({"baseLine-get"})
 	@RequestMapping("/operationHisList")
 	@ResponseBody
 	public Map<String, Object> operationHisList(HttpServletRequest req) {

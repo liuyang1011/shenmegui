@@ -7,6 +7,7 @@ import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class ServiceLinkController {
     @Autowired
     private InterfaceServiceImpl interfaceService;
 
+    @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getServiceLink/system/{systemId}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -125,6 +127,7 @@ public class ServiceLinkController {
 //        return serviceInvokeInfoVOs;
     }
 
+    @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/serviceLinkInfo/system/{systemId}", headers = "Accept=application/json")
     public List<ServiceInvokeInfoVO> serviceLinkInfo(@PathVariable("systemId") String systemId) {
         List<ServiceInvokeInfoVO> serviceInvokeInfoVOs = new ArrayList<ServiceInvokeInfoVO>();
@@ -144,15 +147,18 @@ public class ServiceLinkController {
         return serviceInvokeInfoVOs;
     }
 
+    @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/invokeConnections/sourceId/{sourceId}", headers = "Accept=application/json")
     public @ResponseBody List<InvokeConnection> getInvokeConnetcion(@PathVariable("sourceId") String sourceId){
         return invokeConnectionService.getConnectionsStartWith(sourceId);
     }
 
+    @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/parentInvokeConnections/sourceId/{sourceId}", headers = "Accept=application/json")
     public @ResponseBody List<InvokeConnection> parentInvokeConnections(@PathVariable("sourceId") String sourceId){
         return invokeConnectionService.getConnectionsEndWith(sourceId);
     }
+
     @RequestMapping(method = RequestMethod.POST, value = "/save", headers = "Accept=application/json")
     public @ResponseBody boolean save(@RequestBody InvokeConnection[] connections) {
         for(InvokeConnection connection : connections){

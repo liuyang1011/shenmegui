@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ public class ResourceImportController {
     @Autowired
     private MetadataArrayParserImpl metadataArrayParserImpl;
 
+    @RequiresPermissions({"importMetadata-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/import")
     public
     @ResponseBody

@@ -6,6 +6,7 @@ import com.dc.esb.servicegov.entity.Protocol;
 import com.dc.esb.servicegov.service.ProtocolService;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ProtocolController {
     @Autowired
     ProtocolService protocolService;
 
-
+    @RequiresPermissions({"protocol-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getAll", headers = "Accept=application/json")
     public @ResponseBody
     Map<String,Object> getAll(HttpServletRequest req) {
@@ -80,6 +81,7 @@ public class ProtocolController {
         return map;
     }
 
+    @RequiresPermissions({"protocol-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public @ResponseBody
         boolean add(@RequestBody Protocol protocol) {
@@ -93,6 +95,7 @@ public class ProtocolController {
         return true;
     }
 
+    @RequiresPermissions({"protocol-delete"})
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{protocolId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete (@PathVariable String protocolId) {
@@ -100,6 +103,7 @@ public class ProtocolController {
         return true;
     }
 
+    @RequiresPermissions({"protocol-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/edit/{protocolId}", headers = "Accept=application/json")
     public ModelAndView getSystem(@PathVariable
                                   String protocolId) {

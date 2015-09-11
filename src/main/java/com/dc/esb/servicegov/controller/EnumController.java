@@ -26,7 +26,7 @@ public class EnumController {
     @Autowired
     private EnumServiceImpl enumService;
 
-    @RequiresPermissions({"enum-get"})
+    @RequiresPermissions({"enum-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addEnum", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -38,7 +38,7 @@ public class EnumController {
         return true;
     }
 
-    @RequiresPermissions({"enum-get"})
+    @RequiresPermissions({"enum-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addSlaveEnum/{masterId}", headers = "Accept=application/json")
     public
     @ResponseBody

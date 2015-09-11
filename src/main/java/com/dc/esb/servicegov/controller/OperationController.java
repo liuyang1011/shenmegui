@@ -339,14 +339,14 @@ public class OperationController {
         return operationServiceImpl.detailPage(req, operationId, serviceId);
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"version-add"})
     @RequestMapping("/release")
     public ModelAndView release(HttpServletRequest req, String operationId, String serviceId, String versionDesc) {
         operationServiceImpl.release(operationId, serviceId, versionDesc);
         return detailPage(req, operationId, serviceId);
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"version-add"})
     @RequestMapping("/releaseBatch")
     @ResponseBody
     public boolean releaseBatch(@RequestBody Operation[] operations) {
@@ -365,7 +365,7 @@ public class OperationController {
         return mv;
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"version-check"})
     @RequestMapping(method = RequestMethod.POST, value = "/auditSave", headers = "Accept=application/json")
     @ResponseBody
     public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) throws  Throwable{

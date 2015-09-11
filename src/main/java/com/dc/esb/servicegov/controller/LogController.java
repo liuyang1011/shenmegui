@@ -30,6 +30,7 @@ public class LogController {
     @Autowired
     LogInfoServiceImpl logInfoService;
 
+    @RequiresPermissions({"importlog-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -45,7 +46,7 @@ public class LogController {
         return result;
     }
 
-    @RequiresPermissions({"log-delete"})
+    @RequiresPermissions({"importlog-delete"})
     @RequestMapping(method = RequestMethod.POST,value = "/delete", headers = "Accept=application/json")
     public
     @ResponseBody

@@ -85,7 +85,7 @@ public class ExcelExportController {
         return export(request, response,fileName, workbook);
     }
 
-    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"exportInterface-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportInterface", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -113,7 +113,7 @@ public class ExcelExportController {
     /**
      * 导出服务复用率统计execl
      * */
-    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"exportStatistics-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportServiceReuserate", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -126,7 +126,7 @@ public class ExcelExportController {
     /**
      * 导出发布状况统计
      * */
-    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"exportStatistics-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportRelease/state", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -140,7 +140,7 @@ public class ExcelExportController {
     /**
      * 导出发布数量统计
      * */
-    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"exportStatistics-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportRelease/count", headers = "Accept=application/json")
     public
     @ResponseBody
