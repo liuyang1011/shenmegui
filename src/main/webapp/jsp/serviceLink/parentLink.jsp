@@ -162,10 +162,19 @@
             var interfaceId = row.interfaceId;
             var interfaceName = row.interfaceName;
             var serviceId = row.serviceId;
+            var operationId = row.operationId;
             var systemId = row.systemName;
             var invokeId = row.invokeId;
+            var backgroundColor = "white";
 
-            context += '<div class="w" id="' + invokeId + '">' + interfaceId + interfaceName
+            if (null != interfaceId) {
+                var contextName = interfaceId + interfaceName;
+            } else {
+                var contextName = serviceId + operationId;
+                backgroundColor = "antiquewhite";
+            }
+
+            context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
             + '<div class="ep"></div>'
             + '<div>'
             + '<div class="btn-group">'

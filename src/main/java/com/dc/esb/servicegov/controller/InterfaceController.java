@@ -43,7 +43,9 @@ public class InterfaceController {
     @Autowired
     private InterfaceHeadRelateService interfaceHeadRelateService;
     @Autowired
-    ProtocolService protocolService;
+    private ProtocolService protocolService;
+    @Autowired
+    private SystemProtocolService systemProtocolService;
 
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{condition}", headers = "Accept=application/json")
@@ -53,7 +55,7 @@ public class InterfaceController {
         try {
             condition = URLDecoder.decode(condition, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error(e,e);
         }
         List<TreeNode> resList = new ArrayList<TreeNode>();
         TreeNode root = new TreeNode();
@@ -78,10 +80,64 @@ public class InterfaceController {
         }
 
         for (com.dc.esb.servicegov.entity.System s : systems) {
+
+            TreeNode interfacesNode = new TreeNode();
+            interfacesNode.setId(s.getSystemId());
+            interfacesNode.setText("接口");
+            interfacesNode.setClick("interfaces");
+            interfacesNode.setChildren(rootList);
+
+            TreeNode headsNode = new TreeNode();
+            headsNode.setId(s.getSystemId());
+            headsNode.setText("报文头");
+            headsNode.setClick("heads");
+//            List<InterfaceHead> heads = interfaceHeadService.getAll();
+            List<InterfaceHead> heads = interfaceHeadService.findBy("systemId", s.getSystemId());
+            List<TreeNode> headTreeNodes = new ArrayList<TreeNode>();
+            for (InterfaceHead head : heads) {
+                TreeNode treeNode = new TreeNode();
+                treeNode.setId(head.getHeadId());
+                treeNode.setClick("head");
+                treeNode.setText(head.getHeadName());
+                headTreeNodes.add(treeNode);
+            }
+            headsNode.setChildren(headTreeNodes);
+
+            TreeNode protocolNode = new TreeNode();
+            protocolNode.setId(s.getSystemId());
+            protocolNode.setText("协议");
+            protocolNode.setClick("protocols");
+            List<TreeNode> protocolTreeNodes = new ArrayList<TreeNode>();
+            List<SystemProtocol> systemProtocols = systemProtocolService.findBy("systemId", s.getSystemId());
+            for(SystemProtocol systemProtocol : systemProtocols){
+                String protocolId = systemProtocol.getProtocolId();
+                Protocol protocol = protocolService.getById(protocolId);
+                TreeNode treeNode = new TreeNode();
+                treeNode.setId(protocol.getProtocolId());
+                treeNode.setClick("protocol");
+                treeNode.setText(protocol.getProtocolName());
+                protocolTreeNodes.add(treeNode);
+            }
+            protocolNode.setChildren(protocolTreeNodes);
+
+//            TreeNode fileNode = new TreeNode();
+//            fileNode.setId(s.getSystemId());
+//            fileNode.setText("文档");
+//            fileNode.setClick("file");
+
+            List<TreeNode> rootChildren = new ArrayList<TreeNode>();
+            rootChildren.add(interfacesNode);
+            rootChildren.add(headsNode);
+            rootChildren.add(protocolNode);
+//            rootChildren.add(fileNode);
+
             TreeNode rootinterface = new TreeNode();
             rootinterface.setId(s.getSystemId());
             rootinterface.setText(s.getSystemChineseName());
             rootinterface.setClick("disable");
+
+            rootinterface.setChildren(rootChildren);
+
             try {
                 List<ServiceInvoke> serviceIns = s.getServiceInvokes();
                 List<TreeNode> childList = new ArrayList<TreeNode>();
@@ -109,11 +165,10 @@ public class InterfaceController {
                     }
 
                 });
-                rootinterface.setChildren(childList);
+                interfacesNode.setChildren(childList);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e,e);
             }
-
             rootList.add(rootinterface);
         }
         for (TreeNode node : rootList){
@@ -121,6 +176,7 @@ public class InterfaceController {
                 node.setState("closed");
             }
         }
+
         root.setChildren(rootList);
         resList.add(root);
         return resList;
@@ -224,32 +280,35 @@ public class InterfaceController {
                                      String interfaceId) {
         //String hql = "SELECT u.interfaceId,u.interfaceName,u.ecode,u.remark,u.status,u.version,u.optUser,u.optDate FROM Interface u WHERE interfaceId = ?";
         Interface inter = interfaceService.getById(interfaceId);
-
-        Interface resInter = new Interface();
-        resInter.setInterfaceId(inter.getInterfaceId());
-        resInter.setInterfaceName(inter.getInterfaceName());
-        resInter.setEcode(inter.getEcode());
-        resInter.setDesc(inter.getDesc());
-        resInter.setRemark(inter.getRemark());
-        resInter.setVersion(inter.getVersion());
-        resInter.setOptDate(inter.getOptDate());
-        resInter.setOptUser(inter.getOptUser());
-        resInter.setStatus(inter.getStatus());
-        List<InterfaceHeadRelate> heads = inter.getHeadRelates();
-        String headName = "";
-        for (InterfaceHeadRelate head : heads) {
-            if (!"".equals(headName)) {
-                headName += ",";
-            }
-            headName += head.getInterfaceHead().getHeadName();
-        }
-        resInter.setHeadName(headName);
         Map<String, Object> map = new HashMap<String, Object>();
+        if(null != inter){
+            Interface resInter = new Interface();
+            resInter.setInterfaceId(inter.getInterfaceId());
+            resInter.setInterfaceName(inter.getInterfaceName());
+            resInter.setEcode(inter.getEcode());
+            resInter.setDesc(inter.getDesc());
+            resInter.setRemark(inter.getRemark());
+            resInter.setVersion(inter.getVersion());
+            resInter.setOptDate(inter.getOptDate());
+            resInter.setOptUser(inter.getOptUser());
+            resInter.setStatus(inter.getStatus());
+            List<InterfaceHeadRelate> heads = inter.getHeadRelates();
+            String headName = "";
+            for (InterfaceHeadRelate head : heads) {
+                if (!"".equals(headName)) {
+                    headName += ",";
+                }
+                headName += head.getInterfaceHead().getHeadName();
+            }
+            resInter.setHeadName(headName);
 
-        List<Interface> inters = new ArrayList<Interface>();
-        inters.add(resInter);
-        map.put("total", 1);
-        map.put("rows", inters);
+
+            List<Interface> inters = new ArrayList<Interface>();
+            inters.add(resInter);
+            map.put("total", 1);
+            map.put("rows", inters);
+        }
+
         return map;
     }
 

@@ -119,4 +119,12 @@
 </ul>
 <%
     }
+    if(mid.equals("13")){
+%>
+<ul id="menu-tree" style="overflow:scroll;height:100%">
+    <li><a href="javascript:;" mid="13.1">接口检索</a>
+    </li>
+</ul>
+<%
+    }
 %>

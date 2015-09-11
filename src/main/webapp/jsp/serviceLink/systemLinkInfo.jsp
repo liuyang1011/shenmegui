@@ -55,6 +55,8 @@
         <th data-options="field:'invokeType'">调用类型</th>
         <th data-options="field:'nodeType'">节点类型</th>
         <th data-options="field:'status'">状态</th>
+        <th data-options="field:'esbAccessPattern'">ESB调用方式</th>
+        <th data-options="field:'condition'">条件位</th>
     </tr>
     </thead>
 </table>
@@ -63,11 +65,12 @@
 
 </div>
 <script type="text/javascript">
+    var invokeId;
     $(function (){
         $('#invokeLinkeTable').datagrid({
             rownumbers:true,
             singleSelect:true,
-            url:'/serviceLink/getServiceLink/system/<%=request.getParameter("systemId") %>',
+            url:'/serviceLink/getServiceLinkNode/system/<%=request.getParameter("systemId") %>',
             method:'get',
             toolbar:toolbar,
             pagination:true,
@@ -85,7 +88,6 @@
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().charAt(0) == "<"){
-//                    alert("没有权限！");
                     window.location.href = "/jsp/403.jsp";
                 }
             }
@@ -100,12 +102,9 @@
         if (queryParams.englishWord || queryParams.chineseWord || queryParams.esglisgAb || queryParams.remark) {
             $("#invokeLinkeTable").datagrid('options').queryParams = queryParams;//传递值
             $("#invokeLinkeTable").datagrid('reload');//重新加载table
-//                categoryWordManager.query(param, function (result) {
-//                    $('#tt').edatagrid('loadData', result);
-//                });
+
         } else {
             $("#invokeLinkeTable").datagrid('reload');
-            //alert("请输入查询条件");
         }
     });
     function selectTab(title, content) {
@@ -168,6 +167,33 @@
                         var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('血缘分析', content);
                         selectTab('血缘分析', content);
+                    }
+                }
+                else {
+                    alert("请选中要预览的节点！");
+                }
+            }
+        },{
+            text: '编辑节点',
+            iconCls: 'icon-qxfp',
+            handler: function () {
+                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+                var checkedItem;
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (checkedItems.length > 1) {
+                        alert("请选择一个节点进行预览！");
+                        return false;
+                    }
+                    else {
+                        checkedItem = checkedItems[0];
+                        invokeId = checkedItem.id;
+                        uiinit.win({
+                            w:500,
+                            iconCls:'icon-add',
+                            title:"编辑",
+                            url : "/jsp/serviceLink/serviceLinkModifyDialog.jsp"
+                        });
+
                     }
                 }
                 else {

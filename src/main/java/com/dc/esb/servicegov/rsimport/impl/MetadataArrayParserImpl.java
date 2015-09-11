@@ -87,9 +87,9 @@ public class MetadataArrayParserImpl implements IResourceParser {
         String type = "String";
         if (null != formula) {
             if (StringUtils.containsIgnoreCase(formula, "ARRAY")) {
-                type = "String";
+                type = Constants.Metadata.ARRAY_TYPE;
             } else if (StringUtils.containsIgnoreCase(formula, "STRUCT")) {
-                type = "Struct";
+                type = Constants.Metadata.STRUCT_TYPE;
             }
         }
         return type;

@@ -55,23 +55,38 @@
 		var headDesc = $("#headDesc").val();
 
 		var data = {};
+
+		var systemId ="";
+		var treeObj =$('.msinterfacetree') ;
+		try {
+			var selectNode = $('.msinterfacetree').tree("getSelected");
+			systemId = selectNode.id;
+
+			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
+			if(node && node.id!='root'){
+				systemId = node.id;
+			}
+
+		} catch (e) {
+			systemId = "${param.systemId}";
+			treeObj = parent.$('.msinterfacetree');
+		}
+
+
 		//data.headId = headId;
 		data.headName = headName;
 		data.headRemark = headRemark;
 		data.headDesc = headDesc;
+		data.systemId = systemId;
+
+		console.log("header node is " + data);
+		console.log(data);
 		sysManager.add(data,function(result){
 			//alert("${headId}");
 			if(result){
-
 				$('#w').window('close');
-				$('.mxsysadmintree').tree("reload");
+				$('.msinterfacetree').tree("reload");
 				var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.PUBLICHEADER+'?headId='+result+'" style="width:100%;height:100%;"></iframe>';
-				/*$('#mainContentTabs').tabs('add',{
-												title:headName,
-												content:content,
-												closable:true
-				});	*/
-
 			}else{
 				alert("保存失败");
 			}

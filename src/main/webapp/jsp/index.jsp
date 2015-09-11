@@ -22,12 +22,13 @@
     <div id="logo"></div>
     <ul id="nav">
         <li>
-            <a href="javascript:;" mid="2">公共信息管理</a>
+            <a href="javascript:;" mid="2">公共信息</a>
         </li>
         <li>
             <a href="javascript:;">系统管理</a>
             <ul>
                 <li><a href="javascript:;" mid="6">接口管理</a></li>
+                <%--<li><a href="javascript:;" mid="13">接口检索</a></li>--%>
                 <li><a href="javascript:;" mid="3">报文头管理</a></li>
             </ul>
         </li>
@@ -39,7 +40,7 @@
             </ul>
         </li>
         <li>
-            <a href="javascript:;" mid="5">交易链路管理</a>
+            <a href="javascript:;" mid="5">交易链路</a>
         </li>
         <li>
             <a href="javascript:;" mid="11">统计报表</a>
@@ -74,15 +75,26 @@
 
 <div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
-        新增
+        新增报文头
     </div>
-    <div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">
-        编辑
-    </div>
-    <div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">
-        删除
-    </div>
+    <%--<div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">--%>
+        <%--编辑报文头--%>
+    <%--</div>--%>
+    <%--<div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">--%>
+        <%--删除报文头--%>
+    <%--</div>--%>
+</div>
 
+<div id="mm-syshead" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
+        新增报文头
+    </div>
+    <%--<div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">--%>
+    <%--编辑报文头--%>
+    <%--</div>--%>
+    <div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">
+        删除报文头
+    </div>
 </div>
 <!--服务管理页面，服务树的右键菜单-->
 <div id="mm-mxservicetree" class="easyui-menu" style="width: 150px;">
@@ -128,6 +140,8 @@
     </div>
 </div>
 
+<>
+
 <div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
         新增接口
@@ -139,5 +153,31 @@
         删除接口
     </div>
 </div>
+
+<div id="mm-mxprotocols" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
+        新增协议
+    </div>
+    <%--<div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">--%>
+        <%--编辑协议--%>
+    <%--</div>--%>
+    <%--<div onclick="interfaceManager.remove()" data-options="iconCls:'icon-remove'">--%>
+        <%--删除协议--%>
+    <%--</div>--%>
+</div>
+
+<div id="mm-mxprotocol" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
+        新增协议
+    </div>
+    <%--<div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">--%>
+    <%--编辑协议--%>
+    <%--</div>--%>
+    <div onclick="interfaceManager.remove()" data-options="iconCls:'icon-remove'">
+    删除协议
+    </div>
+</div>
+
+
 </body>
 </html>

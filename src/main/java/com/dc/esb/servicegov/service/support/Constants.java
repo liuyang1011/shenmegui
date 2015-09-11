@@ -26,6 +26,7 @@ public class Constants {
     public static final String EXCEL_TEMPLATE_SERVICE_REUSERATE = Constants.class.getResource("/").getPath() + "/template/excel_service_reuserate_template.xls";
     public static final String EXCEL_TEMPLATE_RELEASE_COUNT = Constants.class.getResource("/").getPath() + "/template/excel_release_count_template.xls";
     public static final String EXCEL_TEMPLATE_RELEASE_STATE = Constants.class.getResource("/").getPath() + "/template/excel_release_state_template.xls";
+    public static final String EXCEL_TEMPLATE_DATA_DICTIONARY= Constants.class.getResource("/").getPath() + "/template/excel_data_dictionary_template.xls";
 
     public static class Operation {
         public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
@@ -87,6 +88,9 @@ public class Constants {
     public static class Metadata {
         public static final String STATUS_UNAUDIT = "未审核";
         public static final String STATUS_FORMAL = "正式";
+
+        public static final String ARRAY_TYPE = "Array";
+        public static final String STRUCT_TYPE = "Struct";
     }
 
 }

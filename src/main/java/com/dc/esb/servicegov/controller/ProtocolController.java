@@ -81,10 +81,24 @@ public class ProtocolController {
         return map;
     }
 
+
+    @RequiresPermissions({"protocol-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/get/{protocolId}", headers = "Accept=application/json")
+    public @ResponseBody
+    Map<String,Object> getById(@PathVariable String protocolId) {
+        Protocol protocol = protocolService.getById(protocolId);
+        List<Protocol> protocols = new ArrayList<Protocol>();
+        protocols.add(protocol);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("total", 1);
+        map.put("rows", protocols);
+        return map;
+    }
+
     @RequiresPermissions({"protocol-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public @ResponseBody
-        boolean add(@RequestBody Protocol protocol) {
+        Protocol add(@RequestBody Protocol protocol) {
         if(protocol.getMsgTemplateId()==null || "".equals(protocol.getMsgTemplateId())) {
             String msgtemplateId = UUID.randomUUID().toString();
             protocol.setMsgTemplateId(msgtemplateId);
@@ -92,7 +106,7 @@ public class ProtocolController {
             protocol.getMsgTemplate().setTemplateName(protocol.getProtocolName() + "协议模板");
         }
         protocolService.save(protocol);
-        return true;
+        return protocol;
     }
 
     @RequiresPermissions({"protocol-delete"})

@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.entity;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -262,5 +264,17 @@ public class Metadata implements Serializable {
 
     public void setDataCategory(String dataCategory) {
         this.dataCategory = dataCategory;
+    }
+
+    public String getFormula(){
+        String formula = this.type;
+        if(StringUtils.isNotEmpty(this.length)){
+            if(StringUtils.isNotEmpty(this.scale)){
+                formula = formula +"(" + length + "," + this.scale + ")";
+            }else{
+                formula = formula +"("+length+")";
+            }
+        }
+        return formula;
     }
 }

@@ -90,8 +90,8 @@ var sysManager = {
     },
     
     remove:function(){
-    	
-    	var node = $('.mxsysadmintree').tree("getSelected");
+
+        var node = $('.msinterfacetree').tree("getSelected");
     	$.ajax({
             type: "get",
             contentType: "application/json; charset=utf-8",
@@ -99,7 +99,7 @@ var sysManager = {
             dataType: "json",
             success: function(result) {
                 if(result){
-                	$('.mxsysadmintree').tree("reload");
+                	$('.msinterfacetree').tree("reload");
                 	var title = node.text;
                 	$('#mainContentTabs').tabs("close",title);
                 	
@@ -199,5 +199,5 @@ var sysManager = {
                  }
              }
          });
-      }
+    }
 }
