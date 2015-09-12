@@ -343,13 +343,24 @@
         }
 
         function removeIt() {
-            var node = $('#tg').treegrid('getSelected');
-            if (node) {
-                $('#tg').treegrid('remove', node.id);
-                sysManager.removeIDA(node.id, function (result) {
+            if (!confirm("确定要删除选中的记录吗？")) {
+                return;
+            }
+            var nodes = $('#tg').treegrid('getSelections');
+            if (nodes) {
+                var delAry = new Array();
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].structName != 'request' && nodes[i].structName != 'response') {
+                        delAry.push(nodes[i].id);
+                    }
+                }
+                sysManager.removeIDA(delAry, function (result) {
                     if (result) {
                         //array.
                         //$('#tg').treegrid('reload');
+                        for (var j = 0; j < delAry.length; j++) {
+                            $('#tg').treegrid('remove', delAry[j]);
+                        }
                     } else {
                         alert("删除失败");
                     }
@@ -538,7 +549,9 @@
     <div onclick="editIt()" data-options="iconCls:'icon-edit'">
         编辑
     </div>
-
+    <div onclick="removeIt()" data-options="iconCls:'icon-remove'">
+        删除
+    </div>
 </div>
 <table title="接口定义信息" id="tg"
        style="height: 440px; width: auto;"

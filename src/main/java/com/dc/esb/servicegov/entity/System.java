@@ -39,6 +39,15 @@ public class System implements Serializable{
 	@Column(name = "OPT_DATE")
 	private String optDate;
 
+	@Column
+	private String systemDesc;
+
+	@Column
+	private String principalDetail1;
+
+	@Column
+	private String principalDetail2;
+
 	private String protocolName;
 
 	public static String[] simpleFields(){
@@ -149,5 +158,29 @@ public class System implements Serializable{
 
 	public void setProtocolName(String protocolName) {
 		this.protocolName = protocolName;
+	}
+
+	public String getSystemDesc() {
+		return systemDesc;
+	}
+
+	public void setSystemDesc(String systemDesc) {
+		this.systemDesc = systemDesc;
+	}
+
+	public String getPrincipalDetail1() {
+		return principalDetail1;
+	}
+
+	public void setPrincipalDetail1(String principalDetail1) {
+		this.principalDetail1 = principalDetail1;
+	}
+
+	public String getPrincipalDetail2() {
+		return principalDetail2;
+	}
+
+	public void setPrincipalDetail2(String principalDetail2) {
+		this.principalDetail2 = principalDetail2;
 	}
 }

@@ -72,10 +72,12 @@
             <th data-options="field:'text',width:280">服务</th>
             <th data-options="field:'id',width:280">编码</th>
             <th data-options="field:'append2',width:80">关联服务数</th>
-            <th data-options="field:'append3',width:80">关联场景数</th>
+            <th data-options="field:'append3',width:80">场景数</th>
 
             <th data-options="field:'append4',width:80">复用场景数</th>
+            <!--
             <th data-options="field:'append5',width:100">场景总数</th>
+            -->
             <th data-options="field:'append6',width:100">复用率</th>
 
         </tr>

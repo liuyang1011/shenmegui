@@ -3,13 +3,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+	<!--
+	table tr th{
+		text-align:right
+	}
+	table tr td{
+		padding-left:15px;
+		text-align:left
+	}
+	-->
+</style>
 
 <form class="formui">
-	<table border="0" cellspacing="0" cellpadding="0">
-
+	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center">
+		<tr>
+		<td colspan="3" style="text-align:center" >
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+			   onClick="$('#w').window('close')">取消</a>&nbsp;&nbsp;<a href="#"
+																	  class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+		</td>
+	</tr>
 		<tr>
 			<th>
-				系統ID
+				系统ID
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemIdText">
@@ -17,7 +34,7 @@
 		</tr>
 		<tr>
 			<th>
-				系統简称
+				系统简称
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemAbText">
@@ -25,10 +42,18 @@
 		</tr>
 		<tr>
 			<th>
-				系統名称
+				系统名称
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemChineseNameText">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				系统功能描述
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="systemDescText">
 			</td>
 		</tr>
 		<!--
@@ -44,23 +69,6 @@
 		-->
 		<tr>
 			<th>
-				联系人一
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principal1Text">
-			</td>
-		</tr>
-		<tr>
-			<th>
-				联系人二
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principal2Text">
-			</td>
-		</tr>
-
-        <tr>
-			<th>
 				工作范围
 			</th>
 			<td>
@@ -75,18 +83,41 @@
 				<input class="easyui-textbox" type="text" id="featureDescText">
 			</td>
 		</tr>
-
-
 		<tr>
+			<th>
+				联系人一
+			</th>
 			<td>
-				&nbsp;
-			</td>
-			<td class="win-bbar">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-					onClick="$('#w').window('close')">取消</a><a href="#"
-					class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+				<input class="easyui-textbox" type="text" id="principal1Text">
 			</td>
 		</tr>
+		<tr>
+			<th>
+				联系人一详细
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principalDetail1">
+			</td>
+		</tr>
+
+		<tr>
+			<th>
+				联系人二
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principal2Text">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				联系人二详细
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principalDetail2">
+			</td>
+		</tr>
+
+
 	</table>
 </form>
 
@@ -100,8 +131,6 @@
                 valueField:'id',
                 textField:'text'
             });
-
-
 	});
 
 
@@ -160,8 +189,11 @@
 			return;
 		}
 		*/
+		var systemDesc = $("#systemDescText").val();
 		var principal1 = $("#principal1Text").val();
+		var principalDetail1 = $("#principalDetail1").val();
 		var principal2 = $("#principal2Text").val();
+		var principalDetail2 = $("#principalDetail2").val();
 		var workRange = $("#workRangeText").val();
 		var featureDesc = $("#featureDescText").val();
 		var data = {};
@@ -173,6 +205,9 @@
 		data.principal2 = principal2;
 		data.workRange = workRange;
 		data.featureDesc = featureDesc;
+		data.systemDesc = systemDesc;
+		data.principalDetail1 = principalDetail1;
+		data.principalDetail2 = principalDetail2;
 
 		//var protocolData = {};
 

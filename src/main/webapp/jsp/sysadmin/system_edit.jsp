@@ -3,10 +3,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+<style>
+	<!--
+	table tr th{
+		text-align:right
+	}
+	table tr td{
+		padding-left:15px;
+		text-align:left
+	}
+	-->
+</style>
 <form class="formui">
 	<table border="0" cellspacing="0" cellpadding="0">
-
+		<tr>
+			<td colspan="3" style="text-align:center" >
+				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+				   onClick="$('#w').window('close')">取消</a>&nbsp;&nbsp;<a href="#"
+																		  class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+			</td>
+		</tr>
 		<tr>
 			<th>
 				系統ID
@@ -31,6 +47,14 @@
 				<input class="easyui-textbox" type="text" id="systemChineseNameText" value="${system.systemChineseName}">
 			</td>
 		</tr>
+		<tr>
+			<th>
+				系统功能描述
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="systemDescText" value="${system.systemDesc}">
+			</td>
+		</tr>
 		<!--<tr>
 			<th>
 				系統协议
@@ -42,23 +66,6 @@
 		</tr>
 		-->
 		<tr>
-			<th>
-				联系人一
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principal1Text" value="${system.principal1}">
-			</td>
-		</tr>
-		<tr>
-			<th>
-				联系人二
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principal2Text" value="${system.principal2}">
-			</td>
-		</tr>
-
-        <tr>
 			<th>
 				工作范围
 			</th>
@@ -74,16 +81,36 @@
 				<input class="easyui-textbox" type="text" id="featureDescText" value="${system.featureDesc}">
 			</td>
 		</tr>
-
-
 		<tr>
+			<th>
+				联系人一
+			</th>
 			<td>
-				&nbsp;
+				<input class="easyui-textbox" type="text" id="principal1Text" value="${system.principal1}">
 			</td>
-			<td class="win-bbar">
-				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-					onClick="$('#w').window('close')">取消</a><a href="#"
-					class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+		</tr>
+		<tr>
+			<th>
+				联系人一详细
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principalDetail1" value="${system.principalDetail1}">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				联系人二
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principal2Text" value="${system.principal2}">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				联系人一
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principalDetail2" value="${system.principalDetail2}">
 			</td>
 		</tr>
 	</table>
@@ -134,6 +161,9 @@
     		var principal2 = $("#principal2Text").val();
     		var workRange = $("#workRangeText").val();
     		var featureDesc = $("#featureDescText").val();
+    		var systemDesc = $("#systemDescText").val();
+    		var principalDetail1 = $("#principalDetail1").val();
+    		var principalDetail2 = $("#principalDetail2").val();
     		var data = {};
 
     		data.systemId = systemId;
@@ -143,6 +173,9 @@
     		data.principal2 = principal2;
     		data.workRange = workRange;
     		data.featureDesc = featureDesc;
+    		data.systemDesc = principalDetail2;
+    		data.principalDetail1 = principalDetail1;
+    		data.principalDetail2 = principalDetail2;
 
     		//var protocolData = {};
 

@@ -9,6 +9,9 @@ import javax.persistence.Table;
 @Table(name="INTERFACE_HIS")
 public class InterfaceHIS {
 	@Id
+    @Column(name = "AUTO_ID")
+    private String autoId;
+
 	@Column(name = "INTERFACE_ID")
 	private String interfaceId;
 	
