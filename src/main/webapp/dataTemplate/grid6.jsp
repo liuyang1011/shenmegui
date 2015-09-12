@@ -135,6 +135,7 @@
             },
             onLoadError: function (responce) {
                 var resText = responce.responseText;
+                console.log(resText);
                 if(resText.toString().charAt(0) == "<"){
 //                    alert("没有权限！");
                     window.location.href = "/jsp/403.jsp";

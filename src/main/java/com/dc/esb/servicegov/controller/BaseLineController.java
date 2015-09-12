@@ -36,7 +36,7 @@ public class BaseLineController {
     private ServiceInvokeServiceImpl serviceInvokeServiceImpl;
 
 
-    @RequiresPermissions({"version-add"})
+    @RequiresPermissions({"baseLine-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/release", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -46,7 +46,7 @@ public class BaseLineController {
 
     }
 
-    @RequiresPermissions({"version-get"})
+    @RequiresPermissions({"baseLine-get"})
     @RequestMapping("/getBaseLine")
     @ResponseBody
     public Map<String, Object> getBaseLine(String code, String blDesc,HttpServletRequest req) {

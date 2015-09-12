@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -30,7 +31,8 @@ public class PdfExportController {
     public void initBinder(WebDataBinder binder) {
         binder.setAutoGrowCollectionLimit(Integer.MAX_VALUE);
     }
-//    @RequiresPermissions({"pdfExport-get"})
+
+    @RequiresPermissions({"exportPdf-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportService", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -89,6 +91,8 @@ public class PdfExportController {
         deleteFile(pdfDir);
         return true;
     }
+
+    @RequiresPermissions({"exportPdf-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportOperation", headers = "Accept=application/json")
     public
     @ResponseBody

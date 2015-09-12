@@ -62,7 +62,7 @@ public class ConfigExportController {
     @Autowired
     LogInfoServiceImpl logInfoService;
 
-    @RequiresPermissions({"config-get"})
+    @RequiresPermissions({"exportConfig-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/exportHandle/{serviceId}/{operationId}/{providerSystemId}/{providerInterfaceId}/{providerIsStandard}/{consumerSystemId}/{consumerInterfaceId}/{consumerIsStandard}/{providerStandardType}/{consumerStandardType}", headers = "Accept=application/json")
     public
     @ResponseBody

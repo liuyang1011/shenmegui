@@ -76,7 +76,7 @@ public class ExcelImportController {
      */
     private final static String XLSX = "xlsx";
 
-    @RequiresPermissions({"system-add"})
+    @RequiresPermissions({"importInterface-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport")
     public void importInterfaceField(@RequestParam("systemId")String systemId, @RequestParam("file") MultipartFile file, HttpServletResponse response){
         response.setContentType("text/html");
@@ -173,7 +173,7 @@ public class ExcelImportController {
         writer.close();
     }
 
-    @RequiresPermissions({"system-add"})
+    @RequiresPermissions({"importInterface-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport/noSystem")
     public void importInterfaceField(@RequestParam("file") MultipartFile file, HttpServletResponse response){
         response.setContentType("text/html");
@@ -270,7 +270,7 @@ public class ExcelImportController {
         writer.close();
     }
 
-    @RequiresPermissions({"service-add", "system-add"})
+    @RequiresPermissions({"importExcel-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/fieldimport")
     public void importFieldMapping(@RequestParam("file")
                                    MultipartFile file, Model model, HttpServletResponse response, @RequestParam("select")

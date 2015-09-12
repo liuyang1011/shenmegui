@@ -24,7 +24,16 @@ public class Permission {
     private String chineseName;
     @Column(name="CHINESE_DESCRIPTION")
     private String chineseDescription;
+    @Column(name="CATEGORY_ID")
+    private String categoryId;
 
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public String getId() {
         return Id;

@@ -9,6 +9,7 @@ var uiinit = {
 				top:arg.top,
 				left:arg.left,
 				width:arg.w,
+				height:arg.h,
 				title:arg.title,
 				iconCls:arg.iconCls,
 				draggable:true,

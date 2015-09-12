@@ -71,7 +71,7 @@
 		             	var structAlias = row.structAlias;
 		                var type = row.type;
 		                var length = row.length;
-		                var metadataId = row.metadataId;
+//		                var metadataId = row.metadataId;
 		                var scale = row.scale;
 		                var required = row.required;
 		                var seq = row.seq;
@@ -81,7 +81,7 @@
 						data.structAlias = structAlias;
 						data.type = type;
 						data.length = length;
-						data.metadataId = metadataId;
+//						data.metadataId = metadataId;
 						data.scale = scale;
 						data._parentId = parentIdAry[i];
 						data.required = required;
@@ -101,7 +101,7 @@
 		             	var structAlias = row.structAlias;
 		                var type = row.type;
 		                var length = row.length;
-		                var metadataId = row.metadataId;
+//		                var metadataId = row.metadataId;
 		                var scale = row.scale;
 		                var required = row.required;
 		                var seq = row.seq;
@@ -111,7 +111,7 @@
 						data.structAlias = structAlias;
 						data.type = type;
 						data.length = length;
-						data.metadataId = metadataId;
+//						data.metadataId = metadataId;
 						data.scale = scale;
 						data.required = required;
 						data.headId = "${param.headId}";
@@ -200,7 +200,7 @@
 							structAlias:prevrow.structAlias,
 							type:prevrow.type,
 							length:prevrow.length,
-							metadataId:prevrow.metadataId,
+//							metadataId:prevrow.metadataId,
 							scale:prevrow.scale,
 							required:prevrow.required,
 							seq:row.seq,
@@ -266,7 +266,7 @@
 							structAlias:row.structAlias,
 							type:row.type,
 							length:row.length,
-							metadataId:row.metadataId,
+//							metadataId:row.metadataId,
 							scale:row.scale,
 							required:row.required,
 							seq:nextrow.seq,
@@ -282,7 +282,7 @@
 							structAlias:nextrow.structAlias,
 							type:nextrow.type,
 							length:nextrow.length,
-							metadataId:nextrow.metadataId,
+//							metadataId:nextrow.metadataId,
 							scale:nextrow.scale,
 							required:nextrow.required,
 							seq:row.seq,
@@ -460,9 +460,9 @@
 					<th data-options="field:'length',width:80,editor:'text'">
 						长度
 					</th>
-					<th data-options="field:'metadataId',width:100,editor:'text'">
+					<%--<th data-options="field:'metadataId',width:100,editor:'text'">
 						元数据ID
-					</th>
+					</th>--%>
 					<th data-options="field:'remark',width:100,editor:'text'">
 						约束条件
 					</th>
