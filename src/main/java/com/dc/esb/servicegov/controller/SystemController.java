@@ -96,6 +96,7 @@ public class SystemController {
             searchConds.add(search);
         }
 
+        hql.append(" order by t1.systemId");
         SearchCondition searchCond = new SearchCondition();
 
         Page page = systemService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);

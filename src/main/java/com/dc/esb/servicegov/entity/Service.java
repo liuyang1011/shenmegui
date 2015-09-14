@@ -23,7 +23,7 @@ public class Service implements Serializable {
 	@Column(name = "CATEGORY_ID")
 	private String categoryId;
 	
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION",length = 1000)
 	private String desc;
 	
 	@Column(name = "REMARK")

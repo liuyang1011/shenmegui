@@ -50,13 +50,10 @@
 		} ];
 		function release() {
 			if(!$("#baseForm").form('validate')){
-				alert(0);
 				return false;
 			}
-			alert(1)
 			var opItems = $('#operationList').datagrid('getChecked');
 			var pcItems = $('#pcList').datagrid('getChecked');
-			alert(2)
 			var versionIds = new Array();
 			$.each(opItems, function(index, item) {
 				versionIds.push(item.versionHis.autoId);

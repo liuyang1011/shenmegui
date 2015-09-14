@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>系統管理</title>
+    <title>系统管理</title>
     <link rel="stylesheet" type="text/css"
           href="/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css"
@@ -72,12 +72,12 @@
         <th data-options="field:'timeout',width:'8%',align:'center'">
             超时时间
         </th>
-        <th data-options="field:'errorCode',width:'10%'">
+        <%--<th data-options="field:'errorCode',width:'10%'">
             错误代码
         </th>
         <th data-options="field:'succCode',align:'right',width:'10%'">
             成功代码
-        </th>
+        </th>--%>
         <th data-options="field:'remark',align:'right',width:'15%'">
             备注
         </th>

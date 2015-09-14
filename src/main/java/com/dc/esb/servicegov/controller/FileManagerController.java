@@ -83,7 +83,9 @@ public class FileManagerController {
 
         List<FileManager> fms = fileManagerService.findBy(hql.toString(),page,searchConds);
         for(FileManager f:fms){
-            f.setSystemName(f.getSystem().getSystemChineseName());
+            if(null != f.getSystem()){
+                f.setSystemName(f.getSystem().getSystemChineseName());
+            }
             f.setSystem(null);
         }
 

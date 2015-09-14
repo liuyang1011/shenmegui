@@ -1,10 +1,12 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.dao.impl.InterfaceTagDAOImpl;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.service.impl.TagServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -46,6 +48,8 @@ public class InterfaceController {
     private ProtocolService protocolService;
     @Autowired
     private SystemProtocolService systemProtocolService;
+    @Autowired
+    private TagServiceImpl tagService;
 
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{condition}", headers = "Accept=application/json")
@@ -331,6 +335,21 @@ public class InterfaceController {
         }catch (UnsupportedEncodingException e){
             e.printStackTrace();
         }
+        String interfaceTag = req.getParameter("interfaceTag");
+        if(interfaceTag==null){
+            interfaceTag = "";
+        }
+        try{
+            if (null != interfaceTag)
+                interfaceTag = URLDecoder.decode(interfaceTag,"utf-8");
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+
+        String interfaceIds = "";
+        if(!interfaceTag.equals("")){
+            interfaceIds = tagService.findInterfaceIdsByTag(interfaceTag);
+        }
         String status = req.getParameter("status");
         String protocolId = req.getParameter("protocolId");
         String headId = req.getParameter("headId");
@@ -393,6 +412,14 @@ public class InterfaceController {
             searchCond.setFieldValue(headId);
             searchConds.add(searchCond);
         }
+        if(!interfaceTag.equals("")){
+            if(!interfaceIds.equals("")){
+                hql.append(" and t1.interfaceId in ("+interfaceIds+")");
+            }else{
+                hql.append(" and 1=2");
+            }
+        }
+
 
 
         Page page = interfaceService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);

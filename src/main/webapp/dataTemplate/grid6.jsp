@@ -42,7 +42,7 @@
 
 </fieldset>
 </form>
-<table id="tt" style="height:580px; width:auto;"
+<table id="tt" style="height:500px; width:auto;"
        title="所有类别词">
     <thead>
     <tr>
@@ -128,14 +128,13 @@
             method: 'get',
             toolbar: toolbar,
             pagination: true,
-            pageSize: 18,
-            pageList: [18,30,50],
+            pageSize: 15,
+            pageList: [15,30,50],
             onBeginEdit: function (index, row) {
                 editedRows.push(index);
             },
             onLoadError: function (responce) {
                 var resText = responce.responseText;
-                console.log(resText);
                 if(resText.toString().charAt(0) == "<"){
 //                    alert("没有权限！");
                     window.location.href = "/jsp/403.jsp";

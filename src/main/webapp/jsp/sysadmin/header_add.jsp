@@ -79,8 +79,6 @@
 		data.headDesc = headDesc;
 		data.systemId = systemId;
 
-		console.log("header node is " + data);
-		console.log(data);
 		sysManager.add(data,function(result){
 			//alert("${headId}");
 			if(result){

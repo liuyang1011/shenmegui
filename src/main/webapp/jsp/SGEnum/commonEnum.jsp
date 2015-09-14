@@ -61,7 +61,7 @@
 
 	</fieldset>
 	<table title="公共代码列表" id="dg"
-		style="height:370px;width:auto">
+		style="height:420px;width:auto">
 		<thead>
 			<tr>
 				<th data-options="field:'productid',checkbox:true"></th>
@@ -99,6 +99,7 @@
 				method:'POST',
 				toolbar:toolbar,
 				pagination:true,
+				striped: true,
 				pageSize:'10',
 				onLoadError: function (responce) {
 					var resText = responce.responseText;

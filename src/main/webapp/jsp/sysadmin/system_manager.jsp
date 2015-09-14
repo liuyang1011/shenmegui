@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>系統管理</title>
+		<title>系统管理</title>
 		<link rel="stylesheet" type="text/css"
 			href="/resources/themes/default/easyui.css">
 		<link rel="stylesheet" type="text/css"
@@ -82,7 +82,7 @@
 
 
 		</fieldset>
-		<table id="tg" style="height: 300px; width: 100%" data-options="pageSize:2">
+		<table id="tg" data-options="pageSize:2">
 			<thead>
 				<tr>
 					<th data-options="field:'systemId',width:'10%'">
@@ -121,14 +121,14 @@
 	        title:'系统基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: 'auto', 
-	        height: '390px',
+	        height: '440px',
 	        collapsible: true,
 	        method:'post',
 	        url:'/system/getAll',
 	        singleSelect:true,//是否单选 
 	        pagination:true,//分页控件 
-	        pageSize: 10,//每页显示的记录条数，默认为10
-		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        pageSize: 13,//每页显示的记录条数，默认为10
+		    pageList: [13,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'新增',

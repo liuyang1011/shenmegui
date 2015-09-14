@@ -7,10 +7,7 @@ import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.ExcelImportService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
-import com.dc.esb.servicegov.util.AuditUtil;
-import com.dc.esb.servicegov.util.ExcelTool;
-import com.dc.esb.servicegov.util.GlobalImport;
-import com.dc.esb.servicegov.util.Utils;
+import com.dc.esb.servicegov.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +15,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.shiro.SecurityUtils;
 import org.hibernate.NonUniqueObjectException;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +37,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected static final int INDEX_INTERFACE_HEAD_COL = 18;
     protected static final int INDEX_INTERFACE_STATUS = 19;
     protected static final int INDEX_OPERATION_STATE = 20;
+    protected static final int INDEX_ISSTANDARD = 21;
 
     protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
@@ -244,6 +243,12 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }else {
                 operationState = "";
             }
+            String isStandard = getCell(row,INDEX_ISSTANDARD);
+            if("是".equals(isStandard)){
+                isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
+            }else{
+                isStandard = Constants.INVOKE_TYPE_STANDARD_N;
+            }
             String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
             String serviceId = temp.split("[()]+")[1];
             String systemId = consumerSystemId;
@@ -266,6 +271,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             indexDO.setSystemAb(systemAb);
             indexDO.setInterfaceStatus(interfaceStatus);
             indexDO.setOperationState(operationState);
+            indexDO.setIsStandard(isStandard);
             indexDOs.add(indexDO);
         }
         List list = new ArrayList();
@@ -664,13 +670,13 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                         break;
                     } else if ("交易名称".equals(cell) && k==0) {
                         tranName = sheetRow.getCell(k + 1).getStringCellValue();
-                        if (tranName == null || "".equals(tranName)) {
+                        /*if (tranName == null || "".equals(tranName)) {
                             logger.error(tranSheet.getSheetName()
                                     + "sheet页，交易名称为空");
                             logInfoService.saveLog(tranSheet.getSheetName()
                                     + "sheet页，交易名称为空", "导入");
                             flag = false;
-                        }
+                        }*/
                         inter.setInterfaceName(tranName);
                     } else if ("接口功能描述".equals(cell) && k==0) {
                         tranDesc = sheetRow.getCell(k + 1).getStringCellValue();
@@ -913,6 +919,15 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String systemAb;
         private String interfaceStatus;
         private String operationState;
+        private String isStandard;
+
+        public String getIsStandard() {
+            return isStandard;
+        }
+
+        public void setIsStandard(String isStandard) {
+            this.isStandard = isStandard;
+        }
 
         public String getInterfaceStatus() {
             return interfaceStatus;
@@ -1403,12 +1418,16 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                     interfaceDB.setVersion(version);
 
                 }
+                interfaceDB.setOptDate(DateUtils.format(new Date()));
+                interfaceDB.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
                 interfaceDao.save(interfaceDB);
                 inter.setInterfaceId(interfaceDB.getInterfaceId());
                 exists = true;
             } else {
                 inter.setVersion(initVersion);
                 inter.setInterfaceId(inter.getEcode());
+                inter.setOptDate(DateUtils.format(new Date()));
+                inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
                 interfaceDao.save(inter);
                 provider_invoke.setInterfaceId(inter.getInterfaceId());
 
@@ -1418,6 +1437,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         } else {
             inter.setVersion(initVersion);
             inter.setInterfaceId(inter.getInterfaceId());
+            inter.setEcode(inter.getEcode());
+            inter.setOptDate(DateUtils.format(new Date()));
             //建立调用关系
             interfaceDao.save(inter);
             provider_invoke = new ServiceInvoke();

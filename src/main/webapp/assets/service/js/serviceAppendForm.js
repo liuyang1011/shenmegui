@@ -39,6 +39,7 @@ $(function(){
         serviceManager.add(service,function(result){
             if(!result){
                 alert("存在相同服务码");
+                return;
             }
             $('#w').window('close');
             $('.mxservicetree').tree('reload');

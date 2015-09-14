@@ -62,7 +62,6 @@ public class ResourceImportController {
                     log.error(e, e);
                 }
                 if (null != workbook) {
-                    //TODO 暂时只要元数据导入
                     englishWordXlsxParserImpl.parse(workbook);
                     categoryWordParserImpl.parse(workbook);
                     metadataXlsxParserImpl.parse(workbook);
