@@ -46,6 +46,8 @@ public class InterfaceController {
     private ProtocolService protocolService;
     @Autowired
     private SystemProtocolService systemProtocolService;
+    @Autowired
+    private FileManagerService fileManagerService;
 
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{condition}", headers = "Accept=application/json")
@@ -120,16 +122,29 @@ public class InterfaceController {
             }
             protocolNode.setChildren(protocolTreeNodes);
 
-//            TreeNode fileNode = new TreeNode();
-//            fileNode.setId(s.getSystemId());
-//            fileNode.setText("文档");
-//            fileNode.setClick("file");
+            TreeNode fileNode = new TreeNode();
+            fileNode.setId(s.getSystemId());
+            fileNode.setText("文档");
+            fileNode.setClick("files");
+
+            List<FileManager> files = fileManagerService.findBy("systemId", s.getSystemId());
+            List<TreeNode> fileTreeNodes = new ArrayList<TreeNode>();
+            for(FileManager file : files){
+                String fileName = file.getFileName();
+                String id = file.getFileId();
+                TreeNode treeNode = new TreeNode();
+                treeNode.setId(id);
+                treeNode.setText(fileName);
+                treeNode.setClick("file");
+                fileTreeNodes.add(treeNode);
+            }
+            fileNode.setChildren(fileTreeNodes);
 
             List<TreeNode> rootChildren = new ArrayList<TreeNode>();
             rootChildren.add(interfacesNode);
             rootChildren.add(headsNode);
             rootChildren.add(protocolNode);
-//            rootChildren.add(fileNode);
+            rootChildren.add(fileNode);
 
             TreeNode rootinterface = new TreeNode();
             rootinterface.setId(s.getSystemId());
@@ -142,7 +157,6 @@ public class InterfaceController {
                 List<ServiceInvoke> serviceIns = s.getServiceInvokes();
                 List<TreeNode> childList = new ArrayList<TreeNode>();
                 for (ServiceInvoke si : serviceIns) {
-
                     TreeNode child = new TreeNode();
                     if(null == si.getInter()){
                         continue;
@@ -155,7 +169,6 @@ public class InterfaceController {
                     if (!contains(childList, child)) {
                         childList.add(child);
                     }
-
                 }
                 Collections.sort(childList, new Comparator<TreeNode>() {
 
@@ -176,7 +189,6 @@ public class InterfaceController {
                 node.setState("closed");
             }
         }
-
         root.setChildren(rootList);
         resList.add(root);
         return resList;

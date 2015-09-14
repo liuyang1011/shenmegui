@@ -1,4 +1,5 @@
 package com.dc.esb.servicegov.service.impl;
+
 import com.dc.esb.servicegov.dao.impl.FileManagerDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.FileManager;
@@ -13,12 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class FileManagerServiceImpl extends AbstractBaseService<FileManager,String> implements FileManagerService {
-
+public class FileManagerServiceImpl extends AbstractBaseService<FileManager, String> implements FileManagerService {
 
     @Autowired
     FileManagerDAOImpl fileManagerDao;
-
 
     @Override
     public HibernateDAO<FileManager, String> getDAO() {

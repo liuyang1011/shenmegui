@@ -7,14 +7,13 @@ var LOAD_URL = {
     PUBLICHEADER: '/jsp/sysadmin/interface_header.jsp',
     INTERFACELIST: '/jsp/interface/interface_list.jsp',
     INTERFACEDEFINE: '/jsp/interface/interface_define.jsp',
-    SYSTEMMANGER :  '/jsp/sysadmin/system_manager.jsp',
-    SYSTEMINDEX :  '/jsp/sysadmin/system_index.jsp',
+    SYSTEMMANGER: '/jsp/sysadmin/system_manager.jsp',
+    SYSTEMINDEX: '/jsp/sysadmin/system_index.jsp',
     SERVICEUI: '/dataTemplate/serviceadmin/index.html',
     SERVICEUI2: '/dataTemplate/serviceadmin/fwcjmx.html',
     SERVICEUI_LW: '/jsp/service/servicePage.jsp',
-    USERADD:'/jsp/user/useradd.jsp',
-    SEARCH:'/jsp/service/search.jsp'
-
+    USERADD: '/jsp/user/useradd.jsp',
+    SEARCH: '/jsp/service/search.jsp'
 };
 var SYSMENU = {
     init: function () {
@@ -40,15 +39,14 @@ var SYSMENU = {
                 });
                 $('#mxinterfacetreefilter').searchbox({
                     searcher: function (value, name) {
-                        if(value == ""){
+                        if (value == "") {
                             value = "all";
                         }
-                        //$('.msinterfacetree').tree('doFilter', value);
                         //重新查询
                         $('.msinterfacetree').tree({
-                            url:'/interface/getLeftTree/'+encodeURI(encodeURI(value)),
-                            method:'get',
-                            animate:true
+                            url: '/interface/getLeftTree/' + encodeURI(encodeURI(value)),
+                            method: 'get',
+                            animate: true
                         });
                     },
                     prompt: '请输入关键词'
@@ -125,92 +123,103 @@ var SYSMENU = {
                         e.preventDefault();
                         $(this).tree('select', node.target);
                         if (typeof(node.children) != 'undefined') {//编辑接口
-                            if(node.click == 'system') {
+                            if (node.click == 'system') {
                                 $('#mm-mxsystemtree').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
-                            }else if(node.click == 'disable'){
+                            } else if (node.click == 'disable') {
 
                                 $('#mm-mxsystemtree1').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
-
-                            }else if(node.click =="heads"){
+                                //右键报文头节点
+                            } else if (node.click == "heads") {
                                 $('#mm-mxsysadmintree').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
-
-                            }else if(node.click =="protocols"){
+                                //右键协议节点
+                            } else if (node.click == "protocols") {
 
                                 $('#mm-mxprotocols').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
-                            }else if(node.click == "head"){
+                                //右键具体报文头节点
+                            } else if (node.click == "head") {
                                 $('#mm-syshead').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
-                            }else if(node.click = "protocol"){
+                                //邮件具体协议节点
+                            } else if (node.click == "protocol") {
                                 $('#mm-mxprotocol').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
-                            }else{
+                            } else if (node.click == "files") {
+                                $("#mm-mxfiles").menu("show", {
+                                    left: e.pageX,
+                                    top: e.pageY
+                                });
+                            } else if (node.click == "file") {
+                                $("#mm-mxfile").menu("show", {
+                                    left: e.pageX,
+                                    top: e.pageY
+                                });
+                            } else {
                                 $('#mm-mxinterfacetree1').menu('show', {
                                     left: e.pageX,
                                     top: e.pageY
                                 });
                             }
                         }
-
                     },
                     onClick: function (node) {
                         if (node.click == 'system') {
                             var mid = node.id;
                             var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)){
+                            if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.SYSTEMINDEX+'" style="width:100%;height:100%;"></iframe>';
-                                $('#mainContentTabs').tabs('add',{
-                                    title:title,
-                                    content:content,
-                                    closable:true
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX + '" style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
                                 });
                             }
-                        }else if(node.click == "interfaces"){
+                        } else if (node.click == "interfaces") {
                             var mid = node.id;
                             var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)){
+                            if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
-                                $('#mainContentTabs').tabs('add',{
-                                    title:title,
-                                    content:content,
-                                    closable:true
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
                                 });
                             }
 
-                        }else if(node.click == 'disable'){
+                        } else if (node.click == 'disable') {
                             var mid = node.id;
                             var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)){
+                            if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
-                                $('#mainContentTabs').tabs('add',{
-                                    title:title,
-                                    content:content,
-                                    closable:true
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:100%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
                                 });
                             }
 
-                        }else if(node.click == "head"){
+                        } else if (node.click == "head") {
                             var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
@@ -224,30 +233,30 @@ var SYSMENU = {
                                 });
                             }
 
-                        }else if(node.click == "protocol") {
+                        } else if (node.click == "protocol") {
                             var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId='+mid+'"  style="width:100%;height:100%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid + '"  style="width:100%;height:100%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
                                     closable: true
                                 });
                             }
-                        } else if(node.click == "protocols"){
+                        } else if (node.click == "protocols") {
 
-                        } else if(node.click == "heads"){
+                        } else if (node.click == "heads") {
 
-                        }else{
+                        } else {
                             var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACEDEFINE+'?interfaceId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:100%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -281,7 +290,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId='+node.id+'" style="width:100%;height:100%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id + '" style="width:100%;height:100%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -304,19 +313,19 @@ var SYSMENU = {
                         }
                     },
                     onClick: function (node) {
-                        if(node.type == 'root'){
+                        if (node.type == 'root') {
                             var title = "服务检索";
                             var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH + '" style="width:100%;height:100%;"></iframe>';
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
-                            }else{
+                            } else {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
                                     closable: true
                                 });
                             }
-                        }else if (node.type == 'service') {//打开服务场景
+                        } else if (node.type == 'service') {//打开服务场景
                             if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
                                 var mid = node.id;
                                 var title = node.text;
@@ -436,19 +445,19 @@ var SYSMENU = {
                     e.preventDefault();
                     $(this).tree('select', node.target);
                     if (typeof(node.children) != 'undefined') {//编辑接口
-                        if(node.click == 'system') {
+                        if (node.click == 'system') {
                             $('#mm-mxsystemtree').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
                             });
-                        }else if(node.click == 'disable'){
+                        } else if (node.click == 'disable') {
 
                             $('#mm-mxsystemtree1').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
                             });
 
-                        }else{
+                        } else {
                             $('#mm-mxinterfacetree1').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
@@ -461,37 +470,37 @@ var SYSMENU = {
                     if (node.click == 'system') {
                         var mid = node.id;
                         var title = node.text;
-                        if ($('#mainContentTabs').tabs('exists', title)){
+                        if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.SYSTEMINDEX+'" style="width:100%;height:100%;"></iframe>';
-                            $('#mainContentTabs').tabs('add',{
-                                title:title,
-                                content:content,
-                                closable:true
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX + '" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
                             });
                         }
-                    }else if(node.click == 'disable'){
-                        var mid = node.id;
-                        var title = node.text;
-                        if ($('#mainContentTabs').tabs('exists', title)){
-                            $('#mainContentTabs').tabs('select', title);
-                        } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
-                            $('#mainContentTabs').tabs('add',{
-                                title:title,
-                                content:content,
-                                closable:true
-                            });
-                        }
-
-                    }else{
+                    } else if (node.click == 'disable') {
                         var mid = node.id;
                         var title = node.text;
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACEDEFINE+'?interfaceId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+
+                    } else {
+                        var mid = node.id;
+                        var title = node.text;
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {//SYSADMINUIEDIT
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -525,7 +534,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId='+node.id+'" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id + '" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -667,19 +676,19 @@ var SYSMENU = {
                     e.preventDefault();
                     $(this).tree('select', node.target);
                     if (typeof(node.children) != 'undefined') {//编辑接口
-                        if(node.click == 'system') {
+                        if (node.click == 'system') {
                             $('#mm-mxsystemtree').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
                             });
-                        }else if(node.click == 'disable'){
+                        } else if (node.click == 'disable') {
 
                             $('#mm-mxsystemtree1').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
                             });
 
-                        }else{
+                        } else {
                             $('#mm-mxinterfacetree1').menu('show', {
                                 left: e.pageX,
                                 top: e.pageY
@@ -692,37 +701,37 @@ var SYSMENU = {
                     if (node.click == 'system') {
                         var mid = node.id;
                         var title = node.text;
-                        if ($('#mainContentTabs').tabs('exists', title)){
+                        if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.SYSTEMINDEX+'" style="width:100%;height:100%;"></iframe>';
-                            $('#mainContentTabs').tabs('add',{
-                                title:title,
-                                content:content,
-                                closable:true
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX + '" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
                             });
                         }
-                    }else if(node.click == 'disable'){
-                        var mid = node.id;
-                        var title = node.text;
-                        if ($('#mainContentTabs').tabs('exists', title)){
-                            $('#mainContentTabs').tabs('select', title);
-                        } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACELIST+'?systemId='+mid+'" style="width:100%;height:100%;"></iframe>';
-                            $('#mainContentTabs').tabs('add',{
-                                title:title,
-                                content:content,
-                                closable:true
-                            });
-                        }
-
-                    }else{
+                    } else if (node.click == 'disable') {
                         var mid = node.id;
                         var title = node.text;
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="'+LOAD_URL.INTERFACEDEFINE+'?interfaceId='+mid+'" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:100%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true
+                            });
+                        }
+
+                    } else {
+                        var mid = node.id;
+                        var title = node.text;
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {//SYSADMINUIEDIT
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -756,7 +765,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId='+node.id+'" style="width:100%;height:100%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id + '" style="width:100%;height:100%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -807,7 +816,7 @@ var SYSMENU = {
             callBack();
         });
     },
-    reloadTreeByValue: function(key, value){
+    reloadTreeByValue: function (key, value) {
         $('.' + key).tree("loadData", value);
     }
 };
@@ -875,12 +884,12 @@ function addTab(title, content) {
     });
 }
 
-function changeTaskName(){
-    $("#taskName").text("当前任务:" + PROCESS_INFO.taskName + "("+PROCESS_INFO.taskId +")")
+function changeTaskName() {
+    $("#taskName").text("当前任务:" + PROCESS_INFO.taskName + "(" + PROCESS_INFO.taskId + ")")
 }
 
-$(function(){
-    $("#taskName").click(function(){
+$(function () {
+    $("#taskName").click(function () {
         uiinit.win({
             w: 500,
             iconCls: 'icon-cfp',
