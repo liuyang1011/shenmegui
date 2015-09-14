@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.service.impl.*;
+import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
 import com.dc.esb.servicegov.vo.OperationExpVO;
@@ -19,6 +20,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,8 @@ public class OperationController {
     private SystemServiceImpl systemService;
     @Autowired
     private ExcelExportServiceImpl excelExportService;
+    @Autowired
+    private ProcessContextServiceImpl processContextService;
 
     /**
      * 获取所有的服务场景
@@ -339,14 +343,14 @@ public class OperationController {
         return operationServiceImpl.detailPage(req, operationId, serviceId);
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"version-add"})
     @RequestMapping("/release")
     public ModelAndView release(HttpServletRequest req, String operationId, String serviceId, String versionDesc) {
         operationServiceImpl.release(operationId, serviceId, versionDesc);
         return detailPage(req, operationId, serviceId);
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"version-add"})
     @RequestMapping("/releaseBatch")
     @ResponseBody
     public boolean releaseBatch(@RequestBody Operation[] operations) {
@@ -365,11 +369,36 @@ public class OperationController {
         return mv;
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"version-check"})
     @RequestMapping(method = RequestMethod.POST, value = "/auditSave", headers = "Accept=application/json")
     @ResponseBody
     public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) throws  Throwable{
         return operationServiceImpl.auditOperation(state, auditRemark, operationIds);
+    }
+
+    @RequiresPermissions({"version-check"})
+    @RequestMapping(method = RequestMethod.POST, value = "/auditSave/{processId}", headers = "Accept=application/json")
+    @ResponseBody
+    public boolean auditSaveWithProcess(String state , String auditRemark, @RequestBody String[] operationIds, @PathVariable("processId") String processId) throws  Throwable{
+        String optUser = SecurityUtils.getSubject().getPrincipal().toString();
+        String optDate = DateUtils.format(new Date());
+        boolean result = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
+        for(String serviceOperationIdPair : operationIds){
+            String[] per = serviceOperationIdPair.split(",");
+            String operationId = per[0];
+            String serviceId = per[1];
+            com.dc.esb.servicegov.entity.ProcessContext processContext = new com.dc.esb.servicegov.entity.ProcessContext();
+            processContext.setName("服务审核");
+            processContext.setProcessId(processId);
+            processContext.setKey("operation");
+            processContext.setValue(serviceId + operationId);
+            processContext.setType("result");
+            processContext.setRemark("添加审核场景[" + serviceId + operationId + "]");
+            processContext.setOptDate(optDate);
+            processContext.setOptUser(optUser);
+            processContextService.save(processContext);
+        }
+        return result;
     }
 
 

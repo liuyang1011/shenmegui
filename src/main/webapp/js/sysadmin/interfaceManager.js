@@ -4,10 +4,15 @@
 **/
 var interfaceManager = {
     add : function(data,type, callBack){
+        var processId = parent.PROCESS_INFO.processId;
+        var url = "/interface/add?type="+type;
+        if(processId){
+            url = "/interface/add/"+processId+"?type="+type;
+        }
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: "/interface/add?type="+type,
+            url: url,
             data: JSON.stringify(data),
             dataType: "json",
             success: function(result) {

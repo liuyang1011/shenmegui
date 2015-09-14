@@ -29,7 +29,7 @@ public class CategoryWordController {
     @Autowired
     private CategoryWordServiceImpl categoryWordService;
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -88,7 +88,7 @@ public class CategoryWordController {
         return map;
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getById/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -96,7 +96,7 @@ public class CategoryWordController {
         return categoryWordService.getById(id);
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByEnglishWord/{englishWord}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -104,7 +104,7 @@ public class CategoryWordController {
         return categoryWordService.getByEnglishWord(englishWord);
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByChineseWord/{chineseWord}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -112,7 +112,7 @@ public class CategoryWordController {
         return categoryWordService.getByChineseWord(chineseWord);
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByEsglisgAb/{esglisgAb}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -120,7 +120,7 @@ public class CategoryWordController {
         return categoryWordService.getByEsglisgAb(esglisgAb);
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByRemark/{remark}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -128,7 +128,7 @@ public class CategoryWordController {
         return categoryWordService.getByRemark(remark);
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByPotUser/{potUser}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -136,7 +136,7 @@ public class CategoryWordController {
         return categoryWordService.getByPotUser(potUser);
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByPotDate/{potDate}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -144,7 +144,7 @@ public class CategoryWordController {
         return categoryWordService.getByPotDate(potDate);
     }
 
-    @RequiresPermissions({"metadata-add"})
+    @RequiresPermissions({"categoryWord-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -154,7 +154,7 @@ public class CategoryWordController {
         return true;
     }
 
-    @RequiresPermissions({"metadata-update"})
+    @RequiresPermissions({"categoryWord-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/modify", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -163,7 +163,7 @@ public class CategoryWordController {
         return true;
     }
 
-    @RequiresPermissions({"metadata-delete"})
+    @RequiresPermissions({"categoryWord-delete"})
     @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{Id}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -172,7 +172,7 @@ public class CategoryWordController {
         return true;
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/get/EnglishWord/{englishWord}/ChineseWord/{chineseWord}/EsglisgAb/{esglisgAb}/Remark/{remark}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -190,7 +190,7 @@ public class CategoryWordController {
         return words;
     }
 
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/query", headers = "Accept=application/json")
     public @ResponseBody Map<String, Object> query(@RequestBody Map<String, String> params){
         List<CategoryWord> rows = categoryWordService.findLikeAnyWhere(params);
@@ -200,7 +200,7 @@ public class CategoryWordController {
         return result;
     }
 
-    @RequiresPermissions({"metadata-add"})
+    @RequiresPermissions({"categoryWord-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/saveCategoryWord/{type}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -230,7 +230,7 @@ public class CategoryWordController {
         return true;
     }
 
-    @RequiresPermissions({"metadata-delete"})
+    @RequiresPermissions({"categoryWord-delete"})
     @RequestMapping(method = RequestMethod.POST, value = "/deleteCategoryWord", headers = "Accept=application/json")
     public
     @ResponseBody

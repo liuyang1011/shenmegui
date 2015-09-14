@@ -194,7 +194,8 @@
                 <td><input id="operationId" name="operationId" class="easyui-textbox" type="text"
                            data-options="required:true, validType:['unique','english']"/></td>
                 <th>场景名称</th>
-                <td><input id="operationName" name="operationName" class="easyui-textbox" type="text"/></td>
+                <td><input id="operationName" name="operationName" class="easyui-textbox" type="text"
+                           data-options="required:true"/></td>
             </tr>
             <tr>
                 <th>功能描述</th>

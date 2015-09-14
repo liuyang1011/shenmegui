@@ -74,7 +74,7 @@ public class StatisticsServiceImpl implements StatisticsService{
      * 根据系统id，类型分组
      */
     public List<Object[]> groupBySystemIdType(Map<String, String[]> values, Page page){
-        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si where 1=1";
+        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si where si.type != null";
         if(values.get("type") != null && values.get("type").length > 0){
             if (StringUtils.isNotEmpty(values.get("type")[0])) {
                 hql += " and si.type = " + values.get("type")[0];

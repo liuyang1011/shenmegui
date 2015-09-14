@@ -5,10 +5,10 @@ import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
-import net.sf.json.JSONArray;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -45,147 +45,56 @@ public class InterfaceController {
     @Autowired
     private ProtocolService protocolService;
     @Autowired
-    private SystemProtocolService systemProtocolService;
-    @Autowired
-    private FileManagerService fileManagerService;
+    private ProcessContextServiceImpl processContextService;
 
     @RequiresPermissions({"system-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{condition}", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{systemIds}", headers = "Accept=application/json")
     public
     @ResponseBody
-    List<TreeNode> getLeftTree(@PathVariable(value = "condition") String condition) {
-        try {
-            condition = URLDecoder.decode(condition, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error(e,e);
-        }
+    List<TreeNode> getLeftTree(@PathVariable(value = "systemIds") String systemIds) {
+//        try {
+//            condition = URLDecoder.decode(condition, "utf-8");
+//        } catch (UnsupportedEncodingException e) {
+//            log.error(e, e);
+//        }
         List<TreeNode> resList = new ArrayList<TreeNode>();
         TreeNode root = new TreeNode();
         root.setId("root");
         root.setText("系统");
         root.setClick("system");
 
-        List<TreeNode> rootList = new ArrayList<TreeNode>();
         List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
-        List<Interface> interList = new ArrayList<Interface>();
-        if(null != condition && !"".equals(condition) && !"all".equals(condition)){
-            interList = interfaceService.findByConditions(condition);
-            for (int i = 0; i < interList.size(); i++) {
-                String systemId = interList.get(i).getServiceInvoke().get(0).getSystemId();
-                System s = systemService.findUniqueBy("systemId", systemId);
-                if(systems.indexOf(s) < 0){
-                    systems.add(s);
-                }
-            }
-        }else {
+//        List<Interface> interList = new ArrayList<Interface>();
+//        if (null != condition && !"".equals(condition) && !"all".equals(condition)) {
+//            interList = interfaceService.findByConditions(condition);
+//            for (int i = 0; i < interList.size(); i++) {
+//                String systemId = interList.get(i).getServiceInvoke().get(0).getSystemId();
+//                System s = systemService.findUniqueBy("systemId", systemId);
+//                if (systems.indexOf(s) < 0) {
+//                    systems.add(s);
+//                }
+//            }
+//        } else {
+//            systems = systemService.getAll();
+//        }
+        if ("all".equals(systemIds)) {
             systems = systemService.getAll();
-        }
-
-        for (com.dc.esb.servicegov.entity.System s : systems) {
-
-            TreeNode interfacesNode = new TreeNode();
-            interfacesNode.setId(s.getSystemId());
-            interfacesNode.setText("接口");
-            interfacesNode.setClick("interfaces");
-            interfacesNode.setChildren(rootList);
-
-            TreeNode headsNode = new TreeNode();
-            headsNode.setId(s.getSystemId());
-            headsNode.setText("报文头");
-            headsNode.setClick("heads");
-//            List<InterfaceHead> heads = interfaceHeadService.getAll();
-            List<InterfaceHead> heads = interfaceHeadService.findBy("systemId", s.getSystemId());
-            List<TreeNode> headTreeNodes = new ArrayList<TreeNode>();
-            for (InterfaceHead head : heads) {
-                TreeNode treeNode = new TreeNode();
-                treeNode.setId(head.getHeadId());
-                treeNode.setClick("head");
-                treeNode.setText(head.getHeadName());
-                headTreeNodes.add(treeNode);
-            }
-            headsNode.setChildren(headTreeNodes);
-
-            TreeNode protocolNode = new TreeNode();
-            protocolNode.setId(s.getSystemId());
-            protocolNode.setText("协议");
-            protocolNode.setClick("protocols");
-            List<TreeNode> protocolTreeNodes = new ArrayList<TreeNode>();
-            List<SystemProtocol> systemProtocols = systemProtocolService.findBy("systemId", s.getSystemId());
-            for(SystemProtocol systemProtocol : systemProtocols){
-                String protocolId = systemProtocol.getProtocolId();
-                Protocol protocol = protocolService.getById(protocolId);
-                TreeNode treeNode = new TreeNode();
-                treeNode.setId(protocol.getProtocolId());
-                treeNode.setClick("protocol");
-                treeNode.setText(protocol.getProtocolName());
-                protocolTreeNodes.add(treeNode);
-            }
-            protocolNode.setChildren(protocolTreeNodes);
-
-            TreeNode fileNode = new TreeNode();
-            fileNode.setId(s.getSystemId());
-            fileNode.setText("文档");
-            fileNode.setClick("files");
-
-            List<FileManager> files = fileManagerService.findBy("systemId", s.getSystemId());
-            List<TreeNode> fileTreeNodes = new ArrayList<TreeNode>();
-            for(FileManager file : files){
-                String fileName = file.getFileName();
-                String id = file.getFileId();
-                TreeNode treeNode = new TreeNode();
-                treeNode.setId(id);
-                treeNode.setText(fileName);
-                treeNode.setClick("file");
-                fileTreeNodes.add(treeNode);
-            }
-            fileNode.setChildren(fileTreeNodes);
-
-            List<TreeNode> rootChildren = new ArrayList<TreeNode>();
-            rootChildren.add(interfacesNode);
-            rootChildren.add(headsNode);
-            rootChildren.add(protocolNode);
-            rootChildren.add(fileNode);
-
-            TreeNode rootinterface = new TreeNode();
-            rootinterface.setId(s.getSystemId());
-            rootinterface.setText(s.getSystemChineseName());
-            rootinterface.setClick("disable");
-
-            rootinterface.setChildren(rootChildren);
-
-            try {
-                List<ServiceInvoke> serviceIns = s.getServiceInvokes();
-                List<TreeNode> childList = new ArrayList<TreeNode>();
-                for (ServiceInvoke si : serviceIns) {
-                    TreeNode child = new TreeNode();
-                    if(null == si.getInter()){
-                        continue;
-                    }
-                    if(interList.size()>0 && interList.indexOf(si.getInter())<0){
-                        continue;
-                    }
-                    child.setId(si.getInter().getInterfaceId());
-                    child.setText(si.getInter().getInterfaceName() + "(" + si.getInter().getInterfaceId() + ")");
-                    if (!contains(childList, child)) {
-                        childList.add(child);
+        } else if (null != systemIds) {
+            systemIds = systemIds.trim();
+            if (!systemIds.equalsIgnoreCase("")) {
+                String[] systemArr = systemIds.split(",");
+                for (String systemId : systemArr) {
+                    System s = systemService.findUniqueBy("systemId", systemId);
+                    if (systems.indexOf(s) < 0) {
+                        systems.add(s);
                     }
                 }
-                Collections.sort(childList, new Comparator<TreeNode>() {
-
-                    @Override
-                    public int compare(TreeNode o1, TreeNode o2) {
-                        return o1.getText().compareToIgnoreCase(o2.getText());
-                    }
-
-                });
-                interfacesNode.setChildren(childList);
-            } catch (Exception e) {
-                log.error(e,e);
             }
-            rootList.add(rootinterface);
         }
-        for (TreeNode node : rootList){
-            if(null != node.getChildren() && node.getChildren().size() > 0){
+        List<TreeNode> rootList = interfaceService.getLeftTreeBySystems(systems);
+
+        for (TreeNode node : rootList) {
+            if (null != node.getChildren() && node.getChildren().size() > 0) {
                 node.setState("closed");
             }
         }
@@ -194,27 +103,15 @@ public class InterfaceController {
         return resList;
     }
 
-    private boolean contains(List<TreeNode> childList, TreeNode treeNode) {
-        for (TreeNode node : childList) {
-            if (node.getId().equals(treeNode.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @RequiresPermissions({"system-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
     boolean save(@RequestBody
                  Interface inter, HttpServletRequest request) {
-
         //新增操作
         boolean add = "add".equals(request.getParameter("type"));
         if (!add) {
-
-
             String hql = "update ServiceInvoke set protocolId = ? where interfaceId = ?";
             serviceInvokeService.updateProtocolId(hql, inter.getServiceInvoke().get(0).getProtocolId(), inter.getInterfaceId());
             //修改接口关系表不更新
@@ -250,6 +147,70 @@ public class InterfaceController {
             ida.setStructAlias("响应头");
             idaService.save(ida);
         }
+
+
+        return true;
+
+    }
+
+    @RequiresPermissions({"system-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/add/{processId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean saveWithProcess(@RequestBody
+                            Interface inter, @PathVariable("processId") String processId, HttpServletRequest request) {
+        //新增操作
+        String optUser = SecurityUtils.getSubject().getPrincipal().toString();
+        String optDate = DateUtils.format(new Date());
+        boolean add = "add".equals(request.getParameter("type"));
+        if (!add) {
+            String hql = "update ServiceInvoke set protocolId = ? where interfaceId = ?";
+            serviceInvokeService.updateProtocolId(hql, inter.getServiceInvoke().get(0).getProtocolId(), inter.getInterfaceId());
+            //修改接口关系表不更新
+            inter.setServiceInvoke(null);
+        }
+        inter.setOptUser(optUser);
+        inter.setOptDate(optDate);
+        interfaceService.save(inter);
+        if (add) {
+            //添加报文，自动生成固定报文头<root><request><response>
+            //root
+            Ida ida = new Ida();
+            ida.setInterfaceId(inter.getInterfaceId());
+            ida.set_parentId(null);
+            ida.setStructName("root");
+            ida.setStructAlias("根节点");
+            idaService.save(ida);
+            String parentId = ida.getId();
+
+            ida = new Ida();
+            ida.setInterfaceId(inter.getInterfaceId());
+            ida.set_parentId(parentId);
+            ida.setStructName("request");
+            ida.setStructAlias("请求头");
+            ida.setSeq(0);
+            idaService.save(ida);
+
+            ida = new Ida();
+            ida.setInterfaceId(inter.getInterfaceId());
+            ida.set_parentId(parentId);
+            ida.setSeq(1);
+            ida.setStructName("response");
+            ida.setStructAlias("响应头");
+            idaService.save(ida);
+        }
+
+
+        com.dc.esb.servicegov.entity.ProcessContext processContext = new com.dc.esb.servicegov.entity.ProcessContext();
+        processContext.setName("接口定义");
+        processContext.setProcessId(processId);
+        processContext.setKey("interface");
+        processContext.setValue(inter.getInterfaceId());
+        processContext.setType("result");
+        processContext.setRemark("添加接口[" + inter.getInterfaceId() + "(" + inter.getInterfaceName() + ")" + "]");
+        processContext.setOptDate(optDate);
+        processContext.setOptUser(optUser);
+        processContextService.save(processContext);
         return true;
 
     }
@@ -266,7 +227,7 @@ public class InterfaceController {
         //TODO 删除接口要删除ida
         interfaceService.deleteById(interfaceId);
         Map map = new HashMap();
-        map.put("interfaceId",interfaceId);
+        map.put("interfaceId", interfaceId);
         List<Ida> list = idaService.findBy(map);
         idaService.deleteList(list);
         return true;
@@ -293,7 +254,7 @@ public class InterfaceController {
         //String hql = "SELECT u.interfaceId,u.interfaceName,u.ecode,u.remark,u.status,u.version,u.optUser,u.optDate FROM Interface u WHERE interfaceId = ?";
         Interface inter = interfaceService.getById(interfaceId);
         Map<String, Object> map = new HashMap<String, Object>();
-        if(null != inter){
+        if (null != inter) {
             Interface resInter = new Interface();
             resInter.setInterfaceId(inter.getInterfaceId());
             resInter.setInterfaceName(inter.getInterfaceName());
@@ -337,10 +298,10 @@ public class InterfaceController {
         String ecode = req.getParameter("ecode");
         String interfaceName = req.getParameter("interfaceName");
         String desc = req.getParameter("desc");
-        try{
+        try {
             if (null != desc)
-                desc = URLDecoder.decode(desc,"utf-8");
-        }catch (UnsupportedEncodingException e){
+                desc = URLDecoder.decode(desc, "utf-8");
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         String status = req.getParameter("status");
@@ -362,7 +323,7 @@ public class InterfaceController {
             searchCond = new SearchCondition();
             hql.append(" and t1.ecode like ?");
             searchCond.setField("ecode");
-            searchCond.setFieldValue("%"+ ecode +"%");
+            searchCond.setFieldValue("%" + ecode + "%");
             searchConds.add(searchCond);
         }
         if (interfaceName != null && !"".equals(interfaceName)) {
@@ -458,7 +419,7 @@ public class InterfaceController {
             map.put("id", "");
             map.put("text", "全部");
             resList.add(map);
-        }else{
+        } else {
             map.put("id", "");
             map.put("text", "不关联");
             resList.add(map);
@@ -494,7 +455,7 @@ public class InterfaceController {
     public
     @ResponseBody
     boolean headRelate(@PathVariable String interfaceId, @PathVariable String headIds) {
-        if(headIds.equals("none")){
+        if (headIds.equals("none")) {
             interfaceHeadRelateService.deleteRelate(interfaceId);
             return true;
         }

@@ -14,6 +14,7 @@ import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class SLAController {
 	@Autowired
 	OperationServiceImpl operationService;
 
+	@RequiresPermissions({"service-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/addList", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody List list) {
@@ -50,6 +52,7 @@ public class SLAController {
 		return true;
 	}
 
+	@RequiresPermissions({"service-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody
 	   boolean save(@RequestBody List list,@PathVariable(value = "serviceId") String serviceId,
@@ -72,6 +75,7 @@ public class SLAController {
        return true;
    }
 
+	@RequiresPermissions({"service-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/modify", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean modify(@RequestBody SLA sla) {
@@ -79,6 +83,7 @@ public class SLAController {
 		return true;
 	}
 
+	@RequiresPermissions({"service-update"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
@@ -92,6 +97,7 @@ public class SLAController {
  
 	}
 
+	@RequiresPermissions({"service-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getAll/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody
 	List<SLA> getAll(@PathVariable(value = "serviceId") String serviceId,
@@ -104,6 +110,7 @@ public class SLAController {
 
 	}
 
+	@RequiresPermissions({"service-update"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteAll/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean deleteBySOId(@PathVariable(value = "serviceId") String serviceId,
@@ -118,6 +125,7 @@ public class SLAController {
 		return true;
 	}
 
+	@RequiresPermissions({"service-get"})
 	@RequestMapping("/slaPage")
 	public ModelAndView olaPage(String operationId, String serviceId, HttpServletRequest req){
 

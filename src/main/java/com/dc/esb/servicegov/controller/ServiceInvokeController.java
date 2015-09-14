@@ -36,6 +36,7 @@ public class ServiceInvokeController {
     @Autowired
     private InterfaceInvokeServiceImpl interfaceInvokeService;
 
+    @RequiresPermissions({"service-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -55,6 +56,7 @@ public class ServiceInvokeController {
      * @param systemId
      * @return
      */
+    @RequiresPermissions({"service-get"})
     @RequestMapping("/getInterface")
     @ResponseBody
     public Map<String, Object> getInterface(String systemId, String type, String text,HttpServletRequest req) throws  Throwable{
@@ -82,6 +84,7 @@ public class ServiceInvokeController {
      * @param systemId
      * @return
      */
+    @RequiresPermissions({"service-get"})
     @RequestMapping("/getInterfaceByOSS")
     @ResponseBody
     public Map<String, Object> getInterfaceByOSS(String serviceId, String operationId, String systemId) {
@@ -92,6 +95,7 @@ public class ServiceInvokeController {
         return result;
     }
 
+    @RequiresPermissions({"service-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/deleteInvoke", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -151,6 +155,8 @@ public class ServiceInvokeController {
         }
         return true;
     }
+
+    @RequiresPermissions({"service-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/addServiceLink", headers = "Accept=application/json")
     public
     @ResponseBody

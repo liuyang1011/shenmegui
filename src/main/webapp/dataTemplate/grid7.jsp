@@ -218,11 +218,21 @@
             }
         },
         {
-            text: '导出',
+            text: '导出XML',
             iconCls: 'icon-save',
             handler: function () {
                 $(function() {
                     $.fileDownload("/metadata/export", {
+                    });
+                });
+            }
+        },
+        {
+            text: '导出EXCEL',
+            iconCls: 'icon-save',
+            handler: function () {
+                $(function() {
+                    $.fileDownload("/resourceExporter/export", {
                     });
                 });
             }

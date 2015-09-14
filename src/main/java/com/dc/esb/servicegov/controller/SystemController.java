@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.service.SystemService;
 import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public class SystemController {
     @Autowired
     SystemProtocolService systemProtocolService;
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getAll", headers = "Accept=application/json")
     public @ResponseBody Map<String,Object> getAll(HttpServletRequest req) {
 
@@ -143,7 +145,7 @@ public class SystemController {
         return map;
     }
 
-
+    @RequiresPermissions({"system-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public @ResponseBody
     boolean save(@RequestBody
@@ -153,6 +155,7 @@ public class SystemController {
 
     }
 
+    @RequiresPermissions({"system-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/edit/{systemId}", headers = "Accept=application/json")
     public ModelAndView getSystem(@PathVariable
                                      String systemId) {
@@ -165,6 +168,7 @@ public class SystemController {
         return modelAndView;
     }
 
+    @RequiresPermissions({"system-delete"})
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{systemId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete(@PathVariable
@@ -173,6 +177,8 @@ public class SystemController {
         return true;
 
     }
+
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getProtocolAll", headers = "Accept=application/json")
     public @ResponseBody List<Map<String,Object>> getProtocolAll(HttpServletRequest request) {
         List<Map<String,Object>> resList = new ArrayList<Map<String, Object>>();
@@ -221,6 +227,7 @@ public class SystemController {
 //        }
 //    }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getChecked/{systemId}", headers = "Accept=application/json")
     public @ResponseBody List<String> getChecked(@PathVariable String systemId,HttpServletRequest request) {
        List<String> resList = new ArrayList<String>();
@@ -233,6 +240,7 @@ public class SystemController {
         return resList;
     }
 
+    @RequiresPermissions({"systemProtocol-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/protocolRelate/{systemId}/{protocols}", headers = "Accept=application/json")
     public @ResponseBody boolean protocolRelate(@PathVariable String systemId,@PathVariable String protocols) {
         if(protocols.equals("none")){
@@ -258,6 +266,7 @@ public class SystemController {
         return true;
     }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getProtocol/{systemId}", headers = "Accept=application/json")
     public @ResponseBody List<Protocol> getChecked(@PathVariable String systemId) {
         List<String> resList = new ArrayList<String>();
@@ -271,6 +280,7 @@ public class SystemController {
         return protocols;
     }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/check/{interfaceId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean check(@PathVariable String interfaceId) {
@@ -281,6 +291,7 @@ public class SystemController {
         return  false;
     }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getSystemAll", headers = "Accept=application/json")
     public @ResponseBody List<Map<String,Object>> getSystemAll(HttpServletRequest request) {
         List<Map<String,Object>> resList = new ArrayList<Map<String, Object>>();
@@ -302,6 +313,7 @@ public class SystemController {
         return resList;
     }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/systemIdCheck/{systemId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean systemId(@PathVariable String systemId) {
@@ -312,6 +324,7 @@ public class SystemController {
         return  false;
     }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/systemAbcheck/{systemAb}/{systemId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean systemAb(@PathVariable String systemAb,@PathVariable String systemId) {
@@ -323,6 +336,7 @@ public class SystemController {
         return  false;
     }
 
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getTree", headers = "Accept=application/json")
     public
     @ResponseBody

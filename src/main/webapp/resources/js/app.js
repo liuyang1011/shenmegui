@@ -585,7 +585,9 @@ var SYSMENU = {
         });
     },
     changeLeftMenuWithCallBack: function (mid, callBack) {
+
         $("#west-menu").load(LOAD_URL.LEFTMENU, 'mid=' + mid, function () {
+            var flag = false;
             $('#mxsysadmintreefilter').searchbox({
                 searcher: function (value, name) {
                     alert(value + "," + name);
@@ -670,7 +672,6 @@ var SYSMENU = {
             });
 
             //接口管理
-            var loadFlag = false;
             $('.msinterfacetree').tree({
                 onContextMenu: function (e, node) {
                     e.preventDefault();
@@ -739,8 +740,13 @@ var SYSMENU = {
                             });
                         }
                     }
+                },
+                "onLoadSuccess": function () {
+                    flag = true;
                 }
+
             });
+
 
             $('.msinterfacetree').tree('collapseAll');
 
@@ -813,8 +819,14 @@ var SYSMENU = {
                 }
             });
             SYSTABMENU.init();
+            var reloadTime = 100;
+            while (!flag && reloadTime > 0) {
+                sleep(10);
+                reloadTime--;
+            }
             callBack();
         });
+
     },
     reloadTreeByValue: function (key, value) {
         $('.' + key).tree("loadData", value);
@@ -886,6 +898,10 @@ function addTab(title, content) {
 
 function changeTaskName() {
     $("#taskName").text("当前任务:" + PROCESS_INFO.taskName + "(" + PROCESS_INFO.taskId + ")")
+}
+
+function sleep(d){
+    for(var t = Date.now();Date.now() - t <= d;);
 }
 
 $(function () {

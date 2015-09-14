@@ -129,10 +129,14 @@
              var checkedItems = $('#tt').edatagrid('getChecked');
             if (checkedItems != null && checkedItems.length > 0) {
 				 uiinit.win({
-                    w: 400,
+                    w: 450,
+                     h:580,
+                     top:0,
+                     left:250,
                     iconCls: 'icon-qxfp',
                     title: "权限分配",
-                    url: "permissionEdit.jsp?id=" + row.id
+//                    url: "permissionEdit.jsp?id=" + row.id
+                     url: "permissionEdit2.jsp?id=" + row.id
                 })
 			  }else {
                 alert("请选中要分配权限的角色！");

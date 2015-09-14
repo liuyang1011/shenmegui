@@ -14,9 +14,9 @@ var taskManager = {
             "success": function (result) {
                 callBack(result);
             },
-            "complete":function(responce){
+            "complete": function (responce) {
                 var resText = responce.responseText;
-                if(resText.toString().charAt(0) == "<"){
+                if (resText.toString().charAt(0) == "<") {
                     alert("没有权限！");
 //                              window.location.href = "/jsp/403.jsp";
                 }
@@ -34,18 +34,18 @@ var taskManager = {
             "success": function (result) {
                 callBack(result);
             },
-            "complete":function(responce){
+            "complete": function (responce) {
                 var resText = responce.responseText;
-                if(resText.toString().charAt(0) == "<"){
+                if (resText.toString().charAt(0) == "<") {
                     alert("没有权限！");
 //                              window.location.href = "/jsp/403.jsp";
                 }
             }
         });
     },
-    "processTask" : function(task, callBack){
+    "processTask": function (task, callBack) {
         //{user}/work/{task}/taskName/{taskName}
-        var url = "/process/" + task.userId + "/work/" + task.taskId ;
+        var url = "/process/" + task.userId + "/work/" + task.taskId;
         $.ajax({
             "type": "POST",
             "contentType": "application/json; charset=utf-8",
@@ -57,7 +57,7 @@ var taskManager = {
             }
         });
     },
-    "completeTask" : function (task, params, callBack){
+    "completeTask": function (task, params, callBack) {
         //{user}/work/{task}
         var url = "/process/" + task.userId + "/complete/" + task.taskId;
         $.ajax({
@@ -69,16 +69,16 @@ var taskManager = {
             "success": function (result) {
                 callBack(result);
             },
-            "complete":function(responce){
+            "complete": function (responce) {
                 var resText = responce.responseText;
-                if(resText.toString().charAt(0) == "<"){
+                if (resText.toString().charAt(0) == "<") {
                     alert("没有权限！");
 //                              window.location.href = "/jsp/403.jsp";
                 }
             }
         });
     },
-    "auditMetadata" : function (task,callBack){
+    "auditMetadata": function (task, callBack) {
         //"/audit/process/{processId}"
         var url = "/metadata/audit/process/" + task.processId;
         $.ajax({
@@ -92,23 +92,68 @@ var taskManager = {
         });
     },
 
-    "check" : function(task,callBack){
-        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/taskCheck/common.jsp?processId='+task.processId+'&taskId='+task.taskId+'" style="width:100%;height:100%;"></iframe>';
+    "check": function (task, callBack) {
+        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/taskCheck/common.jsp?processId=' + task.processId + '&taskId=' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
         parent.addTab("验收公共代码", content);
     },
 
-    "getServiceByProcess" : function getServiceByProcess(processId, callBack){
+    "getServiceByProcess": function getServiceByProcess(processId, callBack) {
         $.ajax({
-            "type" : "GET",
-            "contentType" : "application/json;charset=utf-8",
+            "type": "GET",
+            "contentType": "application/json;charset=utf-8",
             "url": "/service/searchService/processId/" + processId,
             "dataType": "json",
-            "success": function(result) {
+            "success": function (result) {
                 callBack(result);
             },
-            "complete":function(responce){
+            "complete": function (responce) {
                 var resText = responce.responseText;
-                if(resText.toString().charAt(0) == "<"){
+                if (resText.toString().charAt(0) == "<") {
+                    alert("没有权限！");
+                }
+            }
+        });
+    },
+
+    "getSystemTreeByProcess": function getSystemTreeByProcess(processId, callBack) {
+        this.getProcessContext(processId, function(context){
+            var systems = "";
+            for(var i = 0; i < context.length; i++){
+                if("system" == context[i].key){
+                    systems += context[i].value + ",";
+                }
+            }
+            systems = systems == "" ? "all" : systems;
+            $.ajax({
+                "type": "GET",
+                "contentType": "application/json;charset=utf-8",
+                "url": "/interface/getLeftTree/" + systems,
+                "dataType": "json",
+                "success": function (result) {
+                    callBack(result);
+                },
+                "complete": function (responce) {
+                    var resText = responce.responseText;
+                    if (resText.toString().charAt(0) == "<") {
+                        alert("没有权限！");
+                    }
+                }
+            });
+        });
+    },
+    "getProcessContext": function getProcessContext(processId, callBack) {
+        var url = "/process/getContext/" + processId;
+        $.ajax({
+            "type": "GET",
+            "contentType": "application/json;charset=utf-8",
+            "url": url,
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            },
+            "complete": function (responce) {
+                var resText = responce.responseText;
+                if (resText.toString().charAt(0) == "<") {
                     alert("没有权限！");
                 }
             }
