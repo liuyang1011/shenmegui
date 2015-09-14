@@ -126,6 +126,31 @@ var interfaceManager = {
             }
         });
     
+    },
+
+    release:function(){
+        var rows = $("#tg").datagrid("getSelections");
+        var interfaceIds = "";
+        for(var per in rows){
+            if(per == rows.length-1){
+                interfaceIds += rows[per].interfaceId;
+            }else{
+                interfaceIds += rows[per].interfaceId + ",";
+            }
+
+        }
+        $.ajax({
+            type: "get",
+            contentType: "application/json; charset=utf-8",
+            url: "/interface/release/"+interfaceIds,
+            dataType: "json",
+            success: function(result) {
+                if(result){
+                    alert("发布成功")
+                    $("#tg").datagrid("reload");
+                }
+            }
+        });
     }
  
 }

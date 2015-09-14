@@ -78,6 +78,7 @@ public class Constants {
         public static final String TARGET_TYPE_BASELINE = "0";//基线
         public static final String TARGET_TYPE_OPERATION = "1";//场景
         public static final String TARGET_TYPE_PC = "2";//公共代码
+        public static final String TARGET_TYPE_INTERFACE = "3";//接口
 
         public static final String OPT_TYPE_ADD = "0"; //操作类型，0：新增，1：修改，2：删除,3:发布
         public static final String OPT_TYPE_EDIT = "1";

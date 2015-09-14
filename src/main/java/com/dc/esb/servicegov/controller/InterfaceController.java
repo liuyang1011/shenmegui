@@ -208,9 +208,7 @@ public class InterfaceController {
             //修改接口关系表不更新
             inter.setServiceInvoke(null);
         }
-        inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
-        inter.setOptDate(DateUtils.format(new Date()));
-        interfaceService.save(inter);
+        interfaceService.save(inter, add);
         if (add) {
             //添加报文，自动生成固定报文头<root><request><response>
             //root
@@ -254,7 +252,7 @@ public class InterfaceController {
         //TODO 删除接口要删除ida
         interfaceService.deleteById(interfaceId);
         Map map = new HashMap();
-        map.put("interfaceId",interfaceId);
+        map.put("interfaceId", interfaceId);
         List<Ida> list = idaService.findBy(map);
         idaService.deleteList(list);
         return true;
@@ -282,16 +280,18 @@ public class InterfaceController {
         Interface inter = interfaceService.getById(interfaceId);
         Map<String, Object> map = new HashMap<String, Object>();
         if(null != inter){
+            //TODO 为什么要重新建一个interface？
             Interface resInter = new Interface();
             resInter.setInterfaceId(inter.getInterfaceId());
             resInter.setInterfaceName(inter.getInterfaceName());
             resInter.setEcode(inter.getEcode());
             resInter.setDesc(inter.getDesc());
             resInter.setRemark(inter.getRemark());
-            resInter.setVersion(inter.getVersion());
             resInter.setOptDate(inter.getOptDate());
             resInter.setOptUser(inter.getOptUser());
             resInter.setStatus(inter.getStatus());
+            resInter.setVersionId(inter.getVersionId());
+            resInter.setVersion(inter.getVersion());
             List<InterfaceHeadRelate> heads = inter.getHeadRelates();
             String headName = "";
             for (InterfaceHeadRelate head : heads) {
@@ -514,5 +514,14 @@ public class InterfaceController {
     public Object getInterfaceJson(String systemId) {
         List<Interface> rows = interfaceService.getBySystemId(systemId);
         return JSONUtil.getInterface().convert(rows, Interface.simpleFields());
+    }
+
+    @RequiresPermissions({"system-add"})
+    @RequestMapping(method = RequestMethod.GET, value = "/release/{interfaceIds}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean release(@PathVariable String interfaceIds, String versionDesc) {
+        boolean result = interfaceService.releaseBatch(interfaceIds, versionDesc);
+        return result;
     }
 }

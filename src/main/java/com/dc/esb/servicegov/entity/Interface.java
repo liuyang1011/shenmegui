@@ -28,9 +28,9 @@ public class Interface {
 	
 	@Column(name = "STATUS")
 	private String status;
-	
-	@Column(name = "VERSION")
-	private String version;
+
+	@Column(name="VERSION_ID")
+	private String versionId;
 	
 	@Column(name = "OPT_USER")
 	private String optUser;
@@ -46,6 +46,9 @@ public class Interface {
 		String[] fields = {"interfaceId", "interfaceName"};
 		return fields;
 	}
+	@ManyToOne()
+	@JoinColumn(name = "VERSION_ID", insertable = false, updatable = false)
+	private Version version;
 
 	@OneToMany(mappedBy = "relateInters",cascade = CascadeType.ALL)
 	private List<InterfaceHeadRelate> headRelates ;
@@ -114,14 +117,6 @@ public class Interface {
 		this.status = status;
 	}
 
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
 	public String getOptUser() {
 		return optUser;
 	}
@@ -168,5 +163,21 @@ public class Interface {
 
 	public void setProtocolName(String protocolName) {
 		this.protocolName = protocolName;
+	}
+
+	public String getVersionId() {
+		return versionId;
+	}
+
+	public void setVersionId(String versionId) {
+		this.versionId = versionId;
+	}
+
+	public Version getVersion() {
+		return version;
+	}
+
+	public void setVersion(Version version) {
+		this.version = version;
 	}
 }

@@ -134,6 +134,7 @@
                     if (result) {
                         alert("保存成功");
                         $('#tg').treegrid({url: '/ida/getInterfaces/${param.interfaceId}?_t=' + new Date().getTime()});
+                        $("#interfacetg").datagrid({url:'/interface/getInterById/${param.interfaceId}?_t=' + new Date().getTime()});
                        // $('#tg').treegrid('reload');
                     } else {
                         alert("保存失败");
@@ -448,6 +449,12 @@
                 if (value == 1) {
                     return "<font color='red'>废弃</font>";
                 }
+            },
+            version:function(value, row, index){
+                try {
+                    return row.version.code
+                } catch (exception) {
+                }
             }
         };
         $(function () {
@@ -479,6 +486,17 @@
                 });
             });
 
+            $("#historyBtn").click(function () {
+                var urlPath =  '/jsp/interface/interface_history.jsp?interfaceId=${param.interfaceId}';
+                var hisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+
+                parent.parent.$('#mainContentTabs').tabs('add', {
+                    title: '接口发布历史',
+                    content: hisContent,
+                    closable: true
+                });
+            });
+
         });
     </script>
 </head>
@@ -498,6 +516,9 @@
             </td>
             <td>
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+            </td>
+            <td>
+                <a href="#" id="historyBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">发布历史</a>
             </td>
         </tr>
     </table>
@@ -520,7 +541,7 @@
         <th data-options="field:'headName',width:'15%'">
             报文头
         </th>
-        <th data-options="field:'version',width:'10%'">
+        <th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
             版本号
         </th>
         <th data-options="field:'desc',align:'right',width:'20%'">
@@ -604,5 +625,4 @@
     </tr>
     </thead>
 </table>
-</body>
 </html>

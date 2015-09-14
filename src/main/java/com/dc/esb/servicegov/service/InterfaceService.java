@@ -14,5 +14,7 @@ public interface InterfaceService  extends BaseService<Interface, String> {
     public List<Interface> getBySystemId(String systemId);
     public List<Interface> findByConditions(String condition);
     public List<InterfaceExVO> queryByCondition(Map<String, String[]> values, Page page);
+    public boolean releaseBatch(String interfaceIds, String versionDesc);
+    public void save(Interface inter, boolean addSave);
 
 }
