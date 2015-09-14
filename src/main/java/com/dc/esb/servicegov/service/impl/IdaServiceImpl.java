@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.impl.IdaDAOImpl;
 import com.dc.esb.servicegov.dao.impl.SDADAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.Ida;
+import com.dc.esb.servicegov.entity.Interface;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.service.IdaService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
@@ -25,6 +26,9 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	@Autowired
 	private SDADAOImpl sdadao;
 
+	@Autowired
+	private VersionServiceImpl versionServiceImpl;
+
 	@Override
 	public HibernateDAO<Ida, String> getDAO() {
 		return idaDAOImpl;
@@ -38,12 +42,22 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 	@Override
 	public void saveOrUpdate(Ida[] idas) {
+		boolean editFlag = true;
 		for(Ida ida:idas){
 			if(StringUtils.isEmpty(ida.getHeadId())){
 				ida.setHeadId(null);
 			}
 			idaDAOImpl.save(ida);
+			if(editFlag){
+				Interface inter = ida.getInterObj();
+				if(inter != null){
+					//更新版本，只更新一次
+					versionServiceImpl.editVersion(inter.getVersionId());
+					editFlag = false;
+				}
+			}
 		}
+
 	}
 
 	@Override
@@ -61,11 +75,28 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
     public boolean updateMetadataId(String metadataId, String id) {
         String hql = " update "+ Ida.class.getName() + " set metadataId = ? where id = ?";
         idaDAOImpl.batchExecute(hql, metadataId, id);
+		Ida ida = idaDAOImpl.findUniqueBy("id", id);
+		if(ida != null && ida.getInterObj() != null){//做一次版本更新
+			versionServiceImpl.editVersion(ida.getInterObj().getVersionId());
+		}
         return true;
     }
 
 	public boolean deleteList(List<Ida> list){
 		idaDAOImpl.delete(list);
+		boolean editFlag = true;
+		for(int i = 0; i < list.size(); i++){
+			if(list.get(i) != null){
+				Interface inter = list.get(i).getInterObj();
+				if(inter != null){
+					//更新版本，只更新一次
+					versionServiceImpl.editVersion(inter.getVersionId());
+					editFlag = false;
+				}
+			}
+			if(!editFlag) break;
+		}
+
 		return true;
 	}
 

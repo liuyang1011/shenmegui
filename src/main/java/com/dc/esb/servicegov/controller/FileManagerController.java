@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -149,16 +151,30 @@ public class FileManagerController {
 
     @RequiresPermissions({"file-download"})
     @RequestMapping("download")
-    public ResponseEntity<byte[]> download(String fileId) throws IOException {
+    public ResponseEntity<byte[]> download(HttpServletResponse res, String fileId) throws IOException {
         FileManager fm = fileManagerService.findUniqueBy("fileId", fileId);
         if(fm != null){
             File file=new File(fm.getFilePath());
-            HttpHeaders headers = new HttpHeaders();
-            String fileName=new String(fm.getFileName().getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题
-            headers.setContentDispositionFormData("attachment", fileName);
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
-                    headers, HttpStatus.CREATED);
+            String fileName = java.net.URLEncoder.encode(fm.getFileName(), "UTF-8");
+//            HttpHeaders headers = new HttpHeaders();
+//            String fileName=new String(fm.getFileName().getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题
+//            headers.setContentDispositionFormData("attachment", fileName);
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
+//                    headers, HttpStatus.CREATED);
+
+            OutputStream os = res.getOutputStream();
+            try {
+                res.reset();
+                res.setHeader("Content-Disposition", "attachment; filename="+ fileName);
+                res.setContentType("application/octet-stream");
+                os.write(FileUtils.readFileToByteArray(file));
+                os.flush();
+            } finally {
+                if (os != null) {
+                    os.close();
+                }
+            }
         }
        return null;
     }

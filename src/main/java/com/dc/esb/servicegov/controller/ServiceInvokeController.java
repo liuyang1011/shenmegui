@@ -196,7 +196,9 @@ public class ServiceInvokeController {
                         c = new ServiceInvoke();
                         c.setInvokeId(invokeId);
                         c.setSystemId(systemId);
-                        c.setInterfaceId(interfaceId);
+                        if(StringUtils.isNotEmpty(interfaceId)){
+                            c.setInterfaceId(interfaceId);
+                        }
                         c.setType(type);
                         c.setIsStandard(isStandard);
                         c.setServiceId(serviceId);
@@ -229,7 +231,9 @@ public class ServiceInvokeController {
                     }else{
                         p.setIsStandard("1");
                     }
-                    p.setInterfaceId(interfaceId2);
+                    if(StringUtils.isNotEmpty(interfaceId2)){
+                        p.setInterfaceId(interfaceId2);
+                    }
                     p.setOperationId(operationId);
                     p.setServiceId(serviceId);
                     p.setSystemId(systemId2);

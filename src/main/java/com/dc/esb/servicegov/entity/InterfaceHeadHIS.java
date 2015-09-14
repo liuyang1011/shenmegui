@@ -1,9 +1,9 @@
 package com.dc.esb.servicegov.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -11,19 +11,22 @@ import javax.persistence.Table;
 public class InterfaceHeadHIS {
 	@Id
 	@Column(name = "HEAD_ID")
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid",strategy="uuid")
 	private String headId;
-	
+
 	@Column(name = "HEAD_NAME")
 	private String headName;
-	
+
 	@Column(name = "HEAD_DESC")
 	private String headDesc;
-	
+
 	@Column(name = "HEAD_REMARK")
 	private String headRemark;
-	
-	 @Column(name = "VERSION")
-	 private String version;
+
+	@Column(name= "SYSTEM_ID")
+	private String systemId;
+
 
 	public String getHeadId() {
 		return headId;
@@ -57,12 +60,12 @@ public class InterfaceHeadHIS {
 		this.headRemark = headRemark;
 	}
 
-	public String getVersion() {
-		return version;
+	public String getSystemId() {
+		return systemId;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
+	public void setSystemId(String systemId) {
+		this.systemId = systemId;
 	}
 	
 	

@@ -40,7 +40,7 @@ public class Version implements Serializable{
 	@Column(name="OPT_DATE")
 	private String optDate;
 	
-	//目标类型, 0:基线, 1:场景， 2：公共代码
+	//目标类型, 0:基线, 1:场景， 2：公共代码，3：接口
 	@Column(name="TARGET_TYPE")
 	private String targetType;
 	

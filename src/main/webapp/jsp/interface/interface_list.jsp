@@ -113,7 +113,7 @@
 					<th data-options="field:'status',width:'9%',align:'right'" formatter='formatter.interfaceState'>
 						状态
 					</th>
-					<th data-options="field:'version',width:'10%'">
+					<th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
 						版本号
 					</th>
 					<th data-options="field:'optDate',width:'15%',align:'center'">
@@ -262,6 +262,13 @@
 							}
 
 						}
+					},
+					{
+						text: '发布',
+						iconCls: 'icon-save',
+						handler: function () {
+							interfaceManager.release();
+						}
 					}
 				],
 			onDblClickRow : dbClick
@@ -335,6 +342,12 @@
 				 }
 				 if (value == 1) {
 					 return "<font color='red'>废弃</font>";
+				 }
+			 },
+			 version: function(value, row, index){
+				 try {
+					 return row.version.code
+				 } catch (exception) {
 				 }
 			 }
 		 };
