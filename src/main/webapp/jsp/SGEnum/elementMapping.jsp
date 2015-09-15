@@ -83,8 +83,8 @@
 			                }
 			            }
 			        },
-					/*{field:'DIRECTION',title:'映射方向',editor:'text'},*/
-					{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}
+					/*{field:'DIRECTION',title:'映射方向',editor:'text'},
+					{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}*/
 			    ]],
 			    onDblClickCell: function(index,field,value){
 					$(this).datagrid('beginEdit', index);
@@ -185,8 +185,8 @@
 								}
 							}
 						},
-						/*{field:'DIRECTION',title:'映射方向',editor:'text'},*/
-						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}
+						/*{field:'DIRECTION',title:'映射方向',editor:'text'},
+						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}*/
 					]],
 					onDblClickCell: function(index,field,value){
 						$(this).datagrid('beginEdit', index);
@@ -273,8 +273,8 @@
 								}
 							}
 						},
-						/*{field:'DIRECTION',title:'映射方向',editor:'text'},*/
-						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}
+						/*{field:'DIRECTION',title:'映射方向',editor:'text'},
+						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}*/
 					]],
 					onDblClickCell: function(index,field,value){
 						$(this).datagrid('beginEdit', index);

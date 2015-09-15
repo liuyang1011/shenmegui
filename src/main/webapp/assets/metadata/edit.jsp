@@ -35,7 +35,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <th>中文名称</th>
 		    <td><input class="easyui-textbox" type="text" name="chineseName"  value="${entity.chineseName }"  ></td>
 		  </tr>
-		  <tr>
+		  <tr  style="display:none;">
 		    <th>英文名称</th>
 		    <td><input class="easyui-textbox" type="text" name="metadataName" value="${entity.metadataName }" ></td>
 		  </tr>
@@ -60,11 +60,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					value='${entity.categoryWordId }'
 					style="width: 100px; " /></td>
 		  </tr>
-		  <tr>
+		  <tr style="display:none;">
 		    <th>业务定义</th>
 		    <td><input class="easyui-textbox" type="text" name="bussDefine" value="${entity.bussDefine }" ></td>
 		  </tr>
-		  <tr>
+		  <tr style="display:none;">
 		    <th>业务规则</th>
 		    <td><input class="easyui-textbox" type="text" name="bussRule" value="${entity.bussRule }" ></td>
 		  </tr>
@@ -84,7 +84,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<th>数据项分类</th>
 				<td><input class="easyui-textbox" type="text" name="dataCategory" value="${entity.dataCategory }" ></td>
 			</tr>
-		  <tr>
+		  <tr style="display:none;">
 		    <th>数据来源</th>
 		    <td><input class="easyui-textbox" type="text" name="dataSource" value="${entity.dataSource }" ></td>
 		  </tr>

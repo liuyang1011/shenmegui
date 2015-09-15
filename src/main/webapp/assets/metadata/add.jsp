@@ -44,12 +44,12 @@
             <td><input class="easyui-textbox" type="text" name="chineseName"></td>
         </tr>
         <tr>
-            <th>英文名称</th>
-            <td><input class="easyui-textbox" type="text" name="metadataName"></td>
-        </tr>
-        <tr>
             <th>别名</th>
             <td><input class="easyui-textbox" type="text" name="metadataAlias"></td>
+        </tr>
+        <tr style="display:none;">
+            <th>英文名称</th>
+            <td><input class="easyui-textbox" type="text" name="metadataName"></td>
         </tr>
         <tr>
             <th>类别词</th>
@@ -67,11 +67,11 @@
 					"
                     /></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <th>业务定义</th>
             <td><input class="easyui-textbox" type="text" name="bussDefine"></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <th>业务规则</th>
             <td><input class="easyui-textbox" type="text" name="bussRule"></td>
         </tr>
@@ -92,11 +92,11 @@
                     <th>数据项分类</th>
                     <td><input class="easyui-textbox" type="text" name="dataCategory"></td>
                 </tr>
-        <tr>
+        <tr style="display:none;">
             <th>数据来源</th>
             <td><input class="easyui-textbox" type="text" name="dataSource"></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <th>任务id</th>
             <td><input class="easyui-textbox" disabled="disabled" type="text" name="processId" id="taskIdInput"></td>
         </tr>

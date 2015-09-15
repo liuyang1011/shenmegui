@@ -36,11 +36,11 @@ $(document).ready(function () {
     <th>服务分类</th>
     <td><input class="easyui-textbox" type="text" id="serviceCategory" ></td>
   </tr>
-<tr>
+<tr style="display: none;">
     <th>version</th>
     <td><input class="easyui-textbox" type="text" id="version" ></td>
   </tr>
-  <tr>
+  <tr style="display: none;">
     <th>state</th>
     <td><input class="easyui-textbox" type="text" id="state" ></td>
   </tr>

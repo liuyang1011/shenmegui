@@ -62,19 +62,19 @@
         <th data-options="field:'',checkbox:true"></th>
         <th data-options="field:'metadataId'">元数据名称</th>
         <th data-options="field:'chineseName'">中文名称</th>
-        <th data-options="field:'metadataName'">英文名称</th>
+        <th data-options="field:'metadataAlias'">别名</th>
+        <%--<th data-options="field:'metadataName'">英文名称</th>--%>
         <th data-options="field:'categoryChineseWord'">类别词</th>
         <th data-options="field:'type'">类型</th>
         <th data-options="field:'length'">长度</th>
         <th data-options="field:'scale'">精度</th>
-        <th data-options="field:'metadataAlias'">别名</th>
         <th data-options="field:'dataCategory'">数据项分类</th>
-        <th data-options="field:'buzzCategory'">业务项分类</th>
+        <%--<th data-options="field:'buzzCategory'">业务项分类</th>
         <th data-options="field:'bussDefine'">业务定义</th>
         <th data-options="field:'bussRule'">业务规则</th>
-        <th data-options="field:'dataSource'">数据来源</th>
+        <th data-options="field:'dataSource'">数据来源</th>--%>
         <th data-options="field:'status'">状态</th>
-        <th data-options="field:'version'">版本号</th>
+        <%--<th data-options="field:'version'">版本号</th>--%>
         <th data-options="field:'optUser'">创建人</th>
         <th data-options="field:'optDate'">创建时间</th>
         <!--
@@ -245,13 +245,13 @@
 //
 //            }
 //        },
-        {
+       /* {
             text: '提交任务',
             iconCls: 'icon-qxfp',
             handler: function () {
 
             }
-        }];
+        }*/];
 </script>
 
 

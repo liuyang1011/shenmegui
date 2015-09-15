@@ -143,7 +143,7 @@ public class ServiceInvokeController {
                 params2.put("type",Constants.INVOKE_TYPE_CONSUMER);
                 ServiceInvoke consumer = serviceInvokeService.findUniqueBy(params2);
                 if(null == consumer) return false;
-                //不能删除serviceInvoke ，可能存在别的调用关系
+
                 //删除interfaceInvoke
                 Map<String,String> map2 = new HashMap<String, String>();
                 map2.put("providerInvokeId",provider.getInvokeId());
@@ -151,6 +151,48 @@ public class ServiceInvokeController {
                 InterfaceInvoke invoke = interfaceInvokeService.findUniqueBy(map2);
                 if(null == invoke) return false;
                 interfaceInvokeService.delete(invoke);
+                //不能直接删除serviceInvoke ，看看是否有相同的没场景信息的接口
+                //删除消费方接口
+                if(consumer.getInterfaceId() == null){
+                    //标准的消费方直接删除
+                    try{
+                        serviceInvokeService.delete(consumer);
+                    }catch (Exception e){
+                        //约束
+                        e.printStackTrace();
+                    }
+
+                }else{
+                    Map<String,String> params3 = new HashMap<String, String>();
+                    params3.put("interfaceId",consumer.getInterfaceId());
+                    params3.put("serviceId",serviceId);
+                    params3.put("type",Constants.INVOKE_TYPE_CONSUMER);
+                    List<ServiceInvoke> tempConsumers = serviceInvokeService.findBy(params3);
+                    if(tempConsumers.size()>1){
+                        //超过一条删除
+                        serviceInvokeService.delete(consumer);
+                    }else{
+                        consumer.setServiceId(null);
+                        consumer.setOperationId(null);
+                    }
+                }
+                //删除提供方接口
+                if(consumer.getInterfaceId() == null){
+                    serviceInvokeService.delete(provider);
+                }else{
+                    Map<String,String> params3 = new HashMap<String, String>();
+                    params3.put("interfaceId",provider.getInterfaceId());
+                    params3.put("serviceId",serviceId);
+                    params3.put("type",Constants.INVOKE_TYPE_PROVIDER);
+                    List<ServiceInvoke> tempProvider = serviceInvokeService.findBy(params3);
+                    if(tempProvider.size()>1){
+                        //超过一条删除
+                        serviceInvokeService.delete(consumer);
+                    }else{
+                        provider.setServiceId(null);
+                        provider.setOperationId(null);
+                    }
+                }
             }
         }
         return true;
@@ -212,12 +254,15 @@ public class ServiceInvokeController {
                 String interfaceId2 = mapProvider.get("interfaceId").toString();
                 String interfaceName2 = mapProvider.get("interfaceName").toString();
                 String type2 = mapProvider.get("type").toString();
+                String isStandard2 = mapProvider.get("isStandard").toString();
                 //是否已经存在提供方
                 Map<String,String> params = new HashMap<String, String>();
                 params.put("operationId",operationId);
                 params.put("serviceId",serviceId);
                 params.put("systemId",systemId2);
                 params.put("interfaceId",interfaceId2);
+                params.put("isStandard",isStandard2);
+
                 List<ServiceInvoke> list1 = serviceInvokeService.findBy(params);
                 ServiceInvoke p;
                 if(list1.size()>0){
@@ -226,11 +271,7 @@ public class ServiceInvokeController {
 
                     //TODO 怎么判断是否标准
                     p = new ServiceInvoke();
-                    if("".equals(interfaceId2)){
-                       p.setIsStandard("0");
-                    }else{
-                        p.setIsStandard("1");
-                    }
+                    p.setIsStandard(isStandard2);
                     if(StringUtils.isNotEmpty(interfaceId2)){
                         p.setInterfaceId(interfaceId2);
                     }

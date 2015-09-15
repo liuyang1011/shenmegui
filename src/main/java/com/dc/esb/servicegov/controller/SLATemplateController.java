@@ -94,6 +94,33 @@ public class SLATemplateController {
        return true;
    }
 
+	@RequestMapping(method = RequestMethod.GET, value = "/setTemplateData/{serviceId}/{operationId}/{slaTemplateId}", headers = "Accept=application/json")
+	public @ResponseBody
+	boolean setTemplateData(@PathVariable(value = "serviceId") String serviceId,
+					@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
+		//
+
+
+
+//		for (int i = 0; i < list.size(); i++) {
+//			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+//			Set<String> keySet = map.keySet();
+//			SLA sla=new SLA();
+//			if(map.get("slaId")!=null&&!"".equals(map.get("slaId"))){
+//				sla.setSlaId(map.get("slaId"));
+//			}
+//			sla.setOperationId(operationId);
+//			sla.setServiceId(serviceId);
+//			sla.setSlaName(map.get("slaName"));
+//			sla.setSlaValue(map.get("slaValue"));
+//			sla.setSlaDesc(map.get("slaDesc"));
+//			sla.setSlaRemark(map.get("slaRemark"));
+//			sla.setSlaTemplateId(slaTemplateId);
+//			slaServiceImpl.save(sla);
+//		}
+		return true;
+	}
+
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {
 		return "403";

@@ -84,17 +84,21 @@
 					return false;
 					}
 					if(info.slaTemplateId){
-					slaManager.getByParams(info.slaTemplateId,function(result){
-						$('#sla').edatagrid('loadData',result);
-						slaManager.deleteByAll(serviceId,operationId, function(result1){
-						if(result1){
-						slaManager.addList(result,function(result2){
-							if(result2){alert("导入成功");}else{alert("导入失败");}
+						slaManager.setTemplateData(serviceId,operationId,info.slaTemplateId,function(result){
+
+						});
+
+						/*slaManager.getByParams(info.slaTemplateId,function(result){
+							$('#sla').edatagrid('loadData',result);
+							slaManager.deleteByAll(serviceId,operationId, function(result1){
+							if(result1){
+							slaManager.addList(result,function(result2){
+								if(result2){alert("导入成功");}else{alert("导入失败");}
+							   });
+							  }
 						   });
-						  }
-					   });
-					});
-					$('#w').window('close');
+						});*/
+						$('#w').window('close');
 					}
 				}
 			} ];

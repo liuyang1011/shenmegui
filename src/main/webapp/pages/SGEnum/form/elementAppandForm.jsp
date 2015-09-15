@@ -12,13 +12,13 @@
 			</td>
 		</tr>
 		<tr>
-			<th>枚举备注</th>
-			<td><input class="easyui-textbox" type="text" id="_remark">
+			<th>业务定义</th>
+			<td><input class="easyui-textbox" type="text" id="_bussDefine">
 			</td>
 		</tr>
 		<tr>
-			<th>业务定义</th>
-			<td><input class="easyui-textbox" type="text" id="_bussDefine">
+			<th>枚举备注</th>
+			<td><input class="easyui-textbox" type="text" id="_remark">
 			</td>
 		</tr>
 		<tr>

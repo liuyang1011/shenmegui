@@ -389,7 +389,6 @@ function selectInterface(listId, type) {
                 alert("该接口已经被选中！");
             } else {
                 $("#" + listId).append("<option value='" + item.invokeId + "'>" + item.systemChineseName + "::" + item.interfaceName + "</option>");
-                console.log(item);
                 var si = genderServiceInvoke(item.invokeId, item.systemId, item.systemChineseName, item.interfaceId, item.interfaceName,item.isStandard, type);
                 if(type == "1"){
                     consumerList.push(si);

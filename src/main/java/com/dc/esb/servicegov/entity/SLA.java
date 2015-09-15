@@ -42,7 +42,7 @@ public class SLA implements Serializable {
 	@Column(name = "VERSION")
 	private String version;
 
-	@Override
+	/*@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof SLA)) {
 			return false;
@@ -51,7 +51,7 @@ public class SLA implements Serializable {
 		return ((null == this.serviceId) ? (null == another.getServiceId()) : (this.serviceId.equals(another.getServiceId()))) &&
 				((null == this.operationId) ? (null == another.getOperationId()) : (this.operationId.equals(another.getOperationId()))) &&
 				((null == this.slaName) ? (null == another.getSlaName()) : (this.slaName.equals(another.getSlaName())));
-	}
+	}*/
 	
 	
 	public String getSlaId() {

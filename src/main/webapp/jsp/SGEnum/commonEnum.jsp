@@ -215,7 +215,7 @@
 							enumManager.deleteEnum(selectData.id);
 						}
 					}
-				}, {
+				}/*, {
 					text: '提交任务',
 					iconCls: 'icon-qxfp',
 					handler: function () {
@@ -226,7 +226,7 @@
 							url: "/jsp/task/completeTask.jsp"
 						});
 					}
-				} ];
+				} */];
 	</script>
 </body>
 </html>
