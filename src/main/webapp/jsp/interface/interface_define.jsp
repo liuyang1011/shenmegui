@@ -165,6 +165,7 @@
                         success: function(data){
                             if(data){
                                 $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
+                                $("#interfacetg").datagrid("reload");
                             }
                         }
                     });
@@ -191,7 +192,7 @@
                         success: function(data){
                             if(data){
                                 $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
-
+                                $("#interfacetg").datagrid("reload");
                             }
                         }
                     });
