@@ -162,7 +162,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public HSSFWorkbook fillExcel(List<ServiceInvoke> siList) {
         if (siList.size() > 0) {
             HSSFWorkbook workbook = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE);
-            commonStyle = CellStyleSupport.commonStyle(workbook);
+            commonStyle = CellStyleSupport.leftStyle(workbook);
             arrayStyle = CellStyleSupport.arrayStyle(workbook);
             fillIndex(workbook, siList);
             fillMapings(workbook, siList);

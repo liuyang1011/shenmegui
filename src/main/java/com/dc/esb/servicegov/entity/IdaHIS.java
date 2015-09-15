@@ -1,59 +1,101 @@
 package com.dc.esb.servicegov.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name="IDA_HIS")
 public class IdaHIS {
 	@Id
-    @Column(name = "ID")
+	@Column(name = "AUTO_ID")
+	private String autoId;
+
+	@Column(name = "ID")
 	private String id;
-	
 	@Column(name = "STRUCTNAME")
 	private String structName;
-	
 	@Column(name = "STRUCTALIAS")
 	private String structAlias;
-	
+
 	@Column(name = "METADATA_ID")
 	private String metadataId;
-	
+
 	@Column(name = "SEQ")
-	private String seq;
-	
-	 @Column(name = "TYPE")
-	 private String type;
-	 
-	 @Column(name = "SCALE")
-	 private String scale;
-	 
-	 @Column(name = "LENGTH")
-	 private String length;
-	 
-	 @Column(name = "REQUIRED")
-	 private String required;
-	 
-	 @Column(name = "RARENT_ID")
-	 private String rarentId;
-	 
-	 @Column(name = "INTERFACE_ID")
-	 private String interfaceId;
-	 
-	 
-	 @Column(name = "OPT_USER")
-	 private String potUser;
-	
-	 @Column(name = "OPT_DATE")
-	 private String potDate;
-	 
-	 @Column(name = "HEAD_ID")
-	 private String headId;
-	 
-	 @Column(name = "VERSION")
-	 private String version;
+	private int seq;
+
+	@Column(name = "TYPE")
+	private String type;
+
+	@Column(name = "SCALE")
+	private String scale;
+
+	@Column(name = "LENGTH")
+	private String length;
+
+	@Column(name = "REQUIRED")
+	private String required;
+
+	@Column(name = "PARENT_ID",updatable=false,insertable=true)
+	private String _parentId;
+
+	@Column(name = "INTERFACE_ID")
+	private String interfaceId;
+
+	@Column(name = "INTERFACE_HIS_ID")
+	private String interfaceHisId;
+
+	@Column(name = "OPT_USER")
+	private String potUser;
+
+	@Column(name = "OPT_DATE")
+	private String potDate;
+
+	@Column(name = "HEAD_ID")
+	private String headId;
+
+	@Column(name = "VERSION")
+	private String version;
+
+	@Column(name = "REMARK",length = 1024)
+	private String remark;
+	public IdaHIS(){
+
+	}
+	public IdaHIS(Ida ida) {
+		this.autoId = UUID.randomUUID().toString();
+		this.id = ida.getId();
+		this.structName = ida.getStructName();
+		this.structAlias = ida.getStructAlias();
+		this.metadataId = ida.getMetadataId();
+		this.seq = ida.getSeq();
+		this.type = ida.getType();
+		this.scale = ida.getScale();
+		this.length = ida.getLength();
+		this.required = ida.getRequired();
+		this._parentId = ida.get_parentId();
+		this.interfaceId = ida.getInterfaceId();
+		this.potUser = ida.getPotUser();
+		this.potDate = ida.getPotDate();
+		this.headId = ida.getHeadId();
+		this.version = ida.getVersion();
+		this.remark = ida.getRemark();
+		this.interObj = ida.getInterObj();
+		this.heads = ida.getHeads();
+	}
+
+	//    @Column(name = "ARG_TYPE")
+	//参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
+//    private String argType;
+
+	@ManyToOne
+	@JoinColumn(name="INTERFACE_ID",referencedColumnName = "INTERFACE_ID",insertable = false,updatable = false)
+	private Interface interObj;
+
+	@ManyToOne
+	@JoinColumn(name = "HEAD_ID",referencedColumnName = "HEAD_ID",insertable = false,updatable = false)
+	private InterfaceHead heads;
 
 	public String getId() {
 		return id;
@@ -87,11 +129,11 @@ public class IdaHIS {
 		this.metadataId = metadataId;
 	}
 
-	public String getSeq() {
+	public int getSeq() {
 		return seq;
 	}
 
-	public void setSeq(String seq) {
+	public void setSeq(int seq) {
 		this.seq = seq;
 	}
 
@@ -127,12 +169,12 @@ public class IdaHIS {
 		this.required = required;
 	}
 
-	public String getRarentId() {
-		return rarentId;
+	public String get_parentId() {
+		return _parentId;
 	}
 
-	public void setRarentId(String rarentId) {
-		this.rarentId = rarentId;
+	public void set_parentId(String id) {
+		_parentId = id;
 	}
 
 	public String getInterfaceId() {
@@ -174,6 +216,45 @@ public class IdaHIS {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	 
-	 
+
+	public Interface getInterObj() {
+		return interObj;
+	}
+
+	public void setInterObj(Interface interObj) {
+		this.interObj = interObj;
+	}
+
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public InterfaceHead getHeads() {
+		return heads;
+	}
+
+	public void setHeads(InterfaceHead heads) {
+		this.heads = heads;
+	}
+
+	public String getInterfaceHisId() {
+		return interfaceHisId;
+	}
+
+	public void setInterfaceHisId(String interfaceHisId) {
+		this.interfaceHisId = interfaceHisId;
+	}
+
+	public String getAutoId() {
+		return autoId;
+	}
+
+	public void setAutoId(String autoId) {
+		this.autoId = autoId;
+	}
 }

@@ -52,11 +52,6 @@ public class InterfaceController {
     public
     @ResponseBody
     List<TreeNode> getLeftTree(@PathVariable(value = "systemIds") String systemIds) {
-//        try {
-//            condition = URLDecoder.decode(condition, "utf-8");
-//        } catch (UnsupportedEncodingException e) {
-//            log.error(e, e);
-//        }
         List<TreeNode> resList = new ArrayList<TreeNode>();
         TreeNode root = new TreeNode();
         root.setId("root");
@@ -64,19 +59,6 @@ public class InterfaceController {
         root.setClick("system");
 
         List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
-//        List<Interface> interList = new ArrayList<Interface>();
-//        if (null != condition && !"".equals(condition) && !"all".equals(condition)) {
-//            interList = interfaceService.findByConditions(condition);
-//            for (int i = 0; i < interList.size(); i++) {
-//                String systemId = interList.get(i).getServiceInvoke().get(0).getSystemId();
-//                System s = systemService.findUniqueBy("systemId", systemId);
-//                if (systems.indexOf(s) < 0) {
-//                    systems.add(s);
-//                }
-//            }
-//        } else {
-//            systems = systemService.getAll();
-//        }
         if ("all".equals(systemIds)) {
             systems = systemService.getAll();
         } else if (null != systemIds) {
@@ -117,9 +99,7 @@ public class InterfaceController {
             //修改接口关系表不更新
             inter.setServiceInvoke(null);
         }
-        inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
-        inter.setOptDate(DateUtils.format(new Date()));
-        interfaceService.save(inter);
+        interfaceService.save(inter, add);
         if (add) {
             //添加报文，自动生成固定报文头<root><request><response>
             //root
@@ -254,17 +234,19 @@ public class InterfaceController {
         //String hql = "SELECT u.interfaceId,u.interfaceName,u.ecode,u.remark,u.status,u.version,u.optUser,u.optDate FROM Interface u WHERE interfaceId = ?";
         Interface inter = interfaceService.getById(interfaceId);
         Map<String, Object> map = new HashMap<String, Object>();
-        if (null != inter) {
+        if(null != inter){
+            //TODO 为什么要重新建一个interface？
             Interface resInter = new Interface();
             resInter.setInterfaceId(inter.getInterfaceId());
             resInter.setInterfaceName(inter.getInterfaceName());
             resInter.setEcode(inter.getEcode());
             resInter.setDesc(inter.getDesc());
             resInter.setRemark(inter.getRemark());
-            resInter.setVersion(inter.getVersion());
             resInter.setOptDate(inter.getOptDate());
             resInter.setOptUser(inter.getOptUser());
             resInter.setStatus(inter.getStatus());
+            resInter.setVersionId(inter.getVersionId());
+            resInter.setVersion(inter.getVersion());
             List<InterfaceHeadRelate> heads = inter.getHeadRelates();
             String headName = "";
             for (InterfaceHeadRelate head : heads) {
@@ -487,5 +469,14 @@ public class InterfaceController {
     public Object getInterfaceJson(String systemId) {
         List<Interface> rows = interfaceService.getBySystemId(systemId);
         return JSONUtil.getInterface().convert(rows, Interface.simpleFields());
+    }
+
+    @RequiresPermissions({"system-add"})
+    @RequestMapping(method = RequestMethod.GET, value = "/release/{interfaceIds}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean release(@PathVariable String interfaceIds, String versionDesc) {
+        boolean result = interfaceService.releaseBatch(interfaceIds, versionDesc);
+        return result;
     }
 }

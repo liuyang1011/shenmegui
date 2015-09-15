@@ -1387,27 +1387,20 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                     interfaceDB.setInterfaceName(inter.getInterfaceName());
                     interfaceDB.setEcode(inter.getEcode());
                     interfaceDB.setStatus(inter.getStatus());
-                    String version = interfaceDB.getVersion();
-                    if (version == null || "".equals(version)) {
-                        version = initVersion;
-                    } else {
-                        //interfaceDB.setVersion(Utils.modifyversionno(version));
-                    }
-                    interfaceDB.setVersion(version);
+                }
+                String versionId = interfaceDB.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
+                if (versionId == null || "".equals(versionId)) {
+                    versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
+                    interfaceDB.setVersionId(versionId);
                 } else {
-
-                    String version = interfaceDB.getVersion();
-                    if (version == null || "".equals(version)) {
-                        version = initVersion;
-                    }
-                    interfaceDB.setVersion(version);
-
+                    versionService.editVersion(versionId);
                 }
                 interfaceDao.save(interfaceDB);
                 inter.setInterfaceId(interfaceDB.getInterfaceId());
                 exists = true;
             } else {
-                inter.setVersion(initVersion);
+                String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
+                inter.setVersionId(versionId);
                 inter.setInterfaceId(inter.getEcode());
                 interfaceDao.save(inter);
                 provider_invoke.setInterfaceId(inter.getInterfaceId());
@@ -1416,7 +1409,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
             }
         } else {
-            inter.setVersion(initVersion);
+            String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
+            inter.setVersionId(versionId);
             inter.setInterfaceId(inter.getInterfaceId());
             //建立调用关系
             interfaceDao.save(inter);

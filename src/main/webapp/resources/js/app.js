@@ -39,15 +39,7 @@ var SYSMENU = {
                 });
                 $('#mxinterfacetreefilter').searchbox({
                     searcher: function (value, name) {
-                        if (value == "") {
-                            value = "all";
-                        }
-                        //重新查询
-                        $('.msinterfacetree').tree({
-                            url: '/interface/getLeftTree/' + encodeURI(encodeURI(value)),
-                            method: 'get',
-                            animate: true
-                        });
+                        $('.msinterfacetree').tree('doFilter', value);
                     },
                     prompt: '请输入关键词'
                 });

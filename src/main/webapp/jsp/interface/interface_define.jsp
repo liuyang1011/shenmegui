@@ -134,6 +134,7 @@
                     if (result) {
                         alert("保存成功");
                         $('#tg').treegrid({url: '/ida/getInterfaces/${param.interfaceId}?_t=' + new Date().getTime()});
+                        $("#interfacetg").datagrid({url:'/interface/getInterById/${param.interfaceId}?_t=' + new Date().getTime()});
                        // $('#tg').treegrid('reload');
                     } else {
                         alert("保存失败");
@@ -343,13 +344,24 @@
         }
 
         function removeIt() {
-            var node = $('#tg').treegrid('getSelected');
-            if (node) {
-                $('#tg').treegrid('remove', node.id);
-                sysManager.removeIDA(node.id, function (result) {
+            if (!confirm("确定要删除选中的记录吗？")) {
+                return;
+            }
+            var nodes = $('#tg').treegrid('getSelections');
+            if (nodes) {
+                var delAry = new Array();
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].structName != 'request' && nodes[i].structName != 'response') {
+                        delAry.push(nodes[i].id);
+                    }
+                }
+                sysManager.removeIDA(delAry, function (result) {
                     if (result) {
                         //array.
                         //$('#tg').treegrid('reload');
+                        for (var j = 0; j < delAry.length; j++) {
+                            $('#tg').treegrid('remove', delAry[j]);
+                        }
                     } else {
                         alert("删除失败");
                     }
@@ -437,6 +449,12 @@
                 if (value == 1) {
                     return "<font color='red'>废弃</font>";
                 }
+            },
+            version:function(value, row, index){
+                try {
+                    return row.version.code
+                } catch (exception) {
+                }
             }
         };
         $(function () {
@@ -468,6 +486,17 @@
                 });
             });
 
+            $("#historyBtn").click(function () {
+                var urlPath =  '/jsp/interface/interface_history.jsp?interfaceId=${param.interfaceId}';
+                var hisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+
+                parent.parent.$('#mainContentTabs').tabs('add', {
+                    title: '接口发布历史',
+                    content: hisContent,
+                    closable: true
+                });
+            });
+
         });
     </script>
 </head>
@@ -487,6 +516,9 @@
             </td>
             <td>
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+            </td>
+            <td>
+                <a href="#" id="historyBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">发布历史</a>
             </td>
         </tr>
     </table>
@@ -509,7 +541,7 @@
         <th data-options="field:'headName',width:'15%'">
             报文头
         </th>
-        <th data-options="field:'version',width:'10%'">
+        <th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
             版本号
         </th>
         <th data-options="field:'desc',align:'right',width:'20%'">
@@ -538,7 +570,9 @@
     <div onclick="editIt()" data-options="iconCls:'icon-edit'">
         编辑
     </div>
-
+    <div onclick="removeIt()" data-options="iconCls:'icon-remove'">
+        删除
+    </div>
 </div>
 <table title="接口定义信息" id="tg"
        style="height: 440px; width: auto;"
@@ -591,5 +625,4 @@
     </tr>
     </thead>
 </table>
-</body>
 </html>

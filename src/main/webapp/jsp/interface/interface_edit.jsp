@@ -55,7 +55,8 @@
 				版本
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="versionText" value="${inter.version }" readOnly>
+				<input class="easyui-textbox" type="text" id="versionText" value="${inter.version.code }" readOnly="true">
+				<input type="hidden" id="versionId" value="${inter.versionId }" >
 			</td>
 		</tr>
 		<tr>
@@ -151,7 +152,7 @@
 		var desc = $("#desc").val();
 		var remark = $("#remark").val();
 		var interfaceId = $("#interfaceIdText").val();
-		var version = $("#versionText").val();
+		var versionId = $("#versionId").val();
 		var status = $("#status").combobox('getValue');
 		var systemId ="";
 		var treeObj =$('.msinterfacetree') ;
@@ -173,7 +174,7 @@
 		data.desc = desc;
 		data.remark = remark;
 		data.interfaceId = interfaceId;
-		data.version = version;
+		data.versionId = versionId;
 		var protocolId = $("#protocolId").combobox('getValue');
 
 		data.status = status;

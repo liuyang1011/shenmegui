@@ -29,6 +29,12 @@
     <table border="0" cellspacing="0" cellpadding="0">
         <input type="hidden" name="status" value="待审核"/>
         <tr>
+            <td colspan="2" style="text-align:center">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
+                <a href="#" onclick="save('metadataForm')" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+            </td>
+        </tr>
+        <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataId"
                        data-options="required:true, validType:['unique','english']"></td>
@@ -93,13 +99,6 @@
         <tr>
             <th>任务id</th>
             <td><input class="easyui-textbox" disabled="disabled" type="text" name="processId" id="taskIdInput"></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td class="win-bbar">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
-                <a href="#" onclick="save('metadataForm')" class="easyui-linkbutton" iconCls="icon-save">保存</a>
-            </td>
         </tr>
     </table>
 </form>

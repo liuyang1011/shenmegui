@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -150,7 +151,10 @@ public class ProcessController {
 
     @RequestMapping(value = "/getContext/{processId}", method = RequestMethod.GET)
     public @ResponseBody List<ProcessContext> getProcessContext(@PathVariable("processId") String processId){
-        List<ProcessContext> processContexts = processContextService.findBy("processId", processId);
+//        List<ProcessContext> processContexts = processContextService.findBy("processId", processId);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("processId", processId);
+        List<ProcessContext> processContexts = processContextService.findBy(params,"optDate");
         if(null == processContexts){
             processContexts = new ArrayList<ProcessContext>();
         }
