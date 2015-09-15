@@ -196,19 +196,8 @@
             context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
             + '<div class="ep"></div>'
             + '<div>'
-            + '<div class="btn-group">'
-            + '<button type="button" class="btn btn-info">查看详细信息</button>'
-            + '<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">'
-            + '<span class="caret"></span>'
-            + '<span class="sr-only">Toggle Dropdown</span>'
-            + '</button>'
-            + '<ul class="dropdown-menu" role="menu">'
-            + '<li><a>系统:' + systemId + '</a></li>'
-            + '<li><a>服务:' + serviceId + '</a></li>'
-            + '<li><a>场景:' + operationId + '</a></li>'
-            + '<li><a>接口方向:' + type + '</a></li>'
-            + '</ul>'
-            + '</div>'
+            + '系统ID: ' + systemId + '<br />'
+            + '服务场景: ' + serviceId + operationId
             + '</div>'
             + '</div>';
         };

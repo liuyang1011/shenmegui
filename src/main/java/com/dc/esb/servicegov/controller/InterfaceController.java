@@ -60,7 +60,6 @@ public class InterfaceController {
         root.setId("root");
         root.setText("系统");
         root.setClick("system");
-
         List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
         if ("all".equals(systemIds)) {
             systems = systemService.getAll();
@@ -86,6 +85,50 @@ public class InterfaceController {
         root.setChildren(rootList);
         resList.add(root);
         return resList;
+    }
+
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subtree/system/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getSystemSubLeftTree(@PathVariable(value = "systemId") String systemId) {
+        return interfaceService.getSingleSystemTreeNode(systemId);
+    }
+
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subInterfaceTree/system/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getInterfaceSubLeftTree(@PathVariable(value = "systemId") String systemId) {
+        System system = systemService.getById(systemId);
+        return interfaceService.getInterfaceTreeChildren(system);
+    }
+
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subHeadTree/system/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getHeadSubLeftTree(@PathVariable(value = "systemId") String systemId) {
+        System system = systemService.getById(systemId);
+        return interfaceService.getHeadTreeChildren(system);
+    }
+
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subProtocolTree/system/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getProtocolSubLeftTree(@PathVariable(value = "systemId") String systemId) {
+        System system = systemService.getById(systemId);
+        return interfaceService.getProtocolTreeChildren(system);
+    }
+
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subFileTree/system/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getFileSubLeftTree(@PathVariable(value = "systemId") String systemId) {
+        System system = systemService.getById(systemId);
+        return interfaceService.getFileTreeChildren(system);
     }
 
     @RequiresPermissions({"system-add"})

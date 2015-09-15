@@ -189,6 +189,14 @@ var sysManager = {
             url : "/jsp/sysadmin/file_add.jsp"
         });
     },
+    addFilePageBySystem: function(systemId){
+        uiinit.win({
+            w:500,
+            iconCls:'icon-add',
+            title:"新增需求文件",
+            url : "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
+        });
+    },
     addProtocol : function(data, callBack){
          $.ajax({
              type: "POST",
