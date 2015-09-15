@@ -92,21 +92,25 @@ public class ProcessController {
         log.info(user + " complete work on task " + taskId);
         TaskService taskService = jbpmSupport.getTaskService();
         ContentData contentData = null;
-        if (params != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream outs;
-            try {
-                outs = new ObjectOutputStream(bos);
-                outs.writeObject(params);
-                outs.close();
-                contentData = new ContentData();
-                contentData.setContent(bos.toByteArray());
-                contentData.setAccessType(AccessType.Inline);
-            } catch (IOException e) {
-                log.error(e, e);
-            }
+        try {
+             if (params != null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream outs;
+
+                    outs = new ObjectOutputStream(bos);
+                    outs.writeObject(params);
+                    outs.close();
+                    contentData = new ContentData();
+                    contentData.setContent(bos.toByteArray());
+                    contentData.setAccessType(AccessType.Inline);
+
+                }
+            taskService.complete(taskId, user, contentData);
+        } catch (IOException e) {
+            log.error(e, e);
+        } catch (Exception e) {
+            log.error(e, e);
         }
-        taskService.complete(taskId, user, contentData);
         return true;
     }
 

@@ -189,6 +189,17 @@ public class IDAController {
 		return true;
 	}
 
+	@RequestMapping("/moveUp")
+	@ResponseBody
+	public boolean moveUp(String id){
+		return idaService.moveUp(id);
+	}
+
+	@RequestMapping("/moveDown")
+	@ResponseBody
+	public boolean moveDown(String id){
+		return idaService.moveDown(id);
+	}
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {
 		return "403";

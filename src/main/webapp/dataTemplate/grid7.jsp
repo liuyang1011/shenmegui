@@ -122,8 +122,8 @@
         iconCls: 'icon-add',
         handler: function () {
             uiinit.win({
-                top:"130px",
-                left:"250px",
+                top:"20px",
+                left:"150px",
                 w: 500,
                 iconCls: 'icon-add',
                 title: "新增元数据",
@@ -145,6 +145,8 @@
                     checkedItem = checkedItems[0];
                     uiinit.win({
                         w: 500,
+                        top:"20px",
+                        left:"150px",
                         iconCls: 'icon-edit',
                         title: "修改元数据",
                         url: "/metadata/editPage?metadataId=" + checkedItem.metadataId

@@ -104,7 +104,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		List<Ida> idas = findBy(map,orderByProperties);
 		Map<String,String> map2 = new HashMap<String, String>();
 		map2.put("serviceId",serviceId);
-		map2.put("operationId",operationId);
+		map2.put("operationId", operationId);
 		List<SDA> sda = sdadao.findBy(map2);
 		List<IdaMappingBean> list = new ArrayList<IdaMappingBean>();
 		for (int i = 0; i < idas.size(); i++) {
@@ -379,5 +379,77 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		public void setRemark(String remark) {
 			this.remark = remark;
 		}
+	}
+
+	/**
+	 * 将一个节点上移
+	 */
+	public boolean moveUp(String id) {
+		Ida ida = idaDAOImpl.findUnique(" from Ida where id=?", id);
+		Interface inter = ida.getInterObj();
+		if(inter != null){
+			if(org.apache.commons.lang.StringUtils.isNotEmpty(inter.getVersionId())){
+				versionServiceImpl.editVersion(inter.getVersionId());
+			}
+		}
+		String hql = " from Ida where _parentId = ? order by seq asc";
+		List<Ida> list = idaDAOImpl.find(hql, ida.get_parentId());//查询兄弟节点
+		int position = list.indexOf(ida);
+		if(position == 0){
+			return false;
+		}
+		for (int i = 0; i < list.size(); i++) {
+			Ida node = list.get(i);
+			if ( i == position) {
+				//于之前的节点seq互换
+				Ida before = list.get(i - 1);
+				int seq = node.getSeq();
+				ida.setSeq(before.getSeq());
+				before.setSeq(seq);
+
+				idaDAOImpl.save(ida);
+				return true;
+			}
+			else if(i < position){
+				node.setSeq(node.getSeq() - 1);//所有当前节点之前的节点，seq-1；
+			}
+		}
+
+		return false;
+	}
+
+	public boolean moveDown(String id) {
+		Ida ida = idaDAOImpl.findUnique(" from Ida where id=?", id);
+		Interface inter = ida.getInterObj();
+		if(inter != null){
+			//更新版本
+			if(org.apache.commons.lang.StringUtils.isNotEmpty(inter.getVersionId())){
+				versionServiceImpl.editVersion(inter.getVersionId());
+			}
+		}
+		String hql = " from Ida where _parentId = ? order by seq asc";
+		List<Ida> list = idaDAOImpl.find(hql, ida.get_parentId());//查询兄弟节点
+		int position = list.indexOf(ida);
+		if(position == (list.size()-1)){
+			return false;
+		}
+		for (int i = list.size() -1; i >= 0; i--) {
+			Ida node = list.get(i);
+			if ( i == position) {
+				//于之前的节点seq互换
+				Ida before = list.get(i + 1);
+				int seq = node.getSeq();
+				ida.setSeq(before.getSeq());
+				before.setSeq(seq);
+
+				idaDAOImpl.save(ida);
+				return true;
+			}
+			else if(i > position){
+				node.setSeq(node.getSeq() + 1);//所有当前节点之前的节点，seq-1；
+			}
+		}
+
+		return false;
 	}
 }

@@ -110,6 +110,14 @@ public class OperationHisServiceImpl extends
 	}
 
 	public List findBy(String hql,Page page){
-		return operationHisDAOImpl.findBy(hql,page);
+		return operationHisDAOImpl.findBy(hql, page);
+	}
+
+	public boolean hisJudge(String serviceId, String operationId){
+		List<OperationHis> list = getByOS(operationId, serviceId);//不用count函数，因为不同数据库返回的数据类型不同
+		if(list != null && list.size() > 0){
+			return true;
+		}
+		return false;
 	}
 }

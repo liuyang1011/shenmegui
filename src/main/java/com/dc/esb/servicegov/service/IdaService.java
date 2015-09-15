@@ -19,4 +19,6 @@ public interface IdaService  extends BaseService<Ida, String> {
     public List<IdaServiceImpl.IdaMappingBean> findIdaMappingBy(Map<String,String> map,String orderByProperties,String serviceId, String operationId);
 
     public List findIdas(Map<String,String> reqMap, String orderStr);
+    public boolean moveDown(String id);
+    public boolean moveUp(String id);
 }

@@ -168,6 +168,8 @@
 					handler : function() {
 						uiinit.win({
 							w : 500,
+							top:"20px",
+							left:"150px",
 							iconCls : 'icon-add',
 							title : "新增代码",
 							url : "/pages/SGEnum/form/enumAppandForm.jsp"

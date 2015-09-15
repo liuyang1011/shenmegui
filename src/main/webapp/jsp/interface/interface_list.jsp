@@ -128,8 +128,8 @@
 		<div id="w" class="easyui-window" title=""
 			data-options="modal:true,closed:true,iconCls:'icon-add'"
 			style="width: 500px; height: 200px; padding: 10px;">
-
 		</div>
+		<div id="releaseDlg" class="easyui-dialog" closed="true" resizable="true"></div>
 		<script type="text/javascript">
 		 $(document).ready(function(){ 
 			  $('#tg').datagrid({ 
@@ -267,7 +267,27 @@
 						text: '发布',
 						iconCls: 'icon-save',
 						handler: function () {
-							interfaceManager.release();
+							var row = $("#tg").datagrid("getSelected");
+							if(row){
+								var versionCode="";
+								if(row.version != null){
+									versionCode=row.version.code;
+								}
+								var urlPath = "/jsp/interface/interface_release.jsp?interfaceId="+row.interfaceId+"&interfaceName="+encodeURI(encodeURI(row.interfaceName))+
+												"&versionCode="+versionCode;
+								$('#releaseDlg').dialog({
+									title: '版本发布',
+									width: 500,
+									left:150,
+									top:50,
+									closed: false,
+									cache: false,
+									href: urlPath,
+									modal: true
+								});
+							}
+
+							//interfaceManager.release();
 						}
 					}
 				],
