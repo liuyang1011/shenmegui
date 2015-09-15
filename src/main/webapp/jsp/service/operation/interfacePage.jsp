@@ -241,21 +241,21 @@
                                                                         字段名称
                                                                     </th>
                                                                     <th
-                                                                        data-options="field:'structAlias',width:'20%',align:'left',editor:'text'">
+                                                                        data-options="field:'structAlias',width:'16%',align:'left',editor:'text'">
                                                                         字段别名
                                                                     </th>
-                                                                    <th data-options="field:'type',width:'10%',editor:'text'">
+                                                                    <th data-options="field:'type',width:'6%',editor:'text'">
                                                                         类型
                                                                     </th>
-                                                                    <th data-options="field:'length',width:'10%',editor:'text'">
+                                                                    <th data-options="field:'length',width:'6%',editor:'text'">
                                                                         长度
                                                                     </th>
                                                                     <th data-options="field:'metadataId',width:'20%',editor:'text'">
                                                                         元数据ID
                                                                     </th>
-                                                                   <%-- <th data-options="field:'scale',width:50,editor:'text'">
-                                                                        精度
-                                                                    </th>--%>
+                                                                   <th data-options="field:'remark',width:'16%',editor:'text'">
+                                                                        备注
+                                                                    </th>
                                                                     <th data-options="field:'required',width:'10%',editor:'text'">
                                                                         是否必须
                                                                     </th>
