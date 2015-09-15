@@ -104,19 +104,19 @@
         新增接口
     </div>
     <div onclick="sysManager.editSystemPage()" data-options="iconCls:'icon-edit'">
-        编辑系統
+        编辑系统
     </div>
     <div onclick="sysManager.deleteSystem()" data-options="iconCls:'icon-remove'">
-        删除系統
+        删除系统
     </div>
 </div>
 
 <div id="mm-mxsystemtree" class="easyui-menu" style="width: 120px;">
     <div onclick="sysManager.addSystemPage()" data-options="iconCls:'icon-add'">
-        新增系統
+        新增系统
     </div>
   <div onclick="sysManager.querySystemPage()" data-options="iconCls:'icon-add'">
-        查看系統
+        查看系统
     </div>
 </div>
 

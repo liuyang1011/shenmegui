@@ -25,18 +25,19 @@
             <a href="javascript:;" mid="2">公共信息</a>
         </li>
         <li>
-            <a href="javascript:;">系统管理</a>
-            <ul>
-                <li><a href="javascript:;" mid="6">接口管理</a></li>
-                <%--<li><a href="javascript:;" mid="13">接口检索</a></li>--%>
-                <li><a href="javascript:;" mid="3">报文头管理</a></li>
-            </ul>
+            <a href="javascript:;" mid="6">系统管理</a>
+            <%--<ul>--%>
+                <%--<li><a href="javascript:;" mid="6">接口管理</a></li>--%>
+                <%--&lt;%&ndash;<li><a href="javascript:;" mid="13">接口检索</a></li>&ndash;%&gt;--%>
+                <%--<li><a href="javascript:;" mid="3">报文头管理</a></li>--%>
+            <%--</ul>--%>
         </li>
         <li>
             <a href="javascript:;">服务管理</a>
             <ul>
                 <li><a href="javascript:;" mid="4">服务信息管理</a></li>
                 <li><a href="javascript:;" mid="12">服务发布管理</a></li>
+                <li><a href="javascript:;" mid="14">服务检索</a></li>
             </ul>
         </li>
         <li>
@@ -60,7 +61,7 @@
      class="west-menu" id="west-menu">
 
 </div>
-<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
+<div data-options="region:'center',collapsible:true,border:false,tabHeight:39,"
      class="easyui-tabs " id="mainContentTabs">
 </div>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
@@ -124,19 +125,19 @@
         新增接口
     </div>
     <div onclick="sysManager.editSystemPage()" data-options="iconCls:'icon-edit'">
-        编辑系統
+        编辑系统
     </div>
     <div onclick="sysManager.deleteSystem()" data-options="iconCls:'icon-remove'">
-        删除系統
+        删除系统
     </div>
 </div>
 
 <div id="mm-mxsystemtree" class="easyui-menu" style="width: 120px;">
     <div onclick="sysManager.addSystemPage()" data-options="iconCls:'icon-add'">
-        新增系統
+        新增系统
     </div>
     <div onclick="sysManager.querySystemPage()" data-options="iconCls:'icon-add'">
-        查看系統
+        查看系统
     </div>
 </div>
 
@@ -177,7 +178,18 @@
     删除协议
     </div>
 </div>
-
-
+<div id="mm-mxfiles" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.addFilePage()" data-options="iconCls:'icon-add'">
+        新增文件
+    </div>
+</div>
+<div id="mm-mxfile" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.addFilePage()" data-options="iconCls:'icon-add'">
+        新增文件
+    </div>
+    <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
+        删除文件
+    </div>
+</div>
 </body>
 </html>

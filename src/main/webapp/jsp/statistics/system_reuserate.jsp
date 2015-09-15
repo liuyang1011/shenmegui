@@ -114,9 +114,6 @@
       <th data-options="field:'serviceNum',width:80">关联服务数</th>
       <th data-options="field:'operationNum',width:80">场景数</th>
       <th data-options="field:'resueOperationNum',width:80">复用场景数</th>
-        <!--
-      <th data-options="field:'sum',width:80">场景总数</th>
-      -->
       <th data-options="field:'reuseRate',width:100">复用率</th>
 
     </tr>

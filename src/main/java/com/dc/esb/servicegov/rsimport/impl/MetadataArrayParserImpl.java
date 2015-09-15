@@ -59,6 +59,8 @@ public class MetadataArrayParserImpl implements IResourceParser {
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
                 metadataService.save(metadata);
+            } catch(Exception e ){
+                log.error("元数据[" + metadata.getMetadataId() + "]导入出错");
             }
         }
     }

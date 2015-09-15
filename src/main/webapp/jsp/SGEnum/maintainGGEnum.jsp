@@ -53,8 +53,8 @@
 				<th data-options="field:'isStandard'" formatter='formatter.isStandard'>是否标准代码</th>
 				<th data-options="field:'isMaster',align:'right'" formatter='formatter.isMaster'>是否主代码</th>
 				<th data-options="field:'dataSource'">数据来源</th>
-				<th data-options="field:'status'" formatter='formatter.status'>代码状态</th>
-				<th data-options="field:'version',align:'center'">代码版本</th>
+				<%--<th data-options="field:'status'" formatter='formatter.status'>代码状态</th>
+				<th data-options="field:'version',align:'center'">代码版本</th>--%>
 				<th data-options="field:'remark'">备注</th>
 				<th data-options="field:'optUser'">操作用户</th>
 				<th data-options="field:'optDate'">操作时间</th>
@@ -203,7 +203,7 @@
 				},
 				{
 					text : '枚举映射',
-					iconCls : 'icon-qxfp',
+					iconCls : 'icon-add',
 					handler : function() {
 						var selectData = $('#slavedatagrid').datagrid(
 								'getSelected');

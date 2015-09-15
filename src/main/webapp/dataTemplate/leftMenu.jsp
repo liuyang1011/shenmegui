@@ -6,14 +6,14 @@
     if (mid.equals("1")) {
 %>
 <ul id="menu-tree" style="overflow:scroll;height:100%">
-    <li><a href="javascript:;" class="openable" mid="9.1">字段映射</a>
+    <%--<li><a href="javascript:;" class="openable" mid="9.1">字段映射</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.2">导入</a></li>
             <li><a href="javascript:;" class="openable" mid="9.3">导出</a></li>
             <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
-            <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
+            &lt;%&ndash;<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>&ndash;%&gt;
         </ul>
-    </li>
+    </li>--%>
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
@@ -41,6 +41,14 @@
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
+    <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
+        <ul>
+            <li><a href="javascript:;" class="openable" mid="9.2">导入</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.3">导出</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
+            <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
+        </ul>
+    </li>
 </ul>
 <%
     }
@@ -127,4 +135,28 @@
 </ul>
 <%
     }
+    if(mid.equals("14")){
+%>
+<div class="tree-filter">
+    <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
+
+</div>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+
+<script>
+    var title = "服务检索";
+    var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH + '" style="width:100%;height:98%;"></iframe>';
+    if ($('#mainContentTabs').tabs('exists', title)) {
+        $('#mainContentTabs').tabs('select', title);
+    }else{
+        $('#mainContentTabs').tabs('add', {
+            title: title,
+            content: content,
+            closable: true
+        });
+    }
+
+</script>
+<%
+        }
 %>

@@ -8,7 +8,7 @@
 	<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<th>
-				系統Id
+				系统Id
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" value="${param.systemId}" readOnly>
@@ -16,7 +16,7 @@
 		</tr>
 		<tr  style="height:50px">
 			<th>
-				系統协议
+				系统协议
 			</th>
 			<td>
 				<select class="easyui-combobox" id="protocolIdRelate" style="width:155px" panelHeight="auto" data-options="editable:false, multiple:true">

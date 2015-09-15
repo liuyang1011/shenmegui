@@ -59,7 +59,7 @@
 		<!--
 		<tr>
 			<th>
-				系統协议
+				系统协议
 			</th>
 			<td>
 				<select class="easyui-combobox" id="protocolIdText" style="width:155px" panelHeight="auto" data-options="editable:false">

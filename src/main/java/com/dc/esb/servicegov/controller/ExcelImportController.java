@@ -136,12 +136,12 @@ public class ExcelImportController {
                     logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
                     long time = java.lang.System.currentTimeMillis();
                     List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO.getSystemId());
-                    if ((Boolean)result.get(0)) {
+                    /*if ((Boolean)result.get(0)) {
                         logger.info("===========接口[" + sheetName + "],导入失败=============");
                         msg.append(result.get(1).toString());
                         logInfoService.saveLog(result.get(1).toString(), "导入");
                         continue;
-                    }
+                    }*/
                     long useTime = java.lang.System.currentTimeMillis() - time;
                     logger.info("===========接口[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
                 } else {
@@ -233,12 +233,12 @@ public class ExcelImportController {
                     logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
                     long time = java.lang.System.currentTimeMillis();
                     List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO.getSystemId());
-                    if ((Boolean)result.get(0)) {
+                   /* if ((Boolean)result.get(0)) {
                         logger.info("===========接口[" + sheetName + "],导入失败=============");
                         msg.append(result.get(1).toString());
                         logInfoService.saveLog(result.get(1).toString(), "导入");
                         continue;
-                    }
+                    }*/
                     long useTime = java.lang.System.currentTimeMillis() - time;
                     logger.info("===========接口[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
                 } else {
@@ -342,7 +342,7 @@ public class ExcelImportController {
                 String sheetName = indexDO.getSheetName();
                 //------------------------------------
                 //TODO 标准接口导入（没ida）
-                if(null != sheetName && !"".equals(sheetName) && sheetName.startsWith("BZ_")){
+                if(null != sheetName && !"".equals(sheetName) && indexDO.getIsStandard().equals(Constants.INVOKE_TYPE_STANDARD_Y)){
                     // 读取每个交易sheet页
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);
@@ -460,16 +460,17 @@ public class ExcelImportController {
                     String providerSystem = indexDO.getProviderSystem();
                     String providerSystemId = indexDO.getProviderSystemId();
                     String invokeSystemId = "";
-                    String isStandard = "0";
+                    String _isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
                     String serviceId = indexDO.getServiceId();
+                    //TODO 消费方是不是不用插入标准提供方
                     if("Provider".equalsIgnoreCase(type)){
-                        type = "1";
+                        type = Constants.INVOKE_TYPE_CONSUMER;
                         invokeSystemId = cusumerSystemId;
                     }else{
-                        type = "0";
+                        type = Constants.INVOKE_TYPE_PROVIDER;;
                         invokeSystemId = providerSystemId;
                     }
-                    ServiceInvoke invoke = excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,isStandard);
+                    ServiceInvoke invoke = excelImportService.addServiceInvoke(invokeSystemId,serviceId,operationId,type,_isStandard);
                     //增加调用关系
                     ServiceInvoke provider_invoke = (ServiceInvoke)result.get(1);
                     if(null != invoke){

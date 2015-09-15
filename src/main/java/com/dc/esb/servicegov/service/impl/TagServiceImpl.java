@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.entity.OperationTag;
 import com.dc.esb.servicegov.entity.ServiceTag;
 import com.dc.esb.servicegov.entity.Tag;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -173,6 +174,24 @@ public class TagServiceImpl extends AbstractBaseService<Tag, String> {
             }
         }
         return true;
+    }
+
+    public String findInterfaceIdsByTag(String interfaceTag){
+        String ids = "";
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("tagName", interfaceTag);
+        List<Tag> tags = tagDAO.findLike(map, MatchMode.ANYWHERE);
+        for (int i = 0; i < tags.size(); i++) {
+            List<InterfaceTag> interfaceTags = interfaceTagDAO.findBy("tagId", tags.get(i).getTagId());
+            for (int j = 0; j < interfaceTags.size(); j++) {
+                if(ids.equals("")){
+                    ids += "'"+interfaceTags.get(j).getInterfaceId() + "'";
+                }else{
+                    ids += ",'"+interfaceTags.get(j).getInterfaceId() + "'";
+                }
+            }
+        }
+        return ids;
     }
 
 }

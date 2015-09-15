@@ -56,7 +56,7 @@
 </fieldset>
 </form>
 <table id="metadataList" title="元数据管理"
-        style="height:400px; width:auto;">
+        style="height:470px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -105,7 +105,8 @@
             method:'get',
             toolbar:toolbar,
             pagination:true,
-            pageSize:10,
+            pageSize:13,
+            pageList: [13,30,50],
             fitColumns:'false',
             onLoadError: function (responce) {
                 var resText = responce.responseText;

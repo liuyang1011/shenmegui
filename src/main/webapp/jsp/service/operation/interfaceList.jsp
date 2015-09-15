@@ -16,12 +16,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		style="height:370px; width:auto;">
 		<thead>
 			<tr>
-				<th data-options="field:'invokeId',checkbox:true"></th>
+				<%--<th data-options="field:'invokeId',checkbox:true"></th>
 				<th data-options="field:'systemId', width:80">系统id</th>
 				<th data-options="field:'systemChineseName', width:100">系统名称</th>
 				<th data-options="field:'interfaceId', width:150">接口id</th>
 				<th data-options="field:'interfaceName', width:150">接口名称</th>
-				<th data-options="field:'remark', width:100">备注</th>
+				<th data-options="field:'isStandard', width:100">是否标准</th>--%>
 			</tr>
 		</thead>
 	</table>
@@ -44,6 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </table>
     </div>
    <script type="text/javascript">
+	   var editedRows = [];
 	   $(function(){
 		   $("#intefaceList").datagrid({
 			   rownumbers:true,
@@ -52,7 +53,46 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			   method:'post',
 			   toolbar:'#tb',
 			   pagination:true,
-			   pageSize:10
+			   pageSize:10,
+			   columns:[[
+				   {field:'invokeId',checkbox:true},
+				   {field:'systemId',title:'系统id'},
+				   {field:'systemChineseName',title:'系统名称'},
+				   {field:'interfaceId',title:'接口id'},
+				   {field:'interfaceName',title:'接口名称'},
+				   {field:'isStandard',title:'是否标准（双击选择）',required : true,
+					   editor:{
+						   type:'combobox',
+						   options:{
+							   valueField: 'value',
+							   textField: 'label',
+							   data: [{
+								   label: '非标',
+								   value: '1',
+								   selected:true
+							   },{
+								   label: '标准',
+								   value: '0'
+							   }],
+							   panelHeight : '150px',
+							   onSelect:function(record){
+								   for ( var per in editedRows) {
+									   $("#intefaceList").datagrid('endEdit', editedRows[per]);
+								   }
+								   editedRows = [];
+							   }
+						   }
+					   }
+				   }
+			   ]],
+			   onBeginEdit : function(index,row){
+				   editedRows.push(index);
+			   },
+			   onDblClickCell: function(index,field,value){
+				   $(this).datagrid('beginEdit', index);
+				   var ed = $(this).datagrid('getEditor', {index:index,field:field});
+				   $(ed.target).focus();
+			   }
 		   });
 	   });
 	   function queryInterfaceList(){

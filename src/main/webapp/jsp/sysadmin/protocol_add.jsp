@@ -39,7 +39,7 @@
 				<input class="easyui-textbox" type="text" id="timeoutText">
 			</td>
 		</tr>
-		<tr>
+		<%--<tr>
 			<th>
 				错误代码
 			</th>
@@ -55,7 +55,7 @@
 			<td>
 				<input class="easyui-textbox" type="text" id="succCodeText">
 			</td>
-		</tr>
+		</tr>--%>
 		<tr>
 			<th>
 				备注说明
@@ -102,10 +102,10 @@
 		var msgType = $("#msgTypeText").val();
 		var encoding = $("#encodingText").val();
 		var timeout = $("#timeoutText").val();
-		var errorCode = $("#errorCodeText").val();
+//		var errorCode = $("#errorCodeText").val();
 		var remark = $("#remarkText").val();
 
-		var succCode = $("#succCodeText").val();
+//		var succCode = $("#succCodeText").val();
 		var templateContent = $("#templateContent").val();
 		var generatorId = $("#generatorIdText").val();
 		var data = {};
@@ -114,9 +114,9 @@
 		data.msgType = msgType;
 		data.encoding = encoding;
 		data.timeout = timeout;
-		data.errorCode = errorCode;
+//		data.errorCode = errorCode;
 		data.remark = remark;
-		data.succCode = succCode;
+//		data.succCode = succCode;
 		//data.msgTemplateId = msgTemplateId;
 		data.generatorId = generatorId;
 

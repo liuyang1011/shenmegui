@@ -114,6 +114,17 @@ public class EnumServiceImpl extends AbstractBaseService<SGEnum, String> impleme
 		return enumDAOImpl.findLike(map,MatchMode.ANYWHERE);
 	}
 	@Override
+	public HashMap<String, Object> getElementByMasterId(String hql,int pageNum,int rows) {
+		Page page = elementsDAOImpl.getPageBy(hql.toString(), rows);
+		page.setPage(pageNum);
+		List<EnumElements> list = elementsDAOImpl.findBy(hql.toString(), page);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("total", page.getResultCount());
+		map.put("rows", list);
+		return map;
+	}
+
+	@Override
 	public List<EnumElements> getElementsByEnumId(String id) {
 		String hql = "select a from EnumElements a where a.enumId = '"+id+"'";
 		return elementsDAOImpl.find(hql);
@@ -131,6 +142,16 @@ public class EnumServiceImpl extends AbstractBaseService<SGEnum, String> impleme
 		Query query = session.createSQLQuery(sql.toString()).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		List list = query.list();
 		return list;
+	}
+	@Override
+	public HashMap<String, Object> getElementsMapping(String hql,int pageNum,int rows){
+		Page page = elementsDAOImpl.getPageBy(hql.toString(), rows);
+		page.setPage(pageNum);
+		List<EnumElements> list = elementsDAOImpl.findBy(hql.toString(), page);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("total", page.getResultCount());
+		map.put("rows", list);
+		return map;
 	}
 	
 	@Override

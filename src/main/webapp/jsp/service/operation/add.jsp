@@ -55,13 +55,13 @@
                 }
             });
         });
-        /*$(function(){
-            *//**
+        $(function(){
+            /**
              *  初始化接口标签
              * @param result
-             *//*
+             */
             $("#tags").tagit();
-        });*/
+        });
         var toolbar = [{
             text: '新增',
             iconCls: 'icon-add',

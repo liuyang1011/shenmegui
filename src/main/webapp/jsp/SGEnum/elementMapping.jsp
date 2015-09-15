@@ -83,7 +83,7 @@
 			                }
 			            }
 			        },
-					{field:'DIRECTION',title:'映射方向',editor:'text'},
+					/*{field:'DIRECTION',title:'映射方向',editor:'text'},*/
 					{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}
 			    ]],
 			    onDblClickCell: function(index,field,value){
@@ -144,7 +144,7 @@
 			iconCls : 'icon-remove',
 			handler : function() {
 				for ( var per in editedRows) {
-					$("#mappingdatagrid").datagrid('endEdit', editedRows[per]); 
+					$("#mappingdatagrid").datagrid('endEdit', editedRows[per]);
 				}
 				var editData = $("#mappingdatagrid").datagrid('getChanges');
 				enumManager.saveElementMapping(editData,function(result){
@@ -153,6 +153,149 @@
 					}
 				});
 				editedRows = [];
+			}
+		},{
+			text:'改变映射方向',
+			iconCls : 'icon-qxfp',
+			handler:function(){
+				var url = "/enum/getElementMappingSToM/"+"${master.id}"+"/"+"${slave.id}";
+				$('#mappingdatagrid').datagrid({
+					//rownumbers:true,
+					singleSelect:false,
+					collapsible:true,
+					url:url,
+					method:'get',
+					toolbar:toolbar2,
+					pagination:true,
+					pageSize:10,
+					columns:[[
+						{field:'productid',checkbox:true},
+						{field:'REMARK',title:'主代码中文名称'},
+						{field:'SLAVENAME',title:'从代码枚举名称'},
+						{field:'MASTERNAME',title:'主代码枚举名称',required : true,
+							editor:{
+								type:'combobox',
+								options:{
+									url : '/enum/getMasterElements/'+"${master.id}",
+									method : 'get',
+									valueField : 'elementId',
+									textField : 'elementName',
+//								textField : 'remark',
+									panelHeight : '150px'
+								}
+							}
+						},
+						/*{field:'DIRECTION',title:'映射方向',editor:'text'},*/
+						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}
+					]],
+					onDblClickCell: function(index,field,value){
+						$(this).datagrid('beginEdit', index);
+						var ed = $(this).datagrid('getEditor', {index:index,field:field});
+						$(ed.target).focus();
+					},
+					onBeginEdit : function(index,row){
+						editedRows.push(index);
+					},
+					onLoadSuccess : function (data){
+
+					},
+					onLoadError: function (responce) {
+						var resText = responce.responseText;
+						if(resText.toString().charAt(0) == "<"){
+//                    alert("没有权限！");
+							window.location.href = "/jsp/403.jsp";
+						}
+					}
+
+				});
+			}
+		} ];
+		var toolbar2 = [ {
+			text : '删除映射关系',
+			iconCls : 'icon-remove',
+			handler : function() {
+				var selectData = $('#mappingdatagrid').datagrid('getSelections');
+				if (selectData.length == 0) {
+					alert("请先选择一条记录");
+					return;
+				}
+				if(confirm('确定删除吗 ？')){
+					enumManager.deleteElementsMapping(selectData, function(result){
+						if(result){
+							$('#mappingdatagrid').datagrid('reload');
+						}
+					});
+				}
+			}
+		},{
+			text : '保存映射关系',
+			iconCls : 'icon-remove',
+			handler : function() {
+				for ( var per in editedRows) {
+					$("#mappingdatagrid").datagrid('endEdit', editedRows[per]);
+				}
+				var editData = $("#mappingdatagrid").datagrid('getChanges');
+				enumManager.saveElementMappingSToM(editData,function(result){
+					if(result){
+						$('#mappingdatagrid').datagrid('reload');
+					}
+				});
+				editedRows = [];
+			}
+		},{
+			text:'改变映射方向',
+			iconCls : 'icon-qxfp',
+			handler:function(){
+				var url = "/enum/getElementMapping/"+"${master.id}"+"/"+"${slave.id}";
+				$('#mappingdatagrid').datagrid({
+					//rownumbers:true,
+					singleSelect:false,
+					collapsible:true,
+					url:url,
+					method:'get',
+					toolbar:toolbar,
+					pagination:true,
+					pageSize:10,
+					columns:[[
+						{field:'productid',checkbox:true},
+						{field:'REMARK',title:'主代码中文名称'},
+						{field:'MASTERNAME',title:'主代码枚举名称'},
+						{field:'SLAVENAME',title:'从代码枚举名称',required : true,
+							editor:{
+								type:'combobox',
+								options:{
+									url : '/enum/getMasterElements/'+"${slave.id}",
+									method : 'get',
+									valueField : 'elementId',
+									textField : 'elementName',
+//								textField : 'remark',
+									panelHeight : '150px'
+								}
+							}
+						},
+						/*{field:'DIRECTION',title:'映射方向',editor:'text'},*/
+						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}
+					]],
+					onDblClickCell: function(index,field,value){
+						$(this).datagrid('beginEdit', index);
+						var ed = $(this).datagrid('getEditor', {index:index,field:field});
+						$(ed.target).focus();
+					},
+					onBeginEdit : function(index,row){
+						editedRows.push(index);
+					},
+					onLoadSuccess : function (data){
+
+					},
+					onLoadError: function (responce) {
+						var resText = responce.responseText;
+						if(resText.toString().charAt(0) == "<"){
+//                    alert("没有权限！");
+							window.location.href = "/jsp/403.jsp";
+						}
+					}
+
+				});
 			}
 		} ];
 	</script>

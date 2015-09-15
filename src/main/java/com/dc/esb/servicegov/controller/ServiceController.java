@@ -4,12 +4,15 @@ import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.Service;
 import com.dc.esb.servicegov.entity.ServiceCategory;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
+import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceCategoryServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ServiceTreeViewBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -21,10 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.BatchUpdateException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/service")
@@ -36,6 +36,8 @@ public class ServiceController {
     private ServiceServiceImpl serviceServiceImpl;
     @Autowired
     private ServiceCategoryServiceImpl serviceCategoryServiceImpl;
+    @Autowired
+    private ProcessContextServiceImpl processContextService;
 
     @RequiresPermissions({"service-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getTree", headers = "Accept=application/json")
@@ -56,11 +58,36 @@ public class ServiceController {
         try {
             serviceServiceImpl.insert(service);
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-            //java.sql.BatchUpdateException
+            log.error(e,e);
             return false;
         }
+        return true;
+    }
 
+    @RequiresPermissions({"service-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/addService/{processId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean addServiceWithProcess(@RequestBody Service service, @PathVariable String processId) {
+        //TODO 新增相同id就被覆盖了
+        String optUser = SecurityUtils.getSubject().getPrincipal().toString();
+        String optDate = DateUtils.format(new Date());
+        try {
+            serviceServiceImpl.insert(service);
+            com.dc.esb.servicegov.entity.ProcessContext processContext = new com.dc.esb.servicegov.entity.ProcessContext();
+            processContext.setName("服务定义");
+            processContext.setProcessId(processId);
+            processContext.setKey("service");
+            processContext.setValue(service.getServiceId());
+            processContext.setType("result");
+            processContext.setRemark("添加服务[" + service.getServiceId() + "(" + service.getServiceName() + ")" + "]");
+            processContext.setOptDate(optDate);
+            processContext.setOptUser(optUser);
+            processContextService.save(processContext);
+        } catch (DataIntegrityViolationException e) {
+            log.error(e,e);
+            return false;
+        }
         return true;
     }
 

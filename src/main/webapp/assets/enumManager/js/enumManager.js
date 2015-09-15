@@ -115,6 +115,18 @@ var enumManager ={
 			}
 		});
 	},
+	"saveElementMappingSToM" : function(data,callBack){
+		$.ajax({
+			"type" : "POST",
+			"contentType" : "application/json;charset=utf-8",
+			"url" : "/enum/saveElementMappingSToM",
+			"data": JSON.stringify(data),
+			"dataType": "json",
+			"success": function(result) {
+				callBack(result);
+			}
+		});
+	},
 	"deleteEnumElements" : function(data,callBack){
 		$.ajax({
 			"type" : "DELETE",

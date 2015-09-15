@@ -44,7 +44,7 @@
 						<input class="easyui-textbox" type="text" id="remarkSearch">
 					</td>
 					<th>
-						交易状态
+						状态
 					</th>
 					<td>
 
@@ -56,6 +56,13 @@
 					</td>
 				</tr>
 				<tr>
+					<th>
+						接口标签
+					</th>
+					<td>
+						<select class="easyui-textbox" id="interfaceTag" style="width: 170px">
+						</select>
+					</td>
 					<th>
 						报文头
 					</th>
@@ -69,12 +76,6 @@
 					<td>
 						<select class="easyui-combobox" id="protocolIdSearch" style="width: 165px" panelHeight="auto" data-options="editable:false">
                         </select>
-					</td>
-					<td>
-						&nbsp;
-					</td>
-					<td>
-						&nbsp;
 					</td>
 					<td>
 						&nbsp;
@@ -110,7 +111,7 @@
 						接口协议
 					</th>
 					<th data-options="field:'status',width:'9%',align:'right'" formatter='formatter.interfaceState'>
-						交易状态
+						状态
 					</th>
 					<th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
 						版本号
@@ -321,10 +322,12 @@
 		 	 var interfaceName = $("#interfaceName").val();
 		 	 var desc = $("#remarkSearch").val();
 		 	 var status = $("#statusSearch").combobox('getValue');
+			 var interfaceTag = $("#interfaceTag").textbox('getValue');
 		 	 var queryParams = $('#tg').datagrid('options').queryParams;
              queryParams.ecode = ecode;
              queryParams.interfaceName = interfaceName;
              queryParams.desc = encodeURI(desc);
+			 queryParams.interfaceTag = encodeURI(interfaceTag);
              queryParams.status = status;
              queryParams.protocolId = $("#protocolIdSearch").combobox('getValue');
              queryParams.headId = $("#headIdSearch").combobox('getValue');

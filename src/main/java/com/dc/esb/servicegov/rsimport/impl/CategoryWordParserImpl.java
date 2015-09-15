@@ -49,6 +49,7 @@ public class CategoryWordParserImpl implements IResourceParser {
 			Row row = sheet.getRow(rowNum);
 			CategoryWord categoryWord =parseRow(row);
 			//判断是否重复
+
 			CategoryWord categoryWord1 = categoryWordService.findUniqueBy("esglisgAb", categoryWord.getEsglisgAb());
 			if(null != categoryWord1){
 				categoryWord1.setRemark(categoryWord.getRemark());
@@ -62,6 +63,7 @@ public class CategoryWordParserImpl implements IResourceParser {
 				continue;
 			}
 			try{
+				log.info("开始导入类别词["+categoryWord.getEsglisgAb()+"]");
 				categoryWordService.save(categoryWord);
 			}catch(NonUniqueObjectException e){
 				log.error("类别词["+categoryWord.getId()+"]重复,执行覆盖！",e);
