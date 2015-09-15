@@ -49,7 +49,8 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
     private IdaHISDAOImpl idaHISDAO;
     @Autowired
     private VersionServiceImpl versionServiceImpl;
-
+    @Autowired
+    private SystemServiceImpl systemService;
 
     /**
      * TODO 这里为什么要这么做
@@ -101,107 +102,144 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
     @Override
     public List<TreeNode> getLeftTreeBySystems(List<com.dc.esb.servicegov.entity.System> systems) {
         List<TreeNode> rootList = new ArrayList<TreeNode>();
-        for (com.dc.esb.servicegov.entity.System s : systems) {
-
-            TreeNode interfacesNode = new TreeNode();
-            interfacesNode.setId(s.getSystemId());
-            interfacesNode.setText("接口");
-            interfacesNode.setClick("interfaces");
-
-            TreeNode headsNode = new TreeNode();
-            headsNode.setId(s.getSystemId());
-            headsNode.setText("报文头");
-            headsNode.setClick("heads");
-            List<InterfaceHead> heads = interfaceHeadService.findBy("systemId", s.getSystemId());
-            List<TreeNode> headTreeNodes = new ArrayList<TreeNode>();
-            for (InterfaceHead head : heads) {
-                TreeNode treeNode = new TreeNode();
-                treeNode.setId(head.getHeadId());
-                treeNode.setClick("head");
-                treeNode.setText(head.getHeadName());
-                headTreeNodes.add(treeNode);
-            }
-            headsNode.setChildren(headTreeNodes);
-
-            TreeNode protocolNode = new TreeNode();
-            protocolNode.setId(s.getSystemId());
-            protocolNode.setText("协议");
-            protocolNode.setClick("protocols");
-            List<TreeNode> protocolTreeNodes = new ArrayList<TreeNode>();
-            List<SystemProtocol> systemProtocols = systemProtocolService.findBy("systemId", s.getSystemId());
-            for (SystemProtocol systemProtocol : systemProtocols) {
-                String protocolId = systemProtocol.getProtocolId();
-                Protocol protocol = protocolService.getById(protocolId);
-                TreeNode treeNode = new TreeNode();
-                treeNode.setId(protocol.getProtocolId());
-                treeNode.setClick("protocol");
-                treeNode.setText(protocol.getProtocolName());
-                protocolTreeNodes.add(treeNode);
-            }
-            protocolNode.setChildren(protocolTreeNodes);
-
-            TreeNode fileNode = new TreeNode();
-            fileNode.setId(s.getSystemId());
-            fileNode.setText("文档");
-            fileNode.setClick("files");
-
-            List<FileManager> files = fileManagerService.findBy("systemId", s.getSystemId());
-            List<TreeNode> fileTreeNodes = new ArrayList<TreeNode>();
-            for (FileManager file : files) {
-                String fileName = file.getFileName();
-                String id = file.getFileId();
-                TreeNode treeNode = new TreeNode();
-                treeNode.setId(id);
-                treeNode.setText(fileName);
-                treeNode.setClick("file");
-                fileTreeNodes.add(treeNode);
-            }
-            fileNode.setChildren(fileTreeNodes);
-
-            List<TreeNode> rootChildren = new ArrayList<TreeNode>();
-            rootChildren.add(interfacesNode);
-            rootChildren.add(headsNode);
-            rootChildren.add(protocolNode);
-            rootChildren.add(fileNode);
-
+        for (com.dc.esb.servicegov.entity.System system : systems) {
+            List<TreeNode> systemTreeChildren = getSingleSystemTreeNode(system.getSystemId());
+            //构造系统节点
             TreeNode rootinterface = new TreeNode();
-            rootinterface.setId(s.getSystemId());
-            rootinterface.setText(s.getSystemChineseName());
+            rootinterface.setId(system.getSystemId());
+            rootinterface.setText(system.getSystemChineseName());
             rootinterface.setClick("disable");
-
-            rootinterface.setChildren(rootChildren);
-
-            try {
-                List<ServiceInvoke> serviceIns = s.getServiceInvokes();
-                List<TreeNode> childList = new ArrayList<TreeNode>();
-                for (ServiceInvoke si : serviceIns) {
-                    TreeNode child = new TreeNode();
-                    if (null == si.getInter()) {
-                        continue;
-                    }
-
-                    child.setId(si.getInter().getInterfaceId());
-                    child.setText(si.getInter().getInterfaceName() + "(" + si.getInter().getInterfaceId() + ")");
-                    if (!contains(childList, child)) {
-                        childList.add(child);
-                    }
-                }
-                Collections.sort(childList, new Comparator<TreeNode>() {
-
-                    @Override
-                    public int compare(TreeNode o1, TreeNode o2) {
-                        return o1.getText().compareToIgnoreCase(o2.getText());
-                    }
-
-                });
-                interfacesNode.setChildren(childList);
-            } catch (Exception e) {
-                log.error(e, e);
-            }
+            rootinterface.setChildren(systemTreeChildren);
             rootList.add(rootinterface);
         }
+        //返回整个系统节点数组
         return rootList;
     }
+
+    /**
+     * 获取单个系统下的树节点
+     *
+     * @param systemId
+     * @return
+     */
+    public List<TreeNode> getSingleSystemTreeNode(String systemId) {
+        List<TreeNode> systemTreeChildren = new ArrayList<TreeNode>();
+        com.dc.esb.servicegov.entity.System system = systemService.getById(systemId);
+        if (null != system) {
+            //构造接口操作节点
+            TreeNode interfacesNode = new TreeNode();
+            interfacesNode.setId(system.getSystemId());
+            interfacesNode.setText("接口");
+            interfacesNode.setClick("interfaces");
+            List<TreeNode> interfaceTreeChildren = getInterfaceTreeChildren(system);
+            interfacesNode.setChildren(interfaceTreeChildren);
+            //构造报文头操作节点
+            TreeNode headsNode = new TreeNode();
+            headsNode.setId(system.getSystemId());
+            headsNode.setText("报文头");
+            headsNode.setClick("heads");
+            //构造报文头数据节点
+            List<TreeNode> headTreeNodes = getHeadTreeChildren(system);
+            headsNode.setChildren(headTreeNodes);
+            //构造协议操作节点
+            TreeNode protocolNode = new TreeNode();
+            protocolNode.setId(system.getSystemId());
+            protocolNode.setText("协议");
+            protocolNode.setClick("protocols");
+            protocolNode.setTarget("/interface/getLeftTree/subProtocolTree/system/" + system.getSystemId());
+            //构造协议数据节点
+            List<TreeNode> protocolTreeNodes = getProtocolTreeChildren(system);
+            protocolNode.setChildren(protocolTreeNodes);
+            //构造文档操作节点
+            TreeNode fileNode = new TreeNode();
+            fileNode.setId(system.getSystemId());
+            fileNode.setText("文档");
+            fileNode.setClick("files");
+            //构造文档的数据节点
+            List<TreeNode> fileTreeNodes = getFileTreeChildren(system);
+            fileNode.setChildren(fileTreeNodes);
+
+            systemTreeChildren.add(interfacesNode);
+            systemTreeChildren.add(headsNode);
+            systemTreeChildren.add(protocolNode);
+            systemTreeChildren.add(fileNode);
+        }
+        return systemTreeChildren;
+    }
+
+    public List<TreeNode> getInterfaceTreeChildren(com.dc.esb.servicegov.entity.System system){
+        List<TreeNode> interfaceTreeChildren = new ArrayList<TreeNode>();
+        try {
+            List<ServiceInvoke> serviceIns = system.getServiceInvokes();
+            for (ServiceInvoke si : serviceIns) {
+                TreeNode child = new TreeNode();
+                if (null == si.getInter()) {
+                    continue;
+                }
+                child.setId(si.getInter().getInterfaceId());
+                child.setText(si.getInter().getInterfaceName() + "(" + si.getInter().getInterfaceId() + ")");
+                if (!contains(interfaceTreeChildren, child)) {
+                    interfaceTreeChildren.add(child);
+                }
+            }
+            Collections.sort(interfaceTreeChildren, new Comparator<TreeNode>() {
+
+                @Override
+                public int compare(TreeNode o1, TreeNode o2) {
+                    return o1.getText().compareToIgnoreCase(o2.getText());
+                }
+            });
+        } catch (Exception e) {
+            log.error(e, e);
+        }
+        return interfaceTreeChildren;
+    }
+
+    public List<TreeNode> getHeadTreeChildren(com.dc.esb.servicegov.entity.System system){
+        List<InterfaceHead> heads = interfaceHeadService.findBy("systemId", system.getSystemId());
+        List<TreeNode> headTreeNodes = new ArrayList<TreeNode>();
+        for (InterfaceHead head : heads) {
+            TreeNode treeNode = new TreeNode();
+            treeNode.setId(head.getHeadId());
+            treeNode.setClick("head");
+            treeNode.setText(head.getHeadName());
+            headTreeNodes.add(treeNode);
+        }
+        return headTreeNodes;
+    }
+
+    public List<TreeNode> getProtocolTreeChildren(com.dc.esb.servicegov.entity.System system){
+        List<TreeNode> protocolTreeNodes = new ArrayList<TreeNode>();
+        List<SystemProtocol> systemProtocols = systemProtocolService.findBy("systemId", system.getSystemId());
+        for (SystemProtocol systemProtocol : systemProtocols) {
+            String protocolId = systemProtocol.getProtocolId();
+            Protocol protocol = protocolService.getById(protocolId);
+            TreeNode treeNode = new TreeNode();
+            treeNode.setId(protocol.getProtocolId());
+            treeNode.setClick("protocol");
+            treeNode.setText(protocol.getProtocolName());
+
+            protocolTreeNodes.add(treeNode);
+        }
+        return protocolTreeNodes;
+    }
+
+    public List<TreeNode> getFileTreeChildren(com.dc.esb.servicegov.entity.System system){
+        List<FileManager> files = fileManagerService.findBy("systemId", system.getSystemId());
+        List<TreeNode> fileTreeNodes = new ArrayList<TreeNode>();
+        for (FileManager file : files) {
+            String fileName = file.getFileName();
+            String id = file.getFileId();
+            TreeNode treeNode = new TreeNode();
+            treeNode.setId(id);
+            treeNode.setText(fileName);
+            treeNode.setClick("file");
+            fileTreeNodes.add(treeNode);
+        }
+        return fileTreeNodes;
+    }
+
+
 
     private boolean contains(List<TreeNode> childList, TreeNode treeNode) {
         for (TreeNode node : childList) {
