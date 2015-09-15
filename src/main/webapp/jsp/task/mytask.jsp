@@ -16,19 +16,19 @@
     <script type="text/javascript" src="/assets/task/taskManager.js"></script>
     <script type="text/javascript">
         var userID = "";
-        $(function(){
+        $(function () {
             userID = $("#userId").text();
-            var url = '/process/'+userID+'/list';
+            var url = '/process/' + userID + '/list';
             $("#taskTable").datagrid({
-                rownumbers:true,
-                border:false,
-                toolbar:toolbar,
-                singleSelect:false,
-                url:url,
-                method:'get',
-                pagination:true,
-                pageSize:10,
-                pageList: [10,20,50]
+                rownumbers: true,
+                border: false,
+                toolbar: toolbar,
+                singleSelect: false,
+                url: url,
+                method: 'get',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 20, 50]
             });
         })
         var taskFormatter = {
@@ -69,7 +69,7 @@
 
 <body>
 <div id="userId" style="display: none"><shiro:principal/></div>
-<div class="easyui-tabs" style="width:100%;height:auto">
+<div class="easyui-tabs" id="taskTabs" style="width:100%;height:auto">
     <div title="未完成任务" style="padding:0px">
         <table id="taskTable" style="height:530px; width:auto;">
             <thead>
@@ -87,6 +87,23 @@
             </thead>
         </table>
     </div>
+    <%--<div title="任务详细" style="padding:0px">--%>
+        <%--<table id="taskInfoTable" style="height:620px; width:auto;">--%>
+            <%--<thead>--%>
+            <%--<tr>--%>
+                <%--<th data-options="field:'productid',checkbox:true"></th>--%>
+                <%--<th data-options="field:'id'">任务ID</th>--%>
+                <%--<th data-options="field:'name'">任务名称</th>--%>
+                <%--<th data-options="field:'subject'">主题</th>--%>
+                <%--<th data-options="field:'description'">描述</th>--%>
+                <%--<th data-options="field:'status'" formatter="taskFormatter.formatStatus">状态</th>--%>
+                <%--<th data-options="field:'priority'" formatter="taskFormatter.formatPriority">优先级</th>--%>
+                <%--<th data-options="field:'createBy'" formatter="taskFormatter.formatCreateBy">创建人</th>--%>
+                <%--<th data-options="field:'actualOwner'" formatter="taskFormatter.formatActualOwner">受理人</th>--%>
+            <%--</tr>--%>
+            <%--</thead>--%>
+        <%--</table>--%>
+    <%--</div>--%>
 
     <script type="text/javascript">
         var Global = {};
@@ -196,17 +213,23 @@
                                 if (task.name == "接口定义") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    parent.SYSMENU.changeLeftMenu(6);
+//                                    parent.SYSMENU.changeLeftMenu(6);
+                                    parent.SYSMENU.changeLeftMenuWithCallBack(6, function () {
+                                        var callBack = function (result) {
+                                            parent.SYSMENU.reloadTreeByValue('msinterfacetree', result);
+                                        };
+                                        taskManager.getSystemTreeByProcess(parent.PROCESS_INFO.processId, callBack);
+                                    });
                                     alert("请在左侧系统菜单中右键新增接口。");
                                 }
                                 if (task.name == "服务审核") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    parent.SYSMENU.changeLeftMenuWithCallBack(4,function(){
+                                    parent.SYSMENU.changeLeftMenuWithCallBack(4, function () {
                                         var callBack = function (result) {
                                             parent.SYSMENU.reloadTreeByValue('mxservicetree', result);
                                         };
-                                        taskManager.getServiceByProcess(parent.PROCESS_INFO.processId,callBack);
+                                        taskManager.getServiceByProcess(parent.PROCESS_INFO.processId, callBack);
                                     });
                                 }
                                 if (task.name == "服务发布") {
@@ -220,11 +243,11 @@
                                 if (task.name == "服务开发") {
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
-                                    parent.SYSMENU.changeLeftMenuWithCallBack(4,function(){
+                                    parent.SYSMENU.changeLeftMenuWithCallBack(4, function () {
                                         var callBack = function (result) {
                                             parent.SYSMENU.reloadTreeByValue('mxservicetree', result);
                                         };
-                                        taskManager.getServiceByProcess(parent.PROCESS_INFO.processId,callBack);
+                                        taskManager.getServiceByProcess(parent.PROCESS_INFO.processId, callBack);
                                     });
                                     alert("请在右侧服务选择服务，进行开发。");
                                 }
@@ -241,6 +264,55 @@
                     else {
                         alert("请选中要修改的数据！");
                     }
+                }
+            }, {
+                text: '查看详情',
+                iconCls: 'icon-edit',
+                handler: function () {
+                    var checkedItems = $('#taskTable').datagrid('getChecked');
+                    var checkedItem;
+                    if (checkedItems != null && checkedItems.length > 0) {
+                        if (checkedItems.length > 1) {
+                            alert("请选择一个任务进行分配！");
+                            return false;
+                        }
+                        else {
+                            checkedItem = checkedItems[0];
+                            Global.taskId = checkedItem.id;
+                            Global.processInstanceId = checkedItem.processInstanceId;
+                            Global.taskName = checkedItem.name;
+                            var task = {};
+                            task.processInstanceId = Global.processInstanceId;
+                            task.taskId = Global.taskId;
+                            task.userId = $("#userId").text();
+                            task.name = Global.taskName;
+                            task.name = task.name.replace(/(^\s*)|(\s$)/g, '');
+                            parent.PROCESS_INFO.processId = checkedItem.processInstanceId;
+                            parent.PROCESS_INFO.taskName = task.name;
+                            parent.PROCESS_INFO.taskId = task.taskId;
+                            var taskInfoTab = $('#taskTabs').tabs('getTab', "任务详细");
+                            var url = '<iframe scrolling="auto" frameborder="0"  src="/jsp/task/taskInfo.jsp?processId='+checkedItem.processInstanceId+'" style="width:100%;height:600px;"></iframe>';
+
+                            if (taskInfoTab) {
+                                $('#taskTabs').tabs("update", {
+                                    tab: taskInfoTab,
+                                    options: {
+                                        content: url
+                                    }
+                                });
+                            }else{
+                                $('#taskTabs').tabs("add", {
+                                    title: "任务详细",
+                                    content: url
+                                });
+                            }
+                            $("#taskTabs").tabs("select", "任务详细");
+                        }
+                    }
+                    else {
+                        alert("请选中要修改的数据！");
+                    }
+
                 }
             }
         ];

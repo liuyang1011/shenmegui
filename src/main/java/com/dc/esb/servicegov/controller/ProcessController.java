@@ -1,6 +1,8 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.entity.ProcessContext;
 import com.dc.esb.servicegov.process.impl.JbpmSupport;
+import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -18,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +36,9 @@ public class ProcessController {
 
     @Autowired
     private JbpmSupport jbpmSupport;
+
+    @Autowired
+    private ProcessContextServiceImpl processContextService;
 
     @RequestMapping("/")
     public String test() {
@@ -140,6 +147,18 @@ public class ProcessController {
         modelAndView.addObject(processId);
         modelAndView.addObject(taskId);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/getContext/{processId}", method = RequestMethod.GET)
+    public @ResponseBody List<ProcessContext> getProcessContext(@PathVariable("processId") String processId){
+//        List<ProcessContext> processContexts = processContextService.findBy("processId", processId);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("processId", processId);
+        List<ProcessContext> processContexts = processContextService.findBy(params,"optDate");
+        if(null == processContexts){
+            processContexts = new ArrayList<ProcessContext>();
+        }
+        return processContexts;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

@@ -16,44 +16,7 @@
     <script type="text/javascript" src="/resources/js/ui.js"></script>
     <script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
 </head>
-
 <body>
-<fieldset>
-    <legend>
-        条件搜索
-    </legend>
-    <table border="0" cellspacing="0" cellpadding="0">
-        <tr>
-
-
-            <th>
-                系统名称
-            </th>
-            <td>
-                <select class="" id="systemIdSearch" style="width:155px" panelHeight="auto"
-                        data-options="editable:false">
-                </select>
-            </td>
-            <th>
-                文件名称
-            </th>
-            <td>
-                <input class="easyui-textbox" type="text" id="fileName">
-            </td>
-            <th>
-                文件描述
-            </th>
-            <td>
-                <input class="easyui-textbox" type="text" id="fileDesc">
-            </td>
-            <td align="right">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
-            </td>
-        </tr>
-    </table>
-
-
-</fieldset>
 <table id="tg" style="height:370px;width: auto;" data-options="pageSize:5">
     <thead>
     <tr>
@@ -84,7 +47,6 @@
 <div id="w" class="easyui-window" title=""
      data-options="modal:true,closed:true,iconCls:'icon-add'"
      style="width: 500px; height: 200px; padding: 10px;">
-
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -134,7 +96,7 @@
                         alert("请选择要删除的行");
                     }
                 }
-            },{
+            }, {
                 text: '提交任务',
                 iconCls: 'icon-ok',
                 handler: function () {
@@ -187,8 +149,8 @@
         $("#tg").datagrid('reload');//重新加载table
     }
 
-    function downloadFormatter(value){
-        var s = '<a iconcls="icon-save"  style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="/fileManager/download?fileId='+value+'" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">下载</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
+    function downloadFormatter(value) {
+        var s = '<a iconcls="icon-save"  style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="/fileManager/download?fileId=' + value + '" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">下载</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
         return s;
     }
 </script>

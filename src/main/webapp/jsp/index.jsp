@@ -25,12 +25,12 @@
             <a href="javascript:;" mid="2">公共信息</a>
         </li>
         <li>
-            <a href="javascript:;">系统管理</a>
-            <ul>
-                <li><a href="javascript:;" mid="6">接口管理</a></li>
-                <%--<li><a href="javascript:;" mid="13">接口检索</a></li>--%>
-                <li><a href="javascript:;" mid="3">报文头管理</a></li>
-            </ul>
+            <a href="javascript:;" mid="6">系统管理</a>
+            <%--<ul>--%>
+                <%--<li><a href="javascript:;" mid="6">接口管理</a></li>--%>
+                <%--&lt;%&ndash;<li><a href="javascript:;" mid="13">接口检索</a></li>&ndash;%&gt;--%>
+                <%--<li><a href="javascript:;" mid="3">报文头管理</a></li>--%>
+            <%--</ul>--%>
         </li>
         <li>
             <a href="javascript:;">服务管理</a>
@@ -178,7 +178,18 @@
     删除协议
     </div>
 </div>
-
-
+<div id="mm-mxfiles" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.addFilePage()" data-options="iconCls:'icon-add'">
+        新增文件
+    </div>
+</div>
+<div id="mm-mxfile" class="easyui-menu" style="width: 120px;">
+    <div onclick="sysManager.addFilePage()" data-options="iconCls:'icon-add'">
+        新增文件
+    </div>
+    <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
+        删除文件
+    </div>
+</div>
 </body>
 </html>

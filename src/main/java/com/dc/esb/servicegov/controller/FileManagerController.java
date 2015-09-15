@@ -2,12 +2,14 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
-import com.dc.esb.servicegov.entity.FileManager;
-import com.dc.esb.servicegov.entity.Interface;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.FileManagerService;
+import com.dc.esb.servicegov.service.SystemService;
+import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.Utils;
 import org.apache.commons.io.FileUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -40,11 +42,16 @@ public class FileManagerController {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     FileManagerService fileManagerService;
+    @Autowired
+    private ProcessContextServiceImpl processContextService;
+    @Autowired
+    private SystemService systemService;
 
     @RequiresPermissions({"file-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getAll", headers = "Accept=application/json")
-    public @ResponseBody
-    Map<String,Object> getAll(HttpServletRequest req){
+    public
+    @ResponseBody
+    Map<String, Object> getAll(HttpServletRequest req) {
         String starpage = req.getParameter("page");
 
         String rows = req.getParameter("rows");
@@ -56,7 +63,7 @@ public class FileManagerController {
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
 
         StringBuffer hql = new StringBuffer("FROM FileManager t1 WHERE 1=1");
-        if(fileName!=null && !"".equals(fileName)){
+        if (fileName != null && !"".equals(fileName)) {
             SearchCondition searchCond = new SearchCondition();
             hql.append(" and t1.fileName like ?");
             searchCond.setField("fileName");
@@ -64,7 +71,7 @@ public class FileManagerController {
             searchConds.add(searchCond);
         }
 
-        if(fileDesc!=null && !"".equals(fileDesc)){
+        if (fileDesc != null && !"".equals(fileDesc)) {
             SearchCondition searchCond = new SearchCondition();
             hql.append(" and t1.fileDesc like ?");
             searchCond.setField("fileDesc");
@@ -72,7 +79,7 @@ public class FileManagerController {
             searchConds.add(searchCond);
         }
 
-        if(systemId!=null && !"".equals(systemId)){
+        if (systemId != null && !"".equals(systemId)) {
             SearchCondition searchCond = new SearchCondition();
             hql.append(" and t1.systemId = ?");
             searchCond.setField("systemId");
@@ -83,6 +90,7 @@ public class FileManagerController {
         Page page = fileManagerService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);
         page.setPage(Integer.parseInt(starpage));
 
+
         List<FileManager> fms = fileManagerService.findBy(hql.toString(),page,searchConds);
         for(FileManager f:fms){
             if(null != f.getSystem()){
@@ -91,7 +99,7 @@ public class FileManagerController {
             f.setSystem(null);
         }
 
-        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("total", page.getResultCount());
         map.put("rows", fms);
         return map;
@@ -100,7 +108,8 @@ public class FileManagerController {
 
     @RequiresPermissions({"file-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addfile")
-    public String uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("fileDesc") String fileDesc,@RequestParam("systemId") String systemId,HttpServletRequest request){
+    public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileDesc") String fileDesc,
+                             @RequestParam("systemId") String systemId, HttpServletRequest request) {
         String fileName = file.getOriginalFilename();
         long fileSize = file.getSize();
         FileManager fm = new FileManager();
@@ -111,37 +120,95 @@ public class FileManagerController {
         //保存
         try {
             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd/");
-
             //设置保存路径
-            String path = new File(request.getRealPath(request.getRequestURI())).getParentFile().getParent()+"/data/"+ dateformat.format(new Date());
+            String path = new File(request.getRealPath(request.getRequestURI())).getParentFile().getParent() + "/data/"
+                    + dateformat.format(new Date());
             String fileStoreName = "" + new Date().getTime();
-            fm.setFilePath(path+"/"+fileStoreName);
-
-            File destFile = new File(path,fileStoreName);
-
-            if(!destFile.exists()){
+            fm.setFilePath(path + "/" + fileStoreName);
+            File destFile = new File(path, fileStoreName);
+            if (!destFile.exists()) {
                 destFile.mkdirs();
             }
             file.transferTo(destFile);
-
             fm.setOptDate(DateUtils.format(new Date()));
-
             fileManagerService.save(fm);
         } catch (Exception e) {
-            logger.error("保存文件失败，出现异常："+e.getMessage());
+            logger.error("保存文件失败，出现异常：" + e.getMessage());
+        }
+        return "forward:/jsp/sysadmin/file_list.jsp";
+    }
+
+    @RequiresPermissions({"file-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/addfile/{processId}")
+    public String uploadFileWithProcess(@RequestParam("file") MultipartFile file,
+                                        @RequestParam("fileDesc") String fileDesc,
+                                        @RequestParam("systemId") String systemId,
+                                        @PathVariable("processId") String processId, HttpServletRequest request) {
+        String optUser = (String)SecurityUtils.getSubject().getPrincipal();
+        String optDate = DateUtils.format(new Date());
+        String fileName = file.getOriginalFilename();
+        long fileSize = file.getSize();
+        FileManager fm = new FileManager();
+        fm.setFileName(fileName);
+        fm.setFileSize(Utils.byte2MGT(fileSize + ""));
+        fm.setFileDesc(fileDesc);
+        fm.setSystemId(systemId);
+        //保存
+        try {
+            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd/");
+            //设置保存路径
+            String path = new File(request.getRealPath(request.getRequestURI())).getParentFile().getParent() + "/data/" + dateformat.format(new Date());
+            String fileStoreName = "" + new Date().getTime();
+            fm.setFilePath(path + "/" + fileStoreName);
+            File destFile = new File(path, fileStoreName);
+            if (!destFile.exists()) {
+                destFile.mkdirs();
+            }
+            file.transferTo(destFile);
+            fm.setOptDate(optDate);
+
+            fileManagerService.save(fm);
+
+            com.dc.esb.servicegov.entity.ProcessContext processContext2 = new com.dc.esb.servicegov.entity.ProcessContext();
+            processContext2.setName("接口需求文件上传");
+            processContext2.setProcessId(processId);
+            processContext2.setKey("system");
+            com.dc.esb.servicegov.entity.System system = systemService.getById(systemId);
+            processContext2.setValue(systemId);
+            processContext2.setType("result");
+            processContext2.setRemark("修改了系统[" + system.getSystemAb() + "("+ system.getSystemChineseName() +")"
+                    + "]进行了需求文件上传");
+            processContext2.setOptDate(optDate);
+            processContext2.setOptUser(optUser);
+            processContextService.save(processContext2);
+
+            com.dc.esb.servicegov.entity.ProcessContext processContext = new com.dc.esb.servicegov.entity.ProcessContext();
+            processContext.setName("接口需求文件上传");
+            processContext.setProcessId(processId);
+            processContext.setKey("file");
+            processContext.setValue(fm.getFileId());
+            processContext.setType("result");
+            processContext.setRemark("在系统[" + system.getSystemAb() + "("+ system.getSystemChineseName() +")"
+                    +  "]中上传了需求文件[" + fm.getFileName() + "]");
+            processContext.setOptDate(optDate);
+            processContext.setOptUser(optUser);
+            processContextService.save(processContext);
+        } catch (Exception e) {
+            logger.error("保存文件失败，出现异常：" + e.getMessage());
         }
         return "forward:/jsp/sysadmin/file_list.jsp";
     }
 
     @RequiresPermissions({"file-delete"})
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{fileId}", headers = "Accept=application/json")
-    public @ResponseBody
+    public
+    @ResponseBody
     boolean delete(@PathVariable
                    String fileId) {
-        FileManager fm =  fileManagerService.getById(fileId);
-        if(fm!=null && fm.getFilePath()!=null){
+        FileManager fm = fileManagerService.getById(fileId);
+        if (fm != null && fm.getFilePath() != null) {
             File file = new File(fm.getFilePath());
-            if(file!=null && file.exists()){
+            if (file != null && file.exists()) {
                 file.delete();
             }
         }
@@ -176,7 +243,7 @@ public class FileManagerController {
                 }
             }
         }
-       return null;
+        return null;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

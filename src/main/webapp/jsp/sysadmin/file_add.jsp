@@ -59,13 +59,13 @@
 	});
 
 	function save(){
-
-
+		var processId = parent.PROCESS_INFO.processId;
+		if(processId){
+			$("#fileform").attr("action", "/fileManager/addfile/" +processId);
+		}
 		$("#fileform").submit();
 		$('#w').window('close');
-
 	}
-
 </script>
 
 

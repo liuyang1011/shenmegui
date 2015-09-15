@@ -58,9 +58,8 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
                 metadataService.save(metadata);
-            } catch (Exception e){
-                System.out.println(metadata.getMetadataName());
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error("导入元数据[" + metadata.getMetadataId() + "]失败", e);
             }
         }
     }
@@ -79,9 +78,9 @@ public class MetadataXlsxParserImpl implements IResourceParser {
         String type = getTypeFromFormula(str[0]);
         String length = "";
         String scale = "";
-        if(str.length>1){
-            length = getLengthFromFormula(str[1].replaceAll("，",","));
-            scale = getScaleFromFormula(str[1].replaceAll("，",","));
+        if (str.length > 1) {
+            length = getLengthFromFormula(str[1].replaceAll("，", ","));
+            scale = getScaleFromFormula(str[1].replaceAll("，", ","));
         }
         metadata.setType(type);
         metadata.setLength(length);
@@ -106,7 +105,7 @@ public class MetadataXlsxParserImpl implements IResourceParser {
 
     public static String getLengthFromFormula(String formula) {
         String length = "";
-        if(null != formula){
+        if (null != formula) {
             String str[] = formula.split(",");
             length = str[0];
         }
@@ -128,9 +127,9 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     public static String getScaleFromFormula(String formula) {
         String scale = "";
 
-        if(null != formula){
+        if (null != formula) {
             String str[] = formula.split(",");
-            if(str.length>1){
+            if (str.length > 1) {
                 scale = str[1];
             }
         }

@@ -15,8 +15,8 @@ import java.io.Serializable;
 public class FileManager implements Serializable {
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid",strategy="uuid")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "FILE_ID")
     private String fileId;
 
@@ -24,7 +24,7 @@ public class FileManager implements Serializable {
     private String fileName;
 
     @Column(name = "FILE_PATH")
-    private String filePath ;
+    private String filePath;
 
     @Column(name = "FILE_SIZE")
     private String fileSize;
@@ -43,8 +43,8 @@ public class FileManager implements Serializable {
 
     private String systemName;
 
-    @OneToOne(targetEntity = System.class,cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "SYSTEM_ID",referencedColumnName = "SYSTEM_ID",insertable = false,updatable = false)
+    @OneToOne(targetEntity = System.class, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "SYSTEM_ID", referencedColumnName = "SYSTEM_ID", insertable = false, updatable = false)
     private System system;
 
     public String getFileId() {

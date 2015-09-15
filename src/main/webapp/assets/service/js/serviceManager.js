@@ -24,10 +24,15 @@ var serviceManager ={
 		});
 	},
 	"add" : function add(service,callBack){
+		var processId = parent.PROCESS_INFO.processId;
+		var url = "/service/addService";
+		if(processId){
+			url = "/service/addService/" + processId;
+		}
 		$.ajax({
 			"type" : "POST",
 			"contentType" : "application/json;charset=utf-8",
-			"url": "/service/addService",
+			"url": url,
 			"data": JSON.stringify(service),
 			"dataType": "json",
 			"success": function(result) {
