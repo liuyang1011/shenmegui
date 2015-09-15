@@ -1,11 +1,10 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<<<<<<< HEAD
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>系統管理</title>
+    <title>系统管理</title>
     <link rel="stylesheet" type="text/css"
           href="/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css"
@@ -17,24 +16,6 @@
     <script type="text/javascript" src="/resources/js/ui.js"></script>
     <script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
 </head>
-=======
-	<head>
-		<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>系统管理</title>
-		<link rel="stylesheet" type="text/css"
-			href="/resources/themes/default/easyui.css">
-		<link rel="stylesheet" type="text/css"
-			href="/resources/themes/icon.css">
-		<link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
-		<script type="text/javascript"
-			src="/resources/js/jquery.easyui.min.js"></script>
-		<script type="text/javascript" src="/resources/js/ui.js"></script>
-		<script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
-	</head>
->>>>>>> 65cdcdc5464e87a88bb079064a38b76ae3296cc7
-
 <body>
 <fieldset>
     <legend>
@@ -99,10 +80,8 @@
         </tr>
     </table>
 
-
-<<<<<<< HEAD
 </fieldset>
-<table id="tg" style="height: 300px; width: 100%" data-options="pageSize:2">
+<table id="tg" data-options="pageSize:2">
     <thead>
     <tr>
         <th data-options="field:'systemId',width:'10%'">
@@ -126,34 +105,6 @@
         <th data-options="field:'workRange',width:'15%',align:'left'">
             工作范围
         </th>
-=======
-		</fieldset>
-		<table id="tg" data-options="pageSize:2">
-			<thead>
-				<tr>
-					<th data-options="field:'systemId',width:'10%'">
-						系统ID
-					</th>
-					<th data-options="field:'systemAb',width:'12%'">
-						系统简称
-					</th>
-					<th data-options="field:'systemChineseName',width:'15%'">
-						系统中文名称
-					</th>
-					<th data-options="field:'protocolName',width:'15%',align:'center'">
-                    	系统协议
-                    </th>
-                    <th data-options="field:'principal1',width:'10%'">
-                    	联系人
-                    </th>
-					<th data-options="field:'featureDesc',align:'right',width:'20%'">
-						系统描述
-					</th>
-					<th data-options="field:'workRange',width:'15%',align:'left'">
-						工作范围
-					</th>
->>>>>>> 65cdcdc5464e87a88bb079064a38b76ae3296cc7
-
     </tr>
     </thead>
 </table>
@@ -161,7 +112,6 @@
      data-options="modal:true,closed:true,iconCls:'icon-add'"
      style="width: 500px; height: 200px; padding: 10px;">
 
-<<<<<<< HEAD
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -245,77 +195,6 @@
                         });
                     }
                 }
-=======
-		</div>
-		<script type="text/javascript">
-		 $(document).ready(function(){ 
-			$('#tg').datagrid({
-	        title:'系统基本信息维护',
-	        iconCls:'icon-edit',//图标 
-	        width: 'auto', 
-	        height: '440px',
-	        collapsible: true,
-	        method:'post',
-	        url:'/system/getAll',
-	        singleSelect:true,//是否单选 
-	        pagination:true,//分页控件 
-	        pageSize: 13,//每页显示的记录条数，默认为10
-		    pageList: [13,15,20],//可以设置每页记录条数的列表
-	        rownumbers:true,//行号
-	        toolbar: [{
-					text:'新增',
-					iconCls:'icon-add',
-					handler:function(){
-					    
-							sysManager.addSystemPage();
-						}
-					},{
-						text:'修改',
-						iconCls:'icon-edit',
-						handler:function(){
-							var node = $('#tg').datagrid("getSelected");
-							if(node){
-								uiinit.win({
-									w:500,
-									iconCls:'icon-add',
-									title:"编辑系统",
-									url : "/system/edit/"+node.systemId
-								});
-							}else{
-								alert("请选择要修改的行");
-							}
-						}
-					},{
-						text:'删除',
-						iconCls:'icon-remove',
-						handler:function(){
-							var node = $('#tg').datagrid("getSelected");
-							if(node){
-								if(!confirm("确定要删除选中的记录吗？")){
-									return;
-								}
-								 $.ajax({
-										type: "GET",
-										contentType: "application/json; charset=utf-8",
-										url: "/system/delete/"+node.systemId,
-										dataType: "json",
-										success: function(result) {
-											$('#tg').datagrid("reload");
-										},
-										 complete:function(responce){
-											 var resText = responce.responseText;
-											 if(resText.toString().charAt(0) == "<"){
-												 alert("没有权限！");
-	//                              window.location.href = "/jsp/403.jsp";
-											 }
-										 }
-									});
-							}else{
-								alert("请选择要删除的行");
-							}
-						}
->>>>>>> 65cdcdc5464e87a88bb079064a38b76ae3296cc7
-
             }
             ],
             onLoadError: function (responce) {
