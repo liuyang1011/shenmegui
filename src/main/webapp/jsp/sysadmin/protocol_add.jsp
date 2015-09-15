@@ -143,6 +143,11 @@
 								}else{
 
 								}
+								$('#w').window('close');
+								$('#tg').datagrid("reload");
+								$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
+								$('.msinterfacetree').tree("reload", selectNode.target);
+
 							},
 							complete:function(responce){
 								var resText = responce.responseText;
@@ -153,9 +158,7 @@
 						});
 					}
 				}
-				$('#w').window('close');
-				$('#tg').datagrid("reload");
-				$('.msinterfacetree').tree("reload");
+
 			}else{
 				alert("保存失败");
 			}

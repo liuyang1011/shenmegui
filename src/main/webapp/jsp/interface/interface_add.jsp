@@ -187,20 +187,18 @@
 		serviceInvoke.interfaceId = interfaceId;
 		invokes.push(serviceInvoke);
 		data.serviceInvoke = invokes;
-		//data.serviceInvoke.interfaceId = interfaceId;
 		interfaceManager.add(data,"add",function(result){
 			if(result){
 				$('#w').window('close');
-				
-				treeObj.tree("reload");
-				
+				var selectNode = $('.msinterfacetree').tree("getSelected");
+				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
+				$('.msinterfacetree').tree("reload", selectNode.target);
+
 				$('#tg').datagrid("reload");
-				
 			}else{
 				alert("保存失败");
 			}
         });
-        
 	}
 
 </script>

@@ -146,6 +146,14 @@ public class SystemController {
         return map;
     }
 
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getById/{systemId}", headers = "Accept=application/json")
+    public @ResponseBody
+    System getById(@PathVariable String systemId) {
+        return systemService.getById(systemId);
+
+    }
+
     @RequiresPermissions({"system-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public @ResponseBody
@@ -249,12 +257,12 @@ public class SystemController {
             return true;
         }
         if(protocols!=null && systemId!=null){
-            try {
-                systemProtocolService.deleteSystemProtocol(systemId);
-
-            }catch (ObjectNotFoundException e){
-                logger.info("该系统中["+systemId+"]没发现关联的协议可删除");
-            }
+//            try {
+//                systemProtocolService.deleteSystemProtocol(systemId);
+//
+//            }catch (ObjectNotFoundException e){
+//                logger.info("该系统中["+systemId+"]没发现关联的协议可删除");
+//            }
             StringTokenizer tokenizer = new StringTokenizer(protocols,",");
             while (tokenizer.hasMoreElements()){
                 String protocol = tokenizer.nextElement().toString();
