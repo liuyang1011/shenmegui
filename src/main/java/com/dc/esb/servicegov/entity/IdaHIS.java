@@ -81,7 +81,7 @@ public class IdaHIS {
 		this.headId = ida.getHeadId();
 		this.version = ida.getVersion();
 		this.remark = ida.getRemark();
-		this.interObj = ida.getInterObj();
+//		this.interObj = ida.getInterObj();
 		this.heads = ida.getHeads();
 	}
 
@@ -89,9 +89,9 @@ public class IdaHIS {
 	//参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
 //    private String argType;
 
-	@ManyToOne
-	@JoinColumn(name="INTERFACE_ID",referencedColumnName = "INTERFACE_ID",insertable = false,updatable = false)
-	private Interface interObj;
+//	@ManyToOne
+//	@JoinColumn(name="INTERFACE_ID",referencedColumnName = "INTERFACE_ID",insertable = false,updatable = false)
+//	private Interface interObj;
 
 	@ManyToOne
 	@JoinColumn(name = "HEAD_ID",referencedColumnName = "HEAD_ID",insertable = false,updatable = false)
@@ -216,15 +216,6 @@ public class IdaHIS {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-
-	public Interface getInterObj() {
-		return interObj;
-	}
-
-	public void setInterObj(Interface interObj) {
-		this.interObj = interObj;
-	}
-
 
 	public String getRemark() {
 		return remark;

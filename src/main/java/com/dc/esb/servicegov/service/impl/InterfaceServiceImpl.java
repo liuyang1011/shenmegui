@@ -22,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.System;
+import java.net.URLDecoder;
 import java.util.*;
 
 @Service
@@ -220,6 +222,13 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
     @Override
     public boolean releaseBatch(String interfaceIds, String versionDesc) {
         if (StringUtils.isNotEmpty(interfaceIds)) {
+            if(StringUtils.isNotEmpty(versionDesc)){
+                try {
+                    versionDesc = URLDecoder.decode(versionDesc, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e, e);
+                }
+            }
             String[] ids = interfaceIds.split("\\,");
             for (int i = 0; i < ids.length; i++) {
                 try {
@@ -243,6 +252,10 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
         Interface inter = interfaceDAOImpl.findUniqueBy("interfaceId", interfaceId);
         InterfaceHIS interfaceHis = new InterfaceHIS(inter);
         interfaceHISDAO.save(interfaceHis);//备份interfaceHis
+        if(StringUtils.isEmpty(inter.getVersionId())){//如果当前接口没有版本信息（之前接口没有版本功能）
+            String versionId = versionServiceImpl.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(), Constants.Version.TYPE_ELSE);
+            inter.setVersionId(versionId);
+        }
         String versionHisId = versionServiceImpl.releaseVersion(inter.getVersionId(), interfaceHis.getAutoId(), versionDesc);//生成发布版本，返回versionHisId
         interfaceHis.setVersionHisId(versionHisId);
         interfaceHISDAO.save(interfaceHis);//关联接口历史版本

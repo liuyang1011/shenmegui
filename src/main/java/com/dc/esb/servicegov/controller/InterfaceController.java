@@ -498,10 +498,10 @@ public class InterfaceController {
     }
 
     @RequiresPermissions({"system-add"})
-    @RequestMapping(method = RequestMethod.GET, value = "/release/{interfaceIds}", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/release", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean release(@PathVariable String interfaceIds, String versionDesc) {
+    boolean release(String interfaceIds, String versionDesc) {
         boolean result = interfaceService.releaseBatch(interfaceIds, versionDesc);
         return result;
     }

@@ -71,9 +71,10 @@ var interfaceManager = {
         });
     },
     append:function(systemId){
-
     	uiinit.win({
 			w:500,
+            top:"50px",
+            left: (2*$(document).width() - $(top).width() -500)/2 +"px",
 			iconCls:'icon-add',
 			title:"新增接口",
 			url : "/jsp/interface/interface_add.jsp?systemId="+systemId
@@ -92,6 +93,8 @@ var interfaceManager = {
     	}
     	uiinit.win({
 			w:500,
+            top:"20px",
+            left:"150px",
 			iconCls:'icon-add',
 			title:"编辑报文",
 			url : "/interface/edit/"+sId+"?systemId="+systemId
@@ -133,26 +136,28 @@ var interfaceManager = {
     
     },
 
-    release:function(){
-        var rows = $("#tg").datagrid("getSelections");
-        var interfaceIds = "";
-        for(var per in rows){
-            if(per == rows.length-1){
-                interfaceIds += rows[per].interfaceId;
-            }else{
-                interfaceIds += rows[per].interfaceId + ",";
-            }
-
-        }
+    release:function(interfaceIds,versionDesc ){
         $.ajax({
             type: "get",
             contentType: "application/json; charset=utf-8",
-            url: "/interface/release/"+interfaceIds,
+            url: "/interface/release",
             dataType: "json",
+            data:{
+                "interfaceIds":interfaceIds,
+                "versionDesc":encodeURI(versionDesc)
+                    },
             success: function(result) {
                 if(result){
-                    alert("发布成功")
-                    $("#tg").datagrid("reload");
+                    $('#releaseDlg').dialog('close');
+                    alert("发布成功");
+                    try{
+                        $("#tg").datagrid("reload");
+                    }catch (exception) {
+                    }
+                    try{
+                        $("#interfacetg").datagrid("reload");
+                    }catch (exception) {
+                    }
                 }
             }
         });
