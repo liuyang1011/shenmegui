@@ -37,6 +37,7 @@
             <ul>
                 <li><a href="javascript:;" mid="4">服务信息管理</a></li>
                 <li><a href="javascript:;" mid="12">服务发布管理</a></li>
+                <li><a href="javascript:;" mid="14">服务检索</a></li>
             </ul>
         </li>
         <li>
@@ -60,7 +61,7 @@
      class="west-menu" id="west-menu">
 
 </div>
-<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
+<div data-options="region:'center',collapsible:true,border:false,tabHeight:39,"
      class="easyui-tabs " id="mainContentTabs">
 </div>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
@@ -124,19 +125,19 @@
         新增接口
     </div>
     <div onclick="sysManager.editSystemPage()" data-options="iconCls:'icon-edit'">
-        编辑系統
+        编辑系统
     </div>
     <div onclick="sysManager.deleteSystem()" data-options="iconCls:'icon-remove'">
-        删除系統
+        删除系统
     </div>
 </div>
 
 <div id="mm-mxsystemtree" class="easyui-menu" style="width: 120px;">
     <div onclick="sysManager.addSystemPage()" data-options="iconCls:'icon-add'">
-        新增系統
+        新增系统
     </div>
     <div onclick="sysManager.querySystemPage()" data-options="iconCls:'icon-add'">
-        查看系統
+        查看系统
     </div>
 </div>
 

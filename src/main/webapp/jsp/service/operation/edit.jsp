@@ -38,7 +38,6 @@
                     $("#tags").append("<li>" + tag.tagName + "</li>");
                 });
                 $("#tags").tagit();
-
             };
             serviceId = $("#serviceId").attr("value");
             operationId = $("#operationId").textbox("getValue");
@@ -80,7 +79,6 @@
             handler: function () {
 //                $("#resultList").datagrid('get',{total:0,rows:[]});
                 var row = $("#resultList").datagrid('getSelected');
-                console.log(row);
                 var index =  $("#resultList").datagrid('getRowIndex',row);
                 $.ajax({
                     type: "POST",

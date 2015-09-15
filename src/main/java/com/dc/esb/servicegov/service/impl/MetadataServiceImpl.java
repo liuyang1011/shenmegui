@@ -321,6 +321,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
 //        String hql = "select a,b.chineseWord from Metadata a, CategoryWord b where 1=1 and a.categoryWordId=b.englishWord ";
         String hql = "from Metadata a left join a.categoryWord where 1=1 ";
         hql += genderHql(values);
+        hql += " order by a.categoryWordId";
         List<Object[]> list = metadataDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
         List<MetadataBean> metadataBeanList = new ArrayList<MetadataBean>();
         for (Object[] per : list){

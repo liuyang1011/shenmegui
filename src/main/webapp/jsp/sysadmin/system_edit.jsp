@@ -25,7 +25,7 @@
 		</tr>
 		<tr>
 			<th>
-				系統ID
+				系统ID
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemIdText" value="${system.systemId}" readOnly>
@@ -33,7 +33,7 @@
 		</tr>
 		<tr>
 			<th>
-				系統简称
+				系统简称
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemAbText" value="${system.systemAb}">
@@ -41,7 +41,7 @@
 		</tr>
 		<tr>
 			<th>
-				系統名称
+				系统名称
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemChineseNameText" value="${system.systemChineseName}">
@@ -57,7 +57,7 @@
 		</tr>
 		<!--<tr>
 			<th>
-				系統协议
+				系统协议
 			</th>
 			<td>
 				<select class="easyui-combobox" id="protocolIdText" style="width:155px" panelHeight="auto" data-options="editable:false">

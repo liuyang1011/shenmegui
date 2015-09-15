@@ -323,11 +323,11 @@ function chooseInterface(oldListId, newListId, type) {
 //		     		$("#"+oldListId+" option[value="+value+"]").remove();
                     var exsit = $("#" + newListId + " option[value='" + value + "']");
                     if (exsit.length > 0) {
-                        alert("应经被选中！");
+                        alert("已经被选中！");
                     } else {
                         var invoekId = new Date().getTime();
                         $("#" + newListId).append("<option value='" + invoekId + "'>" + text + "</option>");
-                        var si = genderServiceInvoke(invoekId, value,text, "","", type );
+                        var si = genderServiceInvoke(invoekId, value,text, "","","0", type );
                         si.isStandard = "0";
                         if(type == "1"){
                             consumerList.push(si);
@@ -389,7 +389,8 @@ function selectInterface(listId, type) {
                 alert("该接口已经被选中！");
             } else {
                 $("#" + listId).append("<option value='" + item.invokeId + "'>" + item.systemChineseName + "::" + item.interfaceName + "</option>");
-                var si = genderServiceInvoke(item.invokeId, item.systemId, item.systemChineseName, item.interfaceId, item.interfaceName, type);
+                console.log(item);
+                var si = genderServiceInvoke(item.invokeId, item.systemId, item.systemChineseName, item.interfaceId, item.interfaceName,item.isStandard, type);
                 if(type == "1"){
                     consumerList.push(si);
                 }
@@ -402,13 +403,14 @@ function selectInterface(listId, type) {
     }
     $('#opDlg').dialog('close');
 }
-function genderServiceInvoke(invokeId, systemId,systemChineseName, interfaceId, interfaceName, type){
+function genderServiceInvoke(invokeId, systemId,systemChineseName, interfaceId, interfaceName,isStandard, type){
     var serviceInvoke = {};
     serviceInvoke.invokeId = invokeId;
     serviceInvoke.systemId = systemId;
     serviceInvoke.systemChineseName = systemChineseName;
     serviceInvoke.interfaceId = interfaceId;
     serviceInvoke.interfaceName = interfaceName;
+    serviceInvoke.isStandard = isStandard;
     serviceInvoke.type = type;
     serviceInvoke.serviceId = $("#serviceId").textbox("getValue");
     serviceInvoke.operationId = $("#operationId").textbox("getValue");

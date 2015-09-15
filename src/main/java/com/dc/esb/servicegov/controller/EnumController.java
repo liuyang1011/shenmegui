@@ -192,6 +192,28 @@ public class EnumController {
     }
 
     @RequiresPermissions({"enum-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getElementMappingSToM/{masterId}/{slaveId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getElementMappingSToM(@PathVariable(value = "masterId") String masterId, @PathVariable(value = "slaveId") String slaveId) {
+        StringBuffer sql = new StringBuffer();
+
+        sql.append("SELECT m.REMARK as remark, m.element_name as masterName,s.element_name slaveName,m.element_id as masterId,s.element_id as slaveId");
+//        sql.append("SELECT m.REMARK as masterName,s.REMARK slaveName,m.element_id as masterId,s.element_id as slaveId");
+        sql.append(",mp.direction as direction,mp.mapping_relation as mappingRelation");
+        sql.append(" FROM ENUM_ELEMENTS s left join");
+        sql.append(" (select * from ENUM_ELEMENT_MAP t1 where t1.master_element_id");
+        sql.append(" in(select t2.element_id from ENUM_ELEMENTS t2 where t2.enum_id='" + masterId + "')) mp");
+        sql.append(" ON s.element_id = mp.slave_element_id");
+        sql.append(" left join ENUM_ELEMENTS m");
+        sql.append(" ON mp.master_element_id = m.element_id");
+        sql.append(" WHERE s.enum_id='" + slaveId + "'");
+
+        List list = enumService.getElementsMapping(sql);
+        return list;
+    }
+
+    @RequiresPermissions({"enum-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getMappingBySlaveId/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -241,9 +263,12 @@ public class EnumController {
     @RequestMapping(method = RequestMethod.GET, value = "/getElementByMasterId/{id}", headers = "Accept=application/json")
     public
     @ResponseBody
-    List<EnumElements> getElementByMasterId(@PathVariable(value = "id") String id) {
-        List<EnumElements> EnumElements = enumService.getElementsByEnumId(id);
-        return EnumElements;
+    HashMap<String, Object> getElementByMasterId(@PathVariable(value = "id") String id,HttpServletRequest req) {
+        int pageNum = Integer.parseInt(req.getParameter("page"));
+        int rows = Integer.parseInt(req.getParameter("rows"));
+        String hql = "select a from EnumElements a where a.enumId = '"+id+"'";
+
+        return enumService.getElementByMasterId(hql,pageNum,rows);
     }
 
     @RequiresPermissions({"enum-delete"})
@@ -290,6 +315,30 @@ public class EnumController {
             //因为前端combobox值，所以SLAVENAME
             if (null == map.get("SLAVENAME") || "".equals(map.get("SLAVENAME"))) continue;
             elementMap.setSlaveElementId(map.get("SLAVENAME"));
+            if (map.get("SLAVEID") != null) {
+                //删掉旧mapping
+                enumService.deleteElementsMappingByPK(map.get("MASTERID"), map.get("SLAVEID"));
+            }
+            enumService.addEnumElementMap(elementMap);
+        }
+        return true;
+    }
+
+    @RequiresPermissions({"enum-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/saveElementMappingSToM", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean saveElementMappingSToM(@RequestBody List list) {
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+            Set<String> keySet = map.keySet();
+            EnumElementMap elementMap = new EnumElementMap();
+            elementMap.setDirection(map.get("DIRECTION"));
+            elementMap.setMappingRelation(map.get("MAPPINGRELATION"));
+            elementMap.setMasterElementId(map.get("MASTERNAME"));
+            //因为前端combobox值，所以SLAVENAME
+            if (null == map.get("MASTERNAME") || "".equals(map.get("MASTERNAME"))) continue;
+            elementMap.setSlaveElementId(map.get("SLAVEID"));
             if (map.get("SLAVEID") != null) {
                 //删掉旧mapping
                 enumService.deleteElementsMappingByPK(map.get("MASTERID"), map.get("SLAVEID"));

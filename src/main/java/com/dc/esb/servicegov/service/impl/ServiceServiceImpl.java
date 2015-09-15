@@ -1,10 +1,12 @@
 package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
+import com.dc.esb.servicegov.dao.impl.OperationHisDAOImpl;
 import com.dc.esb.servicegov.dao.impl.SDADAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.entity.OperationHis;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
@@ -33,6 +35,9 @@ public class ServiceServiceImpl extends AbstractBaseService<com.dc.esb.servicego
 
     @Autowired
     private OperationServiceImpl operationServiceImpl;
+
+    @Autowired
+    private OperationHisDAOImpl operationHisDAO;
 
     @Autowired
     private SDADAOImpl sdaDAO;
@@ -111,6 +116,10 @@ public class ServiceServiceImpl extends AbstractBaseService<com.dc.esb.servicego
         Map<String,String> map = new HashMap<String, String>();
         map.put("serviceId",id);
         List<Operation> list = operationServiceImpl.findBy(map);
+        //TODO 删除operationHis
+        List<OperationHis> operationHisList = operationHisDAO.findBy(map);
+        operationHisDAO.delete(operationHisList);
+
         operationServiceImpl.deleteList(list);
         super.deleteById(id);
     }

@@ -90,9 +90,12 @@ public class FileManagerController {
         Page page = fileManagerService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);
         page.setPage(Integer.parseInt(starpage));
 
-        List<FileManager> fms = fileManagerService.findBy(hql.toString(), page, searchConds);
-        for (FileManager f : fms) {
-            f.setSystemName(f.getSystem().getSystemChineseName());
+
+        List<FileManager> fms = fileManagerService.findBy(hql.toString(),page,searchConds);
+        for(FileManager f:fms){
+            if(null != f.getSystem()){
+                f.setSystemName(f.getSystem().getSystemChineseName());
+            }
             f.setSystem(null);
         }
 

@@ -17,12 +17,14 @@ public interface EnumService {
 	List<SGEnum> getSlaveByEnumId(String id);
 	SGEnum getMasterBySlaveId(String id);
 	List<EnumElements> getElementsByEnumId(String id);
+	HashMap<String, Object>  getElementByMasterId(String hql,int pageNum,int rows);
 	boolean deleteEnumById(String id);
 	boolean deleteEnumElementsByIds(List<String> ids);
 	boolean updateEnum(SGEnum anEnum);
 	List<SGEnum> getEnumByParams(HashMap<String, String> map);
 	boolean addElement(EnumElements elements);
 	List getElementsMapping(StringBuffer hql);
+	HashMap<String, Object> getElementsMapping(String hql,int pageNum,int rows);
 	boolean addMasterSlaveEnumMap(MasterSlaveEnumMap enumMap);
 	List<EnumElements> getElementsByHql(String hql);
 	boolean addEnumElementMap(EnumElementMap elementMap);
