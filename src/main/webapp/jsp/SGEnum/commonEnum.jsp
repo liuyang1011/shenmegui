@@ -66,14 +66,14 @@
 			<tr>
 				<th data-options="field:'productid',checkbox:true"></th>
 				<th data-options="field:'name',sortable:true">代码名称</th>
-				<th data-options="field:'remark',width:60">中文名称</th>
+				<th data-options="field:'remark'">中文名称</th>
 				<th data-options="field:'isStandard'" formatter='formatter.isStandard'>是否标准代码</th>
 				<th data-options="field:'status'" formatter='formatter.status'>代码状态</th>
 				<th data-options="field:'dataSource'">主代码数据来源</th>
 				<!-- <th data-options="field:'isMaster'">是否主代码</th>
 				<th data-options="field:'version'">代码版本</th> -->
-				<th data-options="field:'optUser',width:60">修订人</th>
-				<th data-options="field:'optDate',width:100">修订时间</th>
+				<th data-options="field:'optUser'">修订人</th>
+				<th data-options="field:'optDate'">修订时间</th>
 			</tr>
 		</thead>
 	</table>
