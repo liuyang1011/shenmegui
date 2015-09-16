@@ -7,7 +7,7 @@
 <!doctype html>
 <html>
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>交易链路</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" href="/plugin/jsPlumb/css/jsplumb.css">
@@ -21,7 +21,7 @@
 
 <div id="userId" style="display: none"><shiro:principal/></div>
 <div>
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         <table>
             <tr>
                 <td style="padding:0.5em"><label>选择接口</label></td>
@@ -117,6 +117,7 @@
     };
 
     var sourceId = "<%=request.getParameter("sourceId")%>";
+    var startId = "<%=request.getParameter("sourceId")%>";
     var data = {};
 
 
@@ -125,7 +126,7 @@
     var connectionsToDel = [];
     var blocks = [];
     var initPosX = 100;
-    var initPosY = 100;
+    var initPosY = 300;
 
     $(function () {
         var instance;
@@ -162,9 +163,16 @@
             var interfaceId = row.interfaceId;
             var interfaceName = row.interfaceName;
             var serviceId = row.serviceId;
-            var operationId = row.operationId;
             var systemId = row.systemName;
             var invokeId = row.invokeId;
+            var operationId = row.operationId;
+            var type = row.type;
+            if (type == "0") {
+                type = "提供方";
+            } else if (type == "1") {
+                type = "消费方";
+            }
+
             var backgroundColor = "white";
 
             if (null != interfaceId) {
@@ -174,20 +182,20 @@
                 backgroundColor = "antiquewhite";
             }
 
+            if(startId == invokeId){
+                backgroundColor = "plum"
+            }
+
+            var serviceOperation = "";
+            if (serviceId != null && operationId != null) {
+                serviceOperation = serviceId + operationId;
+            }
             context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
             + '<div class="ep"></div>'
             + '<div>'
-            + '<div class="btn-group">'
-            + '<button type="button" class="btn btn-info">查看详细信息</button>'
-            + '<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">'
-            + '<span class="caret"></span>'
-            + '<span class="sr-only">Toggle Dropdown</span>'
-            + '</button>'
-            + '<ul class="dropdown-menu" role="menu">'
-            + '<li><a>系统:' + serviceId + '</a></li>'
-            + '<li><a>服务:' + systemId + '</a></li>'
-            + '</ul>'
-            + '</div>'
+            + '系统ID: ' + systemId + '<br />'
+            + '服务场景: ' + serviceOperation + '<br />'
+            + '节点类型:' + type
             + '</div>'
             + '</div>';
         };
@@ -196,6 +204,19 @@
          * @param result
          */
         var initConnections = function initConnections(result) {
+
+
+            if (result.length == 0) {
+                var sourceId = "<%=request.getParameter("sourceId")%>";
+                var sourceBlock = {
+                    blockId: sourceId,
+                    positionX: initPosX,
+                    positionY: initPosY
+                };
+                var sourceRow = data[sourceId];
+                constructBlock(sourceRow, sourceBlock);
+            }
+
             for (var i = 0; i < result.length; i++) {
                 connections.push({
                     connectionId: result[i].sourceId + "-" + result[i].targetId,
@@ -203,16 +224,25 @@
                     targetId: result[i].targetId
                 });
                 var sourceId = result[i].sourceId;
+
                 var sourceBlock = {
                     blockId: sourceId,
                     positionX: initPosX,
                     positionY: initPosY
                 };
+                if (sourceId == startId) {
+                    sourceBlock = {
+                        blockId: sourceId,
+                        positionX: 400,
+                        positionY: 100
+                    };
+                }
                 if (!containBlock(blocks, sourceBlock)) {
                     var sourceRow = data[sourceId];
                     constructBlock(sourceRow, sourceBlock);
                     blocks.push(sourceBlock);
-                    initPosY = 100;
+                    initPosY = 300;
+                    initPosX = initPosX + 300;
                 }
                 var targetId = result[i].targetId;
                 var sourceBlock = getBlock(blocks, sourceId);
@@ -221,6 +251,13 @@
                     positionX: sourceBlock.positionX + 300,
                     positionY: initPosY
                 };
+                if (targetId == startId) {
+                    targetBlock = {
+                        blockId: targetId,
+                        positionX: 400,
+                        positionY: 100
+                    };
+                }
                 if (!containBlock(blocks, targetBlock)) {
                     var targetRow = data[targetId];
                     constructBlock(targetRow, targetBlock);
@@ -237,15 +274,15 @@
                 // setup some defaults for jsPlumb.
                 instance = jsPlumb.getInstance({
                     Endpoint: ["Dot", {radius: 2}],
-                    HoverPaintStyle: {strokeStyle: "#1e8141", lineWidth: 2},
+                    HoverPaintStyle: {strokeStyle: "#1e8141", lineWidth: 1},
                     ConnectionOverlays: [
                         ["Arrow", {
                             location: 1,
                             id: "arrow",
                             length: 5,
-                            foldback: 0.3
+                            foldback: 0.9
                         }],
-                        ["Label", {label: "FOO", id: "label", cssClass: "aLabel"}]
+                        ["Label", {id: "label", cssClass: "aLabel"}]
                     ],
                     Container: "statemachine-demo"
                 });
@@ -262,18 +299,18 @@
                     instance.detach(c);
                 });
                 instance.bind("connection", function (info) {
-                    info.connection.getOverlay("label").setLabel("调用");
+//                    info.connection.getOverlay("label").setLabel("");
                 });
                 instance.batch(function () {
                     instance.makeSource(windows, {
                         filter: ".ep",
                         anchor: "Continuous",
-                        connector: ["StateMachine", {curviness: 20}],
+                        connector: ["StateMachine", {curviness: 0}],
                         connectorStyle: {
                             strokeStyle: "#5c96bc",
-                            lineWidth: 2,
+                            lineWidth: 1,
                             outlineColor: "transparent",
-                            outlineWidth: 4
+                            outlineWidth: 2
                         },
                         maxConnections: 5,
                         onMaxConnections: function (info, e) {

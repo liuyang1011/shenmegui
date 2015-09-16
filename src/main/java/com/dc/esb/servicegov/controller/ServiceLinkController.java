@@ -320,7 +320,7 @@ public class ServiceLinkController {
     @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/parentInvokeConnections/sourceId/{sourceId}", headers = "Accept=application/json")
     public @ResponseBody List<InvokeConnection> parentInvokeConnections(@PathVariable("sourceId") String sourceId){
-        return invokeConnectionService.getConnectionsEndWith(sourceId);
+        return invokeConnectionService.getConnectionsEndWith(sourceId,new ArrayList<String>());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/save", headers = "Accept=application/json")
