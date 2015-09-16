@@ -60,7 +60,10 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
     @Override
     public void deleteById(String id) {
         SLA sla = slaDAOImpl.findUniqueBy("slaId", id);
-        operationService.editReleate(sla.getServiceId(), sla.getOperationId());
+        if(null != sla.getServiceId()){
+            operationService.editReleate(sla.getServiceId(), sla.getOperationId());
+        }
+
         getDAO().delete(id);
     }
 

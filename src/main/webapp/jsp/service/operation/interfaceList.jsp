@@ -45,6 +45,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
    <script type="text/javascript">
 	   var editedRows = [];
+	   var formatter = {
+		   isStandard: function (value, row, index) {
+			   if (value == 0) {
+				   return "标准";
+			   }
+			   if (value == 1) {
+				   return "非标";
+			   }
+		   }
+	   }
 	   $(function(){
 		   $("#intefaceList").datagrid({
 			   rownumbers:true,
@@ -60,7 +70,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				   {field:'systemChineseName',title:'系统名称'},
 				   {field:'interfaceId',title:'接口id'},
 				   {field:'interfaceName',title:'接口名称'},
-				   {field:'isStandard',title:'是否标准（双击选择）',required : true,
+				   {field:'isStandard',formatter:formatter.isStandard,title:'是否标准（双击选择）',required : true,
 					   editor:{
 						   type:'combobox',
 						   options:{
@@ -95,6 +105,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			   }
 		   });
 	   });
+
 	   function queryInterfaceList(){
 		   var params = {
 			   "text" : $("#interfaceText").textbox("getValue")
