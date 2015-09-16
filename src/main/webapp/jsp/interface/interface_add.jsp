@@ -142,7 +142,7 @@
 			 },
 			 complete:function(responce){
 				 var resText = responce.responseText;
-				 if(resText.toString().indexOf("没有操作权限")){
+				 if(resText.toString().indexOf("没有操作权限") > 0){
 					 alert("没有权限！");
 					 //window.location.href = "/jsp/403.jsp";
 				 }
@@ -192,11 +192,8 @@
 
 				$('#w').window('close');
 				var selectNode = $('.msinterfacetree').tree("getSelected");
-				console.log(selectNode);
 				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
-				console.log("/interface/getLeftTree/subInterfaceTree/system/" + systemId);
 				$('.msinterfacetree').tree("reload", selectNode.target);
-				console.log("hehehe");
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");
