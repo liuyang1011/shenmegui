@@ -289,15 +289,15 @@
                 window.jsp = instance;
                 var windows = jsPlumb.getSelector(".statemachine-demo .w");
                 instance.draggable(windows);
-                instance.bind("click", function (c) {
-                    connectionsToDel.push({
-                        sourceId: c.sourceId,
-                        sourceType: "",
-                        targetId: c.targetId,
-                        targetType: ""
-                    });
-                    instance.detach(c);
-                });
+//                instance.bind("click", function (c) {
+//                    connectionsToDel.push({
+//                        sourceId: c.sourceId,
+//                        sourceType: "",
+//                        targetId: c.targetId,
+//                        targetType: ""
+//                    });
+//                    instance.detach(c);
+//                });
                 instance.bind("connection", function (info) {
 //                    info.connection.getOverlay("label").setLabel("");
                 });

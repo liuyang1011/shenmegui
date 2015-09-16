@@ -17,18 +17,18 @@ var serviceLinkManager = {
         $.ajax({
             "type": "GET",
             "contentType": "application/json; charset=utf-8",
-            "url": "/serviceLink/invokeConnections/sourceId/" + sourceId,
+            "url": "/serviceLink/invokeConnections/sourceId/" + sourceId + "?_t=" + new Date().getTime() ,
             "dataType": "json",
             "success": function (result) {
                 callBack(result);
             }
         });
     },
-    "getParentConnectionsBySourceId" : function getParentConnectionsBySourceId(sourceId, callBack){
+    "getParentConnectionsBySourceId" : function getParentConnectionsBySourceId(sourceId, callBack) {
         $.ajax({
             "type": "GET",
             "contentType": "application/json; charset=utf-8",
-            "url": "/serviceLink/parentInvokeConnections/sourceId/" + sourceId,
+            "url": "/serviceLink/parentInvokeConnections/sourceId/" + sourceId + "?_t=" + new Date().getTime() ,
             "dataType": "json",
             "success": function (result) {
                 callBack(result);
