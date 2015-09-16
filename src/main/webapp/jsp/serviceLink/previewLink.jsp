@@ -475,7 +475,6 @@
             o.type = "1";
             o.parentNode.removeChild(o);
         }
-
     }
 </script>
 </body>
