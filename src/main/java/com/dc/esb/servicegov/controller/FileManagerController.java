@@ -2,7 +2,7 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
-import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.FileManager;
 import com.dc.esb.servicegov.service.FileManagerService;
 import com.dc.esb.servicegov.service.SystemService;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
@@ -16,9 +16,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +43,22 @@ public class FileManagerController {
     private ProcessContextServiceImpl processContextService;
     @Autowired
     private SystemService systemService;
+
+    @RequiresPermissions({"file-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/get/systemId/{systemId}", headers = "Accept=application/json")
+    public @ResponseBody Map<String, Object> getBySystemId(@PathVariable("systemId") String systemId){
+        List<FileManager> files = fileManagerService.findBy("systemId", systemId);
+        SearchCondition searchCondition = new SearchCondition();
+        searchCondition.setField("systemId");
+        searchCondition.setFieldValue(systemId);
+        Page page = fileManagerService.findBy(searchCondition, 10);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("total", page.getResultCount());
+        map.put("rows", files);
+        return map;
+    }
+
+
 
     @RequiresPermissions({"file-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getAll", headers = "Accept=application/json")

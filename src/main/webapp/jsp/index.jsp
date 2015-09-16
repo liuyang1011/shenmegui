@@ -168,13 +168,13 @@
 </div>
 
 <div id="mm-mxprotocol" class="easyui-menu" style="width: 120px;">
-    <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
-        新增协议
-    </div>
+    <%--<div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">--%>
+        <%--新增协议--%>
+    <%--</div>--%>
     <%--<div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">--%>
     <%--编辑协议--%>
     <%--</div>--%>
-    <div onclick="interfaceManager.remove()" data-options="iconCls:'icon-remove'">
+    <div onclick="sysManager.deleteProtocol()" data-options="iconCls:'icon-remove'">
     删除协议
     </div>
 </div>
