@@ -31,6 +31,7 @@
         var addArray = new Array();
         var editArray = new Array();
         var parentIdAry = new Array();
+        var versionCode="";
         var toolbar = [{
             text: '刪除',
             iconCls: 'icon-remove',
@@ -146,169 +147,80 @@
             text: '上移',
             iconCls: 'icon-up',
             handler: function () {
-                var row = $('#tg').treegrid("getSelected");
-                if (!row) {
-                    alert("请选择要移动的行");
-                }
-                if (row.structName == 'root' || row.structName == 'response' || row.structName == 'request') {
-                    return;
-                }
+                var node = $('#tg').treegrid('getSelected');
 
-                var ischild = $('#tg').treegrid("getChildren", row.id).length > 0;
-                if (ischild) {
-                    return;
-                }
-                //获取选中行的父节点
-                var parent = $('#tg').treegrid("getParent", row.id);
-                //再获取父节点下的子节点，然后循环，查找出选中行的上一行
-                var childs = $('#tg').treegrid("getChildren", parent.id);
-
-                if (childs) {
-                    if (childs.length == 1) {
-                        return;
+                if(node != null){
+                    //判断是否是第一个节点
+                    var parentNode = $('#tg').treegrid('getParent', node.id);
+                    var brothers =  $('#tg').treegrid('getChildren', parentNode.id);
+                    if(node.id == brothers[0].id){
+                        alert("已经在顶部！");
+                        return false;
                     }
-                    var prevRowId = 0;
-                    for (var i = 0; i < childs.length; i++) {
-
-                        if (childs[i].id == row.id) {
-                            if (i == 0) {
-                                return
+                    $.ajax({
+                        type:"get",
+                        url: "/ida/moveUp?_t=" + new Date().getTime(),
+                        dataType: "json",
+                        data: {"id": node.id},
+                        success: function(data){
+                            if(data){
+                                $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
+                                $("#interfacetg").datagrid("reload");
                             }
-                            prevRowId = childs[i - 1].id;
-                            break;
-                        }
-                    }
-
-                    var prevrow = $('#tg').treegrid("find", prevRowId);
-                    $('#tg').treegrid('remove', row.id);
-
-                    $('#tg').treegrid('insert', {
-                        before: prevRowId,
-                        data: {
-                            structName: row.structName,
-                            structAlias: row.structAlias,
-                            type: row.type,
-                            length: row.length,
-                            metadataId: row.metadataId,
-                            scale: row.scale,
-                            required: row.required,
-                            remark:row.remark,
-                            seq: prevrow.seq,
-                            id: row.id
                         }
                     });
-
-                    $('#tg').treegrid('remove', prevRowId);
-                    $('#tg').treegrid('insert', {
-                        after: row.id,
-                        data: {
-                            structName: prevrow.structName,
-                            structAlias: prevrow.structAlias,
-                            type: prevrow.type,
-                            length: prevrow.length,
-                            metadataId: prevrow.metadataId,
-                            scale: prevrow.scale,
-                            required: prevrow.required,
-                            remark:prevrow.remark,
-                            seq: row.seq,
-                            id: prevrow.id
-                        }
-                    });
-
-                    if (jQuery.inArray(row.id, editArray) == -1) {
-                        editArray.push(row.id);
-                    }
-                    if (jQuery.inArray(prevRowId, editArray) == -1) {
-                        editArray.push(prevRowId);
-                    }
-
                 }
             }
-
         }, {
             text: '下移',
             iconCls: 'icon-down',
             handler: function () {
-                var row = $('#tg').treegrid("getSelected");
-                if (!row) {
-                    alert("请选择要移动的行");
-                }
-                if (row.structName == 'root' || row.structName == 'response' || row.structName == 'request') {
-                    return;
-                }
-
-                var ischild = $('#tg').treegrid("getChildren", row.id).length > 0;
-                if (ischild) {
-                    return;
-                }
-
-                //获取选中行的父节点
-                var parent = $('#tg').treegrid("getParent", row.id);
-                //再获取父节点下的子节点，然后循环，查找出选中行的上一行
-                var childs = $('#tg').treegrid("getChildren", parent.id);
-
-                if (childs) {
-                    if (childs.length == 1) {
-                        return;
+                var node = $('#tg').treegrid('getSelected');
+                if(node != null){
+                    //判断是否是第一个节点
+                    var parentNode = $('#tg').treegrid('getParent', node.id);
+                    var brothers =  $('#tg').treegrid('getChildren', parentNode.id);
+                    if(node.id == brothers[brothers.length -1 ].id){
+                        alert("已经在底部！");
+                        return false;
                     }
-                    var nextRowId = 0;
-                    for (var i = 0; i < childs.length; i++) {
-                        if (childs[i].id == row.id) {
-                            if (childs.length == i + 1) {
-                                return;
+                    $.ajax({
+                        type:"get",
+                        url: "/ida/moveDown?_t="+new Date().getTime(),
+                        dataType: "json",
+                        data: {"id": node.id},
+                        success: function(data){
+                            if(data){
+                                $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
+                                $("#interfacetg").datagrid("reload");
                             }
-                            nextRowId = childs[i + 1].id;
-                            break;
-                        }
-                    }
-
-                    var nextrow = $('#tg').treegrid("find", nextRowId);
-                    $('#tg').treegrid('remove', row.id);
-
-                    $('#tg').treegrid('insert', {
-                        after: nextRowId,
-                        data: {
-                            structName: row.structName,
-                            structAlias: row.structAlias,
-                            type: row.type,
-                            length: row.length,
-                            metadataId: row.metadataId,
-                            scale: row.scale,
-                            required: row.required,
-                            remark:row.remark,
-                            seq: nextrow.seq,
-                            id: row.id
                         }
                     });
-
-                    $('#tg').treegrid('remove', nextRowId);
-                    $('#tg').treegrid('insert', {
-                        before: row.id,
-                        data: {
-                            structName: nextrow.structName,
-                            structAlias: nextrow.structAlias,
-                            type: nextrow.type,
-                            length: nextrow.length,
-                            metadataId: nextrow.metadataId,
-                            scale: nextrow.scale,
-                            required: nextrow.required,
-                            remark:nextrow.remark,
-                            seq: row.seq,
-                            id: nextrow.id
-                        }
-                    });
-
-                    if (jQuery.inArray(row.id, editArray) == -1) {
-                        editArray.push(row.id);
-                    }
-                    if (jQuery.inArray(nextRowId, editArray) == -1) {
-                        editArray.push(nextRowId);
-                    }
-
                 }
             }
+        },
+            {
+                text: '发布',
+                iconCls: 'icon-save',
+                handler: function () {
+                    var rows = $("#interfacetg").datagrid("getRows");
+                    var interfaceName = rows[0].interfaceName;
+                    var interfaceName = rows[0].interfaceName;
+                    var urlPath = "/jsp/interface/interface_release.jsp?interfaceId=${param.interfaceId}&interfaceName="+encodeURI(encodeURI(interfaceName))+
+                            "&versionCode="+versionCode;
+                    $('#releaseDlg').dialog({
+                        title: '版本发布',
+                        width: 500,
+                        left:150,
+                        top:50,
+                        closed: false,
+                        cache: false,
+                        href: urlPath,
+                        modal: true
+                    });
 
-        }/*,{
+                }
+            }       /*,{
             text: '提交任务',
             iconCls: 'icon-ok',
             handler: function () {
@@ -421,14 +333,13 @@
             });
 
             $('#interfacetg').datagrid({
-
                 iconCls: 'icon-edit',//图标
                 width: 'auto',
                 height: '80px',
                 collapsible: false,
                 fitColumns: true,
                 method: 'get',
-                url: '/interface/getInterById/' + interfaceId,
+                url: '/interface/getInterById/${param.interfaceId}',
                 singleSelect: false,//是否单选
                 rownumbers: false
 
@@ -452,6 +363,7 @@
             },
             version:function(value, row, index){
                 try {
+                    versionCode = row.version.code;
                     return row.version.code
                 } catch (exception) {
                 }
@@ -541,11 +453,11 @@
         <th data-options="field:'headName',width:'15%'">
             报文头
         </th>
-        <th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
-            版本号
-        </th>
         <th data-options="field:'desc',align:'right',width:'20%'">
             功能描述
+        </th>
+        <th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
+            版本号
         </th>
         <th data-options="field:'optDate',width:'10%',align:'center'">
             更新时间
@@ -625,4 +537,6 @@
     </tr>
     </thead>
 </table>
+<div id="releaseDlg" class="easyui-dialog" closed="true" resizable="true"></div>
+<script type="text/javascript">
 </html>

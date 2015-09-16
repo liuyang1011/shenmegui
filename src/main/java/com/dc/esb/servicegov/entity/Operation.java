@@ -23,7 +23,7 @@ public class Operation implements Serializable {
     @Column(name = "OPERATION_NAME")
     private String operationName;
 
-    @Column(name = "OPERATION_DESC", length=1024)
+    @Column(name = "OPERATION_DESC", length=2048)
     private String operationDesc;
 
     @Column(name = "OPERATION_REMARK")

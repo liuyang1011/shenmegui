@@ -71,5 +71,17 @@ var slaManager = {
 				callBack(result);
 			}
 		});
+	},
+	"setTemplateData":function(serviceId,operationId,slaTemplateId,callBack){
+		var url = "/slaTemplate/setTemplateData/" + serviceId + "/" + operationId + "/" + slaTemplateId;
+		$.ajax({
+			"type" : "GET",
+			"contentType" : "application/json; charset=utf-8",
+			"url" : url,
+			"dataType" : "json",
+			"success" : function(result) {
+				callBack(result);
+			}
+		});
 	}
 };

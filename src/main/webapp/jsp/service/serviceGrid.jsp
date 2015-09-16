@@ -235,7 +235,7 @@
             }
         }
     }, '-',
-        {
+        /*{
             text: '场景明细',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -252,8 +252,7 @@
                     alert("请只选中场景后再查看！");
                 }
             }
-        },
-        {
+        },{
             text: '历史版本',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -266,7 +265,7 @@
 
                 parent.parent.addTab('历史场景', opeHisContent);
             }
-        },
+        },*/
         {
             text: '发布版本',
             iconCls: 'icon-qxfp',

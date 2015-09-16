@@ -31,13 +31,13 @@
 			<td><input class="easyui-textbox" type="text" id="_dataSource">
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>代码版本</th>
 			<td><input class="easyui-textbox" type="text" id="_version">
 			</td>
 		</tr>
 		<tr>
-			<th>备注</th>
+			<th>中文名称</th>
 			<td><input class="easyui-textbox" type="text" id="_remark">
 			</td>
 		</tr>

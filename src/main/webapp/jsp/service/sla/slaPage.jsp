@@ -138,6 +138,9 @@
 				url:slaUrl,
 				method:'get',
 				toolbar:toolbar,
+				pagination: true,
+				pageSize: 15,
+				pageList: [15,30,50],
 				onBeginEdit : function(index,row){
 					editedRows.push(index);
 				}

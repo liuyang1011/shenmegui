@@ -77,6 +77,14 @@ public class SDAController {
 		return serviceImpl.moveDown(sdaId);
 	}
 
+	@RequestMapping("comparePage")
+	@ResponseBody
+	public boolean comparePage(String serviceId, String operationId){
+//		return serviceImpl.comparePage(serviceId, operationId);
+		return true;
+	}
+
+
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {
 		return "403";

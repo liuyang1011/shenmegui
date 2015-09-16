@@ -31,22 +31,34 @@
                     return row.versionHis.code
                 } catch (exception) {
                 }
+            },
+            versionHisDesc:function(value, row, index){
+                try {
+                    return row.versionHis.versionDesc
+                } catch (exception) {
+                }
             }
         };
-        function operation(value){
-            var s = '<a iconcls="icon-save"  style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">idaHis</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
+        function operation(){
+            var s = '<a iconcls="icon-save"  onclick="idaHis()" style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">idaHis</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
             return s;
         }
-        function idaHis(value){
-            $('#historyDlg').dialog({
-                title: 'ida',
-                width: 600,
-                height: 400,
-                closed: false,
-                cache: false,
-                href: '/jsp/interface/idaHis.jsp?id='+value,
-                modal: true
-            });
+        function idaHis(){
+            var row = $("#interfaceHisList").datagrid("getSelected");
+            //获取行数据中的targetType和targetId
+            if(row) {
+                $('#historyDlg').dialog({
+                    title: '接口定义信息',
+                    width: 600,
+                    height: 400,
+                    left:'150px',
+                    top:'50px',
+                    closed: false,
+                    cache: false,
+                    href: '/jsp/interface/interface_idaHis.jsp?interfaceHisId=' + row.autoId,
+                    modal: true
+                });
+            }
         }
     </script>
     </head>
@@ -59,18 +71,22 @@
 			url:'/interfaceHis/history/${param.interfaceId}',
 			method:'get',
 			pagination:true,
-				pageSize:10"
+				pageSize:50"
        style="height:470px; width:100%;">
     <thead>
     <tr>
+        <th data-options="field:'autoId',checkbox:true"> </th>
         <th data-options="field:'ecode',width:'15%'">
             交易码
         </th>
-        <th data-options="field:'interfaceName',width:'25%'">
+        <th data-options="field:'interfaceName',width:'15%'">
             交易名称
         </th>
         <th data-options="field:'versionId',width:'15%'" formatter='formatter.versionHis'>
             版本号
+        </th>
+        <th data-options="field:'desc',width:'15%'" formatter='formatter.versionHisDesc'>
+            版本说明
         </th>
         <th data-options="field:'optDate',width:'15%',align:'center'">
             更新时间

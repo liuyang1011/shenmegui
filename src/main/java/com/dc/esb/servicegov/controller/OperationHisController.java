@@ -71,6 +71,11 @@ public class OperationHisController {
 		result.put("rows", rows);
 		return result;
 	}
+	@RequestMapping("/hisJudge")
+	@ResponseBody
+	public boolean hisJudge(String serviceId, String operationId){
+		return operationHisServiceImpl.hisJudge(serviceId, operationId);
+	}
 
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {

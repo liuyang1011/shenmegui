@@ -28,7 +28,7 @@
 			<td><input class="easyui-textbox" type="text" id="_dataSource">
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>代码版本</th>
 			<td><input class="easyui-textbox" type="text" id="_version">
 			</td>

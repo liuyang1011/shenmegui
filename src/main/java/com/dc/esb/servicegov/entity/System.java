@@ -39,13 +39,13 @@ public class System implements Serializable{
 	@Column(name = "OPT_DATE")
 	private String optDate;
 
-	@Column
+	@Column(name = "SYSTEM_DESC")
 	private String systemDesc;
 
-	@Column
+	@Column(name = "PRINCIPAL_DETAIL1")
 	private String principalDetail1;
 
-	@Column
+	@Column(name = "PRINCIPAL_DETAIL2")
 	private String principalDetail2;
 
 	private String protocolName;

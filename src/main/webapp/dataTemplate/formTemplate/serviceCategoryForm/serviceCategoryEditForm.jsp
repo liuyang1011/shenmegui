@@ -36,11 +36,11 @@
     <th>描述</th>
     <td><input class="easyui-textbox" type="text" id="discription" ></td>
   </tr>
-  <tr>
+  <tr style="display: none">
     <th>服务类父类</th>
     <td><input class="easyui-textbox" type="text" id="parentId" ></td>
   </tr>
-  <tr>
+  <tr style="display: none">
     <th>remark</th>
     <td><input class="easyui-textbox" type="text" id="remark" ></td>
   </tr>

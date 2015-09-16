@@ -34,8 +34,8 @@
     </div>
     <div title="服务SLA" style="padding:0px;">
     </div>
-    <div title="服务OLA" style="padding:0px;">
-    </div>
+    <%--<div title="服务OLA" style="padding:0px;">
+    </div>--%>
     <div title="服务接口映射" style="padding:0px;">
     </div>
     <%--<div title="服务检索" style="padding:0px;">
@@ -107,7 +107,7 @@
                     $('#subtab').tabs('select', '服务基本信息');
                 }
             }
-            if (index == 4  && k == 0) {
+            /*if (index == 4  && k == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
                     var urlPath = "/ola/olaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId;
@@ -122,8 +122,8 @@
                     alert("请选则一个场景！");
                     $('#subtab').tabs('select', '服务基本信息');
                 }
-            }
-            if (index == 5  && q == 0) {
+            }*/
+            if (index == 4  && q == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
                     var urlPath = "/operation/interfacePage?serviceId=${param.serviceId}&operationId=" + opId;
