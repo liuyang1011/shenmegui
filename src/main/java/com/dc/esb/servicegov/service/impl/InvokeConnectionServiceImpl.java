@@ -2,7 +2,9 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.InvokeConnectionDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.InterfaceInvoke;
 import com.dc.esb.servicegov.entity.InvokeConnection;
+import com.dc.esb.servicegov.service.InterfaceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class InvokeConnectionServiceImpl extends AbstractBaseService<InvokeConne
 
     @Autowired
     private InvokeConnectionDAOImpl invokeConnectionDAO;
+    @Autowired
+    private InterfaceInvokeService interfaceInvokeService;
 
     @Override
     public HibernateDAO<InvokeConnection, String> getDAO() {
@@ -36,12 +40,29 @@ public class InvokeConnectionServiceImpl extends AbstractBaseService<InvokeConne
     //TODO 调用自己死循环
     public List<InvokeConnection> getConnectionsStartWith(String sourceId) {
         List<InvokeConnection> connections = new ArrayList<InvokeConnection>();
+        List<InterfaceInvoke> invokeRelations = interfaceInvokeService.findBy("consumerInvokeId", sourceId);
+
         List<InvokeConnection> startConnections = getDAO().findBy("sourceId", sourceId);
         connections.addAll(startConnections);
         for (InvokeConnection invokeConnection : startConnections) {
             String targetId = invokeConnection.getTargetId();
             if (null != targetId) {
                 connections.addAll(getConnectionsStartWith(targetId));
+            }
+        }
+        for (InterfaceInvoke interfaceInvoke : invokeRelations) {
+            boolean add = true;
+            for (InvokeConnection connection : connections) {
+                if (connection.getSourceId().equalsIgnoreCase(interfaceInvoke.getConsumerInvokeId()) && connection.getTargetId().equalsIgnoreCase(interfaceInvoke.getProviderInvokeId())) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                InvokeConnection invokeConnection = new InvokeConnection();
+                invokeConnection.setSourceId(interfaceInvoke.getConsumerInvokeId());
+                invokeConnection.setTargetId(interfaceInvoke.getProviderInvokeId());
+                connections.add(invokeConnection);
             }
         }
         return connections;
