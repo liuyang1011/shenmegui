@@ -51,10 +51,9 @@
 </form>
 
 <script type="text/javascript">
-	var systemId;
+	var systemId="<%=systemId%>";
 	var selectNode = $('.msinterfacetree').tree("getSelected")
-	systemId = selectNode.id;
-	if(systemId){
+	if(systemId!= ""){
 		$(document).ready(function(){
 			$('#systemId').combobox({
 //				url:'/system/getSystemAll',
@@ -89,6 +88,10 @@
 			$("#fileform").attr("action", "/fileManager/addfile/" +processId);
 		}
 		$("#fileform").submit();
+		var urlPath = $('.msinterfacetree').tree('options').url;
+		$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemId;
+		$('.msinterfacetree').tree("reload", selectNode.target);
+		$('.msinterfacetree').tree('options').url = urlPath;
 		$('#w').window('close');
 	}
 </script>
