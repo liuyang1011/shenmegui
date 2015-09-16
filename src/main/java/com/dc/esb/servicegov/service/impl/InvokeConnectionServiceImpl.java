@@ -69,6 +69,7 @@ public class InvokeConnectionServiceImpl extends AbstractBaseService<InvokeConne
                 invokeConnection.setSourceId(interfaceInvoke.getConsumerInvokeId());
                 invokeConnection.setTargetId(interfaceInvoke.getProviderInvokeId());
                 connections.add(invokeConnection);
+                getDAO().save(invokeConnection);
             }
         }
         return connections;

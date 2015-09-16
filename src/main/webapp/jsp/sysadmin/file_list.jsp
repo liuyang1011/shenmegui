@@ -41,9 +41,7 @@
         <th data-options="field:'fileId',width:'25%', formatter:downloadFormatter">
             下载
         </th>
-        <th data-options="field:'fileId',hidden:true">
-            文件id
-        </th>
+
     </tr>
     </thead>
 </table>
