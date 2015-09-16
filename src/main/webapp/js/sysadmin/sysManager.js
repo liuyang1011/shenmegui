@@ -231,5 +231,38 @@ var sysManager = {
                 $('.msinterfacetree').tree("reload", parent.target);
             }
         });
+    },
+    "deleteFile": function (){
+        var node = $('.msinterfacetree').tree("getSelected");
+        if (!confirm("确定要删除选中的记录吗？")) {
+            return;
+        }
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/fileManager/delete/" + node.id,
+            dataType: "json",
+            success: function (result) {
+                var parent = $('.msinterfacetree').tree("getParent", node.target);
+                $('.msinterfacetree').tree("remove", node.target);
+                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + parent.id;
+                $('.msinterfacetree').tree("reload", parent.target);
+                $('#tg').datagrid("reload");
+
+            }
+        });
+    },
+    "refreshFile" : function(){
+        var node = $('.msinterfacetree').tree("getSelected");
+        $('.msinterfacetree').tree('append', {
+            parent: (node?node.target:null),
+            data: [{
+                text: 'new item1'
+            }]
+        });
+        var urlPath = $('.msinterfacetree').tree('options').url;
+        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + node.id;
+        $('.msinterfacetree').tree("reload", node.target);
+        $('.msinterfacetree').tree('options').url = urlPath;
     }
 }

@@ -411,12 +411,6 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	 */
 	public boolean moveUp(String id) {
 		Ida ida = idaDAOImpl.findUnique(" from Ida where id=?", id);
-		Interface inter = ida.getInterObj();
-		if(inter != null){
-			if(org.apache.commons.lang.StringUtils.isNotEmpty(inter.getVersionId())){
-				versionServiceImpl.editVersion(inter.getVersionId());
-			}
-		}
 		String hql = " from Ida where _parentId = ? order by seq asc";
 		List<Ida> list = idaDAOImpl.find(hql, ida.get_parentId());//查询兄弟节点
 		int position = list.indexOf(ida);
@@ -445,13 +439,6 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 	public boolean moveDown(String id) {
 		Ida ida = idaDAOImpl.findUnique(" from Ida where id=?", id);
-		Interface inter = ida.getInterObj();
-		if(inter != null){
-			//更新版本
-			if(org.apache.commons.lang.StringUtils.isNotEmpty(inter.getVersionId())){
-				versionServiceImpl.editVersion(inter.getVersionId());
-			}
-		}
 		String hql = " from Ida where _parentId = ? order by seq asc";
 		List<Ida> list = idaDAOImpl.find(hql, ida.get_parentId());//查询兄弟节点
 		int position = list.indexOf(ida);

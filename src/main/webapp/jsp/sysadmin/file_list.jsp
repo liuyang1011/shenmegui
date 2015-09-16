@@ -56,8 +56,8 @@
     var url = "/fileManager/getAll";
     var method = "post";
     if(systemId != null && systemId !="null"){
-        url = "fileManager/get/system/" + systemId;
-        method = "get";
+        url = "/fileManager/get/systemId/" + systemId;
+        method = "post";
     }
     $(document).ready(function () {
         $('#tg').datagrid({
@@ -77,11 +77,13 @@
                 text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
+
+                    console.log(systemId);
                     uiinit.win({
                         w: 500,
                         iconCls: 'icon-add',
                         title: "新增文件",
-                        url: "/jsp/sysadmin/file_add.jsp"
+                        url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
                     });
                 }
             }, {

@@ -179,15 +179,12 @@
     </div>
 </div>
 <div id="mm-mxfiles" class="easyui-menu" style="width: 120px;">
-    <div onclick="sysManager.addFilePage()" data-options="iconCls:'icon-add'">
-        新增文件
+    <div onclick="sysManager.refreshFile()" data-options="iconCls:'icon-add'">
+        刷新
     </div>
 </div>
 <div id="mm-mxfile" class="easyui-menu" style="width: 120px;">
-    <div onclick="sysManager.addFilePage()" data-options="iconCls:'icon-add'">
-        新增文件
-    </div>
-    <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
+    <div onclick="sysManager.deleteFile()" data-options="iconCls:'icon-add'">
         删除文件
     </div>
 </div>
