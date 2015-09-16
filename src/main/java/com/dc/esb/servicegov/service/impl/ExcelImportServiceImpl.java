@@ -160,7 +160,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             insertSDA(existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             if (headMap != null && headMap.size()>0) {
-                insertInterfaceHead(exists, inter, headMap);
+                insertInterfaceHead(exists, inter, headMap,systemId);
             }
             list.add("true");
             list.add(provider_invoke);
@@ -1035,7 +1035,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
     }
 
-    public void insertInterfaceHead(boolean exists, Interface inter, Map<String, Object> headMap) {
+    public void insertInterfaceHead(boolean exists, Interface inter, Map<String, Object> headMap,String systemId) {
 
         //如果接口存在，且不覆盖 直接返回
         if (exists && !GlobalImport.operateFlag) {
@@ -1060,7 +1060,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             return;
         }
 
-        InterfaceHead headDB = interfaceHeadDAO.findUniqueBy("headName", headName);
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("headName",headName);
+        map.put("systemId",systemId);
+        InterfaceHead headDB = interfaceHeadDAO.findUniqureBy(map);
 
         if (headDB != null) {
             if (GlobalImport.operateFlag) {
@@ -1084,7 +1087,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }else{
             headDB = new InterfaceHead();
         }
-
+        headDB.setSystemId(systemId);
         headDB.setHeadName(headName);
         headDB.setHeadDesc(headName);
         interfaceHeadDAO.save(headDB);
