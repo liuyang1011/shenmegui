@@ -127,7 +127,7 @@
 			systemId = "${param.systemId}";
 		}
         $('#protocolId').combobox({
-        			url:'/system/getProtocolAll?systemId='+systemId,
+        			url:'/system/getProtocolAll?systemId='+systemId +'&t=' +(new Date()).valueOf(),
         			method:'get',
         			mode:'remote',
         			valueField:'id',
