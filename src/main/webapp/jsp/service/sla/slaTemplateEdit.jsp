@@ -85,7 +85,9 @@
 					}
 					if(info.slaTemplateId){
 						slaManager.setTemplateData(serviceId,operationId,info.slaTemplateId,function(result){
-
+							if(result){
+								$('#sla').edatagrid("reload");
+							}
 						});
 
 						/*slaManager.getByParams(info.slaTemplateId,function(result){

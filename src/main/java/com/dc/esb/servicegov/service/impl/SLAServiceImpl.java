@@ -53,10 +53,22 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
         super.save(sla);
         operationService.editReleate(sla.getServiceId(), sla.getOperationId());
     }
+
+    public void saveTemplate(SLA sla){
+        super.save(sla);
+    }
     @Override
     public void deleteById(String id) {
         SLA sla = slaDAOImpl.findUniqueBy("slaId", id);
         operationService.editReleate(sla.getServiceId(), sla.getOperationId());
         getDAO().delete(id);
     }
+
+    public List<SLA> getAllTemplateSLA(){
+        return slaDAOImpl.getAllTemplateSLA();
+    }
+
+//    public List<SLA> findBy(Map<String, String> params) {
+//        return slaDAOImpl.findBy(params);
+//    }
 }

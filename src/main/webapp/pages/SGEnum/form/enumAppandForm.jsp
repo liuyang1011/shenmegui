@@ -12,6 +12,11 @@
 			</td>
 		</tr>
 		<tr>
+			<th>中文名称</th>
+			<td><input class="easyui-textbox" type="text" id="_remark">
+			</td>
+		</tr>
+		<tr>
 			<th>是否标准代码</th>
 			<td><select id="_isStandard" editable="false"
 				panelHeight="auto" style="width:172px">
@@ -34,11 +39,6 @@
 		<tr style="display: none">
 			<th>代码版本</th>
 			<td><input class="easyui-textbox" type="text" id="_version">
-			</td>
-		</tr>
-		<tr>
-			<th>中文名称</th>
-			<td><input class="easyui-textbox" type="text" id="_remark">
 			</td>
 		</tr>
 		<tr>

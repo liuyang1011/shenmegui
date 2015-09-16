@@ -282,7 +282,6 @@ public class ConfigExportController {
         return null;
     }
 
-    @RequiresPermissions({"config-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getSystem/{serviceId}/{operationId}/{type}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -308,7 +307,6 @@ public class ConfigExportController {
         return resList;
     }
 
-    @RequiresPermissions({"config-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getInterface/{serviceId}/{operationId}/{type}", headers = "Accept=application/json")
     public
     @ResponseBody

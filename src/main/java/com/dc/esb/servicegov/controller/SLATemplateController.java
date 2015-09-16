@@ -82,14 +82,14 @@ public class SLATemplateController {
             if(map.get("slaId")!=null&&!"".equals(map.get("slaId"))){
             	sla.setSlaId(map.get("slaId"));
             }
-            sla.setOperationId(operationId);
-            sla.setServiceId(serviceId);
+//            sla.setOperationId(operationId);
+//            sla.setServiceId(serviceId);
             sla.setSlaName(map.get("slaName"));
             sla.setSlaValue(map.get("slaValue"));
             sla.setSlaDesc(map.get("slaDesc"));
             sla.setSlaRemark(map.get("slaRemark"));
             sla.setSlaTemplateId(slaTemplateId);
-            slaServiceImpl.save(sla);
+            slaServiceImpl.saveTemplate(sla);
    	 }
        return true;
    }
@@ -98,26 +98,39 @@ public class SLATemplateController {
 	public @ResponseBody
 	boolean setTemplateData(@PathVariable(value = "serviceId") String serviceId,
 					@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
-		//
+		//查询模版sla数据
+		List<SLA> templateList = slaServiceImpl.getAllTemplateSLA();
 
+		//查询非模版sla数据
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("serviceId", serviceId);
+		params.put("operationId", operationId);
+		List<SLA> slaList = slaServiceImpl.findBy(params);
 
-
-//		for (int i = 0; i < list.size(); i++) {
-//			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
-//			Set<String> keySet = map.keySet();
-//			SLA sla=new SLA();
-//			if(map.get("slaId")!=null&&!"".equals(map.get("slaId"))){
-//				sla.setSlaId(map.get("slaId"));
-//			}
-//			sla.setOperationId(operationId);
-//			sla.setServiceId(serviceId);
-//			sla.setSlaName(map.get("slaName"));
-//			sla.setSlaValue(map.get("slaValue"));
-//			sla.setSlaDesc(map.get("slaDesc"));
-//			sla.setSlaRemark(map.get("slaRemark"));
-//			sla.setSlaTemplateId(slaTemplateId);
-//			slaServiceImpl.save(sla);
-//		}
+		for (int i = 0; i < templateList.size(); i++) {
+			SLA temp = templateList.get(i);
+			boolean exist = false;
+			for (int j = 0; j < slaList.size(); j++) {
+				SLA sla = slaList.get(j);
+				if(sla.getSlaName().equals(temp.getSlaName())){
+					exist = true;
+					sla.setSlaValue(temp.getSlaValue());
+					sla.setSlaDesc(temp.getSlaDesc());
+					sla.setSlaRemark(temp.getSlaRemark());
+					slaServiceImpl.save(sla);
+				}
+			}
+			if(!exist){
+				SLA sla = new SLA();
+				sla.setServiceId(serviceId);
+				sla.setOperationId(operationId);
+				sla.setSlaName(temp.getSlaName());
+				sla.setSlaValue(temp.getSlaValue());
+				sla.setSlaDesc(temp.getSlaDesc());
+				sla.setSlaRemark(temp.getSlaRemark());
+				slaServiceImpl.insert(sla);
+			}
+		}
 		return true;
 	}
 
