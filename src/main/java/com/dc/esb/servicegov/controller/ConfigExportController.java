@@ -12,6 +12,7 @@ import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -124,10 +125,9 @@ public class ConfigExportController {
                 if (protocolId == null || "".equals(protocolId)) {
                     logger.error("消费方接口未关联协议，导出失败");
 //                    return "消费方提供方接口未关联协议，导出失败";
-                    logInfoService.saveLog("消费方接口未关联协议，导出失败","导出");
-                    List<String> list = new ArrayList<String>();
-                    list.add("消费方接口未关联协议，导出失败");
-                    return list;
+                    logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
+                    printMsg(response, "消费方接口未关联协议，导出失败");
+                    return null;
                 } else {
 
 
@@ -143,25 +143,22 @@ public class ConfigExportController {
                             logger.error("消费方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
 //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
                             logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败","导出");
-                            List<String> list = new ArrayList<String>();
-                            list.add("消费方接口协议报文生成类实例化失败,导出失败");
-                            return list;
+                            printMsg(response, "消费方接口协议报文生成类实例化失败,导出失败");
+                            return null;
                         } catch (IllegalAccessException e) {
 
                             logger.error("消费方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
                             logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败","导出");
 //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败";
-                            List<String> list = new ArrayList<String>();
-                            list.add("消费方接口协议报文生成类构造方法是不可访问,导出失败");
-                            return list;
+                            printMsg(response, "消费方接口协议报文生成类构造方法是不可访问,导出失败");
+                            return null;
                         }
                     } catch (ClassNotFoundException e) {
                         logger.error("消费方接口协议报文生成类未找到，导出失败");
                         logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败","导出");
 //                        return "消费方接口协议报文生成类未找到，导出失败";
-                        List<String> list = new ArrayList<String>();
-                        list.add("消费方接口协议报文生成类未找到，导出失败");
-                        return list;
+                        printMsg(response, "消费方接口协议报文生成类未找到，导出失败");
+                        return null;
                     }
 
                 }
@@ -195,9 +192,8 @@ public class ConfigExportController {
                     logger.error("提供方接口未关联协议，导出失败");
                     logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
 //                    return "提供方接口未关联协议，导出失败";
-                    List<String> list = new ArrayList<String>();
-                    list.add("提供方接口未关联协议，导出失败");
-                    return list;
+                    printMsg(response, "提供方接口未关联协议，导出失败");
+                    return null;
                 } else {
 
 
@@ -216,16 +212,14 @@ public class ConfigExportController {
                             logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
 //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
                             logInfoService.saveLog("提供方接口协议报文生成类实例化失败,导出失败","导出");
-                            List<String> list = new ArrayList<String>();
-                            list.add("提供方接口协议报文生成类实例化失败,导出失败");
-                            return list;
+                            printMsg(response, "提供方接口协议报文生成类实例化失败,导出失败");
+                            return null;
                         } catch (IllegalAccessException e) {
                             logger.error("提供方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
 //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败";
                             logInfoService.saveLog("提供方接口协议报文生成类构造方法是不可访问,导出失败","导出");
-                            List<String> list = new ArrayList<String>();
-                            list.add("提供方接口协议报文生成类构造方法是不可访问,导出失败");
-                            return list;
+                            printMsg(response, "提供方接口协议报文生成类构造方法是不可访问,导出失败");
+                            return null;
                         }
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
@@ -233,8 +227,8 @@ public class ConfigExportController {
                         logInfoService.saveLog("提供方接口协议报文生成类未找到，导出失败","导出");
 //                        return "提供方接口协议报文生成类未找到，导出失败";
                         List<String> list = new ArrayList<String>();
-                        list.add("提供方接口协议报文生成类未找到，导出失败");
-                        return list;
+                        printMsg(response, "提供方接口协议报文生成类未找到，导出失败");
+                        return null;
                     }
 
                 }
@@ -345,7 +339,20 @@ public class ConfigExportController {
         }
         return false;
     }
-
+    public void printMsg(HttpServletResponse response, String message){
+        PrintWriter pw = null;
+        try {
+            response.setContentType("text/html; charset=utf-8");
+            pw = response.getWriter();
+            pw.print("<script language='javascript'>alert('" + message + "')</script>");
+        }catch (Exception e){
+            logger.error(e, e);
+        }finally {
+            if(pw != null){
+                pw.close();
+            }
+        }
+    }
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
