@@ -132,7 +132,6 @@
          * @param row
          */
         var initComboBox = function (result) {
-//            console.log(result);
             for (var i = 0; i < result.length; i++) {
                 data[result[i].invokeId] = result[i];
                 var interfaceLabel = '';
@@ -174,8 +173,6 @@
             var invokeId = row.invokeId;
             var operationId = row.operationId;
             var type = row.type;
-
-            var type = row.type;
             if (type == "0") {
                 type = "提供方";
             } else if (type == "1") {
@@ -195,19 +192,12 @@
             if (serviceId != null && operationId != null) {
                 serviceOperation = serviceId + operationId;
             }
-            var typeLabel = "消费方提供方";
-            if ("0" == type) {
-                typeLabel = "消费方";
-            }
-            if ("1" == type) {
-                typeLabel = "提供方";
-            }
             context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
             + '<div class="ep"></div>'
             + '<div>'
             + '系统ID: ' + systemId + '<br />'
             + '服务场景: ' + serviceOperation + '<br />'
-            + '节点类型:' + typeLabel
+            + '节点类型:' + type
             + '</div>'
             + '</div>';
         };
@@ -217,6 +207,18 @@
          * @param result
          */
         var initConnections = function initConnections(result) {
+
+
+            if(result.length == 0){
+                var sourceId = "<%=request.getParameter("sourceId")%>";
+                var sourceBlock = {
+                    blockId: sourceId,
+                    positionX: initPosX,
+                    positionY: initPosY
+                };
+                var sourceRow = data[sourceId];
+                constructBlock(sourceRow, sourceBlock);
+            }
 
             for (var i = 0; i < result.length; i++) {
                 connections.push({
