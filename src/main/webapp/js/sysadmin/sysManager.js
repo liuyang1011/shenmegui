@@ -254,6 +254,12 @@ var sysManager = {
     },
     "refreshFile" : function(){
         var node = $('.msinterfacetree').tree("getSelected");
+        $('.msinterfacetree').tree('append', {
+            parent: (node?node.target:null),
+            data: [{
+                text: 'new item1'
+            }]
+        });
         var urlPath = $('.msinterfacetree').tree('options').url;
         $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + node.id;
         $('.msinterfacetree').tree("reload", node.target);
