@@ -314,7 +314,7 @@ public class ServiceLinkController {
     @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/invokeConnections/sourceId/{sourceId}", headers = "Accept=application/json")
     public @ResponseBody List<InvokeConnection> getInvokeConnetcion(@PathVariable("sourceId") String sourceId){
-        return invokeConnectionService.getConnectionsStartWith(sourceId);
+        return invokeConnectionService.getConnectionsStartWith(sourceId, new ArrayList<String>());
     }
 
     @RequiresPermissions({"link-get"})

@@ -38,16 +38,22 @@ public class InvokeConnectionServiceImpl extends AbstractBaseService<InvokeConne
      * @return
      */
     //TODO 调用自己死循环
-    public List<InvokeConnection> getConnectionsStartWith(String sourceId) {
+    public List<InvokeConnection> getConnectionsStartWith(String sourceId, List<String> preLink) {
         List<InvokeConnection> connections = new ArrayList<InvokeConnection>();
         List<InterfaceInvoke> invokeRelations = interfaceInvokeService.findBy("consumerInvokeId", sourceId);
 
         List<InvokeConnection> startConnections = getDAO().findBy("sourceId", sourceId);
+
+        if(preLink.contains(sourceId)){
+            return connections;
+        }
+        preLink.add(sourceId);
+
         connections.addAll(startConnections);
         for (InvokeConnection invokeConnection : startConnections) {
             String targetId = invokeConnection.getTargetId();
             if (null != targetId) {
-                connections.addAll(getConnectionsStartWith(targetId));
+                connections.addAll(getConnectionsStartWith(targetId, preLink));
             }
         }
         for (InterfaceInvoke interfaceInvoke : invokeRelations) {
