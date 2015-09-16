@@ -189,9 +189,14 @@
 		data.serviceInvoke = invokes;
 		interfaceManager.add(data,"add",function(result){
 			if(result){
-
 				$('#w').window('close');
 				var selectNode = $('.msinterfacetree').tree("getSelected");
+				$('.msinterfacetree').tree('append', {
+									parent: (selectNode?selectNode.target:null),
+									data: [{
+										text: 'new item1'
+									}]
+								});
 				var urlPath = $('.msinterfacetree').tree('options').url;
 				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
 				$('.msinterfacetree').tree("reload", selectNode.target);

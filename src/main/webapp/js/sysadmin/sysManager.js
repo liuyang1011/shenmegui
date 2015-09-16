@@ -98,10 +98,13 @@ var sysManager = {
             dataType: "json",
             success: function (result) {
                 if (result) {
-                    $('.msinterfacetree').tree("reload");
+
+                    var parent = $('.msinterfacetree').tree("getParent", node.target);
+                    $('.msinterfacetree').tree("remove", node.target);
+                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + parent.id;
+                    $('.msinterfacetree').tree("reload", parent.target);
                     var title = node.text;
                     $('#mainContentTabs').tabs("close", title);
-
                 }
             }
         });

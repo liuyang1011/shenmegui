@@ -132,6 +132,12 @@
 		sysManager.addProtocol(data,function(result){
 			if(result){
 				$('#w').window('close');
+				var selectNode = $('.msinterfacetree').tree("getSelected");
+				var parent = $('.msinterfacetree').tree("getParent", selectNode.target);
+				var urlPath = $('.msinterfacetree').tree('options').url;
+				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
+				$('.msinterfacetree').tree("reload", parent.target);
+				$('.msinterfacetree').tree('options').url = urlPath;
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");

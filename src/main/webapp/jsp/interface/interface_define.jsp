@@ -54,6 +54,7 @@
                             for (var j = 0; j < delAry.length; j++) {
                                 $('#tg').treegrid('remove', delAry[j]);
                             }
+                            $("#interfacetg").datagrid("reload");
                         } else {
                             alert("删除失败");
                         }
@@ -274,6 +275,7 @@
                         for (var j = 0; j < delAry.length; j++) {
                             $('#tg').treegrid('remove', delAry[j]);
                         }
+                        $("#interfacetg").datagrid("reload");
                     } else {
                         alert("删除失败");
                     }

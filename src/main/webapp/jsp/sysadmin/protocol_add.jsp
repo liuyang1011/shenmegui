@@ -158,8 +158,6 @@
 								$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
 								$('.msinterfacetree').tree("reload", selectNode.target);
 								$('.msinterfacetree').tree('options').url = urlPath;
-
-
 							},
 							complete:function(responce){
 								var resText = responce.responseText;

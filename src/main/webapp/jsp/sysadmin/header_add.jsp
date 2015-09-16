@@ -81,8 +81,16 @@
         sysManager.add(data, function (result) {
             if (result) {
                 var selectNode = $('.msinterfacetree').tree("getSelected");
+                $('.msinterfacetree').tree('append', {
+									parent: (selectNode?selectNode.target:null),
+									data: [{
+										text: 'new item1'
+									}]
+								});
+				var urlPath = $('.msinterfacetree').tree('options').url;
                 $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + systemId;
                 $('.msinterfacetree').tree("reload", selectNode.target);
+                $('.msinterfacetree').tree('options').url = urlPath;
                 $('#w').window('close');
             } else {
                 alert("保存失败");
