@@ -204,27 +204,6 @@ var delIds = [];
 			}
 			
 		}
-		function comparePage(){
-			alert(${operation.operationId });
-			//判断当前场景有没有历史信息
-			$.ajax({//获取服务场景信息，当前sda和最新一个历史版本的sdaHis
-				type: "post",
-				async: false,
-				url: "/operationHis/hisJudge?serviceId=${operation.serviceId }&operationId=${operation.operationId }",
-				dataType: "json",
-				success: function (data) {
-					if(data){
-						var urlPath = "/sda/comparePage.jsp?serviceId=${operation.serviceId }&operationId=${operation.operationId }";
-						var opeHisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
-						parent.parent.addTab('版本对比-${service.serviceName }-${operation.operationName }', opeHisContent);
-					}else{
-						alert("该场景暂无发布历史");
-					}
-
-				}
-
-			});
-		}
 		$.extend($.fn.validatebox.defaults.rules, {
                         unique: {
                             validator: function (value, param) {
@@ -246,20 +225,18 @@ var delIds = [];
 
 	</div>
 <fieldset>
- <legend>场景信息</legend>
+ <legend>条件搜索</legend>
 <table border="0" cellspacing="0" cellpadding="0">
 
   <tr>
      <th>服务代码</th>
-    <td><input class="easyui-textbox" disabled style="width:120px" type="text" name="serviceId" value="${service.serviceId }" ></td>
+    <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" ></td>
     <th>服务名称</th>
     <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }" ></td>
      <th>场景号</th>
-    <td> <input class="easyui-textbox"disabled style="width:50px"  type="text" name="operationId" value="${operation.operationId }" ></td>
+    <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }" ></td>
  	 <th>场景名称</th>
         <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }" ></td>
-	  <th>版本</th>
-	  <td><input class="easyui-textbox" disabled type="text" name="version" value="${operation.version.code }" ></td>
   </tr>
 
 </table>
@@ -306,7 +283,6 @@ var delIds = [];
 	    <a href="javascript:void(0)" onclick="addNode()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>&nbsp;&nbsp;
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
-	    <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton" iconCls="icon-save" plain="true">版本对比</a>
     </td>
     <td align="right"></td>
   </tr>
