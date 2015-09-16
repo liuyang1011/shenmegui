@@ -154,8 +154,10 @@
 										text: 'new item2'
 									}]
 								});
+								var urlPath = $('.msinterfacetree').tree('options').url;
 								$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
 								$('.msinterfacetree').tree("reload", selectNode.target);
+								$('.msinterfacetree').tree('options').url = urlPath;
 
 
 							},

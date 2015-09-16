@@ -192,8 +192,10 @@
 
 				$('#w').window('close');
 				var selectNode = $('.msinterfacetree').tree("getSelected");
+				var urlPath = $('.msinterfacetree').tree('options').url;
 				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
 				$('.msinterfacetree').tree("reload", selectNode.target);
+				$('.msinterfacetree').tree('options').url = urlPath;
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");
