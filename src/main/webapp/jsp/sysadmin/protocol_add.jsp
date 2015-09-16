@@ -145,8 +145,18 @@
 								}
 								$('#w').window('close');
 								$('#tg').datagrid("reload");
+								var uuid = ""+new Date().getTime();
+								$('.msinterfacetree').tree('append', {
+									parent: (selectNode?selectNode.target:null),
+									data: [{
+										text: 'new item1'
+									},{
+										text: 'new item2'
+									}]
+								});
 								$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
 								$('.msinterfacetree').tree("reload", selectNode.target);
+
 
 							},
 							complete:function(responce){

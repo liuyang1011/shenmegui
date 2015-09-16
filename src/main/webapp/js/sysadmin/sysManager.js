@@ -222,8 +222,10 @@ var sysManager = {
             url: "/protocol/delete/" + node.id,
             dataType: "json",
             success: function (result) {
-                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
-                $('.msinterfacetree').tree("reload", selectNode.target);
+                var parent = $('.msinterfacetree').tree("getParent", node.target);
+                $('.msinterfacetree').tree("remove", node.target);
+                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + parent.id;
+                $('.msinterfacetree').tree("reload", parent.target);
             }
         });
     }

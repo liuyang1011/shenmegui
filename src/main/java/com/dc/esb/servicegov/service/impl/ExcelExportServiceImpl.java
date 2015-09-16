@@ -344,6 +344,10 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             //获取request元数据
             List<Ida> reqListIda = getIdaByParentName(si.getInterfaceId(), "request");
             List<Ida> resListIda = getIdaByParentName(si.getInterfaceId(), "response");
+            if(Constants.INVOKE_TYPE_STANDARD_Y.equals(si.getIsStandard())){//如果是标准接口，不输出ida
+                reqListIda = new ArrayList<Ida>();
+                resListIda = new ArrayList<Ida>();
+            }
             List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
             List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
             Counter counter = new Counter(6);

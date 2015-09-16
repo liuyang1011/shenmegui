@@ -55,7 +55,7 @@
     var systemId = "<%=systemId%>";
     var url = "/fileManager/getAll";
     var method = "post";
-    if(systemId){
+    if(systemId != null && systemId !="null"){
         url = "fileManager/get/system/" + systemId;
         method = "get";
     }
