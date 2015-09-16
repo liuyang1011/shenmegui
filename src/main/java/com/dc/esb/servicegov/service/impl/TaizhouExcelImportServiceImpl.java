@@ -3,19 +3,18 @@ package com.dc.esb.servicegov.service.impl;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.ExcelTool;
 import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.shiro.SecurityUtils;
 import org.hibernate.NonUniqueObjectException;
 import org.jboss.seam.annotations.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by vincentfxz on 15/7/23.
@@ -1349,6 +1348,15 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         Interface temp = interfaceDao.get(inter.getInterfaceId());
         exists = null!=temp;
         if(!exists){
+            String versionId = inter.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
+            if (versionId == null || "".equals(versionId)) {
+                versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
+                inter.setVersionId(versionId);
+            } else {
+                versionService.editVersion(versionId);
+            }
+            inter.setOptDate(DateUtils.format(new Date()));
+            inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
             interfaceDao.save(inter);
             //添加serviceInvoke记录
             ServiceInvoke invoke = new ServiceInvoke();
@@ -1356,6 +1364,15 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             invoke.setInterfaceId(inter.getInterfaceId());
             serviceInvokeDAO.save(invoke);
         }else{
+            String versionId = temp.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
+            if (versionId == null || "".equals(versionId)) {
+                versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, temp.getInterfaceId(),Constants.Version.TYPE_ELSE);
+                temp.setVersionId(versionId);
+            } else {
+                versionService.editVersion(versionId);
+            }
+            temp.setOptDate(DateUtils.format(new Date()));
+            temp.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
             temp.setInterfaceName(inter.getInterfaceName());
             temp.setEcode(inter.getEcode());
             temp.setStatus(inter.getStatus());

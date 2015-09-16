@@ -16,7 +16,7 @@ public class IdaHIS {
 	private String id;
 	@Column(name = "STRUCTNAME")
 	private String structName;
-	@Column(name = "STRUCTALIAS")
+	@Column(name = "STRUCTALIAS",length = 500)
 	private String structAlias;
 
 	@Column(name = "METADATA_ID")

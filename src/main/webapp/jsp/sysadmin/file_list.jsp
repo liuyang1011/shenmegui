@@ -75,8 +75,6 @@
                 text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
-
-                    console.log(systemId);
                     uiinit.win({
                         w: 500,
                         iconCls: 'icon-add',
