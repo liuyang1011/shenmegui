@@ -95,14 +95,13 @@
 <script type="text/javascript">
     var userId = $("#userId").text();
     var containBlock = function containBlock(blocks, obj) {
-
         var i = blocks.length;
         while (i--) {
             if (blocks[i].blockId == obj.blockId) {
                 return true;
             }
-            return false;
         }
+        return false;
 
     };
 
@@ -209,7 +208,7 @@
         var initConnections = function initConnections(result) {
 
 
-            if(result.length == 0){
+            if (result.length == 0) {
                 var sourceId = "<%=request.getParameter("sourceId")%>";
                 var sourceBlock = {
                     blockId: sourceId,
@@ -233,6 +232,8 @@
                     positionY: initPosY
                 };
                 if (!containBlock(blocks, sourceBlock)) {
+                    console.log(blocks);
+                    console.log(sourceBlock);
                     var sourceRow = data[sourceId];
                     constructBlock(sourceRow, sourceBlock);
                     blocks.push(sourceBlock);
