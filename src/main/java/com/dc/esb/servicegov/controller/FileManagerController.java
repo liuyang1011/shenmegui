@@ -45,16 +45,57 @@ public class FileManagerController {
     private SystemService systemService;
 
     @RequiresPermissions({"file-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/get/systemId/{systemId}", headers = "Accept=application/json")
-    public @ResponseBody Map<String, Object> getBySystemId(@PathVariable("systemId") String systemId){
-        List<FileManager> files = fileManagerService.findBy("systemId", systemId);
-        SearchCondition searchCondition = new SearchCondition();
-        searchCondition.setField("systemId");
-        searchCondition.setFieldValue(systemId);
-        Page page = fileManagerService.findBy(searchCondition, 10);
+    @RequestMapping(method = RequestMethod.POST, value = "/get/systemId/{systemId}", headers = "Accept=application/json")
+    public @ResponseBody Map<String, Object> getBySystemId(@PathVariable("systemId") String systemId,HttpServletRequest req){
+        String starpage = req.getParameter("page");
+
+        String rows = req.getParameter("rows");
+
+        String fileName = req.getParameter("fileName");
+        String fileDesc = req.getParameter("fileDesc");
+
+        List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
+
+        StringBuffer hql = new StringBuffer("FROM FileManager t1 WHERE 1=1");
+        if (fileName != null && !"".equals(fileName)) {
+            SearchCondition searchCond = new SearchCondition();
+            hql.append(" and t1.fileName like ?");
+            searchCond.setField("fileName");
+            searchCond.setFieldValue("%" + fileName + "%");
+            searchConds.add(searchCond);
+        }
+
+        if (fileDesc != null && !"".equals(fileDesc)) {
+            SearchCondition searchCond = new SearchCondition();
+            hql.append(" and t1.fileDesc like ?");
+            searchCond.setField("fileDesc");
+            searchCond.setFieldValue("%" + fileDesc + "%");
+            searchConds.add(searchCond);
+        }
+
+        if (systemId != null && !"".equals(systemId)) {
+            SearchCondition searchCond = new SearchCondition();
+            hql.append(" and t1.systemId = ?");
+            searchCond.setField("systemId");
+            searchCond.setFieldValue(systemId);
+            searchConds.add(searchCond);
+        }
+
+        Page page = fileManagerService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);
+        page.setPage(Integer.parseInt(starpage));
+
+
+        List<FileManager> fms = fileManagerService.findBy(hql.toString(),page,searchConds);
+        for(FileManager f:fms){
+            if(null != f.getSystem()){
+                f.setSystemName(f.getSystem().getSystemChineseName());
+            }
+            f.setSystem(null);
+        }
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("total", page.getResultCount());
-        map.put("rows", files);
+        map.put("rows", fms);
         return map;
     }
 

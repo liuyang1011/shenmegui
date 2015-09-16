@@ -244,7 +244,17 @@ var SYSMENU = {
                         } else if (node.click == "heads") {
 
                         } else if (node.click == "files") {
-
+                            var title = "系统" + node.id + "需求文件";
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp?systemId=' + node.id + '"  style="width:100%;height:98%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true
+                                });
+                            }
                         } else {
                             var mid = node.id;
                             var title = node.text;
