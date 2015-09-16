@@ -1347,28 +1347,36 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         boolean exists = false;
         Interface temp = interfaceDao.get(inter.getInterfaceId());
         exists = null!=temp;
-        String versionId = temp.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
-        if (versionId == null || "".equals(versionId)) {
-            versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, temp.getInterfaceId(),Constants.Version.TYPE_ELSE);
-            temp.setVersionId(versionId);
-        } else {
-            versionService.editVersion(versionId);
-        }
-        temp.setOptDate(DateUtils.format(new Date()));
-        temp.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
         if(!exists){
-            interfaceDao.save(temp);
-            //添加serviceInvoke记录
-            ServiceInvoke invoke = new ServiceInvoke();
-            invoke.setSystemId(systemId);
-            invoke.setInterfaceId(temp.getInterfaceId());
-            serviceInvokeDAO.save(invoke);
-        }else{
-            versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
-            inter.setVersionId(versionId);
+            String versionId = inter.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
+            if (versionId == null || "".equals(versionId)) {
+                versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
+                inter.setVersionId(versionId);
+            } else {
+                versionService.editVersion(versionId);
+            }
             inter.setOptDate(DateUtils.format(new Date()));
             inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
             interfaceDao.save(inter);
+            //添加serviceInvoke记录
+            ServiceInvoke invoke = new ServiceInvoke();
+            invoke.setSystemId(systemId);
+            invoke.setInterfaceId(inter.getInterfaceId());
+            serviceInvokeDAO.save(invoke);
+        }else{
+            String versionId = temp.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
+            if (versionId == null || "".equals(versionId)) {
+                versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, temp.getInterfaceId(),Constants.Version.TYPE_ELSE);
+                temp.setVersionId(versionId);
+            } else {
+                versionService.editVersion(versionId);
+            }
+            temp.setOptDate(DateUtils.format(new Date()));
+            temp.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
+            temp.setInterfaceName(inter.getInterfaceName());
+            temp.setEcode(inter.getEcode());
+            temp.setStatus(inter.getStatus());
+            interfaceDao.save(temp);
         }
         return exists;
     }
