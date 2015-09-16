@@ -165,6 +165,9 @@
                         data: {"id": node.id},
                         success: function(data){
                             if(data){
+                                if (jQuery.inArray(node.id, editArray) == -1) {
+                                    editArray.push(node.id);
+                                }
                                 $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
                                 $("#interfacetg").datagrid("reload");
                             }
@@ -192,6 +195,9 @@
                         data: {"id": node.id},
                         success: function(data){
                             if(data){
+                                if (jQuery.inArray(node.id, editArray) == -1) {
+                                     editArray.push(node.id);
+                                }
                                 $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
                                 $("#interfacetg").datagrid("reload");
                             }
