@@ -127,9 +127,14 @@ var interfaceManager = {
             dataType: "json",
             success: function(result) {
                 if(result){
-                    $("#tg").datagrid("reload");
-                	treeObj.tree("reload");
-                	tabObj.tabs("close",tit);
+//                    $("#tg").datagrid("reload");
+//                	treeObj.tree("reload");
+                    var parent = $('.msinterfacetree').tree("getParent", node.target);
+                    $('.msinterfacetree').tree("remove", node.target);
+                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + parent.id;
+                    $('.msinterfacetree').tree("reload", parent.target);
+
+                    tabObj.tabs("close",tit);
                 }
             }
         });

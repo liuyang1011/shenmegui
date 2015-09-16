@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.IdaDAOImpl;
+import com.dc.esb.servicegov.dao.impl.InterfaceDAOImpl;
 import com.dc.esb.servicegov.dao.impl.SDADAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.Ida;
@@ -25,6 +26,8 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	private IdaDAOImpl idaDAOImpl;
 	@Autowired
 	private SDADAOImpl sdadao;
+	@Autowired
+	private InterfaceDAOImpl interfaceDAO;
 
 	@Autowired
 	private VersionServiceImpl versionServiceImpl;
@@ -35,7 +38,18 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	}
 
 	public void deletes(String [] ids){
+		boolean editFlag = true;
 		for(String id:ids){
+			if(editFlag){
+				Ida ida = idaDAOImpl.findUniqueBy("id", id);
+				String interfaceId = ida.getInterfaceId();
+				if(org.apache.commons.lang.StringUtils.isNotEmpty(interfaceId)){
+					Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
+					//更新版本，只更新一次
+					versionServiceImpl.editVersion(inter.getVersionId());
+					editFlag = false;
+				}
+			}
 			idaDAOImpl.delete(id);
 		}
 	}
@@ -49,8 +63,10 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			}
 			idaDAOImpl.save(ida);
 			if(editFlag){
-				Interface inter = ida.getInterObj();
-				if(inter != null){
+
+				String interfaceId = ida.getInterfaceId();
+				if(org.apache.commons.lang.StringUtils.isNotEmpty(interfaceId)){
+					Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
 					//更新版本，只更新一次
 					versionServiceImpl.editVersion(inter.getVersionId());
 					editFlag = false;
@@ -76,8 +92,13 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
         String hql = " update "+ Ida.class.getName() + " set metadataId = ? where id = ?";
         idaDAOImpl.batchExecute(hql, metadataId, id);
 		Ida ida = idaDAOImpl.findUniqueBy("id", id);
-		if(ida != null && ida.getInterObj() != null){//做一次版本更新
-			versionServiceImpl.editVersion(ida.getInterObj().getVersionId());
+		if(ida != null){//做一次版本更新
+			String interfaceId = ida.getInterfaceId();
+			if(org.apache.commons.lang.StringUtils.isNotEmpty(interfaceId)) {
+				Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
+				//更新版本，只更新一次
+				versionServiceImpl.editVersion(inter.getVersionId());
+			}
 		}
         return true;
     }
@@ -87,11 +108,15 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		boolean editFlag = true;
 		for(int i = 0; i < list.size(); i++){
 			if(list.get(i) != null){
-				Interface inter = list.get(i).getInterObj();
-				if(inter != null){
-					//更新版本，只更新一次
-					versionServiceImpl.editVersion(inter.getVersionId());
-					editFlag = false;
+				Ida ida = list.get(i);
+				if(ida != null) {
+					String interfaceId = ida.getInterfaceId();
+					if (org.apache.commons.lang.StringUtils.isNotEmpty(interfaceId)) {
+						Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
+						//更新版本，只更新一次
+						versionServiceImpl.editVersion(inter.getVersionId());
+						editFlag = false;
+					}
 				}
 			}
 			if(!editFlag) break;
