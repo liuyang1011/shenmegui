@@ -117,13 +117,13 @@
             pageSize: 5,//每页显示的记录条数，默认为10
             pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
-            toolbar: [{
+            toolbar: [/*{
                 text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
                     sysManager.addProtocolPage();
                 }
-            }, {
+            },*/ {
                 text: '修改',
                 iconCls: 'icon-edit',
                 handler: function () {

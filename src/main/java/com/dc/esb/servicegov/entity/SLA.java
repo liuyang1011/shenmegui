@@ -48,6 +48,7 @@ public class SLA implements Serializable {
 			return false;
 		}
 		SLA another = (SLA) obj;
+
 		return ((null == this.serviceId) ? (null == another.getServiceId()) : (this.serviceId.equals(another.getServiceId()))) &&
 				((null == this.operationId) ? (null == another.getOperationId()) : (this.operationId.equals(another.getOperationId()))) &&
 				((null == this.slaName) ? (null == another.getSlaName()) : (this.slaName.equals(another.getSlaName())));
