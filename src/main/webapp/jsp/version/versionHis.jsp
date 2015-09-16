@@ -21,7 +21,8 @@
 			method:'get',
 			<%--toolbar:toolbar,--%>
 			pagination:true,
-			pageSize:10
+			pageSize:15,
+			pageList: [15,30,50]
 		});
 	});
 		var toolbar = [
@@ -108,7 +109,7 @@
 </table>
 
 </fieldset>
-<table id="operationList" title="版本历史" style="height:365px; width:auto;">
+<table id="operationList" title="版本历史" style="height:525px; width:auto;">
   <thead>
     <tr>
         <th data-options="field:'autoId',checkbox:true"> </th>

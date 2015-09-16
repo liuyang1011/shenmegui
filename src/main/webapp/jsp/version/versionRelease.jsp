@@ -154,7 +154,7 @@
 		</table>
 		</form>
 	</fieldset>
-	<table id="operationList" class="easyui-datagrid" title="工作项发布清单(服务定义)" style="height:365px; width:auto;">
+	<table id="operationList" class="easyui-datagrid" title="工作项发布清单(服务定义)" style="height:425px; width:auto;">
 		<thead>
 			<tr>
 				<th data-options="field:'productid',checkbox:true"></th>
@@ -170,7 +170,7 @@
 			</tr>
 		</thead>
 	</table>
-	<table id="pcList" class="easyui-datagrid" title="工作项发布清单(公共代码)"
+	<%--<table id="pcList" class="easyui-datagrid" title="工作项发布清单(公共代码)"
 		data-options="
 			rownumbers:true,
 			singleSelect:false,
@@ -197,7 +197,7 @@
 				<th data-options="field:''">版本号</th>
 			</tr>
 		</thead>
-	</table>
+	</table>--%>
 	
 </body>
 </html>

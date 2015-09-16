@@ -136,9 +136,9 @@ public class ServiceLinkNodeVO {
         }
         this.operationId = serviceInvoke.getOperationId();
         this.id = serviceInvoke.getInvokeId();
-        if(serviceInvoke.getType().equals("0")){
+        if("0".equals(serviceInvoke.getType())){
             this.invokeType = "提供者";
-        }else if(serviceInvoke.getType().equals("1")){
+        }else if("1".equals(serviceInvoke.getType())){
             this.invokeType = "消费者";
         }else{
             this.invokeType = serviceInvoke.getType();

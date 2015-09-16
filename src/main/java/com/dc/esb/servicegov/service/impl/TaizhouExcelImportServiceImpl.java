@@ -1223,6 +1223,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     isStandard = Constants.INVOKE_TYPE_STANDARD_N;
                 }
                 String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
+                //如果手动输错
+                if(temp.split("[()]+").length <2){
+                    logger.error("" + temp + "，服务格式错误");
+                    logInfoService.saveLog("" + temp + "，服务格式错误", "导入");
+                    msg.append("" + temp + "，服务格式错误");
+                    continue;
+                }
                 String serviceId = temp.split("[()]+")[1];
                 String systemId = consumerSystemId;
                 String systemAb = consumerSystem[j];

@@ -38,7 +38,7 @@ public class SLADAOImpl extends HibernateDAO<SLA, String> {
 	public List<SLA> findTemplateBy(Map<String, String> params){
 		return findBy(GET_TEMPLATE_SLA_HQL, params);
 	}
-	
+
 	public List<SLA> getAllTemplateSLA(){
 		return find(GET_TEMPLATE_SLA_HQL);
 	}
