@@ -1,4 +1,7 @@
 <%@ page language="java" pageEncoding="utf-8" %>
+<%
+    String systemId = request.getParameter("systemId");
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -49,6 +52,13 @@
      style="width: 500px; height: 200px; padding: 10px;">
 </div>
 <script type="text/javascript">
+    var systemId = "<%=systemId%>";
+    var url = "/fileManager/getAll";
+    var method = "post";
+    if(systemId){
+        url = "fileManager/get/system/" + systemId;
+        method = "get";
+    }
     $(document).ready(function () {
         $('#tg').datagrid({
             title: '文件管理',
@@ -56,8 +66,8 @@
             width: 'auto',
             height: '400px',
             collapsible: true,
-            method: 'post',
-            url: '/fileManager/getAll',
+            method: method,
+            url: url,
             singleSelect: true,//是否单选
             pagination: true,//分页控件
             pageSize: 5,//每页显示的记录条数，默认为10
@@ -95,17 +105,6 @@
                     } else {
                         alert("请选择要删除的行");
                     }
-                }
-            }, {
-                text: '提交任务',
-                iconCls: 'icon-ok',
-                handler: function () {
-                    uiinit.win({
-                        w: 500,
-                        iconCls: 'icon-cfp',
-                        title: "完成任务",
-                        url: "/jsp/task/completeTask.jsp"
-                    });
                 }
             }],
             onLoadError: function (responce) {

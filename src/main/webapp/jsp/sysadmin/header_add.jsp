@@ -72,8 +72,6 @@
             systemId = "${param.systemId}";
             treeObj = parent.$('.msinterfacetree');
         }
-
-
         //data.headId = headId;
         data.headName = headName;
         data.headRemark = headRemark;
@@ -83,7 +81,6 @@
         sysManager.add(data, function (result) {
             if (result) {
                 var selectNode = $('.msinterfacetree').tree("getSelected");
-                console.log(selectNode);
                 $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + systemId;
                 $('.msinterfacetree').tree("reload", selectNode.target);
                 $('#w').window('close');

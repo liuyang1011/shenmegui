@@ -52,11 +52,11 @@
         <th data-options="field:'serviceName'">服务名称</th>
         <th data-options="field:'operationId'">场景码</th>
         <th data-options="field:'operationName'">场景名称</th>
-        <th data-options="field:'invokeType'">调用类型</th>
-        <th data-options="field:'nodeType'">节点类型</th>
-        <th data-options="field:'status'">状态</th>
-        <th data-options="field:'esbAccessPattern'">ESB调用方式</th>
-        <th data-options="field:'condition'">条件位</th>
+        <%--<th data-options="field:'invokeType'">调用类型</th>--%>
+        <%--<th data-options="field:'nodeType'">节点类型</th>--%>
+        <%--<th data-options="field:'status'">状态</th>--%>
+        <%--<th data-options="field:'esbAccessPattern'">ESB调用方式</th>--%>
+        <%--<th data-options="field:'condition'">条件位</th>--%>
     </tr>
     </thead>
 </table>
@@ -173,34 +173,36 @@
                     alert("请选中要预览的节点！");
                 }
             }
-        },{
-            text: '编辑节点',
-            iconCls: 'icon-qxfp',
-            handler: function () {
-                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-                var checkedItem;
-                if (checkedItems != null && checkedItems.length > 0) {
-                    if (checkedItems.length > 1) {
-                        alert("请选择一个节点进行预览！");
-                        return false;
-                    }
-                    else {
-                        checkedItem = checkedItems[0];
-                        invokeId = checkedItem.id;
-                        uiinit.win({
-                            w:500,
-                            iconCls:'icon-add',
-                            title:"编辑",
-                            url : "/jsp/serviceLink/serviceLinkModifyDialog.jsp"
-                        });
-
-                    }
-                }
-                else {
-                    alert("请选中要预览的节点！");
-                }
-            }
-        }];
+        }
+//        ,{
+//            text: '编辑节点',
+//            iconCls: 'icon-qxfp',
+//            handler: function () {
+//                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+//                var checkedItem;
+//                if (checkedItems != null && checkedItems.length > 0) {
+//                    if (checkedItems.length > 1) {
+//                        alert("请选择一个节点进行预览！");
+//                        return false;
+//                    }
+//                    else {
+//                        checkedItem = checkedItems[0];
+//                        invokeId = checkedItem.id;
+//                        uiinit.win({
+//                            w:500,
+//                            iconCls:'icon-add',
+//                            title:"编辑",
+//                            url : "/jsp/serviceLink/serviceLinkModifyDialog.jsp"
+//                        });
+//
+//                    }
+//                }
+//                else {
+//                    alert("请选中要预览的节点！");
+//                }
+//            }
+//        }
+    ];
 </script>
 
 </body>

@@ -72,12 +72,6 @@
         <th data-options="field:'timeout',width:'8%',align:'center'">
             超时时间
         </th>
-        <%--<th data-options="field:'errorCode',width:'10%'">
-            错误代码
-        </th>
-        <th data-options="field:'succCode',align:'right',width:'10%'">
-            成功代码
-        </th>--%>
         <th data-options="field:'remark',align:'right',width:'15%'">
             备注
         </th>
@@ -117,6 +111,7 @@
             pageSize: 5,//每页显示的记录条数，默认为10
             pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
+
             toolbar: [/*{
                 text: '新增',
                 iconCls: 'icon-add',

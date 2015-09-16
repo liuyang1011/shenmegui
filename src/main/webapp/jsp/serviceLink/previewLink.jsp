@@ -25,7 +25,7 @@
         <table>
             <tr>
                 <td style="padding:0.5em"><label>选择接口</label></td>
-                <td style="padding:0.5em"><select class="form-control select2" style="width:20em" multiple="multiple"
+                <td style="padding:0.5em"><select class="form-control select2" style="width:50em" multiple="multiple"
                                                   data-placeholder="选择接口"></select></td>
                 <td style="padding:0.5em">
                     <button id="add" class="btn btn-block btn-primary">添加</button>
@@ -118,26 +118,21 @@
 
     var sourceId = "<%=request.getParameter("sourceId")%>";
     var data = {};
-
-
     var context = "";
     var connections = [];
     var connectionsToDel = [];
     var blocks = [];
     var initPosX = 100;
     var initPosY = 100;
-
     var instance;
 
     $(function () {
-//        var instance;
-
-
         /**
          * 初始化接口下拉框的方法
          * @param row
          */
         var initComboBox = function (result) {
+//            console.log(result);
             for (var i = 0; i < result.length; i++) {
                 data[result[i].invokeId] = result[i];
                 var interfaceLabel = '';
@@ -145,11 +140,13 @@
                 if (null != result[i].interfaceId) {
                     interfaceLabel = "接口:" + result[i].interfaceId;
                 }
-                if (null != result[i].serviceId) {
-                    serviceLabel = '服务:' + result[i].serviceId;
+                if (null != result[i].serviceId && null != result[i].operationId) {
+                    serviceLabel = '服务:' + result[i].serviceId + '场景:' + result[i].operationId;
                 }
-
-                $(".select2").append('<option value="' + result[i].invokeId + '" >' + interfaceLabel + serviceLabel + '</option>');
+                if (null != result[i].systemName) {
+                    systemLabel = '系统:' + result[i].systemName;
+                }
+                $(".select2").append('<option value="' + result[i].invokeId + '" >' + interfaceLabel + serviceLabel + systemLabel + '</option>');
             }
             $(".select2").select2();
             //在初始化完成数据框之后初始化图标表
@@ -176,6 +173,7 @@
             var systemId = row.systemName;
             var invokeId = row.invokeId;
             var operationId = row.operationId;
+            var type = row.type;
 
             var type = row.type;
             if (type == "0") {
@@ -193,11 +191,23 @@
                 backgroundColor = "antiquewhite";
             }
 
+            var serviceOperation = "";
+            if (serviceId != null && operationId != null) {
+                serviceOperation = serviceId + operationId;
+            }
+            var typeLabel = "消费方提供方";
+            if ("0" == type) {
+                typeLabel = "消费方";
+            }
+            if ("1" == type) {
+                typeLabel = "提供方";
+            }
             context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
             + '<div class="ep"></div>'
             + '<div>'
             + '系统ID: ' + systemId + '<br />'
-            + '服务场景: ' + serviceId + operationId
+            + '服务场景: ' + serviceOperation + '<br />'
+            + '节点类型:' + typeLabel
             + '</div>'
             + '</div>';
         };
@@ -207,6 +217,7 @@
          * @param result
          */
         var initConnections = function initConnections(result) {
+
             for (var i = 0; i < result.length; i++) {
                 connections.push({
                     connectionId: result[i].sourceId + "-" + result[i].targetId,
@@ -256,7 +267,7 @@
                             length: 5,
                             foldback: 0.3
                         }],
-                        ["Label", { id: "label", cssClass: "aLabel"}]
+                        ["Label", {id: "label", cssClass: "aLabel"}]
                     ],
                     Container: "statemachine-demo"
                 });

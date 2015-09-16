@@ -189,11 +189,14 @@
 		data.serviceInvoke = invokes;
 		interfaceManager.add(data,"add",function(result){
 			if(result){
+
 				$('#w').window('close');
 				var selectNode = $('.msinterfacetree').tree("getSelected");
+				console.log(selectNode);
 				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
+				console.log("/interface/getLeftTree/subInterfaceTree/system/" + systemId);
 				$('.msinterfacetree').tree("reload", selectNode.target);
-
+				console.log("hehehe");
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");

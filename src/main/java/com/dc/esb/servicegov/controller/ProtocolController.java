@@ -3,7 +3,9 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.Protocol;
+import com.dc.esb.servicegov.entity.SystemProtocol;
 import com.dc.esb.servicegov.service.ProtocolService;
+import com.dc.esb.servicegov.service.SystemProtocolService;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -24,7 +26,9 @@ import java.util.*;
 public class ProtocolController {
 
     @Autowired
-    ProtocolService protocolService;
+    private ProtocolService protocolService;
+    @Autowired
+    private SystemProtocolService systemProtocolService;
 
     @RequiresPermissions({"protocol-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/getAll", headers = "Accept=application/json")
@@ -113,6 +117,10 @@ public class ProtocolController {
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{protocolId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete (@PathVariable String protocolId) {
+        List<SystemProtocol> systemProtocols = systemProtocolService.findBy("protocolId", protocolId);
+        for(SystemProtocol systemProtocol : systemProtocols){
+            systemProtocolService.delete(systemProtocol);
+        }
         protocolService.deleteById(protocolId);
         return true;
     }

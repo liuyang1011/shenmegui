@@ -52,8 +52,10 @@
 
 <script type="text/javascript">
 	var systemId;
-	var selectNode = $('.msinterfacetree').tree("getSelected");
-	console
+	var selectNode = $('.msinterfacetree').tree("getSelected")
+	systemId = selectNode.id;
+	console.log(selectNode);
+	console.log(systemId);
 	if(systemId){
 		$(document).ready(function(){
 			$('#systemId').combobox({
@@ -62,12 +64,15 @@
 //				mode:'remote',
 				data : [{
 					"id" : systemId,
-					"text" : systemId
+					"text" : systemId,
+					"selected" : true
 				}],
 				valueField:'id',
 				textField:'text'
 			});
+			$('#systemId').combobox("select", systemId);
 		});
+
 	}else{
 		$(document).ready(function(){
 			$('#systemId').combobox({
