@@ -53,7 +53,7 @@
 				return false;
 			}
 			var opItems = $('#operationList').datagrid('getChecked');
-			var pcItems = $('#pcList').datagrid('getChecked');
+			//var pcItems = $('#pcList').datagrid('getChecked');
 			var versionIds = new Array();
 			$.each(opItems, function(index, item) {
 				versionIds.push(item.versionHis.autoId);
