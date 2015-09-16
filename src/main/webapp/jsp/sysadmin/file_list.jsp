@@ -55,7 +55,7 @@
     var systemId = "<%=systemId%>";
     var url = "/fileManager/getAll";
     var method = "post";
-    if(systemId){
+    if(systemId != null && systemId !="null"){
         url = "fileManager/get/system/" + systemId;
         method = "get";
     }
@@ -109,7 +109,7 @@
             }],
             onLoadError: function (responce) {
                 var resText = responce.responseText;
-                if (resText.toString().charAt(0) == "<") {
+                if(resText.toString().indexOf("没有操作权限")){
 //                    alert("没有权限！");
                     window.location.href = "/jsp/403.jsp";
                 }

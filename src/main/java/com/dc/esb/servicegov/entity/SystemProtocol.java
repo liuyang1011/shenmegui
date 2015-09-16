@@ -17,11 +17,11 @@ public class SystemProtocol implements Serializable {
     @Column(name = "PROTOCOL_ID")
     private String protocolId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "SYSTEM_ID", referencedColumnName = "SYSTEM_ID", insertable = false, updatable = false)
     private System system;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "PROTOCOL_ID", referencedColumnName = "PROTOCOL_ID", insertable = false, updatable = false)
     private Protocol protocol;
 

@@ -42,13 +42,13 @@
 		</tr>
 		<tr>
 			<th>
-				系统名称
+				系统中文名称
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemChineseNameText">
 			</td>
 		</tr>
-		<tr>
+		<tr style="display:none">
 			<th>
 				系统功能描述
 			</th>
@@ -77,7 +77,7 @@
 		</tr>
 		<tr>
 			<th>
-				备注说明
+				系统描述
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="featureDescText">
@@ -91,7 +91,7 @@
 				<input class="easyui-textbox" type="text" id="principal1Text">
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>
 				联系人一详细
 			</th>
@@ -108,7 +108,7 @@
 				<input class="easyui-textbox" type="text" id="principal2Text">
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>
 				联系人二详细
 			</th>

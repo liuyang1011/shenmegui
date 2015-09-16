@@ -222,7 +222,7 @@
     </tr>
   </thead>
 </table>
-<table class="easyui-datagrid" title="服务公共代码" 
+<%--<table class="easyui-datagrid" title="服务公共代码"
 			data-options="
 				rownumbers:true,
 				singleSelect:false,
@@ -249,7 +249,7 @@
       <th data-options="field:'attr1'">字段9 </th>
     </tr>
   </thead>
-</table>
+</table>--%>
 <script type="text/javascript">
 		var toolbar = [{
 			text:'移出',

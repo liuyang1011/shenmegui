@@ -145,14 +145,25 @@
 								}
 								$('#w').window('close');
 								$('#tg').datagrid("reload");
+								var uuid = ""+new Date().getTime();
+								$('.msinterfacetree').tree('append', {
+									parent: (selectNode?selectNode.target:null),
+									data: [{
+										text: 'new item1'
+									},{
+										text: 'new item2'
+									}]
+								});
 								$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
 								$('.msinterfacetree').tree("reload", selectNode.target);
+
 
 							},
 							complete:function(responce){
 								var resText = responce.responseText;
-								if(resText.toString().charAt(0) == "<"){
+								if(resText.toString().indexOf("没有操作权限")){
 									alert("没有权限！");
+									//window.location.href = "/jsp/403.jsp";
 								}
 							}
 						});

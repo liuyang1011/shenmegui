@@ -6,9 +6,12 @@ import com.dc.esb.servicegov.entity.OperationLogType;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.PackageUtil;
 import com.dc.esb.servicegov.vo.ReuseRateVO;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -60,5 +63,10 @@ public class SystemLogController {
         result.put("total", page.getResultCount());
         result.put("rows", rows);
         return result;
+    }
+
+    @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
+    public String processUnauthorizedException() {
+        return "403";
     }
 }
