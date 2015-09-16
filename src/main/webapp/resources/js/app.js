@@ -256,7 +256,7 @@ var SYSMENU = {
                                 });
                             }
                         } else if(node.click == "file"){
-                            
+
                         }else {
                             var mid = node.id;
                             var title = node.text;
