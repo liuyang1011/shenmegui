@@ -81,14 +81,37 @@ public class InvokeConnectionServiceImpl extends AbstractBaseService<InvokeConne
      * @param sourceId
      * @return
      */
-    public List<InvokeConnection> getConnectionsEndWith(String targetId) {
+    public List<InvokeConnection> getConnectionsEndWith(String targetId, List<String> preLink) {
         List<InvokeConnection> connections = new ArrayList<InvokeConnection>();
-        List<InvokeConnection> endConnections = getDAO().findBy("targetId", targetId);
-        connections.addAll(endConnections);
-        for (InvokeConnection invokeConnection : endConnections) {
+        List<InterfaceInvoke> invokeRelations = interfaceInvokeService.findBy("providerInvokeId", targetId);
+
+        List<InvokeConnection> startConnections = getDAO().findBy("targetId", targetId);
+
+        if(preLink.contains(targetId)){
+            return connections;
+        }
+        preLink.add(targetId);
+
+        connections.addAll(startConnections);
+        for (InvokeConnection invokeConnection : startConnections) {
             String sourceId = invokeConnection.getSourceId();
             if (null != sourceId) {
-                connections.addAll(getConnectionsEndWith(sourceId));
+                connections.addAll(getConnectionsEndWith(sourceId, preLink));
+            }
+        }
+        for (InterfaceInvoke interfaceInvoke : invokeRelations) {
+            boolean add = true;
+            for (InvokeConnection connection : connections) {
+                if (connection.getSourceId().equalsIgnoreCase(interfaceInvoke.getConsumerInvokeId()) && connection.getTargetId().equalsIgnoreCase(interfaceInvoke.getProviderInvokeId())) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                InvokeConnection invokeConnection = new InvokeConnection();
+                invokeConnection.setSourceId(interfaceInvoke.getConsumerInvokeId());
+                invokeConnection.setTargetId(interfaceInvoke.getProviderInvokeId());
+                connections.add(invokeConnection);
             }
         }
         return connections;
