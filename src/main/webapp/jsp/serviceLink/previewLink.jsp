@@ -124,6 +124,7 @@
     var initPosX = 100;
     var initPosY = 100;
     var instance;
+    var addedBLocks = [];
 
     $(function () {
         /**
@@ -206,8 +207,6 @@
          * @param result
          */
         var initConnections = function initConnections(result) {
-
-
             if (result.length == 0) {
                 var sourceId = "<%=request.getParameter("sourceId")%>";
                 var sourceBlock = {
@@ -217,6 +216,19 @@
                 };
                 var sourceRow = data[sourceId];
                 constructBlock(sourceRow, sourceBlock);
+            }
+            if(addedBLocks.length != 0){
+                for(var i = 0; i < addedBLocks.length; i ++){
+                    var sourceId = addedBLocks[i];
+                    var sourceBlock = {
+                        blockId: sourceId,
+                        positionX: initPosX,
+                        positionY: initPosY
+                    };
+                    var sourceRow = data[sourceId];
+                    constructBlock(sourceRow, sourceBlock);
+                }
+                addedBLocks = [];
             }
 
             for (var i = 0; i < result.length; i++) {
@@ -232,8 +244,6 @@
                     positionY: initPosY
                 };
                 if (!containBlock(blocks, sourceBlock)) {
-                    console.log(blocks);
-                    console.log(sourceBlock);
                     var sourceRow = data[sourceId];
                     constructBlock(sourceRow, sourceBlock);
                     blocks.push(sourceBlock);
@@ -323,107 +333,111 @@
          * 添加按钮的事件
          */
         $("#add").click(function () {
+            blocks = [];
             context = "";
-            serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
             var addInterfaceIds = $(".select2").val();
-            if (null == addInterfaceIds) {
-                return;
+            for(var i = 0; i < addInterfaceIds.length; i ++){
+                addedBLocks.push(addInterfaceIds[i]);
             }
-            if (instance) {
-                $.each(instance.getConnections(), function (idx, connection) {
-                    connections.push({
-                        connectionId: connection.id,
-                        sourceId: connection.sourceId,
-                        targetId: connection.targetId
-                    });
-                });
-                $("#statemachine-demo .w").each(function (idx, elem) {
-                    var $elem = $(elem);
-                    blocks.push({
-                        blockId: $elem.attr('id'),
-                        positionX: parseInt($elem.css("left"), 10),
-                        positionY: parseInt($elem.css("top"), 10)
-                    });
-                });
-            }
-            for (var i = 0; i < addInterfaceIds.length; i++) {
-                var row = data[addInterfaceIds[i]];
-                constructBlock(row);
-            }
-            document.getElementById("statemachine-demo").innerHTML = context;
-            for (var i = 0; i < blocks.length; i++) {
-                $("#" + blocks[i].blockId).css("left", blocks[i].positionX);
-                $("#" + blocks[i].blockId).css("top", blocks[i].positionY);
-            }
-            jsPlumb.ready(function () {
-                // setup some defaults for jsPlumb.
-                instance = jsPlumb.getInstance({
-                    Endpoint: ["Dot", {radius: 2}],
-                    HoverPaintStyle: {strokeStyle: "#1e8141", lineWidth: 2},
-                    ConnectionOverlays: [
-                        ["Arrow", {
-                            location: 1,
-                            id: "arrow",
-                            length: 5,
-                            foldback: 0.3
-                        }],
-                        ["Label", {label: "FOO", id: "label", cssClass: "aLabel"}]
-                    ],
-                    Container: "statemachine-demo"
-                });
-                window.jsp = instance;
-                var windows = jsPlumb.getSelector(".statemachine-demo .w");
-                // initialise draggable elements.
-                instance.draggable(windows);
-                // bind a click listener to each connection; the connection is deleted. you could of course
-                // just do this: jsPlumb.bind("click", jsPlumb.detach), but I wanted to make it clear what was
-                // happening.
-                instance.bind("click", function (c) {
-                    connectionsToDel.push({
-                        sourceId: c.sourceId,
-                        sourceType: "",
-                        targetId: c.targetId,
-                        targetType: ""
-                    });
-                    instance.detach(c);
-                });
-                // bind a connection listener. note that the parameter passed to this function contains more than
-                // just the new connection - see the documentation for a full list of what is included in 'info'.
-                // this listener sets the connection's internal
-                // id as the label overlay's text.
-                instance.bind("connection", function (info) {
-                    info.connection.getOverlay("label").setLabel("调用");
-                });
-                // suspend drawing and initialise.
-                instance.batch(function () {
-                    instance.makeSource(windows, {
-                        filter: ".ep",
-                        anchor: "Continuous",
-                        connector: ["StateMachine", {curviness: 20}],
-                        connectorStyle: {
-                            strokeStyle: "#5c96bc",
-                            lineWidth: 2,
-                            outlineColor: "transparent",
-                            outlineWidth: 4
-                        },
-                        maxConnections: 5,
-                        onMaxConnections: function (info, e) {
-                            alert("Maximum connections (" + info.maxConnections + ") reached");
-                        }
-                    });
-                    // initialise all '.w' elements as connection targets.
-                    instance.makeTarget(windows, {
-                        dropOptions: {hoverClass: "dragHover"},
-                        anchor: "Continuous",
-                        allowLoopback: true
-                    });
-                    for (var i = 0; i < connections.length; i++) {
-                        instance.connect({source: connections[i].sourceId, target: connections[i].targetId});
-                    }
-                    connections = [];
-                });
-                jsPlumb.fire("jsPlumbDemoLoaded", instance);
-            });
+            serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
+//            if (null == addInterfaceIds) {
+//                return;
+//            }
+//            if (instance) {
+//                $.each(instance.getConnections(), function (idx, connection) {
+//                    connections.push({
+//                        connectionId: connection.id,
+//                        sourceId: connection.sourceId,
+//                        targetId: connection.targetId
+//                    });
+//                });
+//                $("#statemachine-demo .w").each(function (idx, elem) {
+//                    var $elem = $(elem);
+//                    blocks.push({
+//                        blockId: $elem.attr('id'),
+//                        positionX: parseInt($elem.css("left"), 10),
+//                        positionY: parseInt($elem.css("top"), 10)
+//                    });
+//                });
+//            }
+//            for (var i = 0; i < addInterfaceIds.length; i++) {
+//                var row = data[addInterfaceIds[i]];
+//                constructBlock(row);
+//            }
+//            document.getElementById("statemachine-demo").innerHTML = context;
+//            for (var i = 0; i < blocks.length; i++) {
+//                $("#" + blocks[i].blockId).css("left", blocks[i].positionX);
+//                $("#" + blocks[i].blockId).css("top", blocks[i].positionY);
+//            }
+//            jsPlumb.ready(function () {
+//                // setup some defaults for jsPlumb.
+//                instance = jsPlumb.getInstance({
+//                    Endpoint: ["Dot", {radius: 2}],
+//                    HoverPaintStyle: {strokeStyle: "#1e8141", lineWidth: 2},
+//                    ConnectionOverlays: [
+//                        ["Arrow", {
+//                            location: 1,
+//                            id: "arrow",
+//                            length: 5,
+//                            foldback: 0.3
+//                        }],
+//                        ["Label", {label: "FOO", id: "label", cssClass: "aLabel"}]
+//                    ],
+//                    Container: "statemachine-demo"
+//                });
+//                window.jsp = instance;
+//                var windows = jsPlumb.getSelector(".statemachine-demo .w");
+//                // initialise draggable elements.
+//                instance.draggable(windows);
+//                // bind a click listener to each connection; the connection is deleted. you could of course
+//                // just do this: jsPlumb.bind("click", jsPlumb.detach), but I wanted to make it clear what was
+//                // happening.
+//                instance.bind("click", function (c) {
+//                    connectionsToDel.push({
+//                        sourceId: c.sourceId,
+//                        sourceType: "",
+//                        targetId: c.targetId,
+//                        targetType: ""
+//                    });
+//                    instance.detach(c);
+//                });
+//                // bind a connection listener. note that the parameter passed to this function contains more than
+//                // just the new connection - see the documentation for a full list of what is included in 'info'.
+//                // this listener sets the connection's internal
+//                // id as the label overlay's text.
+//                instance.bind("connection", function (info) {
+//                    info.connection.getOverlay("label").setLabel("调用");
+//                });
+//                // suspend drawing and initialise.
+//                instance.batch(function () {
+//                    instance.makeSource(windows, {
+//                        filter: ".ep",
+//                        anchor: "Continuous",
+//                        connector: ["StateMachine", {curviness: 20}],
+//                        connectorStyle: {
+//                            strokeStyle: "#5c96bc",
+//                            lineWidth: 2,
+//                            outlineColor: "transparent",
+//                            outlineWidth: 4
+//                        },
+//                        maxConnections: 5,
+//                        onMaxConnections: function (info, e) {
+//                            alert("Maximum connections (" + info.maxConnections + ") reached");
+//                        }
+//                    });
+//                    // initialise all '.w' elements as connection targets.
+//                    instance.makeTarget(windows, {
+//                        dropOptions: {hoverClass: "dragHover"},
+//                        anchor: "Continuous",
+//                        allowLoopback: true
+//                    });
+//                    for (var i = 0; i < connections.length; i++) {
+//                        instance.connect({source: connections[i].sourceId, target: connections[i].targetId});
+//                    }
+//                    connections = [];
+//                });
+//                jsPlumb.fire("jsPlumbDemoLoaded", instance);
+//            });
         });
         $("#save").click(function () {
             //先删除 需要删除的连接 然后再保存
