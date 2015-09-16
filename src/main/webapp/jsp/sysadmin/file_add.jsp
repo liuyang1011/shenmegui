@@ -54,8 +54,6 @@
 	var systemId;
 	var selectNode = $('.msinterfacetree').tree("getSelected")
 	systemId = selectNode.id;
-	console.log(selectNode);
-	console.log(systemId);
 	if(systemId){
 		$(document).ready(function(){
 			$('#systemId').combobox({

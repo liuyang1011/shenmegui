@@ -24,7 +24,7 @@ var olaManager = {
 			},
 			"complete":function(responce){
 				var resText = responce.responseText;
-				if(resText.toString().indexOf("没有操作权限")){
+				if(resText.toString().indexOf("没有操作权限") > 0){
 					alert("没有权限！");
 					//window.location.href = "/jsp/403.jsp";
 				}
@@ -55,7 +55,7 @@ var olaManager = {
 				},
 				"complete":function(responce){
 					var resText = responce.responseText;
-					if(resText.toString().indexOf("没有操作权限")){
+					if(resText.toString().indexOf("没有操作权限") > 0){
 						alert("没有权限！");
 						//window.location.href = "/jsp/403.jsp";
 					}
@@ -86,7 +86,7 @@ var olaManager = {
 			},
 			"complete":function(responce){
 				var resText = responce.responseText;
-				if(resText.toString().indexOf("没有操作权限")){
+				if(resText.toString().indexOf("没有操作权限") > 0){
 					alert("没有权限！");
 					//window.location.href = "/jsp/403.jsp";
 				}
