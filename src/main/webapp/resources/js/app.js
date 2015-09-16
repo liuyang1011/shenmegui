@@ -255,7 +255,9 @@ var SYSMENU = {
                                     closable: true
                                 });
                             }
-                        } else {
+                        } else if(node.click == "file"){
+                            
+                        }else {
                             var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
