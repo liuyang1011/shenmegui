@@ -12,12 +12,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
-    <link rel="stylesheet" type="text/css"
-          href="/resources/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
-    <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
+<link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
+	 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
+
+<script type="text/javascript" src="/resources/js/ui.js"></script>
 </head>
 
 <body>
@@ -97,19 +99,37 @@
             fitColumns:false,
             method:'get',
             idField: 'id',
-            treeField: 'text'
+            treeField: 'text',
+            onBeforeExpand: function(node){
+                if(node.children == null){
+                   $.ajax({
+                        type: "get",
+                        async: false,
+                        url: "/statistics/serviceReuseRate/expandServiceCategory?serviceCategoryId="+node.id,
+                        dataType: "json",
+                        success: function (result) {
+                            $('#resultList').treegrid('append',{
+                                            parent: node.id,
+                                            data: result
+                                        });
+                        }
+
+                    });
+                }
+            }
         });
     });
+    function expandServiceCategory(categoryId){
+
+    }
     function exportExcel(){
-        var data = $("#resultList").treegrid("getData");
+        //var data = $("#resultList").treegrid("getData");
+                //appendTreeNode(form, data[0],"");
         var form = $("<form>");//定义一个form表单
         form.attr("style", "display:none");
         form.attr("target", "");
         form.attr("method", "post");
         form.attr("action", "/excelExporter/exportServiceReuserate");
-
-        //appendTreeNode(form, data[0],"");
-
         $("body").append(form);//将表单放置在web中
         form.submit();//表单提交
     }
