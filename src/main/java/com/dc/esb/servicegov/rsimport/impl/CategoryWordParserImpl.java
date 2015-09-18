@@ -48,6 +48,10 @@ public class CategoryWordParserImpl implements IResourceParser {
 		for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
 			Row row = sheet.getRow(rowNum);
 			CategoryWord categoryWord =parseRow(row);
+			//增加导入修订人和时间
+			String userName = (String) SecurityUtils.getSubject().getPrincipal();
+			categoryWord.setOptUser(userName);
+			categoryWord.setOptDate(DateUtils.format(new Date()));
 			//判断是否重复
 
 			CategoryWord categoryWord1 = categoryWordService.findUniqueBy("esglisgAb", categoryWord.getEsglisgAb());
@@ -56,7 +60,7 @@ public class CategoryWordParserImpl implements IResourceParser {
 				categoryWord1.setChineseWord(categoryWord.getChineseWord());
 				categoryWord1.setEnglishWord(categoryWord.getEnglishWord());
 				categoryWord1.setOptDate(DateUtils.format(new Date()));
-				String userName = (String) SecurityUtils.getSubject().getPrincipal();
+				userName = (String) SecurityUtils.getSubject().getPrincipal();
 				categoryWord1.setOptUser(userName);
 				//重复则覆盖
 				categoryWordService.save(categoryWord1);

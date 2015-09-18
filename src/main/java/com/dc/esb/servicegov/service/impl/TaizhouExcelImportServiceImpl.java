@@ -1104,13 +1104,23 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 msg.append("" + systemAb + "系统不存在");
                 continue;
             }
-            String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+            //原始接口导入，格式不一样,用INTERFACE_STATUS_COL
+            String interfaceStatus = getCell(row, INTERFACE_STATUS_COL);
             if ("投产".equals(interfaceStatus)){
                 interfaceStatus = Constants.INTERFACE_STATUS_TC;
             }else if ("废弃".equals(interfaceStatus)){
                 interfaceStatus = Constants.INTERFACE_STATUS_FQ;
             }else{
                 interfaceStatus = "";
+            }
+            //提供方或消费方
+            String invokeType = getCell(row,INTERFACE_POINT_COL);
+            if("Provider".equalsIgnoreCase(invokeType)){
+                invokeType = "0";
+            }else if("Consumer".equalsIgnoreCase(invokeType)){
+                invokeType = "1";
+            }else{
+                invokeType = "";
             }
             //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
             String operationState = getCell(row, INDEX_OPERATION_STATE);
@@ -1134,6 +1144,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             indexDO.setSystemAb(systemAb);
             indexDO.setSystemId(system.getSystemId());
             indexDO.setInterfaceStatus(interfaceStatus);
+            indexDO.setInvokeType(invokeType);
             indexDO.setOperationState(operationState);
             indexDOs.add(indexDO);
         }
@@ -1342,12 +1353,13 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         return resMap;
     }
 
-    protected boolean insertInterface(Interface inter,String systemId) {
+    protected boolean insertInterface(Interface inter,String systemId,String invokeType) {
         Map<String, String> paramMap = new HashMap<String, String>();
         boolean exists = false;
         Interface temp = interfaceDao.get(inter.getInterfaceId());
         exists = null!=temp;
         if(!exists){
+            //不存在接口，则新增，并加入service_invoke记录
             String versionId = inter.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
             if (versionId == null || "".equals(versionId)) {
                 versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(),Constants.Version.TYPE_ELSE);
@@ -1358,10 +1370,11 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             inter.setOptDate(DateUtils.format(new Date()));
             inter.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
             interfaceDao.save(inter);
-            //添加serviceInvoke记录
+            //添加serviceInvoke记录，（原始接口导入需要setType）
             ServiceInvoke invoke = new ServiceInvoke();
             invoke.setSystemId(systemId);
             invoke.setInterfaceId(inter.getInterfaceId());
+            invoke.setType(invokeType);
             serviceInvokeDAO.save(invoke);
         }else{
             String versionId = temp.getVersionId();/**接口版本管理，如果未存在新增版本信息，否则编辑**/
@@ -1381,13 +1394,16 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         return exists;
     }
 
-    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap,String systemId){
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap,IndexDO indexDO){
+        String systemId = indexDO.getSystemId();
+        String invokeType = indexDO.getInvokeType();
         Interface inter = (Interface) infoMap.get("interface");
+        inter.setStatus(indexDO.getInterfaceStatus());
         List<Ida> idainput = (List<Ida>) inputMap.get("idas");
         List<Ida> idaoutput = (List<Ida>) outMap.get("idas");
         logger.info("导入接口定义信息...");
         StringBuffer msg = new StringBuffer();
-        boolean exists = insertInterface(inter,systemId);
+        boolean exists = insertInterface(inter,systemId,invokeType);
 //        if(!exists){
             insertIDA(inter, idainput, idaoutput);
 //        }else{

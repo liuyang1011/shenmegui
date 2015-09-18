@@ -46,11 +46,11 @@
        title="所有类别词">
     <thead>
     <tr>
-        <th field="chineseWord" width="100" editor="{type:'validatebox',options:{required:true}}">类别词中文名称</th>
+        <th field="chineseWord" width="150" editor="{type:'validatebox',options:{required:true}}">类别词中文名称</th>
         <%--<th field="englishWord" width="100" editor="text">类别词英文名称</th>--%>
-        <th field="esglisgAb" width="100" align="right" editor="{type:'text',options:{}}">类别词英文</th>
+        <th field="esglisgAb" width="150" align="left" editor="{type:'text',options:{}}">类别词英文</th>
         <!-- <th field="esglisgab" width="100" align="right" editor="{type:'numberbox',options:{precision:1}}">类别词英文缩写</th> -->
-        <th field="remark" width="100" align="right" editor="text">备注</th>
+        <th field="remark" width="150" align="left" editor="text">备注</th>
         <th field="optUser" width="150" editor="text">修订人</th>
         <th field="optDate" width="150" editor="text">修订时间</th>
     </tr>

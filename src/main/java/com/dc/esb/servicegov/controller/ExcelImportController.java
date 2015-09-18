@@ -135,7 +135,7 @@ public class ExcelImportController {
                     }
                     logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
                     long time = java.lang.System.currentTimeMillis();
-                    List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO.getSystemId());
+                    List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO);
                     /*if ((Boolean)result.get(0)) {
                         logger.info("===========接口[" + sheetName + "],导入失败=============");
                         msg.append(result.get(1).toString());
@@ -232,7 +232,7 @@ public class ExcelImportController {
                     }
                     logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
                     long time = java.lang.System.currentTimeMillis();
-                    List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO.getSystemId());
+                    List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO);
                    /* if ((Boolean)result.get(0)) {
                         logger.info("===========接口[" + sheetName + "],导入失败=============");
                         msg.append(result.get(1).toString());

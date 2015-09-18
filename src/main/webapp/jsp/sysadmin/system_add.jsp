@@ -18,13 +18,6 @@
 <form class="formui">
 	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center">
 		<tr>
-		<td colspan="3" style="text-align:center" >
-			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-			   onClick="$('#w').window('close')">取消</a>&nbsp;&nbsp;<a href="#"
-																	  class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
-		</td>
-	</tr>
-		<tr>
 			<th>
 				系统ID
 			</th>
@@ -116,7 +109,13 @@
 				<input class="easyui-textbox" type="text" id="principalDetail2">
 			</td>
 		</tr>
-
+		<tr>
+			<td colspan="3" style="text-align:center" >
+				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+				   onClick="$('#w').window('close')">取消</a>&nbsp;&nbsp;<a href="#"
+																		  class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+			</td>
+		</tr>
 
 	</table>
 </form>

@@ -225,6 +225,11 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                         hql += " and a.version like '%" + values.get(key)[0] + "%' ";
                     }
                 }
+                if(key.equals("optUser") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.optUser like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
                 if(key.equals("startDate") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
                         hql += " and a.optDate >'" + values.get(key)[0] + "' ";

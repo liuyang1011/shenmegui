@@ -99,7 +99,7 @@
         <th data-options="field:'principal1',width:'10%'">
             联系人
         </th>
-        <th data-options="field:'featureDesc',align:'right',width:'20%'">
+        <th data-options="field:'featureDesc',align:'left',width:'20%'">
             系统描述
         </th>
         <th data-options="field:'workRange',width:'15%',align:'left'">

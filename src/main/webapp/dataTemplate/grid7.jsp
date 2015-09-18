@@ -43,7 +43,7 @@
 						}
 					"></td>
             <th> 创建人</th>
-            <td><input class="easyui-textbox" style="width:100px" type="text" name="name"></td>
+            <td><input class="easyui-textbox" style="width:100px" type="text" name="optUser" id="optUser"></td>
             <th> 创建起始日期</th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
             <th> 创建结束日期</th>
@@ -56,7 +56,7 @@
 </fieldset>
 </form>
 <table id="metadataList" title="元数据管理"
-        style="height:470px; width:auto;">
+        style="height:480px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -105,8 +105,8 @@
             method:'get',
             toolbar:toolbar,
             pagination:true,
-            pageSize:13,
-            pageList: [13,30,50],
+            pageSize:15,
+            pageList: [15,30,50],
             fitColumns:'false',
             onLoadError: function (responce) {
                 var resText = responce.responseText;

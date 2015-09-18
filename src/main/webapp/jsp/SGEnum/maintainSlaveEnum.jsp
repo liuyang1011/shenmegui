@@ -72,7 +72,7 @@
 				<th data-options="field:'productid',checkbox:true"></th>
 				<th data-options="field:'elementName'">枚举名称</th>
 				<th data-options="field:'bussDefine'">业务定义</th>
-				<th data-options="field:'remark'">枚举备注</th>
+				<th data-options="field:'remark'">中文名称</th>
 				<th data-options="field:'optUser'">修订人</th>
 				<th data-options="field:'optDate'">修订时间</th>
 			</tr>

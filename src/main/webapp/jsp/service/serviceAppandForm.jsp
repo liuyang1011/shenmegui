@@ -25,7 +25,7 @@ $(document).ready(function () {
     <td><input class="easyui-textbox" data-options="required:true, validType:['english']" type="text" id="serviceId" ></td>
   </tr>
   <tr>
-    <th>服务名</th>
+    <th>服务名称</th>
     <td><input class="easyui-textbox" type="text" id="serviceName" ></td>
   </tr>
   <tr>

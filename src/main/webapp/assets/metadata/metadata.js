@@ -11,6 +11,7 @@ $(function(){
 	//		"status" : $("#status").combobox("getValue"),
 			"categoryWordId" : $("#categoryWordId").combobox("getValue"),
 	//		"version" : $("#version").textbox("getValue"),
+			"optUser" : $("#optUser").textbox("getValue"),
 			"startDate" : $("#startDate").datebox("getValue"),
 			"endDate" : $("#endDate").datebox("getValue")
 		};

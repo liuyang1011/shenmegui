@@ -41,6 +41,8 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
     protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
+    protected static final int INTERFACE_STATUS_COL = 2;
+    protected static final int INTERFACE_POINT_COL = 3;
 
 
 
@@ -918,8 +920,17 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String serviceId;
         private String systemAb;
         private String interfaceStatus;
+        private String invokeType;
         private String operationState;
         private String isStandard;
+
+        public String getInvokeType() {
+            return invokeType;
+        }
+
+        public void setInvokeType(String invokeType) {
+            this.invokeType = invokeType;
+        }
 
         public String getIsStandard() {
             return isStandard;
@@ -1466,6 +1477,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         paramMap.put("serviceId", service.getServiceId());
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("systemId", systemId);
+        //TODO 是否要改动，service_invoke里应该也是interfaceId唯一的吧？
         if(null != interfaceId){
             paramMap.put("interfaceId",interfaceId);
         }
@@ -1671,7 +1683,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return invoke;
     }
 
-    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,String systemId){
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,IndexDO indexDO){
         return null;
     }
 

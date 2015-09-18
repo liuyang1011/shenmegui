@@ -18,7 +18,7 @@
 </head>
 
 <body>
-<fieldset>
+<%--<fieldset>
     <legend>
         条件搜索
     </legend>
@@ -56,7 +56,7 @@
     </table>
 
 
-</fieldset>
+</fieldset>--%>
 <table id="tg" style="height: 300px; width: auto;" data-options="pageSize:5">
     <thead>
     <tr>
@@ -102,14 +102,14 @@
             title: '协议基本信息维护',
             iconCls: 'icon-edit',//图标
             width: 'auto',
-            height: '320px',
+            height: '520px',
             collapsible: true,
             method: 'post',
             url: url,
             singleSelect: true,//是否单选
-            pagination: true,//分页控件
-            pageSize: 5,//每页显示的记录条数，默认为10
-            pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
+//            pagination: true,//分页控件
+//            pageSize: 5,//每页显示的记录条数，默认为10
+//            pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
 
             toolbar: [/*{
