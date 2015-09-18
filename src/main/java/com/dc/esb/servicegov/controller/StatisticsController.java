@@ -56,8 +56,16 @@ public class StatisticsController {
     @RequestMapping(method = RequestMethod.GET, value = "/serviceReuseRate", headers = "Accept=application/json")
     @ResponseBody
     public List<TreeNode> serviceReuseRate(HttpServletRequest req){
-        List<TreeNode> rows = statisticsService.getServiceReuseRate();
+        List<TreeNode> rows = statisticsService.getServiceReuseRate2();
 
+        return rows;
+    }
+
+    @RequiresPermissions({"statistics-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/serviceReuseRate/expandServiceCategory", headers = "Accept=application/json")
+    @ResponseBody
+    public List<TreeNode> expandServiceCategory(String serviceCategoryId){
+        List<TreeNode> rows = statisticsService.getServiceCategoryChildren(serviceCategoryId);
         return rows;
     }
 

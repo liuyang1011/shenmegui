@@ -382,9 +382,33 @@ public class StatisticsServiceImpl implements StatisticsService{
         fields.put("id", "categoryId");
         fields.put("text", "categoryName");
 
-        List<TreeNode> categoryNodes = EasyUiTreeUtil.getInstance().convertTree(categories,fields );//将分类拼接成树
+        List<TreeNode> categoryNodes = EasyUiTreeUtil.getInstance().convertTree(categories, fields);//将分类拼接成树
         root.setChildren(categoryNodes);
         genderCategoryService(root);
+        genderServiceReuseRate(root);
+
+        for(int i = 0; i < categoryNodes.size(); i++){//将分类下节点收缩
+            TreeNode t = categoryNodes.get(i);
+            t.setState("closed");
+        }
+
+        List<TreeNode> result = new ArrayList<TreeNode>();
+        result.add(root);
+        return result;
+    }
+    @Override
+    public List<TreeNode> getServiceReuseRate2(){
+        TreeNode root = new TreeNode();
+        root.setText("服务类");
+        String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
+        List<ServiceCategory> categories = serviceCategoryDAO.find(hql);//先只加载第一层分类
+        Map<String, String > fields =  new HashMap<String, String>();
+        fields.put("id", "categoryId");
+        fields.put("text", "categoryName");
+
+        List<TreeNode> categoryNodes = EasyUiTreeUtil.getInstance().convertTree(categories,fields );//将分类拼接成树
+        root.setChildren(categoryNodes);
+//        genderCategoryService(root);
         genderServiceReuseRate(root);
 
         for(int i = 0; i < categoryNodes.size(); i++){//将分类下节点收缩
@@ -417,6 +441,48 @@ public class StatisticsServiceImpl implements StatisticsService{
                 genderCategoryService(child);
             }
         }
+    }
+    //服务
+    @Override
+    public List<TreeNode> getServiceCategoryChildren(String categoryId){
+        ServiceCategory serviceCategory = serviceCategoryDAO.findUniqueBy("categoryId", categoryId);
+        Map<String, String > fields =  new HashMap<String, String>();
+        fields.put("id", "categoryId");
+        fields.put("text", "categoryName");
+        TreeNode categoryNode = EasyUiTreeUtil.getInstance().convertTreeNode(serviceCategory, fields);
+        if(serviceCategory != null){
+            if (StringUtils.isNotEmpty(categoryNode.getParentId()) && categoryNode.getChildren() == null) {//二级分类
+                List<com.dc.esb.servicegov.entity.Service> services = getService(categoryNode.getId());
+                if (services != null && services.size() > 0) {
+                    List<TreeNode> serviceNodes = new ArrayList<TreeNode>();
+                    for (com.dc.esb.servicegov.entity.Service service : services) {
+                        TreeNode serviceNode = new TreeNode();
+                        serviceNode.setId(service.getServiceId());
+                        serviceNode.setText(service.getServiceName());
+                        serviceNode.setAppend1("service");
+                        serviceNodes.add(serviceNode);
+                    }
+                    categoryNode.setChildren(serviceNodes);
+                }
+            }else{//如果是一级分类
+                List<ServiceCategory> childList = serviceCategoryDAO.findBy("parentId", serviceCategory.getCategoryId());
+                List<TreeNode> children = new ArrayList<TreeNode>();
+                if(childList != null && childList.size() > 0){
+                    for(ServiceCategory child : childList){
+                        TreeNode childNode = EasyUiTreeUtil.getInstance().convertTreeNode(child, fields);
+                        List<TreeNode> serviceNodes = getServiceCategoryChildren(child.getCategoryId());
+                        if(serviceNodes != null && serviceNodes.size() > 0){
+                            childNode.setState("closed");
+                            childNode.setChildren(serviceNodes);
+                        }
+                        children.add(childNode);
+                    }
+                }
+                categoryNode.setChildren(children);
+            }
+        }
+        genderServiceReuseRate(categoryNode);
+        return categoryNode.getChildren();
     }
     /**
      * @param treeNode 计算服务分类或服务复用率

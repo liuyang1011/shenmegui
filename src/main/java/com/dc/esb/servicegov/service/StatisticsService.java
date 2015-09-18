@@ -20,4 +20,6 @@ public interface StatisticsService{
     public List<ReleaseVO> getReleaseStateVO(Map<String, String[]> values, Page page);
     public long getReleaseVOCount(Map<String, String[]> values);
     public List<TreeNode> getServiceReuseRate();
+    public List<TreeNode> getServiceReuseRate2();
+    public List<TreeNode> getServiceCategoryChildren(String serviceCategoryId);
 }
