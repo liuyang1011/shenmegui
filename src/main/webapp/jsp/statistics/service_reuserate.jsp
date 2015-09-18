@@ -67,10 +67,23 @@
     </fieldset>
 </form>
 <div style="width:100%">
-    <table id="resultList" class="easyui-treegrid" style="height:auto; width:100%;">
+    <table  class="easyui-treegrid" id="resultList" style=" width:auto;"
+           data-options="
+				rownumbers: true,
+				animate: true,
+				collapsible: true,
+				fitColumns: true,
+				url: '/statistics/serviceReuseRate?t='+ new Date().getTime(),
+				method: 'get',
+				idField: 'id',
+				treeField: 'text',
+				onBeforeExpand: function(node){
+				    expandServiceCategory(node)
+				}
+               "
+            >
         <thead>
         <tr>
-
             <th data-options="field:'text',width:'200'">服务</th>
             <th data-options="field:'id',width:'150'">编码</th>
             <th data-options="field:'append2',width:'100'">关联服务数</th>
@@ -91,36 +104,23 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
-    $(function(){
-        $("#resultList").treegrid({
-            rownumbers:true,
-            url:'/statistics/serviceReuseRate?time='+(new Date()).valueOf(),
-            singleSelect:true,
-            fitColumns:false,
-            method:'get',
-            idField: 'id',
-            treeField: 'text',
-            onBeforeExpand: function(node){
-                if(node.children == null){
-                   $.ajax({
-                        type: "get",
-                        async: false,
-                        url: "/statistics/serviceReuseRate/expandServiceCategory?serviceCategoryId="+node.id,
-                        dataType: "json",
-                        success: function (result) {
-                            $('#resultList').treegrid('append',{
-                                            parent: node.id,
-                                            data: result
-                                        });
-                        }
 
+    function expandServiceCategory(node){
+        if(node.children == null){
+            $.ajax({
+                type: "get",
+                async: false,
+                url: "/statistics/serviceReuseRate/expandServiceCategory?serviceCategoryId="+node.id,
+                dataType: "json",
+                success: function (result) {
+                    $('#resultList').treegrid('append',{
+                        parent: node.id,
+                        data: result
                     });
                 }
-            }
-        });
-    });
-    function expandServiceCategory(categoryId){
 
+            });
+        }
     }
     function exportExcel(){
         //var data = $("#resultList").treegrid("getData");
