@@ -43,11 +43,11 @@
             <th>中文名称</th>
             <td><input class="easyui-textbox" type="text" name="chineseName"></td>
         </tr>
+        <%--<tr>--%>
+        <%--<th>别名</th>--%>
+        <%--<td><input class="easyui-textbox" type="text" name="metadataAlias"></td>--%>
+        <%--</tr>--%>
         <tr>
-            <th>别名</th>
-            <td><input class="easyui-textbox" type="text" name="metadataAlias"></td>
-        </tr>
-        <tr style="display:none;">
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataName"></td>
         </tr>
@@ -67,18 +67,22 @@
 					"
                     /></td>
         </tr>
-        <tr style="display:none;">
+        <tr>
             <th>业务定义</th>
             <td><input class="easyui-textbox" type="text" name="bussDefine"></td>
         </tr>
-        <tr style="display:none;">
+        <tr>
             <th>业务规则</th>
             <td><input class="easyui-textbox" type="text" name="bussRule"></td>
         </tr>
-	       <tr>
-            				<th>类型</th>
-            				<td><input class="easyui-textbox" type="text" name="type"></td>
-            </tr>
+        <tr>
+            <th>业务项分类</th>
+            <td><input class="easyui-textbox" type="text" name="buzzCategory"></td>
+        </tr>
+        <tr>
+            <th>类型</th>
+            <td><input class="easyui-textbox" type="text" name="type"></td>
+        </tr>
 
         <tr>
             <th>长度</th>
@@ -89,10 +93,10 @@
             <td><input class="easyui-textbox" type="text" name="scale"></td>
         </tr>
         <tr>
-                    <th>数据项分类</th>
-                    <td><input class="easyui-textbox" type="text" name="dataCategory"></td>
-                </tr>
-        <tr style="display:none;">
+            <th>数据项分类</th>
+            <td><input class="easyui-textbox" type="text" name="dataCategory"></td>
+        </tr>
+        <tr>
             <th>数据来源</th>
             <td><input class="easyui-textbox" type="text" name="dataSource"></td>
         </tr>
@@ -121,15 +125,15 @@
             },
             message: '元数据名称已存在'
         },
-                english : {// 验证英语
-                        validator : function(value) {
-                           // return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
-                           return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
-                        },
-                        message : '请输入英文字母、下划线或数字'
-                    }
+        english: {// 验证英语
+            validator: function (value) {
+                // return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
+            },
+            message: '请输入英文字母、下划线或数字'
+        }
     });
-    if(typeof(processId) != 'undefined'){
+    if (typeof(processId) != 'undefined') {
         $('#taskIdInput').val(processId);
     }
 </script>
