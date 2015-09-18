@@ -27,34 +27,12 @@
 				<th>主代码数据来源</th>
 				<td><input class="easyui-textbox" type="text" id="dataSource">
 				</td>
-				<th>&nbsp;</th>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
 				<th>代码状态</th>
 				<td><select id="status" editable="false" panelHeight="auto" style="width:140px">
 				</select>
 				</td>
-			</tr>
-			<!-- <tr>
-				<th>备注</th>
-				<td><input class="easyui-textbox" type="text" id="remark">
-				</td>
-				<th>修订人</th>
-				<td><input class="easyui-textbox" type="text" id="optUser">
-				 </td>
-				<th>修订时间</th>
-				<td><input class="easyui-textbox" type="text" id="optDate">
-				</td> 
-			</tr> -->
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
 				<td align="right"><a href="#" class="easyui-linkbutton" id="searchBtn"
-					iconCls="icon-search">搜索</a></td>
+									 iconCls="icon-search">搜索</a></td>
 			</tr>
 		</table>
 
@@ -93,13 +71,17 @@
 		$(function(){
 			$('#dg').datagrid({
 				rownumbers:true,
+				fitColumns:true,
+				resizeHandle: "both",
 				singleSelect:true,
 				collapsible:true,
+				autoRowHeight:true,
 				url:"/enum/getAll",
 				method:'POST',
 				toolbar:toolbar,
 				pagination:true,
 				striped: true,
+				nowrap:true,
 				pageSize:'10',
 				onLoadError: function (responce) {
 					var resText = responce.responseText;

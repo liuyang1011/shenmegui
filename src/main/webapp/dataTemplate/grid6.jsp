@@ -35,7 +35,7 @@
             </td>
             <td>
                 <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
-                <a href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search" style="margin-left:1em">查询</a>
+                <a href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search" style="margin-left:1em;border: 1px solid #bbb;">查询</a>
             </td>
         </tr>
     </table>
@@ -47,8 +47,8 @@
     <thead>
     <tr>
         <th field="chineseWord" width="100" editor="{type:'validatebox',options:{required:true}}">类别词中文名称</th>
-        <%--<th field="englishWord" width="100" editor="text">类别词英文名称</th>--%>
-        <th field="esglisgAb" width="100" align="right" editor="{type:'text',options:{}}">类别词英文</th>
+        <th field="englishWord" width="100" editor="text">类别词英文全称</th>
+        <th field="esglisgAb" width="100" align="right" editor="{type:'text',options:{}}">类别词</th>
         <!-- <th field="esglisgab" width="100" align="right" editor="{type:'numberbox',options:{precision:1}}">类别词英文缩写</th> -->
         <th field="remark" width="100" align="right" editor="text">备注</th>
         <th field="optUser" width="150" editor="text">修订人</th>
