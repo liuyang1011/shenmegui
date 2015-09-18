@@ -21,7 +21,7 @@
             </td>
         </tr>
         <tr>
-            <th>备 注</th>
+            <th>角色描述</th>
             <td><input name="remark" class="easyui-textbox" type="text" id="roleRemark"/></td>
         </tr>
 

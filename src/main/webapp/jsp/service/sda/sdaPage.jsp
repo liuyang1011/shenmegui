@@ -72,6 +72,9 @@ var delIds = [];
 			$('#tg').treegrid('beginEdit', uuid);
 		}
 		function saveSDA(){
+			if (!confirm("确定保存吗？")) {
+				return;
+			}
 			if (!$("#sdaForm").form('validate')) {
                 return false;
             }

@@ -115,5 +115,17 @@ public class CategoryWordServiceImpl extends AbstractBaseService<CategoryWord, S
 //		categoryWordDAOImpl.delete(id);
 //	}
 
+	/**
+	 * 前端唯一性验证
+	 * @param name
+	 * @return
+	 */
+	public boolean uniqueValid(String esglisgAb) {
+		CategoryWord entity = findUniqueBy("esglisgAb",esglisgAb);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
 
 }

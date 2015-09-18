@@ -19,23 +19,25 @@
 				<th>代码名称</th>
 				<td><input class="easyui-textbox" type="text" id="name">
 				</td>
+				<th>中文名称</th>
+				<td><input class="easyui-textbox" type="text" id="remark">
+				</td>
 				<th>是否标准代码</th>
 				<td><select id="isStandard" editable="false" 
 					panelHeight="auto" style="width:140px">
 				</select>
 				</td>
-				<th>主代码数据来源</th>
-				<td><input class="easyui-textbox" type="text" id="dataSource">
-				</td>
 				<th>&nbsp;</th>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
+				<th>主代码数据来源</th>
+				<td><input class="easyui-textbox" type="text" id="dataSource">
+				</td>
 				<th>代码状态</th>
 				<td><select id="status" editable="false" panelHeight="auto" style="width:140px">
 				</select>
 				</td>
-			</tr>
 			<!-- <tr>
 				<th>备注</th>
 				<td><input class="easyui-textbox" type="text" id="remark">
@@ -47,11 +49,6 @@
 				<td><input class="easyui-textbox" type="text" id="optDate">
 				</td> 
 			</tr> -->
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td align="right"><a href="#" class="easyui-linkbutton" id="searchBtn"
 					iconCls="icon-search">搜索</a></td>
@@ -139,7 +136,8 @@
 				queryParams.isStandard = $('#isStandard').combobox('getValue');
 				queryParams.dataSource = $('#dataSource').val();
 				queryParams.status = $('#status').combobox('getValue');
-				$("#dg").datagrid('options').queryParams = queryParams;//传递值  
+				queryParams.remark = $('#remark').textbox('getValue');
+				$("#dg").datagrid('options').queryParams = queryParams;//传递值
 				$("#dg").datagrid('reload');//重新加载table  
 			});
 		});

@@ -244,6 +244,19 @@ public class CategoryWordController {
         return true;
     }
 
+    /**
+     * 类别词esglisgAb唯一性验证
+     *
+     * @param esglisgAb
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueValid(String esglisgAb) {
+        return categoryWordService.uniqueValid(esglisgAb);
+    }
+
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
 //        ModelAndView mv = new ModelAndView("login/login");

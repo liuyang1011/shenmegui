@@ -49,7 +49,7 @@
         <th data-options="field:'role',checkbox:true"></th>
         <th field="id" width="130px" type="text" align="center">角色代码</th>
         <th field="name" width="130px" align="center">角色名称</th>
-        <th field="remark" width="130px" align="center">备 注</th>
+        <th field="remark" width="130px" align="center">角色描述</th>
     </tr>
     </thead>
 </table>

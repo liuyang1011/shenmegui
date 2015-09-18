@@ -8,7 +8,7 @@
 
 		<tr>
 			<th>代码名称</th>
-			<td><input class="easyui-textbox" type="text" id="_enumName">
+			<td><input type="text" id="_enumName">
 			</td>
 		</tr>
 		<tr>
@@ -73,6 +73,37 @@
 <script type="text/javascript"
 	src="/assets/enumManager/js/enumManager.js"></script>
 <script>
+	$(function () {
+		$('#_enumName').textbox({
+			required:true,
+			validType:['unique','english']
+		});
+		$.extend($.fn.validatebox.defaults.rules, {
+			unique: {
+				validator: function (value, param) {
+					var result;
+					$.ajax({
+						type: "get",
+						async: false,
+						url: "/enum/uniqueValid",
+						dataType: "json",
+						data: {"name": value},
+						success: function (data) {
+							result = data;
+						}
+					});
+					return result;
+				},
+				message: '已存在相同代码名称'
+			},
+			english : {// 验证英语
+				validator : function(value) {
+					return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+				},
+				message : '请输入英文字母'
+			}
+		});
+	});
 	$('#cancelBtn').click(function(){
 		$('#w').window('close');
 	});

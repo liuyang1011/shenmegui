@@ -20,7 +20,7 @@
     <td><input name="roleName" class="easyui-textbox" type="text" id="roleName" value="${role.name}"/><font color="#FF0000">*</font></td>
     </tr>	
 	<tr>
-    <th>备 注</th>
+    <th>角色描述</th>
     <td><input name="remark" class="easyui-textbox" type="text" id="roleRemark" value="${role.remark}"/></td>
   	</tr>
  

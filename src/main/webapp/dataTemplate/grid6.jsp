@@ -34,8 +34,8 @@
                 <input class="easyui-textbox" id="remark"/>
             </td>
             <td>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
-                <a href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search" style="margin-left:1em">查询</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
+                <a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
             </td>
         </tr>
     </table>
@@ -48,7 +48,7 @@
     <tr>
         <th field="chineseWord" width="150" editor="{type:'validatebox',options:{required:true}}">类别词中文名称</th>
         <%--<th field="englishWord" width="100" editor="text">类别词英文名称</th>--%>
-        <th field="esglisgAb" width="150" align="left" editor="{type:'text',options:{}}">类别词英文</th>
+        <th field="esglisgAb" width="150" align="left" editor="{type:'textbox',options:{required:true,validType:['unique','english']}}">类别词英文</th>
         <!-- <th field="esglisgab" width="100" align="right" editor="{type:'numberbox',options:{precision:1}}">类别词英文缩写</th> -->
         <th field="remark" width="150" align="left" editor="text">备注</th>
         <th field="optUser" width="150" editor="text">修订人</th>
@@ -121,6 +121,31 @@
         }];
     var editedRows = [];
     $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            unique: {
+                validator: function (value, param) {
+                    var result;
+                    $.ajax({
+                        type: "get",
+                        async: false,
+                        url: "/categoryWord/uniqueValid",
+                        dataType: "json",
+                        data: {"esglisgAb": value},
+                        success: function (data) {
+                            result = data;
+                        }
+                    });
+                    return result;
+                },
+                message: '已存在相同类别词英文'
+            },
+            english : {// 验证英语
+                validator : function(value) {
+                    return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                },
+                message : '请输入英文字母'
+            }
+        });
         $('#tt').edatagrid({
             rownumbers: true,
             singleSelect: true,

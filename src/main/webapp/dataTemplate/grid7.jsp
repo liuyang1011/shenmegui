@@ -21,15 +21,12 @@
             <th>中文名称</th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="chineseName" id="chineseName">
             </td>
-            <th>英文名称</th>
-            <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataName" id="metadataName">
+           <%-- <th>英文名称</th>--%>
+            <td style="display: none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataName" id="metadataName">
             </td>
             <%--<th style="text-align:right">别名</th>--%>
             <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
             </td>
-
-        </tr>
-        <tr>
             <th>类别词</th>
             <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px"
                        class="easyui-combobox"
@@ -42,6 +39,8 @@
 							this.value=newValue;
 						}
 					"></td>
+        </tr>
+        <tr>
             <th> 创建人</th>
             <td><input class="easyui-textbox" style="width:100px" type="text" name="optUser" id="optUser"></td>
             <th> 创建起始日期</th>
@@ -49,7 +48,7 @@
             <th> 创建结束日期</th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
             <td align="right">
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
                 <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
         </tr>
     </table>
