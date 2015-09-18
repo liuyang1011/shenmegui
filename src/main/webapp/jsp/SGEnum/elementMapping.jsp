@@ -45,7 +45,6 @@
 	<div id="w" class="easyui-window" title=""
 		data-options="modal:true,closed:true,iconCls:'icon-add'"
 		style="width:500px;height:200px;padding:10px;"></div>
-
 	<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/resources/js/ui.js"></script>
