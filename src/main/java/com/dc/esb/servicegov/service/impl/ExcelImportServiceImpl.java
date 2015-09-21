@@ -43,6 +43,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
     protected static final int INTERFACE_STATUS_COL = 2;
     protected static final int INTERFACE_POINT_COL = 3;
+    protected static final int INTERFACE_ADD_OR_MODIFY_COL = 4;
 
 
 
@@ -923,6 +924,16 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String invokeType;
         private String operationState;
         private String isStandard;
+        //原始接口导入，新增：0，修改：1
+        private String optType;
+
+        public String getOptType() {
+            return optType;
+        }
+
+        public void setOptType(String optType) {
+            this.optType = optType;
+        }
 
         public String getInvokeType() {
             return invokeType;

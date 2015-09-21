@@ -34,8 +34,8 @@
                 <input class="easyui-textbox" id="remark"/>
             </td>
             <td>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
                 <a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
             </td>
         </tr>
     </table>
@@ -46,7 +46,7 @@
        title="所有类别词">
     <thead>
     <tr>
-        <th field="chineseWord" width="150" editor="{type:'validatebox',options:{required:true}}">类别词中文名称</th>
+        <th field="chineseWord" width="150" editor="{type:'validatebox',options:{required:true,validType:['chinese']}}">类别词中文名称</th>
         <%--<th field="englishWord" width="100" editor="text">类别词英文名称</th>--%>
         <th field="esglisgAb" width="150" align="left" editor="{type:'textbox',options:{required:true,validType:['unique','english']}}">类别词英文</th>
         <!-- <th field="esglisgab" width="100" align="right" editor="{type:'numberbox',options:{precision:1}}">类别词英文缩写</th> -->
@@ -141,9 +141,16 @@
             },
             english : {// 验证英语
                 validator : function(value) {
-                    return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                    return (/^[A-Za-z0-9_ ]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
                 },
-                message : '请输入英文字母'
+                message : '请输入英文字母,下划线或数字'
+            },
+            chinese : {//验证中文
+//                \u4E00-\u9FA5
+                validator : function(value) {
+                    return (/^[A-Za-z0-9_\u4E00-\u9FA5]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+                },
+                message : '请不要输入特殊符号'
             }
         });
         $('#tt').edatagrid({

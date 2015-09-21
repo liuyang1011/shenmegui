@@ -203,9 +203,6 @@
                                        type="text"/></td>
             </tr>
             <tr>
-                <th>场景关键词</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
-
                 <th>状态</th>
                 <td>服务定义
                     <input type="hidden" value="0" name="state"/>
@@ -213,7 +210,7 @@
             </tr>
             <tr>
                 <th>使用范围</th>
-                <td><input class="easyui-textbox" disabled="disabled" type="text" name=""/></td>
+                <td><input class="easyui-textbox" type="text" name="range"/></td>
 
                 <th>备注</th>
                 <td><input id="operationRemark" name="operationRemark" class="easyui-textbox" type="text"/>

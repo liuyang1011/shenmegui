@@ -1095,6 +1095,17 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             //读取系统名称
             String systemAb = getCell(row, INTERFACE_SYSTEM_NAME_COL);
 
+            //原始接口：新增or修改（防止文档错误编写问题）
+            String optType = getCell(row, INTERFACE_ADD_OR_MODIFY_COL);
+            if(optType.equals("新增")){
+                optType = "0";
+            }else if (optType.equals("修改")){
+                optType = "1";
+            }else{
+                optType = "0";
+            }
+
+
             HashMap<String,String> param = new HashMap<String, String>();
             param.put("systemAb",systemAb);
             System system = systemDao.findUniqureBy(param);
@@ -1146,6 +1157,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             indexDO.setInterfaceStatus(interfaceStatus);
             indexDO.setInvokeType(invokeType);
             indexDO.setOperationState(operationState);
+            indexDO.setOptType(optType);
             indexDOs.add(indexDO);
         }
         List list = new ArrayList();

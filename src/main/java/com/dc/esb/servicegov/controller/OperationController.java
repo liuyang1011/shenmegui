@@ -474,4 +474,32 @@ public class OperationController {
         result.put("rows", rows);
         return result;
     }
+
+
+    /**
+     * 提交审核，变为待审核状态
+     * @param list
+     * @return
+     * @throws Throwable
+     */
+    @RequiresPermissions({"service-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/submitToAudit", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean submitToAudit(@RequestBody List list) throws  Throwable{
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String,String> params = new HashMap<String, String>();
+            params.put("serviceId",serviceId);
+            params.put("operationId",operationId);
+            Operation operation = operationServiceImpl.findUniqueBy(params);
+            if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT)){
+                operation.setState(Constants.Operation.OPT_STATE_REQUIRE_UNAUDIT);
+                operationServiceImpl.save(operation);
+            }
+        }
+        return true;
+    }
 }

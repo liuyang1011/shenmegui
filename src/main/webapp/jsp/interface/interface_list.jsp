@@ -18,6 +18,7 @@
 	</head>
 
 	<body>
+	<form id="searchForm">
 		<fieldset>
 			<legend>
 				条件搜索
@@ -82,12 +83,14 @@
 					</td>
 					<td align="right">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
+						<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
 					</td>
 				</tr>
 			</table>
 
 
 		</fieldset>
+	</form>
 		<table id="tg" style="height: 370px; width: auto;">
 			<thead>
 				<tr>

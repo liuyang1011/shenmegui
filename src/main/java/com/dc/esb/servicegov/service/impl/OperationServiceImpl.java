@@ -74,7 +74,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public List<Operation> getUnAuditOperationByServiceId(String serviceId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("serviceId", serviceId);
-        params.put("state", Constants.Operation.OPT_STATE_UNAUDIT);
+        //改为取得待审核状态
+//        params.put("state", Constants.Operation.OPT_STATE_UNAUDIT);
+        params.put("state", Constants.Operation.OPT_STATE_REQUIRE_UNAUDIT);
         return findBy(params);
 
     }

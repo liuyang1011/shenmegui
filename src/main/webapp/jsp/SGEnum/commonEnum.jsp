@@ -12,6 +12,7 @@
 </head>
 
 <body>
+<form id="searchForm">
 	<fieldset>
 		<legend>条件搜索</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
@@ -50,13 +51,17 @@
 				</td> 
 			</tr> -->
 				<td>&nbsp;</td>
-				<td align="right"><a href="#" class="easyui-linkbutton" id="searchBtn"
-					iconCls="icon-search">搜索</a></td>
+				<td align="right">
+					<a href="#" class="easyui-linkbutton" id="searchBtn"
+					   iconCls="icon-search">搜索</a>
+					<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
+				</td>
 			</tr>
 		</table>
 
 
 	</fieldset>
+</form>
 	<table title="公共代码列表" id="dg"
 		style="height:420px;width:auto">
 		<thead>

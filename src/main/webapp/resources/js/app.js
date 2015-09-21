@@ -27,7 +27,7 @@ var SYSMENU = {
             $("#west-menu").load(LOAD_URL.LEFTMENU, 'mid=' + mid, function () {
                 $('#mxsysadmintreefilter').searchbox({
                     searcher: function (value, name) {
-                        alert(value + "," + name);
+                        $('.mslinktree').tree('doFilter', value);
                     },
                     prompt: '请输入关键词'
                 });

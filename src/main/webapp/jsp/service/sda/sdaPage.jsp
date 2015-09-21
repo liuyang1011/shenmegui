@@ -218,6 +218,14 @@ var delIds = [];
                             message: '新建节点名称不能为“root、request、response”'
                         }
                     });
+	//选择元数据自动更新其他数据
+	function comboboxSelect(record){
+		var node = $('#tg').treegrid('getSelected');
+		node.text =  record.categoryWordId;
+		node.append1 = record.chineseName;
+		node.append2 = record.formula;
+//		$('#tg').treegrid('refreshRow',node.id);
+	}
 </script>
 </head>
 <body >
@@ -263,11 +271,11 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'text'}" <%--readOnly="true"--%>>字段名</th>
-				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'text'}">字段别名</th>
-				<th data-options="field:'append2',width:50" editor="{type:'text'}">类型/长度</th>
+				<th data-options="field:'text',width:140" editor="{type:'textbox'}" <%--readOnly="true"--%>>字段名</th>
+				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
+				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
-				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId'}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>

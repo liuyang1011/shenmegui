@@ -38,7 +38,7 @@
   </form>&ndash;%&gt;--%>
 
 </div>
-<table id="tt" style="height:370px; width:auto;"
+<table id="tt" style="height:420px; width:auto;"
        title="导入日志">
   <thead>
   <tr>

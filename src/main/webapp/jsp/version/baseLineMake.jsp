@@ -58,6 +58,10 @@
 			$.each(opItems, function(index, item) {
 				versionIds.push(item.versionHis.autoId);
 			});
+			if(versionIds.length <= 0){
+				alert("请先选择制作基线的历史版本");
+				return false;
+			}
 			$.ajax({
 				type: "post",
 				async: false,
