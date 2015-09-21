@@ -20,6 +20,11 @@ public class ServiceLinkNode {
     @Column(name = "SERVICE_INVOKE_ID")
     private String serviceInvokeId;
 
+    @Column(name = "BUSS_CATEGORY")
+    private String bussCategory;
+
+//    @Column(name = "")
+
     @Column(name="ESB_ACCESS_PATTERN")
     private String esbAccessPattern;
 
@@ -56,5 +61,13 @@ public class ServiceLinkNode {
 
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+
+    public String getBussCategory() {
+        return bussCategory;
+    }
+
+    public void setBussCategory(String bussCategory) {
+        this.bussCategory = bussCategory;
     }
 }
