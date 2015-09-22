@@ -7,6 +7,10 @@ import java.util.*;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.EnglishWord;
+import com.dc.esb.servicegov.entity.Metadata;
+import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -25,9 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/categoryWord")
 public class CategoryWordController {
-
+    protected Log logger = LogFactory.getLog(getClass());
     @Autowired
     private CategoryWordServiceImpl categoryWordService;
+    @Autowired
+    private MetadataServiceImpl metadataService;
 
     @RequiresPermissions({"categoryWord-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
@@ -71,6 +77,7 @@ public class CategoryWordController {
             }
             searchConds.add(new SearchCondition("remark", "%" + remark + "%"));
         }
+        hql.append(" order by esglisgAb");
 //        Page page = categoryWordService.getAll(rowCount);
         Page page = new Page();
         if(searchConds.size() <= 0){
@@ -220,7 +227,9 @@ public class CategoryWordController {
             }
             categoryWord.setId(map.get("id"));
             categoryWord.setChineseWord(map.get("chineseWord"));
-            categoryWord.setEnglishWord(map.get("englishWord"));
+            //TZB没有englishWord
+//            categoryWord.setEnglishWord(map.get("englishWord"));
+            categoryWord.setEnglishWord(map.get("esglisgAb"));
             categoryWord.setEsglisgAb(map.get("esglisgAb"));
             categoryWord.setRemark(map.get("remark"));
             categoryWord.setOptDate(DateUtils.format(new Date()));
@@ -234,11 +243,17 @@ public class CategoryWordController {
     @RequestMapping(method = RequestMethod.POST, value = "/deleteCategoryWord", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean deleteCategoryWord(@RequestBody List list) {
+    boolean deleteCategoryWord(@RequestBody List list) throws Exception {
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
             String id = map.get("id");
+            //与元数据关联的不能删除
+            String esglisgAb = map.get("esglisgAb");
+            List<Metadata> metadatas = metadataService.findBy("categoryWordId", esglisgAb);
+            if (metadatas.size() > 0) {
+                return false;
+            }
             categoryWordService.deleteById(id);
         }
         return true;

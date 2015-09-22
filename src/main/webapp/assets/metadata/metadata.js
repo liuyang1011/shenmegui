@@ -67,9 +67,14 @@ function deleteObj(){
 		         url: "/metadata/deletes",
 		         dataType: "json",
 		         data: {"metadataIds":ids.join(",")},
-		         success: function(data){
-		        	 alert("操作成功");
-		        	 $('#metadataList').datagrid('reload');
+		         success: function(result){
+					 if(result){
+						 alert("操作成功");
+						 $('#metadataList').datagrid('reload');
+					 }else{
+						 alert("关联服务场景不予删除");
+					 }
+
 		            }
 			 	});
 		}

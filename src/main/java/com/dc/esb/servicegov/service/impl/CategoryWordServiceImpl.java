@@ -117,7 +117,7 @@ public class CategoryWordServiceImpl extends AbstractBaseService<CategoryWord, S
 
 	/**
 	 * 前端唯一性验证
-	 * @param name
+	 * @param esglisgAb
 	 * @return
 	 */
 	public boolean uniqueValid(String esglisgAb) {

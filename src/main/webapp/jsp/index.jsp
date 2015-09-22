@@ -73,6 +73,15 @@
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceManager.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceUIHelper.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceTree.js"></script>
+<script type="text/javascript" src="<%=basePath%>/assets/mainContent/js/mainContentUIHelper.js"></script>
+<script type="text/javascript" src="<%=basePath%>/assets/mainContent/js/mainContent.js"></script>
+
+<div id="mm-mxmaintabs" class="easyui-menu" style="width: 150px;">
+    <div id="maintabsCloseLeft" data-options="iconCls:'icon-clear'">关闭左侧</div>
+    <div id="maintabsCloseRight" data-options="iconCls:'icon-clear'">关闭右侧</div>
+    <div id="maintabsCloseOhters" data-options="iconCls:'icon-clear'">关闭其他</div>
+    <div id="maintabsCloseAll" data-options="iconCls:'icon-clear'">关闭所有</div>
+</div>
 
 <div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">

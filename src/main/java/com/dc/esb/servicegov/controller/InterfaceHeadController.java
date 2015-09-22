@@ -115,7 +115,18 @@ public class InterfaceHeadController {
 		interfaceHeadService.deleteById(headId);
 		return true;
 	}
-
+	/**
+	 * 报文头headName唯一性验证
+	 *
+	 * @param headName
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+	public
+	@ResponseBody
+	boolean uniqueValid(String headName) {
+		return interfaceHeadService.uniqueValid(headName);
+	}
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {
 		return "403";

@@ -18,7 +18,6 @@ $(function(){
         service.desc = $('#discription').val();
         var node = $('.mxservicetree').tree('getSelected');
         service.serviceId = node.id;
-        alert(node.id);
         service.categoryId = $('#serviceCategory').val();
         service.version = $('#version').val();
         service.state = $('#state').val();

@@ -25,6 +25,7 @@
 
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
+    <script type="text/javascript" src="/plugin/validate.js"></script>
     <script type="text/javascript">
         var isSave = 0;
         $(document).ready(function () {
@@ -45,13 +46,6 @@
                         return result;
                     },
                     message: '已存在相同场景编号'
-                },
-                english : {// 验证英语
-                    validator : function(value) {
-                        //return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
-                        return /^\d{2}$/.test(value);
-                    },
-                    message : '请输入两位数字'
                 }
             });
         });
@@ -192,7 +186,7 @@
             <tr>
                 <th>场景号</th>
                 <td><input id="operationId" name="operationId" class="easyui-textbox" type="text"
-                           data-options="required:true, validType:['unique','english']"/></td>
+                           data-options="required:true, validType:['unique','englishB']"/></td>
                 <th>场景名称</th>
                 <td><input id="operationName" name="operationName" class="easyui-textbox" type="text"
                            data-options="required:true"/></td>

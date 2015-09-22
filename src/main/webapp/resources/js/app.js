@@ -15,6 +15,8 @@ var LOAD_URL = {
     USERADD: '/jsp/user/useradd.jsp',
     SEARCH: '/jsp/service/search.jsp'
 };
+var mainContentIndex = 0;
+var maxIndex = 1;
 var SYSMENU = {
     init: function () {
         SYSMENU.initHeaderMenu();
@@ -49,7 +51,31 @@ var SYSMENU = {
                     },
                     prompt: '请输入关键词'
                 });
+                //tabs菜单  mainContentTabs
+                $("#mainContentTabs").tabs({
+                    onContextMenu: function(e, title,index){
+                        e.preventDefault();
+                        mainContentIndex = index;
+                        var tabs = $("#mainContentTabs").tabs('tabs');
+                        maxIndex = tabs.length;
+                        $('#mm-mxmaintabs').menu('show', {
+                            left: e.pageX,
+                            top: e.pageY
+                        });
 
+                        /*if(node.id=='root'){
+                         return;
+                         }*/
+                        /* e.preventDefault();
+                         $(this).tree('select', node.target);
+                         if (typeof(node.children) != 'undefined') {//编辑接口
+                         $('#mm-mxmaintabs').menu('show', {
+                         left: e.pageX,
+                         top: e.pageY
+                         });
+                         }*/
+                    }
+                });
                 //报文管理
                 $('.mxsysadmintree').tree({
                     onContextMenu: function (e, node) {

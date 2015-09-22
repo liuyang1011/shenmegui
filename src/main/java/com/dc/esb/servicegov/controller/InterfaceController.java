@@ -62,7 +62,8 @@ public class InterfaceController {
         root.setClick("system");
         List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
         if ("all".equals(systemIds)) {
-            systems = systemService.getAll();
+            //增加排序
+            systems = systemService.getAllOrderBySystemId();
         } else if (null != systemIds) {
             systemIds = systemIds.trim();
             if (!systemIds.equalsIgnoreCase("")) {
@@ -422,7 +423,7 @@ public class InterfaceController {
         Page page = interfaceService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);
         page.setPage(Integer.parseInt(starpage));
 
-        hql.append(" order by t1.interfaceName ");
+        hql.append(" order by t1.interfaceId ");
 
         List<Interface> inters = interfaceService.findBy(hql.toString(), page, searchConds);
         for (Interface i : inters) {

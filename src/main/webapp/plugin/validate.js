@@ -71,6 +71,18 @@ $.extend($.fn.validatebox.defaults.rules, {
         },
         message: '请输入中文'
     },
+    chineseB: {// 验证中文,数字，英文
+        validator : function(value) {
+            return (/^[A-Za-z0-9_\u4E00-\u9FA5]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+        },
+        message : '请不要输入特殊符号'
+    },
+    englishB : {// 验证英语，数字
+        validator : function(value) {
+            return (/^[A-Za-z0-9_ ]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+        },
+        message : '请输入英文字母,下划线或数字'
+    },
     english: {// 验证英语
         validator: function (value) {
             return /^[A-Za-z]+$/i.test(value);

@@ -233,8 +233,7 @@ public class MetadataController {
     @RequestMapping("/deletes")
     @ResponseBody
     public boolean deletes(String metadataIds) {
-        metadataService.deleteMetadatas(metadataIds);
-        return true;
+        return metadataService.deleteMetadatas(metadataIds);
     }
 
     @RequiresPermissions({"metadata-get"})

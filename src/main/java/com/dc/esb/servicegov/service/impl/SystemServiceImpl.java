@@ -44,10 +44,23 @@ public class SystemServiceImpl extends AbstractBaseService<System, String> imple
 		systemDAOImpl.exeHql("delete from SystemProtocol where systemId = ?",systemId);
 	}
 
-	public void deleteSystemById(String systemId){
+	public boolean deleteSystemById(String systemId){
+		//TZB要求有接口关联的不予删除系统
+		System system = systemDAOImpl.get(systemId);
+		List<ServiceInvoke> list = system.getServiceInvokes();
+		for (int i = 0; i < list.size(); i++) {
+			if(list.get(i).getInterfaceId() != null){
+				return false;
+			}
+		}
 		//要先删除SYSTEM_PROTOCOL记录
 		deleteProtocolBySystemId(systemId);
 		systemDAOImpl.delete(systemId);
+		return true;
+	}
+
+	public List<System> getAllOrderBySystemId(){
+		return systemDAOImpl.getAll("systemId",true);
 	}
 
 	/**

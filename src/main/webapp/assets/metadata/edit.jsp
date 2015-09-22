@@ -48,7 +48,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <td><input type="text" name="categoryWordId" id="categoryWordId"
 					class="easyui-combobox"
 					data-options="
-						panelHeight:'auto',
+						panelHeight:'300px',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
 				 		 valueField: 'englishWord',

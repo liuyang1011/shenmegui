@@ -72,11 +72,12 @@
 </form>
 <script type="text/javascript"
 	src="/assets/enumManager/js/enumManager.js"></script>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script>
 	$(function () {
 		$('#_enumName').textbox({
 			required:true,
-			validType:['unique','english']
+			validType:['unique','englishB']
 		});
 		$.extend($.fn.validatebox.defaults.rules, {
 			unique: {
@@ -95,12 +96,6 @@
 					return result;
 				},
 				message: '已存在相同代码名称'
-			},
-			english : {// 验证英语
-				validator : function(value) {
-					return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
-				},
-				message : '请输入英文字母'
 			}
 		});
 	});

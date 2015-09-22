@@ -22,7 +22,7 @@
 				系统ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemIdText">
+				<input class="easyui-textbox" type="text" id="systemIdText" data-options="required:true, validType:['intOrFloat']">
 			</td>
 		</tr>
 		<tr>
@@ -30,7 +30,7 @@
 				系统简称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemAbText">
+				<input class="easyui-textbox" type="text" id="systemAbText" data-options="required:true, validType:['englishB']">
 			</td>
 		</tr>
 		<tr>
@@ -38,7 +38,7 @@
 				系统中文名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemChineseNameText">
+				<input class="easyui-textbox" type="text" id="systemChineseNameText" data-options="required:true, validType:['chineseB']">
 			</td>
 		</tr>
 		<tr style="display:none">
@@ -119,7 +119,7 @@
 
 	</table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 	$(document).ready(function (){
 
@@ -134,7 +134,6 @@
 
 
 	function save(){
-
         var systemId = $("#systemIdText").val();
         if(systemId==null || systemId == ''){
 			alert("请填写系统ID");
