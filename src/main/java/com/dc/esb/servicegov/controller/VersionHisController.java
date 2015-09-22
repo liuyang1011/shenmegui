@@ -113,4 +113,15 @@ public class VersionHisController {
 		}
 		return mv;
 	}
+	@RequiresPermissions({"versionHis-get"})
+	@RequestMapping("/judgeVersionHis")
+	@ResponseBody
+	public VersionHis judgeVersionHis(String versionId){
+		String hql = " from " + VersionHis.class.getName() + " where id=? order by code desc";
+		List<VersionHis> list = versionHisServiceImpl.find(hql, versionId);
+		if(list.size() > 0){
+			return list.get(0);
+		}
+		return new VersionHis();
+	}
 }

@@ -84,6 +84,10 @@ public class Constants {
         public static final String OPT_TYPE_EDIT = "1";
         public static final String OPT_TYPE_DELETE = "2";
         public static final String OPT_TYPE_RELEASE = "3";
+
+        public static final String COMPARE_TYPE0 = "0";//对比类型：0：当前版本VS历史版本， 1：历史版本VS历史版本,2:历史版本VS当前版本
+        public static final String COMPARE_TYPE1 = "1";
+        public static final String COMPARE_TYPE2 = "2";
     }
 
     public static class Metadata {

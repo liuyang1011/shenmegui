@@ -190,12 +190,14 @@ var sysManager = {
             url: "/jsp/sysadmin/file_add.jsp"
         });
     },
-    addFilePageBySystem: function (systemId) {
+    addFilePageBySystem: function () {
+        var node = $('.msinterfacetree').tree("getSelected");
         uiinit.win({
             w: 500,
+            top:100,
             iconCls: 'icon-add',
             title: "新增需求文件",
-            url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
+            url: "/jsp/sysadmin/file_add.jsp?systemId=" + node.id
         });
     },
     addProtocol: function (data, callBack) {

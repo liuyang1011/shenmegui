@@ -185,11 +185,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for (int i = 0; i < voList.size(); i++){
                 HSSFRow row = sheet.createRow(i + 1);
                 InterfaceInvokeVO vo = voList.get(i);
+                Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());
+                Interface inter = interfaceDAO.findUniqueBy("interfaceId", vo.getInterfaceId());
 
                 setCellValue(row.createCell(0), commonStyle, vo.getInterfaceId());//交易码
                 setCellValue(row.createCell(1), commonStyle, vo.getInterfaceName());//交易名称
 
-                Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());
                 setCellValue(row.createCell(2), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
                 setCellValue(row.createCell(3), commonStyle, operation.getOperationId());//场景id
                 setCellValue(row.createCell(4), commonStyle, operation.getOperationName());//场景名称
@@ -208,66 +209,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 setCellValue(row.createCell(15), commonStyle, "");//参考文档
                 setCellValue(row.createCell(16), commonStyle, "");//模块划分
                 setCellValue(row.createCell(17), commonStyle, "");//是否穿透
-                setCellValue(row.createCell(18), commonStyle, "");//业务报文头
+                String headName = fillHead(workbook, vo.getInterfaceId() );
+                setCellValue(row.createCell(18), commonStyle, headName);//业务报文头
+                String status =  Constants.INTERFACE_STATUS_TC.equals(inter.getStatus()) ? "投产" : "废弃";
+                setCellValue(row.createCell(19), commonStyle, status);//接口状态
+                setCellValue(row.createCell(20), commonStyle, "");//场景状态
+                setCellValue(row.createCell(21), commonStyle, "");//是否标准
             }
-//                for (int i = 0; i < siList.size(); i++) {
-//                ServiceInvoke si = siList.get(i);
-//                HSSFRow row = sheet.createRow(i + 1);
-//                if (si.getInterfaceId() != null) {
-//                    row.createCell(0).setCellValue(si.getInter().getEcode());//交易码
-//                } else {
-//                    continue;
-//                }
-//                if (si.getInter() != null) {
-//                    row.createCell(1).setCellValue(si.getInter().getInterfaceName());//交易名称
-//                }
-//                if (si.getServiceId() != null) {
-//                    Service service = serviceDao.findUniqueBy("serviceId", si.getServiceId());
-//                    row.createCell(2).setCellValue(service.getServiceName());//服务名称
-//                    if (si.getOperationId() != null) {
-//                        row.createCell(3).setCellValue(si.getOperationId());//场景id
-//                        Map<String, String> params = new HashMap<String, String>();
-//                        params.put("serviceId", si.getServiceId());
-//                        params.put("operationId", si.getOperationId());
-//                        Operation operation = operationDAO.findUniqureBy(params);
-//                        row.createCell(4).setCellValue(operation.getOperationName());//场景名称
-//                    }
-//                }
-//                if (si.getType() != null && si.getType().equals(Constants.INVOKE_TYPE_CONSUMER)) {
-//                    row.createCell(5).setCellValue(si.getSystem().getSystemAb());//调用方
-//                    row.createCell(7).setCellValue("Consumer");//消费者
-//                    row.createCell(14).setCellValue(si.getSystem().getSystemChineseName());
-//                    //根据消费者去查找对应提供者
-//                    ServiceInvoke serviceInvoke = siDao.getByOtherType(si.getInvokeId());
-//                    if (serviceInvoke != null) {
-//                        row.createCell(6).setCellValue(serviceInvoke.getSystem().getSystemAb());//系统ab
-//                        row.createCell(8).setCellValue(serviceInvoke.getSystemId());//接口提供系统ID
-//                    }
-//                }
-//                if (si.getType() != null && si.getType().equals(Constants.INVOKE_TYPE_PROVIDER)) {
-//                    row.createCell(6).setCellValue(si.getSystem().getSystemAb());//系统ab
-//                    row.createCell(7).setCellValue("Provider");//提供者
-//                    row.createCell(8).setCellValue(si.getSystemId());//接口提供系统ID
-//                    //根据提供者查询消费者
-//                    ServiceInvoke serviceInvoke = siDao.getByOtherType(si.getInvokeId());
-//                    if (serviceInvoke != null) {
-//                        row.createCell(5).setCellValue(serviceInvoke.getSystem().getSystemAb());//调用方
-//                        row.createCell(14).setCellValue(serviceInvoke.getSystem().getSystemChineseName());
-//                    }
-//
-//                }
-//                if (si.getInter() != null) {
-//                    row.createCell(9).setCellValue(si.getInter().getProtocolName());//报文名称
-//                    row.createCell(18).setCellValue(si.getInter().getHeadName());//业务报文头
-//                }
-//                row.createCell(10).setCellValue("");//处理人
-//                row.createCell(11).setCellValue("");//更新时间
-//                row.createCell(12).setCellValue("");//报文转换方向
-//                row.createCell(13).setCellValue("");//是否已有调用
-//                row.createCell(15).setCellValue("");//参考文档
-//                row.createCell(16).setCellValue("");//模块划分
-//                row.createCell(17).setCellValue("");//是否穿透
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");
@@ -276,6 +224,16 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         return true;
     }
 
+    /**
+     * 填充报文头页，返回报文头名称
+     * @param workbook
+     * @param interfaceId
+     * @return
+     */
+    public String fillHead(HSSFWorkbook workbook, String interfaceId){
+
+        return "";
+    }
     /**
      * 循环填充mapping
      *

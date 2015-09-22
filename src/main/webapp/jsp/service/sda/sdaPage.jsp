@@ -34,6 +34,10 @@ var delIds = [];
 		}
 		function removeIt(){
 			var node = $('#tg').treegrid('getSelected');
+			if(node.text == "root" && node.parentId == null){
+				alert("请选择其他节点！");
+				return false;
+			}
 			if (node){
 				delIds.push(node.id);
 				$('#tg').treegrid('remove', node.id);
@@ -41,6 +45,10 @@ var delIds = [];
 		}
 		function editIt(){
 				var row = $('#tg').treegrid('getSelected');
+				if(row.text == "root" && row.parentId == null){
+					alert("请选择其他节点！");
+					return false;
+				}
 				
 				if (row){
 					editingId = row.id
@@ -55,7 +63,7 @@ var delIds = [];
 		function append(){
 			var uuid = new Date().getTime();
 			var node = $('#tg').treegrid('getSelected');
-			if(node.text == "root"){
+			if(node.text == "root" && node.parentId == null){
 				alert("请选择其他节点！");
 				return false;
 			}
@@ -176,9 +184,9 @@ var delIds = [];
 			            }
 				});
 			}
-			
+
 		}
-		
+
 		function moveDown(){
 			var node = $('#tg').treegrid('getSelected');
 			if(node != null){
@@ -202,7 +210,43 @@ var delIds = [];
 			            }
 				});
 			}
-			
+
+		}
+		function selectTab(title, content) {
+			var exsit = parent.$('#subtab').tabs('getTab', title);
+			if (exsit == null) {
+				parent.$('#subtab').tabs('add', {
+					title: title,
+					content: content
+				});
+			} else {
+				parent.$('#subtab').tabs('update', {
+					tab: exsit,
+					options: {
+						content: content
+					}
+				});
+			}
+		}
+		//跳转到对比页面
+		function comparePage(){
+			$.ajax({
+				type: "get",
+				async: false,
+				url: "/versionHis/judgeVersionHis?versionId=${operation.versionId}",
+				dataType: "json",
+				success: function (data) {
+					if(data.autoId != null){
+						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1=${operation.versionId }&type=0&versionId2="+data.autoId;
+						var opeDetailContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+						selectTab('${operation.operationName }-场景对比', opeDetailContent);
+						parent.$('#subtab').tabs('select', '场景对比');
+					}else{
+						alert("没有历史版本可以对比!");
+					}
+				}
+			});
+
 		}
 		$.extend($.fn.validatebox.defaults.rules, {
                         unique: {
@@ -227,16 +271,17 @@ var delIds = [];
 <fieldset>
  <legend>条件搜索</legend>
 <table border="0" cellspacing="0" cellpadding="0">
-
-  <tr>
+  <tr style="width:100%;">
      <th>服务代码</th>
-    <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" ></td>
+    <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" style="width:100px"></td>
     <th>服务名称</th>
-    <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }" ></td>
+    <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }"  style="width:250px"></td>
      <th>场景号</th>
-    <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }" ></td>
+    <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }"   style="width:50px"></td>
  	 <th>场景名称</th>
-        <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }" ></td>
+        <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }"  style="width:250px"></td>
+	  <th>版本</th>
+	  <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.version.code }"  style="width:50px"></td>
   </tr>
 
 </table>
@@ -283,6 +328,7 @@ var delIds = [];
 	    <a href="javascript:void(0)" onclick="addNode()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>&nbsp;&nbsp;
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
+	    <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton" iconCls="icon-save" plain="true">版本对比</a>
     </td>
     <td align="right"></td>
   </tr>
