@@ -23,8 +23,6 @@ public class ServiceLinkNode {
     @Column(name = "BUSS_CATEGORY")
     private String bussCategory;
 
-//    @Column(name = "")
-
     @Column(name="ESB_ACCESS_PATTERN")
     private String esbAccessPattern;
 
