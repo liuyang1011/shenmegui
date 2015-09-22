@@ -18,18 +18,11 @@
 <form class="formui">
 	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center">
 		<tr>
-		<td colspan="3" style="text-align:center" >
-			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-			   onClick="$('#w').window('close')">取消</a>&nbsp;&nbsp;<a href="#"
-																	  class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
-		</td>
-	</tr>
-		<tr>
 			<th>
 				系统ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemIdText">
+				<input class="easyui-textbox" type="text" id="systemIdText" data-options="required:true, validType:['intOrFloat']">
 			</td>
 		</tr>
 		<tr>
@@ -37,7 +30,7 @@
 				系统简称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemAbText">
+				<input class="easyui-textbox" type="text" id="systemAbText" data-options="required:true, validType:['englishB']">
 			</td>
 		</tr>
 		<tr>
@@ -45,7 +38,7 @@
 				系统中文名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemChineseNameText">
+				<input class="easyui-textbox" type="text" id="systemChineseNameText" data-options="required:true, validType:['chineseB']">
 			</td>
 		</tr>
 		<tr style="display:none">
@@ -116,11 +109,17 @@
 				<input class="easyui-textbox" type="text" id="principalDetail2">
 			</td>
 		</tr>
-
+		<tr>
+			<td colspan="3" style="text-align:center" >
+				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+				   onClick="$('#w').window('close')">取消</a>&nbsp;&nbsp;<a href="#"
+																		  class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+			</td>
+		</tr>
 
 	</table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 	$(document).ready(function (){
 
@@ -135,7 +134,6 @@
 
 
 	function save(){
-
         var systemId = $("#systemIdText").val();
         if(systemId==null || systemId == ''){
 			alert("请填写系统ID");

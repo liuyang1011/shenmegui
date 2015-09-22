@@ -156,16 +156,16 @@
 				<thead>
 					<tr>
 						<%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
-						<th data-options="field:'systemId', width:50">系统id</th>
-						<th data-options="field:'systemChineseName', width:150">系统名称</th>
-						<th data-options="field:'isStandard', width:50"
+						<th data-options="field:'systemId', width:'10%'">系统id</th>
+						<th data-options="field:'systemChineseName', width:'15%'">系统名称</th>
+						<th data-options="field:'isStandard', width:'10%'"
 							formatter='ff.isStandardText'>标准</th>
-						<th data-options="field:'interfaceId', width:50">接口id</th>
-						<th data-options="field:'interfaceName', width:150">接口名称</th>
-						<th data-options="field:'type', width:50"
+						<th data-options="field:'interfaceId', width:'15%'">接口id</th>
+						<th data-options="field:'interfaceName', width:'15%'">接口名称</th>
+						<th data-options="field:'type', width:'10%'"
 							formatter='ff.typeText'>类型</th>
-						<th data-options="field:'desc', width:100">描述</th>
-						<th data-options="field:'remark', width:100">备注</th>
+						<th data-options="field:'desc', width:'10%'">描述</th>
+						<th data-options="field:'remark', width:'10%'">备注</th>
 					</tr>
 				</thead>
 			</table>

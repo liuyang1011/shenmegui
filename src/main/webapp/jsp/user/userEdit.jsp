@@ -34,12 +34,14 @@
                 <option value="${user.orgId}"></option>
             </select><font color="#FF0000">*</font></td>
         </tr>
-        <tr>
+        <tr style="display: none">
             <th>生效日期</th>
             <td><input name="startdate" type="text" class="easyui-datebox" id="startdate" value="${user.startdate}"/>
             </td>
             <th>失效日期</th>
             <td><input name="lastdate" class="easyui-datebox" id="lastdate" value="${user.lastdate}"/></td>
+        </tr>
+        <tr>
             <th>备 注</th>
             <td><input name="remark" class="easyui-textbox" type="text" id="remark" value="${user.remark}"/></td>
         </tr>

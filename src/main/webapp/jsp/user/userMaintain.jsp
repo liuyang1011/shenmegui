@@ -163,17 +163,17 @@
 			var id=$('#Id').val();
 			var name= $('#Name').val();
 			var orgId=$('#OrgId').val();
-			var startdate=$('#Startdate').datebox('getValue');
-			var lastdate=$('#Lastdate').datebox('getValue');
-			if(id==""&&name==""&&orgId==""&&startdate==""&&lastdate==""){
+//			var startdate=$('#Startdate').datebox('getValue');
+//			var lastdate=$('#Lastdate').datebox('getValue');
+			if(id==""&&name==""&&orgId==""){
 			window.location.reload();
 			}else{
 			var  param = {};
 			param.id = $('#Id').val();
 			param.name = $('#Name').val();
 			param.orgId = $('#OrgId').val();
-			param.startdate = $('#Startdate').datebox('getValue');
-			param.lastdate = $('#Lastdate').datebox('getValue');
+//			param.startdate = $('#Startdate').datebox('getValue');
+//			param.lastdate = $('#Lastdate').datebox('getValue');
 			userManager.query(param,function(result){
 				$('#tt').edatagrid('loadData',result);
 			});

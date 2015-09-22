@@ -41,7 +41,7 @@
 
 
 </fieldset>
-<table id="sla" style="height:370px; width:auto;" title="服务SLA">
+<table id="sla" style="height:470px; width:auto;" title="服务SLA">
     <thead>
     <tr>
         <th field="slaId" width="100" editor="text"

@@ -407,6 +407,19 @@ public class EnumController {
         return result;
     }
 
+    /**
+     * 主代码name唯一性验证
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueValid(String name) {
+        return enumService.uniqueValid(name);
+    }
+
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";

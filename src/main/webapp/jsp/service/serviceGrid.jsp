@@ -1,9 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <%
     String path = request.getContextPath();
-    String basePath = request.getScheme() + "://"
-            + request.getServerName() + ":" + request.getServerPort()
-            + path + "/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -124,6 +122,9 @@
             }
             if (value == 5) {
                 return "<font color='red'>已下线</font>";
+            }
+            if (value == 6) {
+                return "<font color='red'>待审核</font>";
             }
         },
         version: function (value, row, index) {
@@ -252,7 +253,7 @@
                     alert("请只选中场景后再查看！");
                 }
             }
-        },{
+        },*/{
             text: '历史版本',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -265,7 +266,7 @@
 
                 parent.parent.addTab('历史场景', opeHisContent);
             }
-        },*/
+        },
         {
             text: '发布版本',
             iconCls: 'icon-qxfp',
@@ -299,6 +300,34 @@
                     alert("请选中要发布的场景！");
                 }
             }
+        },{
+            text: '提交审核',
+            iconCls: 'icon-audit',
+            handler: function(){
+                var url = "";
+                var items = $('#operationList').datagrid('getSelections');
+                if (items != null && items.length > 0) {
+                    for(var i = 0; i < items.length; i++){
+                        if(items[i].optState != 0){
+                            alert("只有服务定义状态的服务能提交审核");
+                            return;
+                        }
+                    }
+                }
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/operation/submitToAudit",
+                    "data": JSON.stringify(items),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result){
+                            $('#operationList').datagrid('reload');
+                        }
+                    }
+                });
+            }
         },
         {
             text: '审核',
@@ -319,7 +348,7 @@
                     alert("该服务下没有要审核的数据！");
                     return false;
                 }
-                var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+                var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:98%;"></iframe>'
 
                 parent.parent.$('#mainContentTabs').tabs('add', {
                     title: '服务场景审核',

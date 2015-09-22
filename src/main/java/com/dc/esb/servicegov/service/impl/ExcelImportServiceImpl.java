@@ -41,6 +41,9 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
     protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
+    protected static final int INTERFACE_STATUS_COL = 2;
+    protected static final int INTERFACE_POINT_COL = 3;
+    protected static final int INTERFACE_ADD_OR_MODIFY_COL = 4;
 
 
 
@@ -160,7 +163,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             insertSDA(existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             if (headMap != null && headMap.size()>0) {
-                insertInterfaceHead(exists, inter, headMap);
+                insertInterfaceHead(exists, inter, headMap,systemId);
             }
             list.add("true");
             list.add(provider_invoke);
@@ -918,8 +921,27 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         private String serviceId;
         private String systemAb;
         private String interfaceStatus;
+        private String invokeType;
         private String operationState;
         private String isStandard;
+        //原始接口导入，新增：0，修改：1
+        private String optType;
+
+        public String getOptType() {
+            return optType;
+        }
+
+        public void setOptType(String optType) {
+            this.optType = optType;
+        }
+
+        public String getInvokeType() {
+            return invokeType;
+        }
+
+        public void setInvokeType(String invokeType) {
+            this.invokeType = invokeType;
+        }
 
         public String getIsStandard() {
             return isStandard;
@@ -1035,7 +1057,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
     }
 
-    public void insertInterfaceHead(boolean exists, Interface inter, Map<String, Object> headMap) {
+    public void insertInterfaceHead(boolean exists, Interface inter, Map<String, Object> headMap,String systemId) {
 
         //如果接口存在，且不覆盖 直接返回
         if (exists && !GlobalImport.operateFlag) {
@@ -1060,7 +1082,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             return;
         }
 
-        InterfaceHead headDB = interfaceHeadDAO.findUniqueBy("headName", headName);
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("headName",headName);
+        map.put("systemId",systemId);
+        InterfaceHead headDB = interfaceHeadDAO.findUniqureBy(map);
 
         if (headDB != null) {
             if (GlobalImport.operateFlag) {
@@ -1084,7 +1109,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }else{
             headDB = new InterfaceHead();
         }
-
+        headDB.setSystemId(systemId);
         headDB.setHeadName(headName);
         headDB.setHeadDesc(headName);
         interfaceHeadDAO.save(headDB);
@@ -1463,6 +1488,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         paramMap.put("serviceId", service.getServiceId());
         paramMap.put("operationId", operation.getOperationId());
         paramMap.put("systemId", systemId);
+        //TODO 是否要改动，service_invoke里应该也是interfaceId唯一的吧？
         if(null != interfaceId){
             paramMap.put("interfaceId",interfaceId);
         }
@@ -1668,7 +1694,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return invoke;
     }
 
-    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,String systemId){
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,IndexDO indexDO){
         return null;
     }
 

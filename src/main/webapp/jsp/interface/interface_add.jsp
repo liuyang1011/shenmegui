@@ -12,7 +12,7 @@
 				接口ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceIdText">
+				<input class="easyui-textbox" type="text" id="interfaceIdText"  data-options="required:true,validType:['englishB']">
 			</td>
 		</tr>
 		<tr>
@@ -20,7 +20,7 @@
 				交易名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceNameText">
+				<input class="easyui-textbox" type="text" id="interfaceNameText" data-options="validType:['chineseB']">
 			</td>
 		</tr>
 		<tr>
@@ -28,7 +28,7 @@
 				交易码
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="ecodeText">
+				<input class="easyui-textbox" type="text" id="ecodeText" data-options="validType:['intOrFloat']">
 			</td>
 		</tr>
 		<tr>
@@ -82,9 +82,8 @@
 		</tr>
 	</table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
-
 	$(document).ready(function (){
 		var systemId ="";
 		try {

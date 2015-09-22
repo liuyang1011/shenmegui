@@ -76,7 +76,7 @@
                         <input type="text" name="categoryId" id="categoryId" style="width:400px"
                                                class="easyui-combotree"
                                                data-options="
-                                               panelHeight:'600px',
+                                               panelHeight:'400px',
                         						url:'/service/getTree',
                         				 		 method:'get',
                         				 		 valueField: 'categoryId',

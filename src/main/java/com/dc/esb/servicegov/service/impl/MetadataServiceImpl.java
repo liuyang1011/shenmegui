@@ -31,6 +31,8 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     private MetadataDAOImpl metadataDAOImpl;
     @Autowired
     private CategoryWordDAOImpl categoryWordDAO;
+    @Autowired
+    private OperationServiceImpl operationServiceImpl;
 
     public List<Metadata> getAllMetadata() {
     	List<Metadata> list = metadataDAOImpl.getAll();
@@ -178,13 +180,18 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
         metadataDAOImpl.delete(metadataId);
     }
     
-    public void deleteMetadatas(String metadataIds){
+    public boolean deleteMetadatas(String metadataIds){
     	String[] ids = metadataIds.split("\\,");
     	if(ids != null && ids.length > 0){
     		for(String metadataId : ids){
+                //关联场景不予删除
+                if(operationServiceImpl.judgeByMetadataId(metadataId)){
+                    return false;
+                }
     			deleteMetadata(metadataId);
     		}
     	}
+        return true;
     }
     public String genderHql(Map<String, String[]> values){
         String hql = "";
@@ -223,6 +230,11 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                 if(key.equals("version") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
                         hql += " and a.version like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("optUser") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.optUser like '%" + values.get(key)[0] + "%' ";
                     }
                 }
                 if(key.equals("startDate") && values.get(key) != null && values.get(key).length > 0 ){

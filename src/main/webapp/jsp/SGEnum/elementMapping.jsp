@@ -40,12 +40,17 @@
 			<td><a href="#" id="btn" class="easyui-linkbutton" iconCls="icon-qxfp">设置映射关系</a></td> -->
 		</table>
 	</fieldset>
-	<table title="枚举映射" id="mappingdatagrid" style="height:330px; width:auto;">
+	<div id="div1" style="display: block">
+		<table title="枚举映射" id="mappingdatagrid" style="height:330px; width:auto;">
 	</table>
+	</div>
+	<div id="div2" style="display: none">
+	<table title="枚举映射2" id="mappingdatagrid2" style="height:330px; width:auto;">
+	</table>
+	</div>
 	<div id="w" class="easyui-window" title=""
 		data-options="modal:true,closed:true,iconCls:'icon-add'"
 		style="width:500px;height:200px;padding:10px;"></div>
-
 	<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/resources/js/ui.js"></script>
@@ -106,7 +111,57 @@
 				}
 				
 			});
-			
+
+			var url2 = "/enum/getElementMappingSToM/"+"${master.id}"+"/"+"${slave.id}";
+			$('#mappingdatagrid2').datagrid({
+				//rownumbers:true,
+				singleSelect:false,
+				collapsible:true,
+				url:url2,
+				method:'get',
+				toolbar:toolbar2,
+				pagination:true,
+				pageSize:10,
+				columns:[[
+					{field:'productid',checkbox:true},
+					{field:'REMARK',title:'主代码中文名称'},
+					{field:'SLAVENAME',title:'从代码枚举名称'},
+					{field:'MASTERNAME',title:'主代码枚举名称',required : true,
+						editor:{
+							type:'combobox',
+							options:{
+								url : '/enum/getMasterElements/'+"${master.id}",
+								method : 'get',
+								valueField : 'elementId',
+								textField : 'elementName',
+//								textField : 'remark',
+								panelHeight : '150px'
+							}
+						}
+					},
+					/*{field:'DIRECTION',title:'映射方向',editor:'text'},
+					 {field:'MAPPINGRELATION',title:'映射关系',editor:'text'}*/
+				]],
+				onDblClickCell: function(index,field,value){
+					$(this).datagrid('beginEdit', index);
+					var ed = $(this).datagrid('getEditor', {index:index,field:field});
+					$(ed.target).focus();
+				},
+				onBeginEdit : function(index,row){
+					editedRows.push(index);
+				},
+				onLoadSuccess : function (data){
+
+				},
+				onLoadError: function (responce) {
+					var resText = responce.responseText;
+					if(resText.toString().indexOf("没有操作权限") > 0){
+//                    alert("没有权限！");
+						window.location.href = "/jsp/403.jsp";
+					}
+				}
+
+			});
 			
 			$('#masterElementName').combobox({
 				url : '/enum/getMasterElements/'+"${master.id}",
@@ -158,56 +213,9 @@
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
-				var url = "/enum/getElementMappingSToM/"+"${master.id}"+"/"+"${slave.id}";
-				$('#mappingdatagrid').datagrid({
-					//rownumbers:true,
-					singleSelect:false,
-					collapsible:true,
-					url:url,
-					method:'get',
-					toolbar:toolbar2,
-					pagination:true,
-					pageSize:10,
-					columns:[[
-						{field:'productid',checkbox:true},
-						{field:'REMARK',title:'主代码中文名称'},
-						{field:'SLAVENAME',title:'从代码枚举名称'},
-						{field:'MASTERNAME',title:'主代码枚举名称',required : true,
-							editor:{
-								type:'combobox',
-								options:{
-									url : '/enum/getMasterElements/'+"${master.id}",
-									method : 'get',
-									valueField : 'elementId',
-									textField : 'elementName',
-//								textField : 'remark',
-									panelHeight : '150px'
-								}
-							}
-						},
-						/*{field:'DIRECTION',title:'映射方向',editor:'text'},
-						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}*/
-					]],
-					onDblClickCell: function(index,field,value){
-						$(this).datagrid('beginEdit', index);
-						var ed = $(this).datagrid('getEditor', {index:index,field:field});
-						$(ed.target).focus();
-					},
-					onBeginEdit : function(index,row){
-						editedRows.push(index);
-					},
-					onLoadSuccess : function (data){
-
-					},
-					onLoadError: function (responce) {
-						var resText = responce.responseText;
-						if(resText.toString().indexOf("没有操作权限") > 0){
-//                    alert("没有权限！");
-							window.location.href = "/jsp/403.jsp";
-						}
-					}
-
-				});
+				document.getElementById('div1').style.display="none";
+				document.getElementById('div2').style.display="block";
+				$('#mappingdatagrid2').datagrid([]);
 			}
 		} ];
 		var toolbar2 = [ {
@@ -246,56 +254,9 @@
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
-				var url = "/enum/getElementMapping/"+"${master.id}"+"/"+"${slave.id}";
-				$('#mappingdatagrid').datagrid({
-					//rownumbers:true,
-					singleSelect:false,
-					collapsible:true,
-					url:url,
-					method:'get',
-					toolbar:toolbar,
-					pagination:true,
-					pageSize:10,
-					columns:[[
-						{field:'productid',checkbox:true},
-						{field:'REMARK',title:'主代码中文名称'},
-						{field:'MASTERNAME',title:'主代码枚举名称'},
-						{field:'SLAVENAME',title:'从代码枚举名称',required : true,
-							editor:{
-								type:'combobox',
-								options:{
-									url : '/enum/getMasterElements/'+"${slave.id}",
-									method : 'get',
-									valueField : 'elementId',
-									textField : 'elementName',
-//								textField : 'remark',
-									panelHeight : '150px'
-								}
-							}
-						},
-						/*{field:'DIRECTION',title:'映射方向',editor:'text'},
-						{field:'MAPPINGRELATION',title:'映射关系',editor:'text'}*/
-					]],
-					onDblClickCell: function(index,field,value){
-						$(this).datagrid('beginEdit', index);
-						var ed = $(this).datagrid('getEditor', {index:index,field:field});
-						$(ed.target).focus();
-					},
-					onBeginEdit : function(index,row){
-						editedRows.push(index);
-					},
-					onLoadSuccess : function (data){
-
-					},
-					onLoadError: function (responce) {
-						var resText = responce.responseText;
-						if(resText.toString().indexOf("没有操作权限") > 0){
-//                    alert("没有权限！");
-							window.location.href = "/jsp/403.jsp";
-						}
-					}
-
-				});
+				document.getElementById('div1').style.display="block";
+				$('#mappingdatagrid').datagrid([]);
+				document.getElementById('div2').style.display="none";
 			}
 		} ];
 	</script>

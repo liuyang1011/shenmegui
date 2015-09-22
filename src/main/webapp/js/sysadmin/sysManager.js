@@ -170,7 +170,11 @@ var sysManager = {
             url: "/system/delete/" + node.id,
             dataType: "json",
             success: function (result) {
-                $('.msinterfacetree').tree("reload");
+                if(result){
+                    $('.msinterfacetree').tree("reload");
+                }else{
+                    alert("包含接口的系统不予删除，请先删除系统下的接口")
+                }
             }
         });
     },

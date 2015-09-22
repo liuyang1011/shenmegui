@@ -455,13 +455,13 @@
             交易名称
         </th>
 
-        <th data-options="field:'status',width:'8%',align:'right'" formatter='formatter.interfaceState'>
+        <th data-options="field:'status',width:'8%',align:'left'" formatter='formatter.interfaceState'>
             交易状态
         </th>
         <th data-options="field:'headName',width:'15%'">
             报文头
         </th>
-        <th data-options="field:'desc',align:'right',width:'20%'">
+        <th data-options="field:'desc',align:'left',width:'20%'">
             功能描述
         </th>
         <th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>

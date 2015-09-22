@@ -17,6 +17,7 @@
     <script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
 </head>
 <body>
+<form id="searchForm">
 <fieldset>
     <legend>
         条件搜索
@@ -76,12 +77,14 @@
             </td>
             <td align="right">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
             </td>
         </tr>
     </table>
 
 </fieldset>
-<table id="tg" data-options="pageSize:2">
+</form>
+<table id="tg">
     <thead>
     <tr>
         <th data-options="field:'systemId',width:'10%'">
@@ -99,7 +102,7 @@
         <th data-options="field:'principal1',width:'10%'">
             联系人
         </th>
-        <th data-options="field:'featureDesc',align:'right',width:'20%'">
+        <th data-options="field:'featureDesc',align:'left',width:'20%'">
             系统描述
         </th>
         <th data-options="field:'workRange',width:'15%',align:'left'">
@@ -119,14 +122,14 @@
             title: '系统基本信息维护',
             iconCls: 'icon-edit',//图标
             width: 'auto',
-            height: '390px',
+            height: '440px',
             collapsible: true,
             method: 'post',
             url: '/system/getAll',
             singleSelect: true,//是否单选
             pagination: true,//分页控件
-            pageSize: 10,//每页显示的记录条数，默认为10
-            pageList: [10, 15, 20],//可以设置每页记录条数的列表
+            pageSize: 13,//每页显示的记录条数，默认为10
+            pageList: [13, 15, 20],//可以设置每页记录条数的列表
             rownumbers: true,//行号
             toolbar: [{
                 text: '新增',

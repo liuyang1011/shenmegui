@@ -14,7 +14,7 @@
     <table width="99%" border="0" cellspacing="0" cellpadding="0" id="userInfo">
         <tr>
             <th>用户代码</th>
-            <td><input name="userId" class="easyui-validatebox" type="text" id="userId" data-options="required:true,validType:'english'" /><font color="#FF0000">*</font></td>
+            <td><input name="userId" class="easyui-validatebox" type="text" id="userId" data-options="required:true,validType:'englishB'" /><font color="#FF0000">*</font></td>
             <th>用户名称</th>
             <td><input name="userName" class="easyui-textbox" type="text" id="userName"/><font color="#FF0000">*</font>
             </td>

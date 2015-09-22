@@ -187,4 +187,13 @@ public class EnumServiceImpl extends AbstractBaseService<SGEnum, String> impleme
 		elementMapDAOImpl.delete(elementMap);
 		return true;
 	}
+
+	//前端唯一性验证
+	public boolean uniqueValid(String name) {
+		SGEnum entity = findUniqueBy("name",name);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -25,11 +25,11 @@
 <body>
 <form id="searchForm">
     <fieldset>
-        <legend>条件搜索</legend>
+        <legend>导出</legend>
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <th>服务分类</th>
-                <td><input type="text" name="categoryId" id="categoryId"
+                <th>服务复用率导出</th>
+                <%--<td><input type="text" name="categoryId" id="categoryId"
                            class="easyui-combotree"
                            style="width:350px"
                            data-options="
@@ -42,11 +42,11 @@
                         							this.value=newValue;
                         							$('#resultList').treegrid('select', newValue);
                         							var node = $('#resultList').treegrid('getSelected');
-                        							alert('关联场景数：'+ node.append2 +', 关联服务数:'+ node.append3 +',消费者数:' + node.append4 + ', 复用率：'+node.append5);
+                        							&lt;%&ndash;alert('关联场景数：'+ node.append2 +', 关联服务数:'+ node.append3 +',消费者数:' + node.append4 + ', 复用率：'+node.append5);&ndash;%&gt;
                         						}
                         					"
                         />
-                </td>
+                </td>--%>
 
                 <th>
 
@@ -84,12 +84,14 @@
             >
         <thead>
         <tr>
-            <th data-options="field:'text',width:140"  >服务</th>
-            <th data-options="field:'id',width:100">编码</th>
-            <th data-options="field:'append2',width:100" >关联服务数</th>
-            <th field="append3" width="100" >场景数</th>
-            <th field ="append4" width="100">复用场景数</th>
-            <th field ="append6" width="80" >复用率</th>
+            <th data-options="field:'text',width:'200'">服务</th>
+            <th data-options="field:'id',width:'150'">编码</th>
+            <th data-options="field:'append2',width:'100'">关联服务数</th>
+            <th data-options="field:'append3',width:'100'">场景数</th>
+
+            <th data-options="field:'append4',width:'100'">复用场景数</th>
+            <th data-options="field:'append6',width:'100'">复用率</th>
+
         </tr>
         </thead>
     </table>

@@ -12,7 +12,7 @@
                 报文头名称
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="headName">
+                <input class="easyui-textbox" type="text" id="headName" data-options="required:true,validType:['unique','chineseB']">
             </td>
         </tr>
         <tr>
@@ -20,7 +20,7 @@
                 报文头备注
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="headRemark">
+                <input class="easyui-textbox" type="text" id="headRemark" data-options="validType:['chineseB']">
             </td>
         </tr>
         <tr>
@@ -28,7 +28,7 @@
                 报文头描述
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="headDesc">
+                <input class="easyui-textbox" type="text" id="headDesc" data-options="validType:['chineseB']">
             </td>
         </tr>
 
@@ -46,9 +46,27 @@
         </tr>
     </table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
-
+    $.extend($.fn.validatebox.defaults.rules, {
+        unique: {
+            validator: function (value, param) {
+                var result;
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/interfaceHead/uniqueValid",
+                    dataType: "json",
+                    data: {"headName": value},
+                    success: function (data) {
+                        result = data;
+                    }
+                });
+                return result;
+            },
+            message: '已存在相同报文头名称'
+        }
+    });
     function save() {
         //var headId = $("#headId").val();
         var headName = $("#headName").val();

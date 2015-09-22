@@ -71,8 +71,29 @@
     <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
 
 </div>
-<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%"></ul>
+<script>
+    $('.mxservicetree').tree({
+        url:'/service/getTree',
+        method:'get',
+        animate:true,
+        onLoadSuccess:function(node, data){
+            parse(data);
+        }
+    });
+    function parse(data){
+        $.each(data, function (index, item) {
+            if(item.children.length > 1){
+                parse(item.children);
+            }else{
+                if(item.type == "serviceCategory"){
+                    item.iconCls = "icon-add";
+                }
+            }
+        });
+    }
 
+</script>
 <%
     }
 

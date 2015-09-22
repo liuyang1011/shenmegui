@@ -18,6 +18,7 @@
 	</head>
 
 	<body>
+	<form id="searchForm">
 		<fieldset>
 			<legend>
 				条件搜索
@@ -82,12 +83,14 @@
 					</td>
 					<td align="right">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
+						<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
 					</td>
 				</tr>
 			</table>
 
 
 		</fieldset>
+	</form>
 		<table id="tg" style="height: 370px; width: auto;">
 			<thead>
 				<tr>
@@ -110,7 +113,7 @@
 					<th data-options="field:'protocolName',width:'10%'">
 						接口协议
 					</th>
-					<th data-options="field:'status',width:'9%',align:'right'" formatter='formatter.interfaceState'>
+					<th data-options="field:'status',width:'9%',align:'left'" formatter='formatter.interfaceState'>
 						状态
 					</th>
 					<th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
@@ -136,14 +139,14 @@
 	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: 'auto', 
-	        height: '390px',
+	        height: '485px',
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
 	        singleSelect:true,//是否单选
 	        pagination:true,//分页控件 
-	        pageSize: 10,//每页显示的记录条数，默认为10
-		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        pageSize: 14,//每页显示的记录条数，默认为10
+		    pageList: [14,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'新增',
@@ -327,7 +330,7 @@
 			 if (mainTabs.tabs('exists', title)) {
 				 mainTabs.tabs('select', title);
 			 } else {
-				 var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'?interfaceId='+field.interfaceId+'" style="width:100%;height:100%;"></iframe>';
+				 var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'?interfaceId='+field.interfaceId+'" style="width:100%;height:98%;"></iframe>';
 				 mainTabs.tabs('add', {
 					 title: title,
 					 content: content,

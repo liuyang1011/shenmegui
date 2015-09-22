@@ -15,6 +15,8 @@ var LOAD_URL = {
     USERADD: '/jsp/user/useradd.jsp',
     SEARCH: '/jsp/service/search.jsp'
 };
+var mainContentIndex = 0;
+var maxIndex = 1;
 var SYSMENU = {
     init: function () {
         SYSMENU.initHeaderMenu();
@@ -27,7 +29,7 @@ var SYSMENU = {
             $("#west-menu").load(LOAD_URL.LEFTMENU, 'mid=' + mid, function () {
                 $('#mxsysadmintreefilter').searchbox({
                     searcher: function (value, name) {
-                        alert(value + "," + name);
+                        $('.mslinktree').tree('doFilter', value);
                     },
                     prompt: '请输入关键词'
                 });
@@ -49,7 +51,31 @@ var SYSMENU = {
                     },
                     prompt: '请输入关键词'
                 });
+                //tabs菜单  mainContentTabs
+                $("#mainContentTabs").tabs({
+                    onContextMenu: function(e, title,index){
+                        e.preventDefault();
+                        mainContentIndex = index;
+                        var tabs = $("#mainContentTabs").tabs('tabs');
+                        maxIndex = tabs.length;
+                        $('#mm-mxmaintabs').menu('show', {
+                            left: e.pageX,
+                            top: e.pageY
+                        });
 
+                        /*if(node.id=='root'){
+                         return;
+                         }*/
+                        /* e.preventDefault();
+                         $(this).tree('select', node.target);
+                         if (typeof(node.children) != 'undefined') {//编辑接口
+                         $('#mm-mxmaintabs').menu('show', {
+                         left: e.pageX,
+                         top: e.pageY
+                         });
+                         }*/
+                    }
+                });
                 //报文管理
                 $('.mxsysadmintree').tree({
                     onContextMenu: function (e, node) {
@@ -1089,5 +1115,11 @@ $(function () {
         title: title,
         content: content
     });*/
+     var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/search.jsp" style="width:100%;height:98%;"></iframe>';
+    var title = "服务检索"
+    $('#mainContentTabs').tabs('add', {
+    title: title,
+    content: content
+    });
 
 });

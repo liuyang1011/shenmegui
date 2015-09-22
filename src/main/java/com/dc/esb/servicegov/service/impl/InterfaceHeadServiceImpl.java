@@ -28,6 +28,20 @@ public class InterfaceHeadServiceImpl extends AbstractBaseService<InterfaceHead,
 		return interfaceHeadDAO;
 	}
 
+	/**
+	 * 前端唯一性验证
+	 * @param headName
+	 * @return
+	 */
+	@Override
+	public boolean uniqueValid(String headName) {
+		InterfaceHead entity = findUniqueBy("headName",headName);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public void initHDA(InterfaceHead interfaceHead){
 		Ida ida = new Ida();

@@ -4,6 +4,8 @@ import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.entity.SystemProtocol;
 import com.dc.esb.servicegov.service.support.BaseService;
 
+import java.util.List;
+
 
 public interface SystemService extends BaseService<System, String> {
 
@@ -13,5 +15,7 @@ public interface SystemService extends BaseService<System, String> {
 
     public void deleteProtocolBySystemId(String systemId);
 
-    public void deleteSystemById(String systemId);
+    public boolean deleteSystemById(String systemId);
+
+    public List<System> getAllOrderBySystemId();
 }

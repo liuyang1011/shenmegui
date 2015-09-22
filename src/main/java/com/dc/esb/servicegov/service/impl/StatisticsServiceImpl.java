@@ -314,7 +314,7 @@ public class StatisticsServiceImpl implements StatisticsService{
             }
             if(values.get("endDate") != null && values.get("endDate").length > 0){
                 if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
-                    hql2 += " and o.optDate < '" + values.get("endDate")[0] + "' ";
+                    hql2 += " and o.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
                 }
             }
             long hisNum = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());

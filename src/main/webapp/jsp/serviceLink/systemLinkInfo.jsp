@@ -42,7 +42,7 @@
 
 
 </fieldset>
-<table title="交易节点" id="invokeLinkeTable" style="height:370px; width:auto;">
+<table title="交易节点" id="invokeLinkeTable" style="height:440px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
@@ -74,7 +74,8 @@
             method:'get',
             toolbar:toolbar,
             pagination:true,
-            pageSize:10,
+            pageSize:13,
+            pageList: [13,30,50],
             onLoadSuccess:function(data){
                 $.each(data.rows, function (index, item) {
                     var invokeType = item.invokeType;
