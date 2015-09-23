@@ -4,14 +4,14 @@
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<form class="formui">
+<form id="headForm" class="formui">
 	<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<th>
 				报文头名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="headName" value="${head.headName}">
+				<input class="easyui-textbox" type="text" id="headName" value="${head.headName}" data-options="required:true,validType:['unique','chineseB']">
 			</td>
 		</tr>
 		<tr>
@@ -19,7 +19,7 @@
 				报文头备注
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="headRemark" value="${head.headRemark}">
+				<input class="easyui-textbox" type="text" id="headRemark" value="${head.headRemark}" data-options="validType:['chineseB']">
 			</td>
 		</tr>
 		<tr>
@@ -27,7 +27,7 @@
 				报文头描述
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="headDesc" value="${head.headDesc}">
+				<input class="easyui-textbox" type="text" id="headDesc" value="${head.headDesc}" data-options="validType:['chineseB']">
 			</td>
 		</tr>
 
@@ -49,6 +49,10 @@
 <script type="text/javascript">
 
 	function save(){
+		if (!$("#headForm").form('validate')) {
+			alert("请先完善基础信息!");
+			return false;
+		}
 		var headId = $("#headId").val();
 		var headName = $("#headName").val();
 		var headRemark = $("#headRemark").val();

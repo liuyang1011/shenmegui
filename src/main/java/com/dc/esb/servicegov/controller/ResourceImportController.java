@@ -1,11 +1,13 @@
 package com.dc.esb.servicegov.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dc.esb.servicegov.rsimport.impl.MetadataArrayParserImpl;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dc.esb.servicegov.rsimport.impl.CategoryWordParserImpl;
 import com.dc.esb.servicegov.rsimport.impl.EnglishWordXlsxParserImpl;
 import com.dc.esb.servicegov.rsimport.impl.MetadataXlsxParserImpl;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/resourceImport")
@@ -38,11 +41,12 @@ public class ResourceImportController {
 
     @RequiresPermissions({"importMetadata-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/import")
-    public
-    @ResponseBody
-    String importMetadata(HttpServletRequest request, HttpServletResponse response,
+    public ModelAndView importMetadata(HttpServletRequest request, HttpServletResponse response,
                           @RequestParam("file") MultipartFile file
     ) throws Exception {
+        ModelAndView mv = new org.springframework.web.servlet.ModelAndView("message");
+        String url= "/dataTemplate/grid7.jsp";
+        String msg = "";
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
         log.info("import fileName is: " + file.getOriginalFilename());
@@ -60,21 +64,47 @@ public class ResourceImportController {
                     }
                 } catch (IOException e) {
                     log.error(e, e);
+                    msg = "文件上传过程中出现错误！";
                 }
                 if (null != workbook) {
-                    englishWordXlsxParserImpl.parse(workbook);
-                    categoryWordParserImpl.parse(workbook);
-                    metadataXlsxParserImpl.parse(workbook);
+                    try {
+                        englishWordXlsxParserImpl.parse(workbook);
+                        categoryWordParserImpl.parse(workbook);
+                        metadataXlsxParserImpl.parse(workbook);
+                        metadataArrayParserImpl.parse(workbook);
+                    }catch (Exception e){
+                        log.error(e, e);
+                        msg =  "数据转换过程中出现错误！";
+                    }
 
-                    metadataArrayParserImpl.parse(workbook);
                 }
-                return "SUCCESS";
+
             }
         } else {
-            return "FAILED";
+            msg = "请上传EXCEL文件！";
         }
+        if(StringUtils.isEmpty(msg)){
+            msg = "上传成功！";
+        }
+        mv.addObject("msg", msg);
+        mv.addObject("url", url);
+        return mv;
     }
 
+    public void printMsg(HttpServletResponse response, String message){
+        PrintWriter pw = null;
+        try {
+            response.setContentType("text/html; charset=utf-8");
+            pw = response.getWriter();
+            pw.print("<script language='javascript'>alert('" + message + "')</script>");
+        }catch (Exception e){
+            log.error(e, e);
+        }finally {
+            if(pw != null){
+                pw.close();
+            }
+        }
+    }
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
