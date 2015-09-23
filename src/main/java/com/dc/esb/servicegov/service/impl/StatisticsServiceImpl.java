@@ -257,9 +257,9 @@ public class StatisticsServiceImpl implements StatisticsService{
 
     @Override
     public long getReleaseVOCount(Map<String, String[]> values) {
-        String hql = "select count(*) from " + ServiceInvoke.class.getName() + " si where 1=1";
+        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si where si.type != null";
         if(values.get("type") != null && values.get("type").length > 0){
-            if (StringUtils.isNotEmpty(values.get("type")[0])){
+            if (StringUtils.isNotEmpty(values.get("type")[0])) {
                 hql += " and si.type = " + values.get("type")[0];
             }
         }
@@ -273,7 +273,7 @@ public class StatisticsServiceImpl implements StatisticsService{
                 hql += " and si.system.systemChineseName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
-        hql += " group by si.systemId, si.type";
+        hql += " group by systemId, type";
         long count = serviceInvokeDAO.find(hql).size();
         return count;
     }

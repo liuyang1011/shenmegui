@@ -4,7 +4,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<form class="formui">
+<form id="headForm" class="formui">
     <table border="0" cellspacing="0" cellpadding="0">
 
         <tr>
@@ -53,7 +53,7 @@
             validator: function (value, param) {
                 var result;
                 $.ajax({
-                    type: "get",
+                    type: "post",
                     async: false,
                     url: "/interfaceHead/uniqueValid",
                     dataType: "json",
@@ -68,6 +68,10 @@
         }
     });
     function save() {
+        if (!$("#headForm").form('validate')) {
+            alert("请先完善基础信息!");
+            return false;
+        }
         //var headId = $("#headId").val();
         var headName = $("#headName").val();
         var headRemark = $("#headRemark").val();

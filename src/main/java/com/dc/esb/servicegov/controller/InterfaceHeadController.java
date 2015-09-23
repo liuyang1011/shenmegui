@@ -121,7 +121,7 @@ public class InterfaceHeadController {
 	 * @param headName
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/uniqueValid", headers = "Accept=application/json")
 	public
 	@ResponseBody
 	boolean uniqueValid(String headName) {
