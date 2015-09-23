@@ -46,17 +46,24 @@
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
+        <th colspan="6">交易属性</th>
+        <th colspan="6">链路属性</th>
+    </tr>
+    <tr>
+        <th data-options="field:'productid',checkbox:true"></th>
         <th data-options="field:'interfaceId'">交易码</th>
         <th data-options="field:'interfaceName'">交易名称</th>
         <th data-options="field:'serviceId'">服务码</th>
         <th data-options="field:'serviceName'">服务名称</th>
         <th data-options="field:'operationId'">场景码</th>
         <th data-options="field:'operationName'">场景名称</th>
-        <%--<th data-options="field:'invokeType'">调用类型</th>--%>
-        <%--<th data-options="field:'nodeType'">节点类型</th>--%>
-        <%--<th data-options="field:'status'">状态</th>--%>
-        <%--<th data-options="field:'esbAccessPattern'">ESB调用方式</th>--%>
-        <%--<th data-options="field:'condition'">条件位</th>--%>
+
+        <th data-options="field:'invokeType'">调用类型</th>
+        <th data-options="field:'nodeType'">节点类型</th>
+        <th data-options="field:'bussCategory'">节点业务分类</th>
+        <th data-options="field:'status'">状态</th>
+        <th data-options="field:'esbAccessPattern'">ESB调用方式</th>
+        <th data-options="field:'condition'">条件位</th>
     </tr>
     </thead>
 </table>
@@ -140,7 +147,8 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp" style="width:100%;height:100%;"></iframe>';
+//                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('预览', content);
                         selectTab('预览', content);
                     }

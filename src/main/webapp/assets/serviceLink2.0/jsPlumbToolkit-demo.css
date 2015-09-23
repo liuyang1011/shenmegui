@@ -36,7 +36,7 @@ body {
 }
 
 .jtk-demo-canvas {
-    margin-left: 160px;
+    /*margin-left: 160px;*/
     height:800px;
     max-height:700px;
     border:1px solid #CCC;

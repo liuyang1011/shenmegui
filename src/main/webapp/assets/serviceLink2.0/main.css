@@ -95,7 +95,7 @@ body {
 }
 
 .full-width-container {
-    padding: 40px 0;
+    /*padding: 40px 0;*/
     width: 100%
 }
 
@@ -146,7 +146,7 @@ body {
 }
 
 .divider-30 {
-    padding-top: 30px
+    /*padding-top: 30px*/
 }
 
 .divider-45 {

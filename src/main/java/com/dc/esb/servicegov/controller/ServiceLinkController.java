@@ -120,6 +120,7 @@ public class ServiceLinkController {
         }
 
         GraphColumn iconColumn = new GraphColumn();
+        iconColumn.setId("");
         List<GraphColumn.Icon> icons = new ArrayList<GraphColumn.Icon>();
         if (null != inter) {
             GraphColumn.Icon interIcon = new GraphColumn.Icon();
@@ -142,6 +143,7 @@ public class ServiceLinkController {
         if (icons.size() > 0) {
             iconColumn.setIcons(icons);
         }
+        graphColumns.add(iconColumn);
         return graphColumns;
     }
 
@@ -156,6 +158,8 @@ public class ServiceLinkController {
     public
     @ResponseBody
     Map<String, Collection<?>> getServiceLinkStartWith(@PathVariable("nodeId") String nodeId) {
+        initX = 0;
+        initY = 100;
         List<InvokeConnection> invokeConnections = invokeConnectionService.getConnectionsStartWith(nodeId, new ArrayList<String>());
         Map<String, Collection<?>> renderObj = new HashMap<String, Collection<?>>();
         Map<String, GraphNode> nodes = new HashMap<String, GraphNode>();

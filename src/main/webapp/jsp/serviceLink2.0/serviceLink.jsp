@@ -31,7 +31,7 @@
             <div class="clearfix"></div>
 
             <div id="jtk-demo-flowchart" class="jtk-demo-main" style="width:100%;margin-top:-4px;">
-                <!-- the node palette -->
+                <!-- the node palette
                 <div class="sidebar node-palette">
                     <ul>
                         <li jtk-node-type="question" title="Drag to add new">
@@ -45,6 +45,7 @@
                         </li>
                     </ul>
                 </div>
+                -->
 
                 <!-- this is the main drawing area -->
                 <div class="jtk-demo-canvas">
