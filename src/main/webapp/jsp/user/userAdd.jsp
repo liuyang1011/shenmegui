@@ -16,19 +16,19 @@
             <th>用户代码</th>
             <td><input name="userId" class="easyui-validatebox" type="text" id="userId" data-options="required:true,validType:'englishB'" /><font color="#FF0000">*</font></td>
             <th>用户名称</th>
-            <td><input name="userName" class="easyui-textbox" type="text" id="userName"/><font color="#FF0000">*</font>
+            <td><input name="userName" class="easyui-textbox" type="text" id="userName" data-options="required:true,validType:'chineseB'"/><font color="#FF0000">*</font>
             </td>
             <th>密 码</th>
-            <td><input name="password" class="easyui-textbox" type="text" id="password"/><font color="#FF0000">*</font>
+            <td><input name="password" class="easyui-textbox" type="text" id="password" data-options="required:true,validType:'englishB'"/><font color="#FF0000">*</font>
             </td>
         </tr>
         <tr>
             <th>手机号码</th>
-            <td><input name="userMobile" class="easyui-textbox" type="text" id="userMobile"/></td>
+            <td><input name="userMobile" class="easyui-textbox" type="text" id="userMobile" data-options="validType:'mobile'"/></td>
             <th>电话号码</th>
-            <td><input name="userTel" class="easyui-textbox" type="text" id="userTel"/></td>
+            <td><input name="userTel" class="easyui-textbox" type="text" id="userTel" data-options="validType:'phone'"/></td>
             <th>所属机构</th>
-            <td><select class="easyui-combobox" style="width:173px;" name="select" id="org">
+            <td><select class="easyui-combobox" style="width:173px;" name="select" id="org" data-options="required:true">
             </select><font color="#FF0000">*</font></td>
         </tr>
         <tr>
@@ -87,6 +87,9 @@
         });
     });
     $('#saveBtn').click(function () {
+        if(!$("#userInfo").form('validate')){
+            return false;
+        }
         var isValid = $("#userId").validatebox("isValid");
         var name=$('#userName').val();
         var password=$('#password').val();

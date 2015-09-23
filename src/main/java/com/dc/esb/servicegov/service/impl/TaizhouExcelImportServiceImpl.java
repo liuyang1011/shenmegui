@@ -1314,8 +1314,10 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                             cellObj);
                     if ("交易码".equals(cell) && k==0) {
                         //TODO 类型报错
-                        sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
-                        tranCode = sheetRow.getCell(k + 1).getStringCellValue();
+                        //cell可能是null
+                        if(null != sheetRow.getCell(k + 1)){
+                            sheetRow.getCell(k + 1).setCellType(Cell.CELL_TYPE_STRING);
+                            tranCode = sheetRow.getCell(k + 1).getStringCellValue();
 //                        if (tranCode == null || "".equals(tranCode)) {
 //                            logger.error(tranSheet.getSheetName()
 //                                    + "sheet页，交易码为空");
@@ -1323,9 +1325,12 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 //                                    + "sheet页，交易码为空", "导入");
 //                            flag = false;
 //                        }
-                        inter.setEcode(tranCode);
+                            inter.setEcode(tranCode);
+                        }
                     } else if ("交易名称".equals(cell) && k==0) {
-                        tranName = sheetRow.getCell(k + 1).getStringCellValue();
+                        //cell可能是null
+                        if(null != sheetRow.getCell(k + 1)){
+                            tranName = sheetRow.getCell(k + 1).getStringCellValue();
                        /* if (tranName == null || "".equals(tranName)) {
                             logger.error(tranSheet.getSheetName()
                                     + "sheet页，交易名称为空");
@@ -1333,9 +1338,12 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                                     + "sheet页，交易名称为空", "导入");
                             flag = false;
                         }*/
-                        inter.setInterfaceName(tranName);
+                            inter.setInterfaceName(tranName);
+                        }
                     } else if ("接口功能描述".equals(cell)) {
-                        interfaceDesc = sheetRow.getCell(k + 1).getStringCellValue();
+                        //cell可能是null
+                        if(null != sheetRow.getCell(k + 1)){
+                            interfaceDesc = sheetRow.getCell(k + 1).getStringCellValue();
 //                        if (interfaceDesc == null || "".equals(interfaceDesc)) {
 //                            logger.error(tranSheet.getSheetName()
 //                                    + "sheet页，接口功能描述为空");
@@ -1343,7 +1351,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 //                                    + "sheet页，接口功能描述为空", "导入");
 //                            flag = false;
 //                        }
-                        inter.setDesc(interfaceDesc);
+                            inter.setDesc(interfaceDesc);
+                        }
                         break;
                     } else if ("原始接口".equals(cell)) {
                         // 将表头跳过,获取接口字段信息

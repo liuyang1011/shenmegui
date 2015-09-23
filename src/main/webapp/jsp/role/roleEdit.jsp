@@ -17,11 +17,11 @@
     </tr>	
 	<tr>
     <th>角色名称</th>
-    <td><input name="roleName" class="easyui-textbox" type="text" id="roleName" value="${role.name}"/><font color="#FF0000">*</font></td>
+    <td><input name="roleName" class="easyui-textbox" type="text" id="roleName" value="${role.name}" data-options="required:true,validType:'chineseB'"/><font color="#FF0000">*</font></td>
     </tr>	
 	<tr>
     <th>角色描述</th>
-    <td><input name="remark" class="easyui-textbox" type="text" id="roleRemark" value="${role.remark}"/></td>
+    <td><input name="remark" class="easyui-textbox" type="text" id="roleRemark" value="${role.remark}" data-options="validType:'chineseB'"/></td>
   	</tr>
  
 </table>
@@ -31,6 +31,7 @@
 <div align="center"><a class="easyui-linkbutton" id="saveBtn">保存</a>&nbsp;&nbsp;<a class="easyui-linkbutton" id="close" onclick="$('#w').window('close');">关闭</a>
 </div>
 <script type="text/javascript" src="/js/role/roleManager.js"></script>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 		$('#saveBtn').click(function(){
     	var name=$('#roleName').val();

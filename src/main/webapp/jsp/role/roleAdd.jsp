@@ -17,7 +17,7 @@
         </tr>
         <tr>
             <th>角色名称</th>
-            <td><input name="roleName" class="easyui-textbox" type="text" id="roleName" data-options="validType:'chineseB'"/><font color="#FF0000">*</font>
+            <td><input name="roleName" class="easyui-textbox" type="text" id="roleName" data-options="required:true,validType:'chineseB'"/><font color="#FF0000">*</font>
             </td>
         </tr>
         <tr>
@@ -36,6 +36,9 @@
 <script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
     $('#saveBtn').click(function () {
+        if(!$("#roleTable").form('validate')){
+            return false;
+        }
     var isValid = $("#roleId").validatebox("isValid");
         if(isValid){
         var data = {};
