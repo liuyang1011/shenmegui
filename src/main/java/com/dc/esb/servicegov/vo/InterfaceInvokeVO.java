@@ -17,32 +17,14 @@ public class InterfaceInvokeVO {
 
     private String type;
     private String interfaceId;
+    private String isStandard;
     private String ecode;
     private String interfaceName;
 
     private String consumerIds;
     private String providerIds;
 
-    private String consumerInterfaceId;
-
     public InterfaceInvokeVO(){}
-
-    public InterfaceInvokeVO(String serviceId, String operationId, String type, Interface inter) {
-        this.serviceId = serviceId;
-        this.operationId = operationId;
-        this.type = type;
-        this.interfaceId = inter.getInterfaceId();
-        this.ecode = inter.getEcode();
-        this.interfaceName = inter.getInterfaceName();
-    }
-
-    public String getConsumerInterfaceId() {
-        return consumerInterfaceId;
-    }
-
-    public void setConsumerInterfaceId(String consumerInterfaceId) {
-        this.consumerInterfaceId = consumerInterfaceId;
-    }
 
     public String getServiceId() {
         return serviceId;
@@ -122,6 +104,14 @@ public class InterfaceInvokeVO {
 
     public void setEcode(String ecode) {
         this.ecode = ecode;
+    }
+
+    public String getIsStandard() {
+        return isStandard;
+    }
+
+    public void setIsStandard(String isStandard) {
+        this.isStandard = isStandard;
     }
 
     @Override
