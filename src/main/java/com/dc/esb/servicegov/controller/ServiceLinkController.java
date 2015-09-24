@@ -45,6 +45,10 @@ public class ServiceLinkController {
     private InterfaceServiceImpl interfaceService;
     @Autowired
     private ServiceLinkNodeServiceImpl serviceLinkNodeService;
+    @Autowired
+    private ServiceLinkPropertyServiceImpl serviceLinkPropertyService;
+    @Autowired
+    private InterfaceInvokeServiceImpl interfaceInvokeService;
 
     private int initX = 50;
     private int initY = 100;
@@ -529,7 +533,70 @@ public class ServiceLinkController {
         } else {
             return null;
         }
+    }
 
+    /**
+     * 获取一个节点的所有相邻下个节点
+     * @param sourceId
+     * @return
+     */
+    @RequiresPermissions({"link-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getTargetNode/sourceId/{sourceId}", headers = "Accept=application/json")
+    public @ResponseBody List<ServiceLinkNodeVO> getTargetNodes(@PathVariable("sourceId") String sourceId) {
+        List<ServiceLinkNodeVO> serviceInvokeInfoVOs = new ArrayList<ServiceLinkNodeVO>();
+        List<InvokeConnection> connections = invokeConnectionService.findBy("sourceId", sourceId);
+        List<InterfaceInvoke> invokeRelations = interfaceInvokeService.findBy("consumerInvokeId", sourceId);
+        for (InterfaceInvoke interfaceInvoke : invokeRelations) {
+            boolean add = true;
+            for (InvokeConnection connection : connections) {
+                if (connection.getSourceId().equalsIgnoreCase(interfaceInvoke.getConsumerInvokeId()) && connection.getTargetId().equalsIgnoreCase(interfaceInvoke.getProviderInvokeId())) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                InvokeConnection invokeConnection = new InvokeConnection();
+                invokeConnection.setSourceId(interfaceInvoke.getConsumerInvokeId());
+                invokeConnection.setTargetId(interfaceInvoke.getProviderInvokeId());
+                connections.add(invokeConnection);
+                invokeConnectionService.save(invokeConnection);
+            }
+        }
+        for (InvokeConnection connection : connections) {
+            String targetId = connection.getTargetId();
+            ServiceInvoke serviceInvoke = serviceInvokeService.getById(targetId);
+            if (null != serviceInvoke) {
+                ServiceLinkNodeVO serviceLinkNodeVO = new ServiceLinkNodeVO(serviceInvoke);
+                List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy("invokeId", serviceInvoke.getInvokeId());
+                for(ServiceLinkProperty serviceLinkProperty : serviceLinkProperties){
+                    String propertyName = serviceLinkProperty.getPropertyName();
+                    String propertyValue = serviceLinkProperty.getPropertyValue();
+                    if("nodeType".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setNodeType(propertyValue);
+                    }
+                    if("location".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setLocation(propertyValue);
+                    }
+                    if("bussCategory".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setBussCategory(propertyValue);
+                    }
+                    if("status".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setStatus(propertyValue);
+                    }
+                    if("esbAccessPattern".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setEsbAccessPattern(propertyValue);
+                    }
+                    if("condition".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setCondition(propertyValue);
+                    }
+                    if("conditionDesc".equalsIgnoreCase(propertyName)){
+                        serviceLinkNodeVO.setConnectionDesc(propertyValue);
+                    }
+                }
+                serviceInvokeInfoVOs.add(serviceLinkNodeVO);
+            }
+        }
+        return serviceInvokeInfoVOs;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

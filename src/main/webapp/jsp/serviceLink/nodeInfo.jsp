@@ -1,8 +1,8 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
@@ -14,35 +14,123 @@
 </head>
 
 <body>
-<fieldset>
-    <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0">
-        <tr>
-            <%--<th>接口ID</th>--%>
-            <th>交易码</th>
-            <td><input class="easyui-textbox" type="text" name="interfaceId" id="interfaceId"></td>
-            <th>交易名称</th>
-            <td><input class="easyui-textbox" type="text" name="interfaceName" id="interfaceName"></td>
-            <th>服务码</th>
-            <td><input class="easyui-textbox" type="text" name="serviceId" id="serviceId"></td>
-            <th>服务名称</th>
-            <td><input class="easyui-textbox" type="text" name="serviceName" id="serviceName"></td>
-        </tr>
-        <tr>
-            <%--<th>交易属性标识</th>
-            <td><input class="easyui-textbox" type="text" name="attribute" id="attribute"></td>
-            <th>节点状态</th>
-            <td><input class="easyui-textbox" type="text" name="status" id="status"></td>
-            <th>版本号</th>
-            <td><input class="easyui-textbox" type="text" name="status" id=""></td>--%>
-            <th></th>
-            <td align="right"><a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
-        </tr>
-    </table>
+<table style="width:100%">
+    <tr>
+        <td>
+            <fieldset style="height: 230px;">
+                <legend>交易属性</legend>
+                <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+                    <tr>
+                        <%--<th>接口ID</th>--%>
+                        <th>
+                            <NOBR>交易码</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="interfaceId" id="interfaceId"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>交易名称</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="interfaceName" id="interfaceName"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>服务码</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="serviceId" id="serviceId"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>服务名称</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="serviceName" id="serviceName"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>场景码</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="operationId" id="operationId"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>场景名称</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="operationName" id="operationName"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>调用类型</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="invokeType" id="invokeType"/></td>
+                    </tr>
+                </table>
 
 
-</fieldset>
-<table title="交易节点" id="invokeLinkeTable" style="height:370px; width:auto;">
+            </fieldset>
+        </td>
+        <td>
+            <fieldset style="height: 230px">
+                <legend>节点属性</legend>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th>
+                            <NOBR>节点类型</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="nodeType" id="nodeType"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>交易属性标识</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="location" id="location"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>节点业务分类</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="bussCategory" id="bussCategory"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>节点状态</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="status" id="status"/></td>
+                    </tr>
+                </table>
+
+
+            </fieldset>
+        </td>
+        <td>
+            <fieldset style="height: 230px">
+                <legend>节点依赖信息</legend>
+                <table>
+                    <tr>
+                        <th>
+                            <NOBR>ESB标识</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="esbAccessPattern" id="esbAccessPattern"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>条件位</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="condition" id="condition"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>条件信息</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="connectionDesc" id="connectionDesc"/></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
+</table>
+
+<table title="相邻节点" id="invokeLinkeTable" style="height:370px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
@@ -78,35 +166,35 @@
 </div>
 <script type="text/javascript">
     var invokeId;
-    $(function (){
+    $(function () {
         $('#invokeLinkeTable').datagrid({
-            rownumbers:true,
-            singleSelect:true,
-            url:'/serviceLink/getServiceLinkNode/system/<%=request.getParameter("systemId") %>',
-            method:'get',
-            toolbar:toolbar,
-            pagination:true,
-            pageSize:10,
-            onLoadSuccess:function(data){
+            rownumbers: true,
+            singleSelect: true,
+            url: '/serviceLink/getTargetNode/sourceId/<%=request.getParameter("sourceId") %>',
+            method: 'get',
+            toolbar: toolbar,
+            pagination: true,
+            pageSize: 10,
+            onLoadSuccess: function (data) {
                 $.each(data.rows, function (index, item) {
                     var invokeType = item.invokeType;
-                    if(invokeType == '0'){
+                    if (invokeType == '0') {
                         item.invokeType = '提供者';
-                    }else if(invokeType == '1'){
+                    } else if (invokeType == '1') {
                         item.invokeType = '消费者';
                     }
                 });
             },
             onLoadError: function (responce) {
                 var resText = responce.responseText;
-                if(resText.toString().indexOf("没有操作权限") > 0){
+                if (resText.toString().indexOf("没有操作权限") > 0) {
 //                    alert("没有权限！");
                     window.location.href = "/jsp/403.jsp";
                 }
             }
         });
     });
-    $("#search").click(function(){
+    $("#search").click(function () {
         var queryParams = $('#invokeLinkeTable').datagrid('options').queryParams;
         queryParams.interfaceId = $("#interfaceId").textbox("getValue");
         queryParams.interfaceName = encodeURI($("#interfaceName").textbox("getValue"));
@@ -134,7 +222,7 @@
                     content: content
                 }
             });
-            parent.$('#subtab').tabs('select',title);
+            parent.$('#subtab').tabs('select', title);
         }
     }
     var toolbar = [
@@ -151,7 +239,7 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
 //                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('预览', content);
                         selectTab('预览', content);
@@ -177,7 +265,7 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
                         selectTab('血缘分析', content);
                         selectTab('血缘分析', content);
                     }
@@ -186,7 +274,7 @@
                     alert("请选中要预览的节点！");
                 }
             }
-        },{
+        }, {
             text: '节点维护',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -199,9 +287,9 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/nodeInfo.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
-                        selectTab('节点维护', content);
-                        selectTab('节点维护', content);
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
+                        selectTab('血缘分析', content);
+                        selectTab('血缘分析', content);
                     }
                 }
                 else {

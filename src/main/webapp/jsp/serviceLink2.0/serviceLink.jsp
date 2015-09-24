@@ -1,3 +1,13 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+    String sourceId = request.getParameter("sourceId");
+%>
+<script type="text/javascript">
+    var sourceId = "<%=sourceId%>";
+</script>
 <!doctype html>
 <html>
 <head>

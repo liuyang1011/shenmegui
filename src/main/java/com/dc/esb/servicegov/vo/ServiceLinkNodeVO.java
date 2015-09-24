@@ -6,20 +6,68 @@ import com.dc.esb.servicegov.entity.ServiceInvoke;
  * Created by vincentfxz on 15/9/7.
  */
 public class ServiceLinkNodeVO {
+    /**
+     * 对应的SERVICE_INVOKE表的ID
+     */
     private String invokeId;
+    /**
+     * 接口ID
+     */
     private String interfaceId;
+    /**
+     * 接口名称
+     */
     private String interfaceName;
+    /**
+     * 服务ID
+     */
     private String serviceId;
+    /**
+     * 服务名称
+     */
     private String serviceName;
+    /**
+     * 场景ID
+     */
     private String operationId;
+    /**
+     * 场景名称
+     */
     private String operationName;
+    /**
+     * 调用类型，消费方或者提供方
+     */
     private String invokeType;
+    /**
+     * 节点类型
+     */
     private String nodeType;
+    /**
+     * 交易属性标识
+     */
+    private String location;
+    /**
+     * 节点业务分类
+     */
     private String bussCategory;
+    /**
+     * 节点状态
+     */
     private String status;
+
     private String id;
+    /**
+     * ESB标识
+     */
     private String esbAccessPattern;
+    /**
+     * 条件位
+     */
     private String condition;
+    /**
+     * 条件信息
+     */
+    private String connectionDesc;
 
 
     public String getInterfaceId() {
@@ -151,5 +199,21 @@ public class ServiceLinkNodeVO {
 
     public void setInvokeId(String invokeId) {
         this.invokeId = invokeId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getConnectionDesc() {
+        return connectionDesc;
+    }
+
+    public void setConnectionDesc(String connectionDesc) {
+        this.connectionDesc = connectionDesc;
     }
 }

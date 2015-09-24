@@ -187,7 +187,7 @@
         // Load the data.
         toolkit.load({
             //url: "/assets/serviceLink2.0/data/3.json",
-            url: "/serviceLink/getServiceLink/start/node/4028abd84fcfe459014fd00d9e3702d4",
+            url: "/serviceLink/getServiceLink/start/node/" + sourceId,
             onload: function () {
                 _updateDataset();
             }

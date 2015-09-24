@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class ServiceLinkProperty {
 
     @Id
-    @Column(name = "INVOKE_ID")
+    @Column(name = "ID")
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid",strategy="uuid")
     private String id;
