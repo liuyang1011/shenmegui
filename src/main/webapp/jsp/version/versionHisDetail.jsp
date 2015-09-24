@@ -47,25 +47,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    </tr>--%>
   <tr>
      <th>场景号</th>
-    <td>${operation.operationId }</td>
+    <td>${operationHis.operationId }</td>
      <th>场景名称</th>
-   		 <td>${operation.operationName }</td>
+   		 <td>${operationHis.operationName }</td>
    	 <th>版本号</th>
-    <td>${operation.version.code }</td>
+    <td>${operationHis.versionHis.code }</td>
      </tr>
   <tr>
      <th>功能描述</th>
-   		 <td>${operation.operationDesc }</td>
+   		 <td>${operationHis.operationDesc }</td>
    	 <th>备注</th>
-    <td>${operation.operationRemark }</td>
+    <td>${operationHis.operationRemark }</td>
      <th></th>
     <td> </td>
    </tr>
    <tr>
      <th>最后更新时间</th>
-   		 <td>${operation.optDate }</td>
+   		 <td>${operationHis.optDate }</td>
    	 <th>最后更新用户</th>
-    <td></td>
+    <td>${operationHis.optUser }</td>
      <th></th>
     <td> </td>
    </tr>

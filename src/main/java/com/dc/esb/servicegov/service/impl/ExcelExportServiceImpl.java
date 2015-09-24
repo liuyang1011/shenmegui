@@ -209,12 +209,32 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 setCellValue(row.createCell(15), commonStyle, "");//参考文档
                 setCellValue(row.createCell(16), commonStyle, "");//模块划分
                 setCellValue(row.createCell(17), commonStyle, "");//是否穿透
-                String headName = fillHead(workbook, vo.getInterfaceId() );
+                String headName = fillHead(workbook, vo.getInterfaceId() );//填写报文头
                 setCellValue(row.createCell(18), commonStyle, headName);//业务报文头
-                String status =  Constants.INTERFACE_STATUS_TC.equals(inter.getStatus()) ? "投产" : "废弃";
-                setCellValue(row.createCell(19), commonStyle, status);//接口状态
-                setCellValue(row.createCell(20), commonStyle, "");//场景状态
-                setCellValue(row.createCell(21), commonStyle, "");//是否标准
+                if(inter != null){
+                    String interStatus = "";
+                    if( Constants.INTERFACE_STATUS_TC.equals(inter.getStatus())){
+                        interStatus = "投产";
+                    }
+                    if( Constants.INTERFACE_STATUS_FQ.equals(inter.getStatus())){
+                        interStatus = "废弃";
+                    }
+                    setCellValue(row.createCell(19), commonStyle, interStatus);//接口状态
+                }
+                String operaStatus = Constants.Operation.getStateName(operation.getState());
+                setCellValue(row.createCell(20), commonStyle, operaStatus);//场景状态
+                ServiceInvoke si = siList.get(i);
+                if(si != null){
+                    String isStandard = "";
+                    if ( Constants.INVOKE_TYPE_STANDARD_Y.equals(si.getIsStandard())){
+                        isStandard = "是";
+                    }
+                    if ( Constants.INVOKE_TYPE_STANDARD_N.equals(si.getIsStandard())){
+                        isStandard = "否";
+                    }
+                    setCellValue(row.createCell(21), commonStyle, isStandard);//是否标准
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -880,7 +900,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 vo.setInterfaceId(interfaceId);
                 vo.setInterfaceName(inter.getInterfaceName());
                 vo.setEcode(inter.getEcode());
-            }
+        }
             fillInterfaceInvokeVO(vo);
             result.add(vo);
         }

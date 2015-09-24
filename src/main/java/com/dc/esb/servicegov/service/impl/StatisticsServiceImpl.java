@@ -111,15 +111,15 @@ public class StatisticsServiceImpl implements StatisticsService{
             vo.setOperationNum(String.valueOf(operationNum));//关联场景数
             long operationReuseNum = getOperationReuseCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setResueOperationNum(String.valueOf(operationReuseNum));//复用场景数
-            long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-            vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
-            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-            vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
-//            long sum = getServiceInvokeCount( String.valueOf(strs[1]));//提供者或消费者被调用总数
-            long sum = operationDAO.getAllCount();//场景总数
-            vo.setSum(String.valueOf(sum));
-            long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-            vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
+//            long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+//            vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
+//            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+//            vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
+////            long sum = getServiceInvokeCount( String.valueOf(strs[1]));//提供者或消费者被调用总数
+//            long sum = operationDAO.getAllCount();//场景总数
+//            vo.setSum(String.valueOf(sum));
+//            long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+//            vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
 //            if(operationInvokeNum > operationNum && operationNum > 0){
 //                float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
 //                NumberFormat nt = NumberFormat.getPercentInstance();
@@ -399,6 +399,7 @@ public class StatisticsServiceImpl implements StatisticsService{
     @Override
     public List<TreeNode> getServiceReuseRate2(){
         TreeNode root = new TreeNode();
+        root.setId("root");
         root.setText("服务类");
         String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
         List<ServiceCategory> categories = serviceCategoryDAO.find(hql);//先只加载第一层分类

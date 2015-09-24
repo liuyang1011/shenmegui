@@ -42,6 +42,9 @@ public class Constants {
             if(OPT_STATE_UNAUDIT.equals(state)){
                 return "服务定义";
             }
+            if(OPT_STATE_REQUIRE_UNAUDIT.equals(state)){
+                return "待审核";
+            }
             if(OPT_STATE_PASS.equals(state)){
                 return "审核通过";
             }
