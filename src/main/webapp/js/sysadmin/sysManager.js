@@ -100,7 +100,7 @@ var sysManager = {
             dataType: "json",
             success: function (result) {
                 if (result) {
-
+                    alert("删除成功！");
                     var parent = $('.msinterfacetree').tree("getParent", node.target);
                     $('.msinterfacetree').tree("remove", node.target);
                     $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + parent.id;

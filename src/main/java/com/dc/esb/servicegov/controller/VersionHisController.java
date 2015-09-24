@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.OperationHisServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,8 @@ public class VersionHisController {
 	private OperationServiceImpl operationService;
 	@Autowired
 	private ServiceServiceImpl serviceService;
+	@Autowired
+	private OperationHisServiceImpl operationHisService;
 
 	@RequiresPermissions({"versionHis-get"})
 	@RequestMapping("/hisVersionList")
@@ -101,13 +104,13 @@ public class VersionHisController {
 
 	@RequiresPermissions({"versionHis-get"})
 	@RequestMapping("/hisDetailPage")
-	public ModelAndView hisDetailPage(String serviceId, String operationId) {
+	public ModelAndView hisDetailPage(String autoId) {
 		ModelAndView mv = new ModelAndView("version/versionHisDetail");
-		Operation operation = operationService.getOperation(serviceId, operationId);
-		if(operation != null){
-			mv.addObject("operation", operation);
+		OperationHis operationHis = operationHisService.findUniqueBy("autoId", autoId);
+		if(operationHis != null){
+			mv.addObject("operationHis", operationHis);
 		}
-		Service service = serviceService.getById(serviceId);
+		Service service = operationHis.getService();
 		if(null != service){
 			mv.addObject("service",service);
 		}

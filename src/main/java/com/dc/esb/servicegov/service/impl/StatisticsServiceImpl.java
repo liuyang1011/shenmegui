@@ -111,15 +111,15 @@ public class StatisticsServiceImpl implements StatisticsService{
             vo.setOperationNum(String.valueOf(operationNum));//关联场景数
             long operationReuseNum = getOperationReuseCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
             vo.setResueOperationNum(String.valueOf(operationReuseNum));//复用场景数
-            long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-            vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
-            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-            vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
-//            long sum = getServiceInvokeCount( String.valueOf(strs[1]));//提供者或消费者被调用总数
-            long sum = operationDAO.getAllCount();//场景总数
-            vo.setSum(String.valueOf(sum));
-            long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-            vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
+//            long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+//            vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
+//            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+//            vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
+////            long sum = getServiceInvokeCount( String.valueOf(strs[1]));//提供者或消费者被调用总数
+//            long sum = operationDAO.getAllCount();//场景总数
+//            vo.setSum(String.valueOf(sum));
+//            long useNum = getServiceInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+//            vo.setUseNum(String.valueOf(useNum));//当前系统作为提供者或消费者被调用次数
 //            if(operationInvokeNum > operationNum && operationNum > 0){
 //                float r = (operationInvokeNum - operationNum + 0f)/operationInvokeNum;
 //                NumberFormat nt = NumberFormat.getPercentInstance();
@@ -300,31 +300,53 @@ public class StatisticsServiceImpl implements StatisticsService{
      * @return
      */
     public void setReleaseCount(ReleaseVO vo, Map<String, String[]> values){
-        String hql = "select new " + OperationPK.class.getName() + "(si.serviceId, si.operationId) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
-        List pkList = serviceInvokeDAO.find(hql, vo.getSystemId(), vo.getType());
-        long operationReleaseNum = 0;
-        List<String> serviceIds = new ArrayList<String>();
-        for(int i = 0; i < pkList.size(); i++){
-            OperationPK pk = (OperationPK)pkList.get(i);
-            String hql2 = " select count(*) from " + OperationHis.class.getName() + " as o where o.serviceId=? and operationId=? ";
-            if(values.get("startDate") != null && values.get("startDate").length > 0){
-                if (StringUtils.isNotEmpty(values.get("startDate")[0])) {
-                    hql2 += " and o.optDate > '" + values.get("startDate")[0] + "' ";
-                }
-            }
-            if(values.get("endDate") != null && values.get("endDate").length > 0){
-                if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
-                    hql2 += " and o.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
-                }
-            }
-            long hisNum = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
-            operationReleaseNum += hisNum;
-            if(!serviceIds.contains(pk.getServiceId()) && hisNum > 0){
-                serviceIds.add(pk.getServiceId());
+        String condition = "";
+        if(values.get("startDate") != null && values.get("startDate").length > 0){
+            if (StringUtils.isNotEmpty(values.get("startDate")[0])) {
+                condition += " and oh.optDate > '" + values.get("startDate")[0] + "' ";
             }
         }
+        if(values.get("endDate") != null && values.get("endDate").length > 0){
+            if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
+                condition += " and oh.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
+            }
+        }
+        String operationHql = " select count(*) from " + ServiceInvoke.class.getName() + " si, " + OperationHis.class.getName()
+                + " oh where si.systemId = ? and si.type = ? and oh.serviceId=si.serviceId and oh.operationId = si.operationId"
+                + condition;
+        long operationReleaseNum = (Long)operationHisDAO.findUnique(operationHql, vo.getSystemId(), vo.getType());
+        String serviceHql = " select count(*) from " + ServiceInvoke.class.getName() + " si, " + OperationHis.class.getName()
+                + " oh where si.systemId = ? and si.type = ? and oh.serviceId=si.serviceId and oh.operationId = si.operationId"
+                + condition + " group by oh.serviceId";
+        long serviceReleaseNum = operationHisDAO.find(serviceHql, vo.getSystemId(), vo.getType()).size();
         vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
-        vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
+        vo.setServiceReleaseNum(String.valueOf(serviceReleaseNum));
+
+//        String hql = "select new " + OperationPK.class.getName() + "(si.serviceId, si.operationId) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
+//        List pkList = serviceInvokeDAO.find(hql, vo.getSystemId(), vo.getType());
+//        long operationReleaseNum = 0;
+//        List<String> serviceIds = new ArrayList<String>();
+//        for(int i = 0; i < pkList.size(); i++){
+//            OperationPK pk = (OperationPK)pkList.get(i);
+//            String hql2 = " select count(*) from " + OperationHis.class.getName() + " as o where o.serviceId=? and operationId=? ";
+//            if(values.get("startDate") != null && values.get("startDate").length > 0){
+//                if (StringUtils.isNotEmpty(values.get("startDate")[0])) {
+//                    hql2 += " and o.optDate > '" + values.get("startDate")[0] + "' ";
+//                }
+//            }
+//            if(values.get("endDate") != null && values.get("endDate").length > 0){
+//                if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
+//                    hql2 += " and o.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
+//                }
+//            }
+//            long hisNum = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
+//            operationReleaseNum += hisNum;
+//            if(!serviceIds.contains(pk.getServiceId()) && hisNum > 0){
+//                serviceIds.add(pk.getServiceId());
+//            }
+//        }
+//        vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
+//        vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
     }
     /*获取发布状态统计*/
     @Override
@@ -349,23 +371,34 @@ public class StatisticsServiceImpl implements StatisticsService{
      * @return
      */
     public void setReleaseState(ReleaseVO vo, Map<String, String[]> values){
-        String hql = "select new " + OperationPK.class.getName() + "(si.serviceId, si.operationId) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
-        List pkList = serviceInvokeDAO.find(hql, vo.getSystemId(), vo.getType());
-        long operationReleaseNum = 0;
-        List<String> serviceIds = new ArrayList<String>();
-        for(int i = 0; i < pkList.size(); i++){
-            OperationPK pk = (OperationPK)pkList.get(i);
-            String hql2 = " select count(*) from " + OperationHis.class.getName() + " as o where o.serviceId=? and operationId=?";
-            long count = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
-            if(count > 0){
-                operationReleaseNum ++;
-                if(!serviceIds.contains(pk.getServiceId())){
-                    serviceIds.add(pk.getServiceId());
-                }
-            }
-        }
+        String operationHql = " select count(*) from " + ServiceInvoke.class.getName() + " si, " + OperationHis.class.getName()
+                + " oh where si.systemId = ? and si.type = ? and oh.serviceId=si.serviceId and oh.operationId = si.operationId" +
+                " group by oh.serviceId, oh.operationId";
+        long operationReleaseNum = operationHisDAO.find(operationHql, vo.getSystemId(), vo.getType()).size();
+        String serviceHql = " select count(*) from " + ServiceInvoke.class.getName() + " si, " + OperationHis.class.getName()
+                + " oh where si.systemId = ? and si.type = ? and oh.serviceId=si.serviceId and oh.operationId = si.operationId" +
+                " group by oh.serviceId";
+        long serviceReleaseNum = operationHisDAO.find(serviceHql, vo.getSystemId(), vo.getType()).size();
         vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
-        vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
+        vo.setServiceReleaseNum(String.valueOf(serviceReleaseNum));
+//
+//        String hql = "select new " + OperationPK.class.getName() + "(si.serviceId, si.operationId) from " + ServiceInvoke.class.getName() + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
+//        List pkList = serviceInvokeDAO.find(hql, vo.getSystemId(), vo.getType());
+//        long operationReleaseNum = 0;
+//        List<String> serviceIds = new ArrayList<String>();
+//        for(int i = 0; i < pkList.size(); i++){
+//            OperationPK pk = (OperationPK)pkList.get(i);
+//            String hql2 = " select count(*) from " + OperationHis.class.getName() + " as o where o.serviceId=? and operationId=?";
+//            long count = (Long)operationHisDAO.findUnique(hql2, pk.getServiceId(), pk.getOperationId());
+//            if(count > 0){
+//                operationReleaseNum ++;
+//                if(!serviceIds.contains(pk.getServiceId())){
+//                    serviceIds.add(pk.getServiceId());
+//                }
+//            }
+//        }
+//        vo.setOperationReleaseNum(String.valueOf(operationReleaseNum));
+//        vo.setServiceReleaseNum(String.valueOf(serviceIds.size()));
     }
     /**
      * 从服务分类维度计算复用率
@@ -399,6 +432,7 @@ public class StatisticsServiceImpl implements StatisticsService{
     @Override
     public List<TreeNode> getServiceReuseRate2(){
         TreeNode root = new TreeNode();
+        root.setId("root");
         root.setText("服务类");
         root.setId("root");
         String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";

@@ -17,6 +17,7 @@ public class InterfaceInvokeVO {
 
     private String type;
     private String interfaceId;
+    private String isStandard;
     private String ecode;
     private String interfaceName;
 
@@ -25,9 +26,6 @@ public class InterfaceInvokeVO {
 
     private String consumerNames;
     private String providerNames;
-
-    private String isStandard;
-
     private String consumerInterfaceId;
 
     public InterfaceInvokeVO(){}
@@ -39,14 +37,6 @@ public class InterfaceInvokeVO {
         this.interfaceId = inter.getInterfaceId();
         this.ecode = inter.getEcode();
         this.interfaceName = inter.getInterfaceName();
-    }
-
-    public String getIsStandard() {
-        return isStandard;
-    }
-
-    public void setIsStandard(String isStandard) {
-        this.isStandard = isStandard;
     }
 
     public String getConsumerNames() {
@@ -151,6 +141,14 @@ public class InterfaceInvokeVO {
 
     public void setEcode(String ecode) {
         this.ecode = ecode;
+    }
+
+    public String getIsStandard() {
+        return isStandard;
+    }
+
+    public void setIsStandard(String isStandard) {
+        this.isStandard = isStandard;
     }
 
     @Override

@@ -57,39 +57,24 @@
 		
 		//操作按钮
 		function formatConsole(value){
-				var s = '<a iconcls="icon-search" onclick="detailPage()" style="margin-top:1px;margin-bottom:1px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="cancelbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">数据详情</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>';
+				var s = '<a iconcls="icon-search" onclick="detailPage(\'' + value + '\')" style="margin-top:1px;margin-bottom:1px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="cancelbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">数据详情</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>';
 		    	return s;
 	    	
 		}
-		
-			function detailPage() {
-					 var row = $("#operationList").datagrid("getSelected");
-					//获取行数据中的targetType和targetId
-					if(row){
-						if(row.targetType == "1"){//对应场景类型
-							//查询operationHis表
-							$.ajax({
-								type : "get",
-								async : false,
-								url : "/operationHis/getByAutoId",
-								dataType : "json",
-								data : {"autoId" : row.targetId},
-								success : function(data) {
-									var urlPath = "/versionHis/hisDetailPage?serviceId="+data.serviceId+"&operationId="+data.operationId;
-									$('#versionDlg').dialog({
-										title : 'His',
-										width : 700,
-										closed : false,
-										cache : false,
-										href : urlPath,
-										modal : true
-									});
-								}
-							});
-						}
-					}
+	function detailPage(autoId) {
+		var urlPath = "/versionHis/hisDetailPage?autoId="+autoId;
+		$('#versionDlg').dialog({
+			title : 'His',
+			top:'100px',
+			left:'150px',
+			width : 700,
+			closed : false,
+			cache : false,
+			href : urlPath,
+			modal : true
+		});
+	}
 
-				}
 		
 	</script> 
 </head>
@@ -125,7 +110,7 @@
       <th data-options="field:'versionDesc'">发布说明 </th>
       <th data-options="field:'optDate'">发布时间 </th>
       <th data-options="field:'optUser'">发布人 </th>
-      <th data-options="field:'id',width:120,formatter:formatConsole">操作</th>
+      <th data-options="field:'targetId',width:120,formatter:formatConsole">操作</th>
     </tr>
   </thead>
 </table>
