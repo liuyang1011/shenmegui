@@ -252,7 +252,10 @@ public class ServiceInvokeController {
                 String systemId2 = mapProvider.get("systemId").toString();
                 String systemChineseName2 = mapProvider.get("systemChineseName").toString();
                 String interfaceId2 = mapProvider.get("interfaceId").toString();
-                String interfaceName2 = mapProvider.get("interfaceName").toString();
+                /*String interfaceName2 = "";
+                if(null != mapProvider.get("interfaceName")){
+                    interfaceName2 = mapProvider.get("interfaceName").toString();
+                }*/
                 String type2 = mapProvider.get("type").toString();
                 String isStandard2 = mapProvider.get("isStandard").toString();
                 //是否已经存在提供方

@@ -533,7 +533,6 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     sda.setType(str[0]);
                     String[] lenArr = len.split(",");
                     sda.setLength(lenArr[0]);
-
                 }else{
                     //STRUCT
                     sda.setType(isNull(cell));

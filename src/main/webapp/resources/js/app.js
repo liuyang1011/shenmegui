@@ -212,7 +212,7 @@ var SYSMENU = {
                             }
                         } else if (node.click == "interfaces") {
                             var mid = node.id;
-                            var title = node.text;
+                            var title = node.text + '('+mid+')';
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
@@ -1115,11 +1115,11 @@ $(function () {
         title: title,
         content: content
     });*/
-     var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/search.jsp" style="width:100%;height:98%;"></iframe>';
+     /*var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/search.jsp" style="width:100%;height:98%;"></iframe>';
     var title = "服务检索"
     $('#mainContentTabs').tabs('add', {
     title: title,
     content: content
-    });
+    });*/
 
 });

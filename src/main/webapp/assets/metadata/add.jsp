@@ -35,7 +35,7 @@
         </tr>
         <tr>
             <th>中文名称</th>
-            <td><input class="easyui-textbox" type="text" name="chineseName"></td>
+            <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['unique','chineseB']"></td>
         </tr>
         <tr>
             <th>别名</th>

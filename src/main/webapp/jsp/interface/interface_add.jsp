@@ -4,7 +4,7 @@
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<form class="formui">
+<form class="formui" id="form">
 	<table border="0" cellspacing="0" cellpadding="0">
 
 		<tr>
@@ -109,6 +109,11 @@
     	});
 
 	function save(){
+
+		if(!$("#form").form('validate')){
+			alert("请输入正确数据");
+			return false;
+		}
 		var interfaceId = $("#interfaceIdText").val();
 		 if(interfaceId==null || interfaceId == ''){
 			alert("接口ID不能为空");
@@ -189,6 +194,7 @@
 		interfaceManager.add(data,"add",function(result){
 			if(result){
 				$('#w').window('close');
+				//TODO selectNode 是null
 				var selectNode = $('.msinterfacetree').tree("getSelected");
 				$('.msinterfacetree').tree('append', {
 									parent: (selectNode?selectNode.target:null),

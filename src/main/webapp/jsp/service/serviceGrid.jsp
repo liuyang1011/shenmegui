@@ -314,6 +314,9 @@
                         }
                     }
                 }
+                if (!confirm("确定要提交审核吗？")) {
+                    return;
+                }
                 $.ajax({
                     "type": "POST",
                     "async": false,
@@ -338,7 +341,7 @@
                 var flag = false;
                 if (items != null && items.length > 0) {
                     for(var i = 0; i < items.length; i++){
-                        if(items[i].optState == 0){
+                        if(items[i].optState == 6){
                             flag = true;
                             break;
                         }

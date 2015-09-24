@@ -78,6 +78,7 @@ var delIds = [];
 			newIds.push(uuid);
 			$('#tg').treegrid('reloadFooter');
 			$('#tg').treegrid('beginEdit', uuid);
+			$('#tg').treegrid('select',uuid);
 		}
 		function saveSDA(){
 			if (!confirm("确定保存吗？")) {
@@ -265,10 +266,13 @@ var delIds = [];
 	//选择元数据自动更新其他数据
 	function comboboxSelect(record){
 		var node = $('#tg').treegrid('getSelected');
-		node.text =  record.categoryWordId;
-		node.append1 = record.chineseName;
-		node.append2 = record.formula;
-//		$('#tg').treegrid('refreshRow',node.id);
+		console.log(record);
+		$('#tg').treegrid('endEdit', node.id);
+		var node2 = $('#tg').treegrid('getSelected');
+		node2.text =  record.metadataId;
+		node2.append1 = record.chineseName;
+		node2.append2 = record.formula;
+		$('#tg').treegrid('refreshRow',node2.id);
 	}
 </script>
 </head>

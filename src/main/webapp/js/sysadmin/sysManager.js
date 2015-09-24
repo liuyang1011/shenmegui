@@ -89,7 +89,9 @@ var sysManager = {
     },
 
     remove: function () {
-
+        if (!confirm("确定要删除该报文头吗？")) {
+            return;
+        }
         var node = $('.msinterfacetree').tree("getSelected");
         $.ajax({
             type: "get",
@@ -165,10 +167,13 @@ var sysManager = {
             return;
         }
         $.ajax({
-            type: "GET",
+            type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: "/system/delete/" + node.id,
+            //如果systemId包含#等特殊符号就会有问题
+            //url: "/system/delete/" + systemId,
+            url: "/system/delete2",
             dataType: "json",
+            data: JSON.stringify(node.id),
             success: function (result) {
                 if(result){
                     $('.msinterfacetree').tree("reload");

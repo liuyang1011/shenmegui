@@ -100,7 +100,7 @@
     </tr>
 
 </table>
-<table class="easyui-treegrid" id="sdaHisTree" title="SDA对比" style=" width:100%; height:400px"
+<table class="easyui-treegrid" id="sdaHisTree" title="SDA对比" style=" width:100%; height:500px"
        data-options="
 				rownumbers: true,
 				animate: true,

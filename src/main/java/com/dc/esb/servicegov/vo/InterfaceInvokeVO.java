@@ -23,6 +23,11 @@ public class InterfaceInvokeVO {
     private String consumerIds;
     private String providerIds;
 
+    private String consumerNames;
+    private String providerNames;
+
+    private String isStandard;
+
     private String consumerInterfaceId;
 
     public InterfaceInvokeVO(){}
@@ -34,6 +39,30 @@ public class InterfaceInvokeVO {
         this.interfaceId = inter.getInterfaceId();
         this.ecode = inter.getEcode();
         this.interfaceName = inter.getInterfaceName();
+    }
+
+    public String getIsStandard() {
+        return isStandard;
+    }
+
+    public void setIsStandard(String isStandard) {
+        this.isStandard = isStandard;
+    }
+
+    public String getConsumerNames() {
+        return consumerNames;
+    }
+
+    public void setConsumerNames(String consumerNames) {
+        this.consumerNames = consumerNames;
+    }
+
+    public String getProviderNames() {
+        return providerNames;
+    }
+
+    public void setProviderNames(String providerNames) {
+        this.providerNames = providerNames;
     }
 
     public String getConsumerInterfaceId() {

@@ -186,6 +186,16 @@ public class SystemController {
 
     }
 
+    @RequiresPermissions({"system-delete"})
+    @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
+    public @ResponseBody
+    boolean delete2(@RequestBody String systemId) {
+        //去掉''
+        systemId = systemId.substring(1,systemId.length()-1);
+        return systemService.deleteSystemById(systemId);
+
+    }
+
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getProtocolAll", headers = "Accept=application/json")
     public @ResponseBody List<Map<String,Object>> getProtocolAll(HttpServletRequest request) {

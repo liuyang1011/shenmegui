@@ -260,6 +260,26 @@ public class InterfaceController {
         return true;
     }
 
+    @RequiresPermissions({"system-delete"})
+    @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean delete2(@RequestBody
+                   String interfaceId) {
+        //去掉''
+        interfaceId = interfaceId.substring(1,interfaceId.length()-1);
+        //TODO 删除接口要删除serviceInvoke（外键）
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy("interfaceId", interfaceId);
+        serviceInvokeService.deleteEntity(serviceInvokes);
+        //TODO 删除接口要删除ida
+        interfaceService.deleteById(interfaceId);
+        Map map = new HashMap();
+        map.put("interfaceId", interfaceId);
+        List<Ida> list = idaService.findBy(map);
+        idaService.deleteList(list);
+        return true;
+    }
+
     @RequiresPermissions({"system-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/edit/{interfaceId}", headers = "Accept=application/json")
     public ModelAndView getInterface(@PathVariable

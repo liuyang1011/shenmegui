@@ -103,15 +103,18 @@ var interfaceManager = {
     },
     
     remove:function(interfaceId,title){
+        if (!confirm("确定要删除该接口吗？")) {
+            return;
+        }
     	
     	var node = $('.msinterfacetree').tree("getSelected");
-    	
+        console.log(node);
     	var sId = interfaceId;
     	var tit = title;
     	var treeObj = $('.msinterfacetree');
     	var tabObj = $('#mainContentTabs');
     	try{
-    		sId= node.id
+    		sId= node.id;
     		tit = node.text;
     	}catch(e){
     		sId = interfaceId;
@@ -119,12 +122,15 @@ var interfaceManager = {
     		treeObj = parent.$('.msinterfacetree');
     		tabObj = parent.$('#mainContentTabs');
     	}
-    	
+
     	$.ajax({
-            type: "get",
+            type: "post",
             contentType: "application/json; charset=utf-8",
-            url: "/interface/delete/"+sId,
+            //测试中出现#&等特殊符号，没法删掉
+            //url: "/interface/delete/"+sId,
+            url: "/interface/delete2",
             dataType: "json",
+            data:JSON.stringify(sId),
             success: function(result) {
                 if(result){
 //                    $("#tg").datagrid("reload");

@@ -73,7 +73,8 @@ $.extend($.fn.validatebox.defaults.rules, {
     },
     chineseB: {// 验证中文,数字，英文
         validator : function(value) {
-            return (/^[A-Za-z0-9_\u4E00-\u9FA5]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
+            //中文 \u4E00-\u9FA5
+            return (/^[A-Za-z0-9_\Α-\￥]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
         },
         message : '请不要输入特殊符号'
     },

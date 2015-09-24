@@ -158,15 +158,19 @@
                 iconCls: 'icon-remove',
                 handler: function () {
                     var node = $('#tg').datagrid("getSelected");
+                    console.log(node);
                     if (node) {
                         if (!confirm("确定要删除选中的记录吗？")) {
                             return;
                         }
                         $.ajax({
-                            type: "GET",
+                            type: "POST",
                             contentType: "application/json; charset=utf-8",
-                            url: "/system/delete/" + node.systemId,
+                            //如果systemId包含#等特殊符号就会有问题
+//                            url: "/system/delete/" + node.systemId,
+                            url: "/system/delete2",
                             dataType: "json",
+                            data: JSON.stringify(node.systemId),
                             success: function (result) {
                                 $('#tg').datagrid("reload");
                             },

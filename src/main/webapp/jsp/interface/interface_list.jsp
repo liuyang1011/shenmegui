@@ -172,9 +172,6 @@
 						handler:function(){
 							var row = $("#tg").treegrid("getSelected");
 							if(row){
-								if (!confirm("确定要删除选中的记录吗？")) {
-									return;
-								}
 								interfaceManager.remove(row.interfaceId,row.interfaceName);
 							}else{
 								alert("请选择要删除的行");

@@ -400,6 +400,7 @@ public class StatisticsServiceImpl implements StatisticsService{
     public List<TreeNode> getServiceReuseRate2(){
         TreeNode root = new TreeNode();
         root.setText("服务类");
+        root.setId("root");
         String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
         List<ServiceCategory> categories = serviceCategoryDAO.find(hql);//先只加载第一层分类
         Map<String, String > fields =  new HashMap<String, String>();

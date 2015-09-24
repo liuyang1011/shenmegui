@@ -194,8 +194,11 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 setCellValue(row.createCell(2), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
                 setCellValue(row.createCell(3), commonStyle, operation.getOperationId());//场景id
                 setCellValue(row.createCell(4), commonStyle, operation.getOperationName());//场景名称
-                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
-                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
+                //用systemAb
+//                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
+                setCellValue(row.createCell(5), commonStyle, vo.getConsumerNames());//调用方
+//                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
+                setCellValue(row.createCell(6), commonStyle, vo.getProviderNames());//提供者
                 String systemAb = Constants.INVOKE_TYPE_CONSUMER.equals(vo.getType())? "Consumer" : "Provider";
                 setCellValue(row.createCell(7), commonStyle, systemAb);//接口方向
                 setCellValue(row.createCell(8), commonStyle, vo.getProviderIds());//接口提供系统ID
@@ -213,8 +216,26 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 setCellValue(row.createCell(18), commonStyle, headName);//业务报文头
                 String status =  Constants.INTERFACE_STATUS_TC.equals(inter.getStatus()) ? "投产" : "废弃";
                 setCellValue(row.createCell(19), commonStyle, status);//接口状态
-                setCellValue(row.createCell(20), commonStyle, "");//场景状态
-                setCellValue(row.createCell(21), commonStyle, "");//是否标准
+                String operState = "";
+
+                if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT)){
+                    operState = "服务定义";
+                }else if(operation.getState().equals(Constants.Operation.OPT_STATE_PASS)){
+                    operState = "审核通过";
+                }else if(operation.getState().equals(Constants.Operation.OPT_STATE_UNPASS)){
+                    operState = "审核不通过";
+                }else if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED)){
+                    operState = "已发布";
+                }else if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+                    operState = "已上线";
+                }else if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE)){
+                    operState = "已下线";
+                }else if(operation.getState().equals(Constants.Operation.OPT_STATE_REQUIRE_UNAUDIT)){
+                    operState = "待审核";
+                }
+                setCellValue(row.createCell(20), commonStyle, operState);//场景状态
+                String isStandard = Constants.INVOKE_TYPE_STANDARD_Y.equals(vo.getIsStandard())?"是":"否";
+                setCellValue(row.createCell(21), commonStyle, isStandard);//是否标准
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,14 +308,14 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             }
             if (si.getServiceId() != null) {
                 Service service = serviceDao.findUniqueBy("serviceId", si.getServiceId());
-                row0.createCell(8).setCellValue(service.getServiceName());//服务名称
-                row2.createCell(8).setCellValue(service.getDesc());//服务名称
+                row0.createCell(8).setCellValue(service.getServiceName()+"("+service.getServiceId()+")");//服务名称
+                row2.createCell(8).setCellValue(service.getDesc());//服务描述
                 if (si.getOperationId() != null) {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("serviceId", si.getServiceId());
                     params.put("operationId", si.getOperationId());
                     Operation operation = operationDAO.findUniqureBy(params);
-                    row1.createCell(8).setCellValue(operation.getOperationName());//服务操作名称
+                    row1.createCell(8).setCellValue(operation.getOperationName() + "("+operation.getOperationId()+")");//服务操作名称
                     row3.createCell(8).setCellValue(operation.getOperationDesc());//服务操作描述
                 }
             }
@@ -377,11 +398,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         HSSFRow row = sheet.getRow(index);
         setCellValue(row.createCell(7), commonStyle, sda.getStructName()); //英文名称
         setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
-        setCellValue(row.createCell(9), commonStyle, sda.getType());//数据类型
-        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
-        setCellValue(row.createCell(11), commonStyle, sda.getConstraint());//约束条件
-        setCellValue(row.createCell(12), commonStyle, sda.getRequired());//是否必输
-        setCellValue(row.createCell(13), commonStyle, sda.getRemark());//备注
+        //TZB数据类型和长度合并
+        setCellValue(row.createCell(9), commonStyle, sda.getType() + "("+sda.getLength()+")");//数据类型/长度
+//        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
+        setCellValue(row.createCell(10), commonStyle, sda.getConstraint());//约束条件
+        setCellValue(row.createCell(11), commonStyle, sda.getRequired());//是否必输
+        setCellValue(row.createCell(12), commonStyle, sda.getRemark());//备注
 //        row.createCell(7).setCellValue(sda.getStructName()); //英文名称
 //        row.createCell(8).setCellValue(sda.getStructAlias()); //中文名称
 //        row.createCell(9).setCellValue(sda.getType()); //数据类型
@@ -763,11 +785,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             interfaceInvokeVO.setProviders(joinServiceInvokeSystemName(provList, "systemChineseName"));
             interfaceInvokeVO.setProviderIds(joinServiceInvokeSystemName(provList, "systemId"));
+            interfaceInvokeVO.setProviderNames(joinServiceInvokeSystemName(provList, "systemAb"));
 
             String hql = "select si from " + ServiceInvoke.class.getName() + " as si ," +  InterfaceInvoke.class.getName() + " as ii"
                 + " where ii.providerInvokeId = ? and si.invokeId = ii.consumerInvokeId";
             String consumers = "";
             String consumerIds = "";
+            String consumerNames = "";
             List<ServiceInvoke> consumerList = new ArrayList<ServiceInvoke>();
             for(int i=0; i < provList.size(); i++){
                 ServiceInvoke si = provList.get(i);
@@ -780,8 +804,11 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             }
             consumers +=  joinServiceInvokeSystemName(consumerList, "systemChineseName");
             consumerIds +=  joinServiceInvokeSystemName(consumerList,  "systemId");
+            consumerNames += joinServiceInvokeSystemName(consumerList,  "systemAb");
+
             interfaceInvokeVO.setConsumers(consumers);
             interfaceInvokeVO.setConsumerIds(consumerIds);
+            interfaceInvokeVO.setConsumerNames(consumerNames);
         }
         if (StringUtils.isNotEmpty(interfaceInvokeVO.getType()) && interfaceInvokeVO.getType().equals(Constants.INVOKE_TYPE_CONSUMER)) {//如果是消费者方向
             String providerHql = " from " + ServiceInvoke.class.getName() + " as si where si.serviceId=? and si.operationId=? and si.type=? and si.interfaceId=?";
@@ -790,11 +817,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             interfaceInvokeVO.setConsumers(joinServiceInvokeSystemName(consList, "systemChineseName"));
             interfaceInvokeVO.setConsumerIds(joinServiceInvokeSystemName(consList, "systemId"));
+            interfaceInvokeVO.setConsumerNames(joinServiceInvokeSystemName(consList, "systemAb"));
 
             String hql = "select si from " + ServiceInvoke.class.getName() + " as si ," +  InterfaceInvoke.class.getName() + " as ii"
                     + " where ii.consumerInvokeId = ? and si.invokeId = ii.providerInvokeId";
             String providers = "";
             String providerIds = "";
+            String providerNames ="";
             for(int i=0; i < consList.size(); i++){
                 ServiceInvoke si = consList.get(i);
                 List<ServiceInvoke> provList =  siDao.find( hql, si.getInvokeId());
@@ -804,6 +833,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 }
                 providers +=  joinServiceInvokeSystemName(provList, "systemChineseName");
                 providerIds +=  joinServiceInvokeSystemName(provList, "systemId");
+                providerNames +=  joinServiceInvokeSystemName(provList, "systemId");
 
             }
             interfaceInvokeVO.setProviders(providers);
@@ -829,6 +859,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     providerIds.add(provider.getInvokeId());
                     vo.setServiceId(serviceId);
                     vo.setOperationId(operationId);
+                    vo.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     result.add(vo);
                 }else{
                     int index = providerIds.indexOf(provider.getInvokeId());
@@ -874,6 +905,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             vo.setServiceId(serviceId);
             vo.setOperationId(operationId);
             vo.setType(strs[0].toString());
+            vo.setIsStandard(Constants.INVOKE_TYPE_STANDARD_N);
             String interfaceId = strs[1].toString();
             Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
             if(inter != null){
@@ -916,10 +948,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for(ServiceInvoke si : list){
                 if(si.getSystem() != null){
                     if("systemChineseName".equals(field)){
-                        result += si.getSystem().getSystemChineseName() + ", ";
+                        result += si.getSystem().getSystemChineseName() + ",";
                     }
                     if("systemId".equals(field)){
-                        result += si.getSystem().getSystemId() + ", ";
+                        result += si.getSystem().getSystemId() + ",";
+                    }
+                    if("systemAb".equals(field)){
+                        result += si.getSystem().getSystemAb() + ",";
                     }
                 }
             }
