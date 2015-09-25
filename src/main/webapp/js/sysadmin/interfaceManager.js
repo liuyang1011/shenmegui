@@ -108,7 +108,6 @@ var interfaceManager = {
         }
     	
     	var node = $('.msinterfacetree').tree("getSelected");
-        console.log(node);
     	var sId = interfaceId;
     	var tit = title;
     	var treeObj = $('.msinterfacetree');
@@ -135,11 +134,11 @@ var interfaceManager = {
                 if(result){
 //                    $("#tg").datagrid("reload");
 //                	treeObj.tree("reload");
-                    var parent = $('.msinterfacetree').tree("getParent", node.target);
-                    var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
-                    $('.msinterfacetree').tree("remove", node.target);
-                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
-                    $('.msinterfacetree').tree("reload", parent.target);
+                    var parent = treeObj.tree("getParent", node.target);
+                    var systemNode =  treeObj.tree("getParent",parent.target);
+                    treeObj.tree("remove", node.target);
+                    treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
+                    treeObj.tree("reload", parent.target);
 
                     tabObj.tabs("close",tit);
                 }

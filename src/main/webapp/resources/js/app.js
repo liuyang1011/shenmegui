@@ -254,7 +254,7 @@ var SYSMENU = {
                             }
 
                         } else if (node.click == "protocol") {
-                            var mid = systemNode.id;
+                            var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
@@ -285,7 +285,7 @@ var SYSMENU = {
                         } else if(node.click == "file"){
 
                         }else {
-                            var mid = systemNode.id;
+                            var mid = node.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
@@ -863,7 +863,6 @@ var SYSMENU = {
                     }
                 },
                 onClick: function (node) {
-                    alert(3);
                     if (node.click == 'system') {
                         var mid = node.id;
                         var title = node.text;
@@ -1117,6 +1116,21 @@ function sleep(d) {
     for (var t = Date.now(); Date.now() - t <= d;);
 }
 
+function SetWinHeight(obj)
+{
+    var win=obj;
+    if (document.getElementById)
+    {
+        if (win && !window.opera)
+        {
+            if (win.contentDocument && win.contentDocument.body.offsetHeight)
+            win.height = win.contentDocument.body.offsetHeight;
+            else if(win.Document && win.Document.body.scrollHeight)
+            win.height = win.Document.body.scrollHeight;
+        }
+    }
+}
+
 $(function () {
     $("#taskName").click(function () {
         uiinit.win({
@@ -1142,3 +1156,5 @@ $(function () {
     });*/
 
 });
+
+

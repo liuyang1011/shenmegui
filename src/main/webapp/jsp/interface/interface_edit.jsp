@@ -198,12 +198,12 @@
 		interfaceManager.add(data,'update',function(result){
 			if(result){
 				$('#w').window('close');
-				var selectNode = $('.msinterfacetree').tree("getSelected");
-				var parent = $('.msinterfacetree').tree("getParent", selectNode.target);
-				var urlPath = $('.msinterfacetree').tree('options').url;
-				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
-				$('.msinterfacetree').tree("reload", parent.target);
-				$('.msinterfacetree').tree('options').url = urlPath;
+				var selectNode = treeObj.tree("getSelected");
+				var parent = treeObj.tree("getParent", selectNode.target);
+				var urlPath = treeObj.tree('options').url;
+				treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
+				treeObj.tree("reload", parent.target);
+				treeObj.tree('options').url = urlPath;
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");
