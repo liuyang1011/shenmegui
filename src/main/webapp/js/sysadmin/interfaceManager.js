@@ -136,8 +136,9 @@ var interfaceManager = {
 //                    $("#tg").datagrid("reload");
 //                	treeObj.tree("reload");
                     var parent = $('.msinterfacetree').tree("getParent", node.target);
+                    var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
                     $('.msinterfacetree').tree("remove", node.target);
-                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + parent.id;
+                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
                     $('.msinterfacetree').tree("reload", parent.target);
 
                     tabObj.tabs("close",tit);

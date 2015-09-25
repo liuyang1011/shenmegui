@@ -161,7 +161,8 @@
 			systemId = selectNode.id;
 			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
 			if(node){
-				 systemId = node.id;
+				var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
+				 systemId = systemNode.id;
 			}
 		} catch (e) { 
 			systemId = "${param.systemId}";
