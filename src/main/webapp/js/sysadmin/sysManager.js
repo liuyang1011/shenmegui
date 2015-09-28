@@ -102,8 +102,9 @@ var sysManager = {
                 if (result) {
                     alert("删除成功！");
                     var parent = $('.msinterfacetree').tree("getParent", node.target);
+                    var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
                     $('.msinterfacetree').tree("remove", node.target);
-                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + parent.id;
+                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + systemNode.id;
                     $('.msinterfacetree').tree("reload", parent.target);
                     var title = node.text;
                     $('#mainContentTabs').tabs("close", title);
@@ -236,9 +237,11 @@ var sysManager = {
             url: "/protocol/delete/" + node.id,
             dataType: "json",
             success: function (result) {
+                alert("删除成功！");
                 var parent = $('.msinterfacetree').tree("getParent", node.target);
+                var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
                 $('.msinterfacetree').tree("remove", node.target);
-                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + parent.id;
+                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemNode.id;
                 $('.msinterfacetree').tree("reload", parent.target);
             }
         });
@@ -265,6 +268,7 @@ var sysManager = {
     },
     "refreshFile" : function(){
         var node = $('.msinterfacetree').tree("getSelected");
+        var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
         $('.msinterfacetree').tree('append', {
             parent: (node?node.target:null),
             data: [{
@@ -272,7 +276,7 @@ var sysManager = {
             }]
         });
         var urlPath = $('.msinterfacetree').tree('options').url;
-        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + node.id;
+        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id;
         $('.msinterfacetree').tree("reload", node.target);
         $('.msinterfacetree').tree('options').url = urlPath;
     }

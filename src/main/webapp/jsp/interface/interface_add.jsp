@@ -185,6 +185,7 @@
 		var isStandard =  $("#isStandard").combobox('getValue');
 		var systemId ="";
 		var treeObj =$('.msinterfacetree') ;
+
 		try { 
 			var selectNode = $('.msinterfacetree').tree("getSelected");
 			systemId = selectNode.id;
@@ -221,18 +222,21 @@
 			if(result){
 				$('#w').window('close');
 				//TODO selectNode 是null
-				var selectNode = $('.msinterfacetree').tree("getSelected");
-				$('.msinterfacetree').tree('append', {
+				var selectNode = treeObj.tree("getSelected");
+				treeObj.tree('append', {
 									parent: (selectNode?selectNode.target:null),
 									data: [{
 										text: 'new item1'
 									}]
 								});
-				var urlPath = $('.msinterfacetree').tree('options').url;
-				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
-				$('.msinterfacetree').tree("reload", selectNode.target);
-				$('.msinterfacetree').tree('options').url = urlPath;
-				$('#tg').datagrid("reload");
+				var urlPath = treeObj.tree('options').url;
+				treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
+				treeObj.tree("reload", selectNode.target);
+				treeObj.tree('options').url = urlPath;
+				$("#tg").datagrid("reload");
+				//var mainTabs = parent.$('#mainContentTabs');
+				//var ifName = "interface_"+interfaceId;
+				//mainTabs.tabs("getTab","接口("+systemId+")").tg.datagrid("reload");
 			}else{
 				alert("保存失败");
 			}

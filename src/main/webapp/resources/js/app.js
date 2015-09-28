@@ -197,6 +197,7 @@ var SYSMENU = {
                         }
                     },
                     onClick: function (node) {
+                        var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
                         if (node.click == 'system') {
                             var mid = node.id;
                             var title = node.text;
@@ -212,7 +213,7 @@ var SYSMENU = {
                                 });
                             }
                         } else if (node.click == "interfaces") {
-                            var mid = node.id;
+                            var mid = systemNode.id;
                             var title = node.text + '('+mid+')';
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
@@ -226,7 +227,7 @@ var SYSMENU = {
                             }
 
                         } else if (node.click == 'disable') {
-                            var mid = node.id;
+                            var mid = systemNode.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
@@ -240,7 +241,7 @@ var SYSMENU = {
                             }
 
                         } else if (node.click == "head") {
-                            var mid = node.id;
+                            var mid = systemNode.id;
                             var title = node.text;
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
@@ -271,11 +272,11 @@ var SYSMENU = {
                         } else if (node.click == "heads") {
 
                         } else if (node.click == "files") {
-                            var title = "系统" + node.id + "需求文件";
+                            var title = "系统" + systemNode.id + "需求文件";
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp?systemId=' + node.id + '"  style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp?systemId=' + systemNode.id + '"  style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -297,6 +298,23 @@ var SYSMENU = {
                                     closable: true
                                 });
                             }
+                        }
+                    },
+                    "onBeforeExpand": function(node){
+                        if(node.children == null && node.click == 'system'){
+                            $.ajax({
+                                type: "get",
+                                async: false,
+                                url: "/interface/getLeftTree/subtree/system/"+node.id,
+                                dataType: "json",
+                                success: function (result) {
+                                    $('.msinterfacetree').tree('append', {
+                                    									parent: (node?node.target:null),
+                                    									data: result
+                                    								});
+                                }
+
+                            });
                         }
                     }
                 });
@@ -940,8 +958,8 @@ var SYSMENU = {
                 "onLoadSuccess": function () {
                     flag = true;
                 }
-
-            });
+            }
+            );
 
 
             $('.msinterfacetree').tree('collapseAll');
@@ -1100,6 +1118,21 @@ function sleep(d) {
     for (var t = Date.now(); Date.now() - t <= d;);
 }
 
+function SetWinHeight(obj)
+{
+    var win=obj;
+    if (document.getElementById)
+    {
+        if (win && !window.opera)
+        {
+            if (win.contentDocument && win.contentDocument.body.offsetHeight)
+            win.height = win.contentDocument.body.offsetHeight;
+            else if(win.Document && win.Document.body.scrollHeight)
+            win.height = win.Document.body.scrollHeight;
+        }
+    }
+}
+
 $(function () {
     $("#taskName").click(function () {
         uiinit.win({
@@ -1125,3 +1158,5 @@ $(function () {
     });*/
 
 });
+
+

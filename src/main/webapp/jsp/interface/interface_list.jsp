@@ -172,7 +172,7 @@
 						handler:function(){
 							var row = $("#tg").treegrid("getSelected");
 							if(row){
-								interfaceManager.remove(row.interfaceId,row.interfaceName);
+								remove(row.interfaceId,row.interfaceName);
 							}else{
 								alert("请选择要删除的行");
 							}
@@ -371,6 +371,37 @@
 				 }
 			 }
 		 };
+
+		 function remove(interfaceId,title){
+                 if (!confirm("确定要删除该接口吗？")) {
+                     return;
+                 }
+
+				treeObj = parent.$('.msinterfacetree');
+                tabObj = parent.$('#mainContentTabs');
+
+             	$.ajax({
+                     type: "post",
+                     contentType: "application/json; charset=utf-8",
+                     //测试中出现#&等特殊符号，没法删掉
+                     //url: "/interface/delete/"+sId,
+                     url: "/interface/delete2",
+                     dataType: "json",
+                     data:JSON.stringify(interfaceId),
+                     success: function(result) {
+                         if(result){
+                         	$("#tg").datagrid("reload");
+                            tabObj.tabs("close",title);
+                             var node = treeObj.tree("getSelected");
+                             var systemNode =  treeObj.tree("getParent",node.target);
+                             treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
+                             treeObj.tree("reload", node.target);
+
+                         }
+                     }
+                 });
+
+             }
 		</script>
 
 	</body>

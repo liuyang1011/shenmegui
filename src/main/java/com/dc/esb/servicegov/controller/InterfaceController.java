@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.service.impl.TagServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
+import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.commons.logging.Log;
@@ -87,7 +88,35 @@ public class InterfaceController {
         resList.add(root);
         return resList;
     }
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftLazyTree", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getLeftLazyTree() {
+        List<TreeNode> resList = new ArrayList<TreeNode>();
+        TreeNode root = new TreeNode();
+        root.setId("root");
+        root.setText("系统");
+        root.setClick("system");
+        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAllOrderBySystemId();
+        List<TreeNode> children = new ArrayList<TreeNode>();
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("id","systemId");
+        fields.put("text", "systemChineseName");
+        for(int i = 0; i < systems.size(); i++){
+            System system = systems.get(i);
+            TreeNode treeNode = new TreeNode();
+            treeNode.setId(system.getSystemId());
+            treeNode.setText(system.getSystemChineseName());
+            treeNode.setState("closed");
+            treeNode.setClick("system");
+            children.add(treeNode);
+        }
 
+        root.setChildren(children);
+        resList.add(root);
+        return resList;
+    }
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subtree/system/{systemId}", headers = "Accept=application/json")
     public
