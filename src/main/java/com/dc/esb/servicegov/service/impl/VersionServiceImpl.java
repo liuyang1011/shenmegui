@@ -60,11 +60,13 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 
 	public boolean editVersion(String id) {
 		Version entity = daoImpl.findUniqueBy("id", id);
-		entity.setCode(editVersionCode(entity.getCode()));
-		entity.setOptDate(DateUtils.format(new Date()));
-		entity.setOptType(Constants.Version.OPT_TYPE_EDIT);
-//		entity.setOptUser(entity.getOptUser());
-		daoImpl.save(entity);
+		if(entity != null){
+			entity.setCode(editVersionCode(entity.getCode()));
+			entity.setOptDate(DateUtils.format(new Date()));
+			entity.setOptType(Constants.Version.OPT_TYPE_EDIT);
+			entity.setOptUser(entity.getOptUser());
+			daoImpl.save(entity);
+		}
 		return true;
 	}
 

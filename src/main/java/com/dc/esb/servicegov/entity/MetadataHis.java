@@ -7,9 +7,13 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "METADATA")
-public class Metadata implements Serializable {
-    private static final long serialVersionUID = -6018121328134021256L;
+public class MetadataHis implements Serializable {
     @Id
+    @Column(name = "AUTO_ID")
+    private String autoId;
+    @Column(name = "VERSION_HIS_ID")
+    private String versionHisId;
+
     @Column(name = "METADATA_ID", length = 50)
     private String metadataId;
     @Column(name = "METADATA_NAME", length = 255)
@@ -56,15 +60,14 @@ public class Metadata implements Serializable {
     private String buzzCategory;
     @Column(name = "DATA_CATEGORY", length = 255)
     private String dataCategory;
-    @Column(name = "VERSION_ID")
-    private String versionId;
 
     @ManyToOne
     @JoinColumn(name = "CATEGORY_WORD_ID",referencedColumnName = "ESGLISG_AB", insertable = false, updatable = false)
     private CategoryWord categoryWord;
-    @ManyToOne()
-    @JoinColumn(name = "VERSION_ID", insertable = false, updatable = false)
-    private Version version;
+
+    @OneToOne(cascade={CascadeType.REFRESH}, optional=true)
+    @JoinColumn(name="VERSION_HIS_ID", insertable = false, updatable = false)
+    private VersionHis versionHis;
 
     public CategoryWord getCategoryWord() {
         return categoryWord;
@@ -258,22 +261,6 @@ public class Metadata implements Serializable {
 
     public void setDataCategory(String dataCategory) {
         this.dataCategory = dataCategory;
-    }
-
-    public Version getVersion() {
-        return version;
-    }
-
-    public void setVersion(Version version) {
-        this.version = version;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    public void setVersionId(String versionId) {
-        this.versionId = versionId;
     }
 
     public String getFormula(){

@@ -22,7 +22,7 @@
 
 <body style="margin:0px;">
 
-<div class="easyui-tabs" id="subtab" name="subtab" data-options="tools:'#tab-tools'">
+<div class="easyui-tabs" id="subtab" name="subtab" data-options="tools:'#tab-tools'" style="width:100%">
     <div title="服务基本信息" style="padding:0px;">
         <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"
                 src="/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>"
@@ -61,7 +61,7 @@
             if (index == 1 && k == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
-                    var urlPath = "/operation/editPage?serviceId=${param.serviceId}&operationId=" + opId;
+                    var urlPath = "/operation/editPage?serviceId=${param.serviceId}&operationId=" + opId+"&_t" + new Date().getTime();
                                 var currTab = $('#subtab').tabs('getSelected');
                                 $('#subtab').tabs('update', {
                                     tab: currTab,
@@ -94,7 +94,7 @@
             if (index == 3 && m == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
-                    var urlPath = "/sla/slaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId;
+                    var urlPath = "/sla/slaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&_t" + new Date().getTime();
                     var currTab = $('#subtab').tabs('getSelected');
                     $('#subtab').tabs('update', {
                         tab: currTab,
@@ -110,7 +110,7 @@
             /*if (index == 4  && k == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
-                    var urlPath = "/ola/olaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId;
+                    var urlPath = "/ola/olaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&_t" + new Date().getTime();
                     var currTab = $('#subtab').tabs('getSelected');
                     $('#subtab').tabs('update', {
                         tab: currTab,
@@ -126,7 +126,7 @@
             if (index == 4  && q == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {
-                    var urlPath = "/operation/interfacePage?serviceId=${param.serviceId}&operationId=" + opId;
+                    var urlPath = "/operation/interfacePage?serviceId=${param.serviceId}&operationId=" + opId+"&_t" + new Date().getTime();
                     var currTab = $('#subtab').tabs('getSelected');
                     $('#subtab').tabs('update', {
                         tab: currTab,
@@ -141,7 +141,7 @@
             }
            /* if (index == 6  && p == 0) {
                 var currTab = $('#subtab').tabs('getSelected');
-                var urlPath = "jsp/service/search.jsp";
+                var urlPath = "jsp/service/search.jsp?_t" + new Date().getTime();
                 $('#subtab').tabs('update', {
                     tab: currTab,
                     options: {

@@ -58,11 +58,12 @@
     </div>
 </div>
 <div data-options="region:'west',collapsible:true,title:'菜单'"
-     class="west-menu" id="west-menu">
+     class="west-menu" id="west-menu" split="true">
 
 </div>
-<div data-options="region:'center',collapsible:true,border:false,tabHeight:39,"
-     class="easyui-tabs " id="mainContentTabs">
+<div region="center">
+			<div id="mainContentTabs" class="easyui-tabs" fit="true" border="false" plain="true">
+			</div>
 </div>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.easyui.min.js"></script>
