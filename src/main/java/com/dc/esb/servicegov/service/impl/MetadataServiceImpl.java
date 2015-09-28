@@ -611,7 +611,15 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     	}
     	return true;
     }
-    
+
+    public boolean uniqueChineseNameValid(String chineseName){
+        List<Metadata> list = this.findBy("chineseName", chineseName);
+        if(list != null && list.size() > 0){
+            return false;
+        }
+        return true;
+    }
+
     public List<CategoryWord> categoryWord(){
     	return categoryWordDAO.getAll();
     }

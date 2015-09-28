@@ -50,7 +50,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>
 				版本
 			</th>

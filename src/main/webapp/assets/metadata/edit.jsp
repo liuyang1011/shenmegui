@@ -29,11 +29,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<input type="hidden" name="status" value="${entity.status }" />  
 		  <tr>
 		    <th>元数据名称</th>
-		    <td><input class="easyui-textbox" type="text" name="metadataId" value="${entity.metadataId }" data-options="required:true, readonly:true"></td>
+		    <td><input class="easyui-textbox" type="text" name="metadataId" value="${entity.metadataId }" data-options="required:true,validType:['englishB']"></td>
 		  </tr>
 		  <tr>
 		    <th>中文名称</th>
-		    <td><input class="easyui-textbox" type="text" name="chineseName"  value="${entity.chineseName }"  ></td>
+		    <td><input class="easyui-textbox" type="text" name="chineseName"  value="${entity.chineseName }" data-options="required:true, validType:['chineseB']"></td>
 		  </tr>
 		  <tr  style="display:none;">
 		    <th>英文名称</th>
@@ -70,15 +70,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  </tr>
 			<tr>
             				<th>类型</th>
-            				<td><input class="easyui-textbox" type="text" name="type" value="${entity.type}"></td>
+            				<td><input class="easyui-textbox" type="text" name="type" value="${entity.type}" data-options="validType:['english']"></td>
             </tr>
 			<tr>
 				<th>长度</th>
-				<td><input class="easyui-textbox" type="text" name="length" value="${entity.length }"></td>
+				<td><input class="easyui-textbox" type="text" name="length" value="${entity.length }" data-options="validType:['intOrFloat']"></td>
 			</tr>
 			<tr>
 				<th>精度</th>
-				<td><input class="easyui-textbox" type="text" name="scale" value="${entity.scale }"></td>
+				<td><input class="easyui-textbox" type="text" name="scale" value="${entity.scale }" data-options="validType:['intOrFloat']"></td>
 			</tr>
 			<tr>
 				<th>数据项分类</th>
@@ -93,11 +93,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <td>&nbsp;</td>
 		    <td class="win-bbar">
 		    	<a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
-		    	<a href="#" onclick="save('metadataForm')" class="easyui-linkbutton"  iconCls="icon-save">保存</a>
+		    	<a href="#" onclick="modify('metadataForm',oldMetadataId)" class="easyui-linkbutton"  iconCls="icon-save">保存</a>
 		    </td>
 		  </tr>
 		</table>
 		</form>
+		<script type="text/javascript" src="/plugin/validate.js"></script>
+		<script type="text/javascript">
+			var oldMetadataId = "${entity.metadataId }";
+		</script>
  </body>
 </html>
 

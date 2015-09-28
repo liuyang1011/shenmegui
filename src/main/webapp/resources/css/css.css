@@ -1,6 +1,9 @@
 @charset "utf-8";
 .easyui-layout .west-menu {
+	/*width: 231px;*/
 	width: 231px;
+	min-width:231px;
+	padding:5px;
 	border-top-style: none;
 	border-right-style: none;
 	border-bottom-style: none;

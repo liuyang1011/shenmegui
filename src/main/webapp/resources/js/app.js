@@ -63,6 +63,7 @@ var SYSMENU = {
                             top: e.pageY
                         });
 
+
                         /*if(node.id=='root'){
                          return;
                          }*/
@@ -370,7 +371,8 @@ var SYSMENU = {
                                     $('#mainContentTabs').tabs('add', {
                                         title: title,
                                         content: content,
-                                        closable: true
+                                        closable: true,
+                                        fit:true
                                     });
                                 }
                             } else {

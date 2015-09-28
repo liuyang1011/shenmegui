@@ -108,7 +108,6 @@ var interfaceManager = {
         }
     	
     	var node = $('.msinterfacetree').tree("getSelected");
-        console.log(node);
     	var sId = interfaceId;
     	var tit = title;
     	var treeObj = $('.msinterfacetree');

@@ -167,8 +167,8 @@
 <script>
     var title = "服务检索";
     var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH + '" style="width:100%;height:98%;"></iframe>';
-    if ($('#mainContentTabs').tabs('exists', title)) {
-        $('#mainContentTabs').tabs('select', title);
+    if ($('#mainContentTabs').tabs('exists',title)) {
+        $('#mainContentTabs').tabs('select',title);
     }else{
         $('#mainContentTabs').tabs('add', {
             title: title,

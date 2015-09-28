@@ -15,7 +15,7 @@
 	-->
 </style>
 
-<form class="formui">
+<form class="formui" id="form1">
 	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center">
 		<tr>
 			<th>
@@ -134,6 +134,9 @@
 
 
 	function save(){
+		if(!$("#form1").form('validate')){
+			return false;
+		}
         var systemId = $("#systemIdText").val();
         if(systemId==null || systemId == ''){
 			alert("请填写系统ID");

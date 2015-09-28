@@ -17,7 +17,7 @@
           href="<%=basePath%>/resources/themes/icon.css">
     <link href="<%=basePath%>/resources/css/css.css" rel="stylesheet" type="text/css">
 </head>
-<body class="easyui-layout">
+<body id="body" class="easyui-layout" data-options="fit:true">
 <div data-options="region:'north',border:false" id="header">
     <div id="logo"></div>
     <ul id="nav">
@@ -57,11 +57,11 @@
         <a href="javascript:;">帮助</a>
     </div>
 </div>
-<div data-options="region:'west',collapsible:true,title:'菜单'"
+<div data-options="region:'west',collapsible:true,title:'菜单',split:true,border:true"
      class="west-menu" id="west-menu">
 
 </div>
-<div data-options="region:'center',collapsible:true,border:false,tabHeight:39,"
+<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
      class="easyui-tabs " id="mainContentTabs">
 </div>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>

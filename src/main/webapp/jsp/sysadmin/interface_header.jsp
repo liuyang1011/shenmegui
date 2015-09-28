@@ -447,17 +447,17 @@
 			<thead>
 				<tr>
 					<th
-						data-options="field:'structName',width:160,align:'left',editor:'text'">
+						data-options="field:'structName',width:160,align:'left',editor:{type:'validatebox',options:{required:true,validType:['englishB']}}">
 						字段名称
 					</th>
 					<th
-						data-options="field:'structAlias',width:90,align:'left',editor:'text'">
+						data-options="field:'structAlias',width:90,align:'left',editor:{type:'validatebox',options:{validType:['chineseB']}}">
 						字段别名
 					</th>
-					<th data-options="field:'type',width:80,editor:'text'">
+					<th data-options="field:'type',width:80,editor:{type:'validatebox',options:{validType:['englishB']}}">
 						类型
 					</th>
-					<th data-options="field:'length',width:80,editor:'text'">
+					<th data-options="field:'length',width:80,editor:{type:'validatebox',options:{validType:['integer']}}">
 						长度
 					</th>
 					<%--<th data-options="field:'metadataId',width:100,editor:'text'">
@@ -479,5 +479,6 @@
 
 			</thead>
 		</table>
+		<script type="text/javascript" src="/plugin/validate.js"></script>
 	</body>
 </html>

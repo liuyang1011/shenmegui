@@ -266,7 +266,6 @@ var delIds = [];
 	//选择元数据自动更新其他数据
 	function comboboxSelect(record){
 		var node = $('#tg').treegrid('getSelected');
-		console.log(record);
 		$('#tg').treegrid('endEdit', node.id);
 		var node2 = $('#tg').treegrid('getSelected');
 		node2.text =  record.metadataId;
@@ -320,11 +319,11 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'textbox'}" <%--readOnly="true"--%>>字段名</th>
+				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{required:true,validType:['chineseB']}}" <%--readOnly="true"--%>>字段名</th>
 				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
 				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
-				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true,method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
@@ -350,6 +349,7 @@ var delIds = [];
 </table>
 </div>
 </form>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 
   
   </body>

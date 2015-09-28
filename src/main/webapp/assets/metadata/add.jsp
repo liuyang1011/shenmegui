@@ -35,11 +35,11 @@
         </tr>
         <tr>
             <th>中文名称</th>
-            <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['unique','chineseB']"></td>
+            <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['uniqueName','chineseB']"></td>
         </tr>
         <tr>
             <th>别名</th>
-            <td><input class="easyui-textbox" type="text" name="metadataAlias"></td>
+            <td><input class="easyui-textbox" type="text" name="metadataAlias" data-options="required:true, validType:['chineseB']"></td>
         </tr>
         <tr style="display:none;">
             <th>英文名称</th>
@@ -121,6 +121,23 @@
                 return result;
             },
             message: '元数据名称已存在'
+        },
+        uniqueName: {
+            validator: function (value, param) {
+                var result;
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/metadata/uniqueChineseNameValid",
+                    dataType: "json",
+                    data: {"chineseName": encodeURI(encodeURI(value))},
+                    success: function (data) {
+                        result = data;
+                    }
+                });
+                return result;
+            },
+            message: '元数据中文名称已存在'
         }
     });
     if(typeof(processId) != 'undefined'){

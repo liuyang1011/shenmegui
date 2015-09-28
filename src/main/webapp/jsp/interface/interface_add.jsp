@@ -45,6 +45,28 @@
 		</tr>
 		<tr>
 			<th>
+				调用关系
+			</th>
+			<td>
+				<select id="type" class="easyui-combobox"  panelHeight="auto" name="type" style="width: 155px"  data-options="editable:false">
+					<option value="0">提供方</option>
+					<option value="1">消费方</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				是否标准接口
+			</th>
+			<td>
+				<select id="isStandard" class="easyui-combobox"  panelHeight="auto" name="isStandard" style="width: 155px"  data-options="editable:false">
+					<option value="0">是</option>
+					<option value="1">否</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>
 				接口协议
 			</th>
 			<td>
@@ -159,6 +181,8 @@
 		var desc = $("#desc").val();
 		var remark = $("#remark").val();
 		var status = $("#status").combobox('getValue');
+		var type = $("#type").combobox('getValue');
+		var isStandard =  $("#isStandard").combobox('getValue');
 		var systemId ="";
 		var treeObj =$('.msinterfacetree') ;
 		try { 
@@ -189,6 +213,8 @@
 
 		serviceInvoke.protocolId = protocolId;
 		serviceInvoke.interfaceId = interfaceId;
+		serviceInvoke.type = type;
+		serviceInvoke.isStandard = isStandard;
 		invokes.push(serviceInvoke);
 		data.serviceInvoke = invokes;
 		interfaceManager.add(data,"add",function(result){

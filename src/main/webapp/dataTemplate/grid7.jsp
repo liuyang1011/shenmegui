@@ -49,7 +49,7 @@
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
             <td align="right">
                 <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
             </td>
         </tr>
     </table>
@@ -73,7 +73,7 @@
         <th data-options="field:'bussDefine'">业务定义</th>
         <th data-options="field:'bussRule'">业务规则</th>
         <th data-options="field:'dataSource'">数据来源</th>--%>
-        <th data-options="field:'status'">状态</th>
+        <%--<th data-options="field:'status'">状态</th>--%>
         <%--<th data-options="field:'version'">版本号</th>--%>
         <th data-options="field:'optUser'">创建人</th>
         <th data-options="field:'optDate'">创建时间</th>
