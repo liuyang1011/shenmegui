@@ -780,8 +780,10 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }
         int order = 0;
         List<Ida> input = new ArrayList<Ida>();
+        List<SDA> sdas = new ArrayList<SDA>();
         for (int i = inputIndex; i < outIndex - 1; i++) {
             Ida ida = new Ida();
+            SDA sda = new SDA();
             Row sheetRow = sheet.getRow(i);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);

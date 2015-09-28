@@ -17,7 +17,7 @@
     <legend>条件过滤</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>类别词中文名称</th>
+            <th><nobr>类别词中文名称</nobr></th>
             <td>
                 <input class="easyui-textbox" id="chineseWord"/>
             </td>
@@ -25,16 +25,16 @@
             <td style="display: none">
                 <input class="easyui-textbox" type="text" id="englishWord">
             </td>
-            <th>类别词英文</th>
+            <th><nobr>类别词英文</nobr></th>
             <td>
                 <input class="easyui-textbox" id="esglisgAb"/>
             </td>
-            <th>备注</th>
+            <th><nobr>备注</nobr></th>
             <td>
                 <input class="easyui-textbox" id="remark"/>
             </td>
             <td>
-                <a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
+                <a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em"><nobr>查询</nobr></a>
                 <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
             </td>
         </tr>

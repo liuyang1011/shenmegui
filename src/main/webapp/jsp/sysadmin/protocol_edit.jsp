@@ -92,8 +92,8 @@
 			</td>
 		</tr>
 	</table>
-	<input  type="hidden" id="protocolIdText" value="${protocol.protocolId}" readOnly>
-	<input  type="hidden" id="msgTemplateIdText" value="${protocol.msgTemplateId}" readOnly>
+	<input  type="hidden" id="protocolIdText" value="${protocol.protocolId}" disabled>
+	<input  type="hidden" id="msgTemplateIdText" value="${protocol.msgTemplateId}" disabled>
 </form>
 
 <script type="text/javascript">

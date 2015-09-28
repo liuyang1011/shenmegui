@@ -12,7 +12,7 @@
 				接口ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceIdText" value="${inter.interfaceId }" readOnly>
+				<input class="easyui-textbox" type="text" id="interfaceIdText" value="${inter.interfaceId }" disabled>
 			</td>
 		</tr>
 		<tr>
@@ -55,7 +55,7 @@
 				版本
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="versionText" value="${inter.version.code }" readOnly="true">
+				<input class="easyui-textbox" type="text" id="versionText" value="${inter.version.code }" disabled>
 				<input type="hidden" id="versionId" value="${inter.versionId }" >
 			</td>
 		</tr>

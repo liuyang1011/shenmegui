@@ -188,14 +188,14 @@
 										w:500,
 										iconCls:'icon-add',
 										title:"关联报文头",
-										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId
+										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
 									});
 							}else{
 								alert("请选择要关联的行");
 							}
 
 					 	}
-					 },{
+					 }/*,{
 						text:'导入',
 						iconCls:'icon-save',
 						handler:function(){
@@ -213,7 +213,7 @@
 //							}
 
 						}
-					},{
+					}*/,{
 						text:'导出',
 						iconCls:'icon-save',
 						handler:function(){

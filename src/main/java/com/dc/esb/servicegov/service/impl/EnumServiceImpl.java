@@ -189,8 +189,8 @@ public class EnumServiceImpl extends AbstractBaseService<SGEnum, String> impleme
 	}
 
 	//前端唯一性验证
-	public boolean uniqueValid(String name) {
-		SGEnum entity = findUniqueBy("name",name);
+	public boolean uniqueValid(String key,String value) {
+		SGEnum entity = findUniqueBy(key,value);
 		if (entity != null) {
 			return false;
 		}

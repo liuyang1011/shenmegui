@@ -93,8 +93,8 @@ var interfaceManager = {
     	}
     	uiinit.win({
 			w:500,
-            top:"20px",
-            left:"150px",
+            //top:"20px",
+            //left:"150px",
 			iconCls:'icon-add',
 			title:"编辑报文",
 			url : "/interface/edit/"+sId+"?systemId="+systemId
