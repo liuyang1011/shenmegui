@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.IdaDAOImpl;
 import com.dc.esb.servicegov.dao.impl.InterfaceDAOImpl;
+import com.dc.esb.servicegov.dao.impl.ServiceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.SystemDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.*;
@@ -45,6 +46,8 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     private SystemDAOImpl systemDAO;
     @Autowired
     private IdaDAOImpl idaDAO;
+    @Autowired
+    private ServiceInvokeDAOImpl serviceInvokeDAO;
 
     public HSSFWorkbook genderExcel(String[] interfaceIds, String type,String systemId){
         if(INTERFACE.equals(type)){
@@ -215,7 +218,30 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
             for (int i = 0; i < interList.size(); i++) {
                 HSSFRow row = sheet.createRow(i+1);
                 row.createCell(0).setCellValue(interList.get(i).getInterfaceId());//接口id
-                row.createCell(1).setCellValue(system.getSystemAb());
+                row.createCell(1).setCellValue(system.getSystemAb());//系统
+                String status = "";
+                if(interList.get(i).getStatus() != null){
+                    if(interList.get(i).getStatus().equals(Constants.INTERFACE_STATUS_TC)){
+                        status = "投产";
+                    } else if (interList.get(i).getStatus().equals(Constants.INTERFACE_STATUS_FQ)){
+                        status = "废弃";
+                    }
+                }
+                row.createCell(2).setCellValue(status);//交易状态
+                Map<String ,String > map = new HashMap<String, String>();
+                map.put("interfaceId",interList.get(i).getInterfaceId());
+                map.put("systemId",system.getSystemId());
+                row.createCell(4).setCellValue("修改");//导入模式
+                List<ServiceInvoke> list = serviceInvokeDAO.findBy(map);
+                if(null == list)  continue;
+                String type = "";
+                if(list.get(0).getType().equals(Constants.INVOKE_TYPE_PROVIDER)){
+                    type = "Provider";
+                }else if(list.get(0).getType().equals(Constants.INVOKE_TYPE_CONSUMER)){
+                    type = "Consumer";
+                }
+                row.createCell(3).setCellValue(system.getSystemAb());//接口方向
+
             }
         }catch (Exception e){
             e.printStackTrace();

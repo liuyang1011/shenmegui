@@ -185,7 +185,7 @@
     <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
         <input type="hidden" name="versionId" value="${operation.versionId }" />
         <input type="hidden" name="deleted" value="${operation.deleted }" />
-        <input type="hidden" name="state" value="0" />
+        <input type="hidden" name="state" value="${operation.state }" />
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <th>服务代码</th>

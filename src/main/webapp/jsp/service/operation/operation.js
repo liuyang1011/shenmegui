@@ -54,6 +54,7 @@ function save(formId, operation) {
 
 
     var params = $("#" + formId).serialize();
+    console.log(params);
     params = decodeURIComponent(params, true);
     var processId = parent.parent.PROCESS_INFO.processId;
     params = params + "&processId=" + processId;
@@ -86,6 +87,9 @@ function save(formId, operation) {
                     serviceInvokeList.push(serviceInvoke);
                 }
                 alert("操作成功 ！");
+                //刷新场景
+                //parent.$("#operationList").datagrid("reload");
+
                /* $.ajax({
                     type: "post",
                     async: false,
@@ -103,7 +107,7 @@ function save(formId, operation) {
                 });*/
 
             } else {
-                alert("保存出现异常 ，操作失败！");
+                alert("只有服务定义和修订状态的场景才能修改");
             }
 
         },

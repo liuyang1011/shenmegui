@@ -8,16 +8,20 @@
 <table border="0" cellspacing="0" cellpadding="0">
 
   <tr>
-    <th>服务名</th>
+    <th>服务名称</th>
     <td><input class="easyui-textbox" type="text" id="serviceName" data-options="required:true, validType:['chineseB']"></td>
   </tr>
   <tr>
-    <th>描述</th>
+    <th>服务功能描述</th>
     <td><input class="easyui-textbox" type="text" id="discription" data-options="validType:['chineseB']"></td>
   </tr>
   <tr>
     <th>服务分类</th>
     <td><input class="easyui-textbox" type="text" id="serviceCategory" disabled="disabled"></td>
+  </tr>
+  <tr>
+    <th>服务备注</th>
+    <td><input class="easyui-textbox" type="text" id="remark"></td>
   </tr>
 <tr style="display:none">
     <th>version</th>

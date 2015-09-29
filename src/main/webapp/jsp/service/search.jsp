@@ -128,11 +128,14 @@
                  valueField:'id',
                  data:[
                     {'id':'0','text':'服务定义'},
+                    {'id':'6','text':'待审核'},
                     {'id':'1','text':'审核通过'},
                     {'id':'2','text':'审核不通过'},
                     {'id':'3','text':'已发布'},
                     {'id':'4','text':'已上线'},
-                    {'id':'5','text':'已下线'}
+                    {'id':'5','text':'已下线'},
+                    {'id':'7','text':'修订'}
+
                  ]
                  "
               >
@@ -247,6 +250,12 @@
           }
           if (value == 5) {
               return "<font color='red'>已下线</font>";
+          }
+          if (value == 6) {
+              return "<font color='red'>待审核</font>";
+          }
+          if (value == 7) {
+              return "<font color='green'>修订</font>";
           }
       },
     version: function (value, row, index) {

@@ -819,8 +819,11 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         }
         int order = 0;
         List<Ida> input = new ArrayList<Ida>();
+        List<SDA> sdaInput = new ArrayList<SDA>();
+        List<SDA> sdaOutput = new ArrayList<SDA>();
         for (int i = inputIndex; i < outIndex - 1; i++) {
             Ida ida = new Ida();
+            SDA sda = new SDA();
             Row sheetRow = sheet.getRow(i);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -865,9 +868,60 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 ida.setMetadataId(isNull(cell));
+                sda.setMetadataId(isNull(cell));
+                sda.setStructName(isNull(cell));
             }
-            input.add(ida);
+
+            cellObj = sheetRow.getCell(8);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setStructAlias(isNull(cell));
+            }
+
+            //TODO 本地化修改(第九个类型和长度合并)
+            cellObj = sheetRow.getCell(9);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                cell = isNull(cell).replaceAll("，",",");
+                String[] str = cell.split("[()]+");
+                if(str.length>1){
+                    //DOUBLE(16,2) STRING(6)
+                    String len = str[1];
+                    sda.setType(str[0]);
+                    String[] lenArr = len.split(",");
+                    sda.setLength(lenArr[0]);
+                }else{
+                    //STRUCT
+                    sda.setType(isNull(cell));
+                    sda.setLength(isNull(cell));
+                }
+            }
+
+            //约束条件
+            cellObj = sheetRow.getCell(10);
+            if(cellObj != null){
+                String cell = tools.getCellContent(cellObj);
+                sda.setConstraint(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(11);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setRequired(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(12);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                String remark = isNull(cell);
+                if("start".equalsIgnoreCase(remark)) {
+                    sda.setMetadataId("");
+                }
+                sda.setRemark(remark);
+            }
+            sda.setSeq(order);
             ida.setSeq(order);
+            input.add(ida);
+            sdaInput.add(sda);
             order++;
         }
 
@@ -875,6 +929,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         List<Ida> output = new ArrayList<Ida>();
         for (int j = outIndex; j <= end; j++) {
             Ida ida = new Ida();
+            SDA sda = new SDA();
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -930,9 +985,60 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                         //return null;
                     }
                 }
+                sda.setMetadataId(isNull(cell));
+                sda.setStructName(isNull(cell));
             }
-            output.add(ida);
+
+            cellObj = sheetRow.getCell(8);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setStructAlias(isNull(cell));
+            }
+
+            //TODO 本地化修改(第九个类型和长度合并)
+            cellObj = sheetRow.getCell(9);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                cell = isNull(cell).replaceAll("，",",");
+                String[] str = cell.split("[()]+");
+                if(str.length>1){
+                    //DOUBLE(16,2) STRING(6)
+                    String len = str[1];
+                    sda.setType(str[0]);
+                    String[] lenArr = len.split(",");
+                    sda.setLength(lenArr[0]);
+                }else{
+                    //STRUCT
+                    sda.setType(isNull(cell));
+                    sda.setLength(isNull(cell));
+                }
+            }
+
+            //约束条件
+            cellObj = sheetRow.getCell(10);
+            if(cellObj != null){
+                String cell = tools.getCellContent(cellObj);
+                sda.setConstraint(isNull(cell));
+            }
+
+            cellObj = sheetRow.getCell(11);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                sda.setRequired(isNull(cell));
+            }
+            cellObj = sheetRow.getCell(12);
+            if (cellObj != null) {
+                String cell = tools.getCellContent(cellObj);
+                String remark = isNull(cell);
+                if("start".equalsIgnoreCase(remark)) {
+                    sda.setMetadataId("");
+                }
+                sda.setRemark(remark);
+            }
             ida.setSeq(order);
+            sda.setSeq(order);
+            output.add(ida);
+            sdaOutput.add(sda);
             order++;
         }
 
@@ -942,6 +1048,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         }
         resMap.put("input", input);
         resMap.put("output", output);
+        resMap.put("sdaInput",sdaInput);
+        resMap.put("sdaOutput",sdaOutput);
 
         return resMap;
     }

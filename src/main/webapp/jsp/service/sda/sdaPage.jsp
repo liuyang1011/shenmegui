@@ -61,7 +61,7 @@ var delIds = [];
 		}
 		
 		function append(){
-			var uuid = new Date().getTime();
+			var uuid = "" + new Date().getTime();
 			var node = $('#tg').treegrid('getSelected');
 			if(node.text == "root" && node.parentId == null){
 				alert("请选择其他节点！");
@@ -77,8 +77,16 @@ var delIds = [];
 			editingId = uuid;
 			newIds.push(uuid);
 			$('#tg').treegrid('reloadFooter');
-			$('#tg').treegrid('beginEdit', uuid);
+//			$('#tg').treegrid('beginEdit', uuid);
 			$('#tg').treegrid('select',uuid);
+			var tempNode = $('#tg').treegrid('getSelected');
+//			tempNode = node;
+			$('#tg').treegrid('beginEdit', uuid);
+//			tempNode.text =  "cs";
+//			$('#tg').treegrid('endEdit', uuid);
+//			$('#tg').treegrid('reload',{id:uuid, text:'mikel'});
+//			{'name':'mikel'})
+
 		}
 		function saveSDA(){
 			if (!confirm("确定保存吗？")) {
@@ -128,7 +136,10 @@ var delIds = [];
 			        	 	alert("保存成功");
 							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
 			        	 	//t.treegrid('reload');
-			        	 }
+			        	 }else{
+							 alert("只有服务定义状态和修订状态能进行修改");
+							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+						 }
 			            }
 				 });
 			}
@@ -271,6 +282,7 @@ var delIds = [];
 		node2.text =  record.metadataId;
 		node2.append1 = record.chineseName;
 		node2.append2 = record.formula;
+		node2.append4 = record.metadataId;
 		$('#tg').treegrid('refreshRow',node2.id);
 	}
 </script>
@@ -319,7 +331,7 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{required:true,validType:['chineseB']}}" <%--readOnly="true"--%>>字段名</th>
+				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{validType:['englishB']}}">字段名</th>
 				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
 				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>

@@ -23,10 +23,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<thead>
 	<tr>
 		<th field="slaId" width="100" editor="text" data-options="hidden:true"  >ID</th>
-		<th field="slaName" width="100" editor="text" align="center">SLA指标</th>
-		<th field="slaValue" width="150" align="center" editor="text">取值范围</th>
-		<th field="slaDesc" width="150" align="center" editor="text">描 述</th>
-		<th field="slaRemark" width="150" align="center" editor="text">备 注</th>
+		<th field="slaName" width="150" editor="{type:'validatebox',options:{required:true,validType:['chineseB']}}" align="left">SLA指标</th>
+		<th field="slaValue" width="150" align="left" editor="text">取值范围</th>
+		<th field="slaDesc" width="400" align="left" editor="text">描 述</th>
+		<th field="slaRemark" width="250" align="left" editor="text">备 注</th>
 		<th field="slaTemplateId" width="100" editor="text" data-options="hidden:true"  >模板</th>
 	</tr>
 	</thead>
@@ -43,6 +43,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript"
 		src="/assets/sla/js/slaManager.js"></script>
 		<script type="text/javascript" src="/assets/slaTemplate/js/slaTemplateManager.js"></script>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 	var serviceId = "${param.serviceId}";
 	var operationId = "${param.operationId}";

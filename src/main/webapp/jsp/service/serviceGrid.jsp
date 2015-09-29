@@ -126,6 +126,9 @@
             if (value == 6) {
                 return "<font color='red'>待审核</font>";
             }
+            if (value == 7) {
+                return "<font color='red'>修订</font>";
+            }
         },
         version: function (value, row, index) {
             try {
@@ -191,6 +194,11 @@
                     return false;
                 }
                 else {
+                    if( checkedItems[0].optState != 0 &&  checkedItems[0].optState != 7){
+                        alert("只有服务定义和修订状态的场景才能修改");
+                        return false;
+                    }
+
                     var urlPath = "/operation/editPage?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;
                     var opeEditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
                     selectTab('服务场景', opeEditContent);
@@ -208,7 +216,15 @@
         text: '删除',
         iconCls: 'icon-remove',
         handler: function () {
+            var flag = true;
             var checkedItems = $('#operationList').datagrid('getChecked');
+            $.each(checkedItems, function (index, item) {
+                if(item.optState == 3 && item.optState != 4){
+                    alert("已上线和已发布的场景不能删除！");
+                    flag = false;
+                }
+            });
+            if(flag == false) return;
             if (checkedItems != null && checkedItems.length > 0) {
                 if (confirm("确定要删除已选中的" + checkedItems.length + "项吗？一旦删除无法恢复！")) {
                     var ids = [];
@@ -357,6 +373,41 @@
                     title: '服务场景审核',
                     content: opeAuditContent,
                     closable: true
+                });
+            }
+        },
+        {
+            text: '修订',
+            iconCls: 'icon-audit',
+            handler: function () {
+                //审核通过，已上线，已发布 可以变为修订状态
+                var url = "";
+                var items = $('#operationList').datagrid('getSelections');
+                if (items != null && items.length > 0) {
+                    for(var i = 0; i < items.length; i++){
+                        if(items[i].optState == 1 || items[i].optState == 3 || items[i].optState == 4){
+
+                        }else{
+                            alert("审核通过，已上线，已发布状态的服务才能进行修订");
+                            return;
+                        }
+                    }
+                }
+                if (!confirm("确定要修订吗？")) {
+                    return;
+                }
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/operation/revise",
+                    "data": JSON.stringify(items),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result){
+                            $('#operationList').datagrid('reload');
+                        }
+                    }
                 });
             }
         },

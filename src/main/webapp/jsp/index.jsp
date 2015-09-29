@@ -57,13 +57,23 @@
         <a href="javascript:;">帮助</a>
     </div>
 </div>
-<div data-options="region:'west',collapsible:true,title:'菜单',split:true,border:true"
+<%--<div data-options="region:'west',collapsible:true,title:'菜单',split:true,border:true"
      class="west-menu" id="west-menu">
 
+</div>--%>
+<div data-options="region:'west',collapsible:true,title:'菜单'"
+     class="west-menu" id="west-menu" split="true">
+
 </div>
-<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
+
+<div region="center">
+    <div id="mainContentTabs" class="easyui-tabs" fit="true" border="false" plain="true">
+    </div>
+</div>
+
+<%--<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
      class="easyui-tabs " id="mainContentTabs">
-</div>
+</div>--%>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/app.js"></script>

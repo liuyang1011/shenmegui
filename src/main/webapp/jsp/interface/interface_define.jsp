@@ -67,11 +67,17 @@
             text: '保存',
             iconCls: 'icon-save',
             handler: function () {
-
+                for (var i = 0; i < addArray.length; i++) {
+                    $('#tg').treegrid('endEdit', addArray[i]);
+                    if(!$("#tg").treegrid('validateRow',addArray[i])){
+                        alert("请正确输入必输项");
+                        return false;
+                    }
+                }
                 var reqAry = [];
                 for (var i = 0; i < addArray.length; i++) {
 
-                    $('#tg').treegrid('endEdit', addArray[i]);
+//                    $('#tg').treegrid('endEdit', addArray[i]);
                     var row = $('#tg').treegrid('find', addArray[i]);
                     if (row) {
                         var structName = row.structName;
@@ -514,17 +520,17 @@
     <thead>
     <tr>
         <th
-                data-options="field:'structName',width:120,align:'left',editor:'text'">
+                data-options="field:'structName',width:120,align:'left'" editor="{type:'textbox',options:{required:true,validType:['englishB']}}">
             字段名称
         </th>
         <th
-                data-options="field:'structAlias',width:90,align:'left',editor:'text'">
+                data-options="field:'structAlias',width:90,align:'left'" editor="{type:'textbox',options:{required:true,validType:['chineseB']}}">
             字段别名
         </th>
-        <th data-options="field:'type',width:80,editor:'text'">
+        <th data-options="field:'type',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['englishB']}}">
             类型
         </th>
-        <th data-options="field:'length',width:80,editor:'text'">
+        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox',options:{required:true,validType:['intOrFloat']}}">
             长度
         </th>
         <%--<th data-options="field:'metadataId',width:100,editor:'text'">
@@ -533,7 +539,7 @@
         <%--<th data-options="field:'scale',width:100,editor:'text'">
             精度
         </th>--%>
-        <th data-options="field:'required',width:50,editor:'text'">
+        <th data-options="field:'required',width:50" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">
             是否必须
         </th>
         <th data-options="field:'remark',width:100,editor:'text'">
@@ -546,5 +552,5 @@
     </thead>
 </table>
 <div id="releaseDlg" class="easyui-dialog" closed="true" resizable="true"></div>
-<script type="text/javascript">
+<script type="text/javascript" src="/plugin/validate.js"></script>
 </html>
