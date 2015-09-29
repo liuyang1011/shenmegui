@@ -205,7 +205,7 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
 
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -218,7 +218,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -232,7 +232,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -246,7 +246,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//LOAD_URL.SYSADMINUI+
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -260,7 +260,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid + '"  style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid +'&_t='+new Date().getTime()+ '"  style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -276,7 +276,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp?systemId=' + systemNode.id + '"  style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp?systemId=' + systemNode.id+'&_t='+new Date().getTime() + '"  style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -291,7 +291,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -329,7 +329,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/dom.html" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/dom.html'+'?_t='+new Date().getTime()+'" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -342,7 +342,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -368,7 +368,7 @@ var SYSMENU = {
                         if (node.type == 'root') {
                             return;
                             var title = "服务检索";
-                            var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
@@ -385,7 +385,7 @@ var SYSMENU = {
                                 if ($('#mainContentTabs').tabs('exists', title)) {
                                     $('#mainContentTabs').tabs('select', title);
                                 } else {
-                                    var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id + '" style="width:100%;height:98%;"></iframe>';
+                                    var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                     $('#mainContentTabs').tabs('add', {
                                         title: title,
                                         content: content,
@@ -465,7 +465,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + url+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -481,7 +481,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//LOAD_URL.SYSADMINUI+
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -561,7 +561,7 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
 
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -574,7 +574,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -588,7 +588,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -602,7 +602,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//LOAD_URL.SYSADMINUI+
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id +'&_t='+new Date().getTime()+ '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -616,7 +616,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid + '"  style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid+'&_t='+new Date().getTime() + '"  style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -633,7 +633,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -667,7 +667,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -697,7 +697,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id +'&_t='+new Date().getTime()+ '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -777,7 +777,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + url+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -793,7 +793,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//LOAD_URL.SYSADMINUI+
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -872,7 +872,7 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
 
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -885,7 +885,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -899,7 +899,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACELIST + '?systemId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -913,7 +913,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//LOAD_URL.SYSADMINUI+
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -927,7 +927,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid + '"  style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/system_protocol.jsp?protocolId=' + mid+'&_t='+new Date().getTime() + '"  style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -946,7 +946,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {//SYSADMINUIEDIT
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.INTERFACEDEFINE + '?interfaceId=' + mid+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -985,7 +985,7 @@ var SYSMENU = {
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
                         } else {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/index.jsp?systemId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
@@ -1015,7 +1015,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
-                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
@@ -1066,7 +1066,7 @@ var SYSTABMENU = {
 
 
             if (result.success) {
-                var content = '<iframe scrolling="auto" frameborder="0"  src="' + result.url + '" style="width:100%;height:98%;"></iframe>';
+                var content = '<iframe scrolling="auto" frameborder="0"  src="' + result.url+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
                 $('#mainContentTabs').tabs('add', {
                     title: result.title,
                     content: content,

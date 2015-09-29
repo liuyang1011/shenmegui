@@ -7,10 +7,7 @@ import java.lang.*;
 import java.lang.System;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 @Entity
@@ -71,12 +68,19 @@ public class SDA implements Serializable {
 	@Column(name = "REQUIRED", length = 50)
 	private String required;
 
+
 	@Column(name = "ARG_TYPE", length = 50)
 	//参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
 	private String argType;
 
 	@Column(name = "CONSTRAINT_ALIAS")
 	private String constraint;//约束条件 如：SYS_HEAD  APP_HEAD
+
+	private String xPath;//唯一路径，=父节点的xPath + sdaId
+
+	@ManyToOne()
+	@JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
+	private SDA parent;
 
 	public String getConstraint() {
 		return constraint;
@@ -230,4 +234,19 @@ public class SDA implements Serializable {
 		this.argType = argType;
 	}
 
+	public SDA getParent() {
+		return parent;
+	}
+
+	public void setParent(SDA parent) {
+		this.parent = parent;
+	}
+
+	public String getxPath() {
+		return this.parent.getxPath() + "/" + this.metadataId;
+	}
+
+	public void setxPath(String xPath) {
+		this.xPath = xPath;
+	}
 }

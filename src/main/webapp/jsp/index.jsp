@@ -57,10 +57,6 @@
         <a href="javascript:;">帮助</a>
     </div>
 </div>
-<%--<div data-options="region:'west',collapsible:true,title:'菜单',split:true,border:true"
-     class="west-menu" id="west-menu">
-
-</div>--%>
 <div data-options="region:'west',collapsible:true,title:'菜单'"
      class="west-menu" id="west-menu" split="true">
 

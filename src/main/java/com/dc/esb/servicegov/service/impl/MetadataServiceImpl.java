@@ -8,7 +8,9 @@ import com.dc.esb.servicegov.dao.impl.CategoryWordDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -33,6 +35,8 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     private CategoryWordDAOImpl categoryWordDAO;
     @Autowired
     private OperationServiceImpl operationServiceImpl;
+    @Autowired
+    private VersionServiceImpl versionService;
 
     public List<Metadata> getAllMetadata() {
     	List<Metadata> list = metadataDAOImpl.getAll();
@@ -168,11 +172,15 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
         metadata.setOptUser(userName);
 		metadata.setOptDate(DateUtils.format(new Date()));
         metadataDAOImpl.save(metadata);
+        String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);
+        metadata.setVersionId(versionId);
+        metadataDAOImpl.save(metadata);
         return true;
     }
 
     public boolean modifyMetadata(Metadata metadata) {
         metadataDAOImpl.save(metadata);
+        versionService.editVersion(metadata.getVersionId());
         return true;
     }
 
@@ -391,7 +399,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
             setDataSource(md.getDataSource());
             setTemplateId(md.getTemplateId());
             setStatus(md.getStatus());
-            setVersion(md.getVersion());
+            setVersion(md.getVersion().getCode());
             setOptUser(md.getOptUser());
             setOptDate(md.getOptDate());
             setAuditUser(md.getAuditUser());
