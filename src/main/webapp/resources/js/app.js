@@ -247,6 +247,7 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//LOAD_URL.SYSADMINUI+
                                 var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
+
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
