@@ -26,7 +26,7 @@
   <legend>条件搜索</legend>
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <th>服务代码</th>
+      <th><nobr>服务代码</nobr></th>
       <td><input name="serviceId" id="serviceId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
@@ -48,7 +48,7 @@
                  "
                   >
       </td>
-      <th>服务名称</th>
+      <th><nobr>服务名称</nobr></th>
       <td><input name="serviceName" id="serviceName"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
@@ -67,7 +67,7 @@
                  "
               >
       </td>
-      <th>服务功能描述</th>
+      <th><nobr>服务功能描述</nobr></th>
       <td><input class="easyui-textbox" style="width:100px"
                  type="text" name="desc" id="serviceDesc">
       </td>
@@ -77,7 +77,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>场景代码</th>
+      <th><nobr>场景代码</nobr></th>
       <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
@@ -96,7 +96,7 @@
                  "
               >
       </td>
-      <th>场景名称</th>
+      <th><nobr>场景名称</nobr></th>
       <td>
         <input name="operationName" id="operationName"  class="easyui-combobox" style="width:150px"
                data-options="
@@ -116,11 +116,11 @@
                  "
                 >
       </td>
-      <th>场景功能描述</th>
+      <th><nobr>场景功能描述</nobr></th>
       <td><input class="easyui-textbox" style="width:100px"
                  type="text" name="operationDesc" id="operationDesc">
       </td>
-      <th>场景状态</th>
+      <th><nobr>场景状态</nobr></th>
       <td><input class="easyui-combobox" style="width:100px"
                  type="text" name="operationState" id="operationState"
                  data-options="
@@ -142,7 +142,7 @@
       </td>
       </tr>
     <tr>
-      <th>提供者</th>
+      <th><nobr>提供者</nobr></th>
         <td><input name="providerId" id="providerId"  class="easyui-combobox" style="width:150px"
                    data-options="
                  method:'get',
@@ -155,7 +155,7 @@
                  "
                 >
         </td>
-      <th>消费者</th>
+      <th><nobr>消费者</nobr></th>
         <td><input name="consumerId" id="consumerId"  class="easyui-combobox" style="width:150px"
                    data-options="
                  method:'get',
@@ -177,8 +177,10 @@
       </th>
       <td></td>
       <th style="width:200px">
+          <nobr>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
           <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+          </nobr>
       </th>
       <td></td>
 

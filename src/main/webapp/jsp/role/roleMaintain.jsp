@@ -19,13 +19,13 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>角色代码</th>
+            <th><nobr>角色代码</nobr></th>
             <td><input class="easyui-textbox" type="text" name="Id" id="Id">
             </td>
-            <th>角色名称</th>
+            <th><nobr>角色名称</nobr></th>
             <td><input class="easyui-textbox" type="text" name="Name" id="Name">
             </td>
-            <th>角色描述</th>
+            <th><nobr>角色描述</nobr></th>
             <td><input class="easyui-textbox" type="text" name="Remark" id="Remark">
             </td>
         </tr>

@@ -134,25 +134,25 @@
 		<div>
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<th>服务代码</th>
+					<th><nobr>服务代码</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="1" id="1"
 						value="${service.serviceId }" disabled="disabled">
 					</td>
-					<th>服务名称</th>
+					<th><nobr>服务名称</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="2" id="2"
 						value="${service.serviceName }" disabled="disabled">
 					</td>
-					<th>场景号</th>
+					<th><nobr>场景号</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="3" id="3"
 						value="${operation.operationId }" disabled="disabled">
 					</td>
-					<th>场景名称</th>
+					<th><nobr>场景名称</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="4" id="4"
 						value="${operation.operationName }" disabled="disabled">
 					</td>
 				</tr>
 				<tr>
-					<th>映射关系列表</th>
+					<th><nobr>映射关系列表</nobr></th>
 					<td></td>
 				</tr>
 			</table>

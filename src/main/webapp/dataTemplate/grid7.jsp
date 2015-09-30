@@ -16,9 +16,9 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
         <tr>
-            <th>元数据名称</th>
+            <th><nobr>元数据名称</nobr></th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
-            <th>中文名称</th>
+            <th><nobr>中文名称</nobr></th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="chineseName" id="chineseName">
             </td>
            <%-- <th>英文名称</th>--%>
@@ -27,7 +27,7 @@
             <%--<th style="text-align:right">别名</th>--%>
             <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
             </td>
-            <th>类别词</th>
+            <th><nobr>类别词</nobr></th>
             <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px"
                        class="easyui-combobox"
                        data-options="
@@ -41,11 +41,11 @@
 					"></td>
         </tr>
         <tr>
-            <th> 创建人</th>
+            <th><nobr> 创建人</nobr></th>
             <td><input class="easyui-textbox" style="width:100px" type="text" name="optUser" id="optUser"></td>
-            <th> 创建起始日期</th>
+            <th><nobr> 创建起始日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
-            <th> 创建结束日期</th>
+            <th><nobr> 创建结束日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
             <td align="right">
                 <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>

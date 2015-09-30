@@ -17,13 +17,13 @@
 		<legend>条件搜索</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<th>代码名称</th>
+				<th><nobr>代码名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="name">
 				</td>
-				<th>中文名称</th>
+				<th><nobr>中文名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="remark">
 				</td>
-				<th>是否标准代码</th>
+				<th><nobr>是否标准代码</nobr></th>
 				<td><select id="isStandard" editable="false" 
 					panelHeight="auto" style="width:140px">
 				</select>
@@ -32,10 +32,10 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<th>主代码数据来源</th>
+				<th><nobr>主代码数据来源</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="dataSource">
 				</td>
-				<th>代码状态</th>
+				<th><nobr>代码状态</nobr></th>
 				<td><select id="status" editable="false" panelHeight="auto" style="width:140px">
 				</select>
 				</td>

@@ -88,7 +88,7 @@
     <td>
       <input id="keyValue" class="easyui-textbox" type="text" name="name" ></td>
    
-    <td><a href="#" onclick="verionHisSearch()" class="easyui-linkbutton" plain="true" iconcls="icon-search">过滤</a></td>
+    <td><a href="#" onclick="verionHisSearch()" class="easyui-linkbutton" iconcls="icon-search">过滤</a></td>
 
   </tr>
 </table>

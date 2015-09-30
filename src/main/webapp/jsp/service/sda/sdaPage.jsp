@@ -298,15 +298,15 @@ var delIds = [];
  <legend>条件搜索</legend>
 <table border="0" cellspacing="0" cellpadding="0">
   <tr style="width:100%;">
-     <th>服务代码</th>
+     <th><nobr>服务代码</nobr></th>
     <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" style="width:100px"></td>
-    <th>服务名称</th>
+    <th><nobr>服务名称</nobr></th>
     <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }"  style="width:250px"></td>
-     <th>场景号</th>
+     <th><nobr>场景号</nobr></th>
     <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }"   style="width:50px"></td>
- 	 <th>场景名称</th>
+ 	 <th><nobr>场景名称</nobr></th>
         <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }"  style="width:250px"></td>
-	  <th>版本</th>
+	  <th><nobr>版本</nobr></th>
 	  <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.version.code }"  style="width:50px"></td>
   </tr>
 

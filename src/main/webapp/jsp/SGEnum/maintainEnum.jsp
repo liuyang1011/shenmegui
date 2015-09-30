@@ -17,40 +17,40 @@
 		<legend>主代码信息</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr style="display:none">
-				<th>代码id</th>
+				<th><nobr>代码id</nobr></th>
 				<td><input class="easyui-textbox" type="text" name="name" id="id"
 					value="${master.id}">
 				</td>
 			</tr>
 			<tr>
-				<th>代码名称</th>
+				<th><nobr>代码名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" name="name" id="name"
 					value="${master.name}">
 				</td>
 			
-				<th>是否标准代码</th>
+				<th><nobr>是否标准代码</nobr></th>
 				<td><select id="isStandard" 
 					panelHeight="auto" style="width:140px">
 				</select>
 				</td>
 				
-				<th>代码状态</th>
+				<th><nobr>代码状态</nobr></th>
 				<td><select id="status" panelHeight="auto" style="width:140px">
 				</select>
 				</td>
 			</tr>
 			<tr>
-				<th>数据来源</th>
+				<th><nobr>数据来源</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="dataSource"
 					value="${master.dataSource}">
 				</td>
 				
-				<th>代码版本</th>
+				<th><nobr>代码版本</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="version"
 					value="${master.version}">
 				</td>
 				
-				<th>备注</th>
+				<th><nobr>备注</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="remark"
 					value="${master.remark}">
 				</td>
@@ -60,8 +60,9 @@
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>
+				<td><nobr>
 					<a href="#" onclick="save()" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+					</nobr>
 				</td>
 			</tr>
 		</table>

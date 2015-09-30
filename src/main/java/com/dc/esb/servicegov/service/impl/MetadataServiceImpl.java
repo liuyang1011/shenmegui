@@ -399,7 +399,9 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
             setDataSource(md.getDataSource());
             setTemplateId(md.getTemplateId());
             setStatus(md.getStatus());
-            setVersion(md.getVersion().getCode());
+            //TZB没有version
+            if(null != md.getVersion())
+                setVersion(md.getVersion().getCode());
             setOptUser(md.getOptUser());
             setOptDate(md.getOptDate());
             setAuditUser(md.getAuditUser());

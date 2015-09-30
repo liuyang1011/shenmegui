@@ -32,31 +32,34 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>服务代码</th>
+            <th><nobr>服务代码</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceId" value="${entity.serviceId }">
             </td>
-            <th>服务名称</th>
+            <th><nobr>服务名称</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceName" value="${entity.serviceName }">
             </td>
-            <th>服务备注</th>
+            <th><nobr>服务备注</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="remark" value="${entity.remark }">
             </td>
         </tr>
         <tr>
-            <th>服务功能描述</th>
+            <th><nobr>服务功能描述</nobr></th>
             <td colspan="7"><input class="easyui-textbox" disabled="true" style="width:100%" type="text" name="desc" value="${entity.desc }"></td>
         </tr>
         <tr>
-            <th>服务标签</th>
-            <td>
+            <th><nobr>服务标签</nobr></th>
+            <td><nobr>
                 <ul id="tags"></ul>
+                </nobr>
             </td>
 
             <th>
+                <nobr>
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+                </nobr>
             </th>
             <td>&nbsp;</td>
         </tr>
