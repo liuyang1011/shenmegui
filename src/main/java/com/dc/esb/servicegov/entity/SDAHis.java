@@ -68,7 +68,13 @@ public class SDAHis implements Serializable {
 	
 	@Column(name = "type")
 	private String type;
-	
+
+	@Column(name = "LENGTH", length = 50)
+	private String length;
+
+	@Column(name = "REQUIRED", length = 50)
+	private String required;
+
 	public SDAHis(){
 		
 	}
@@ -91,6 +97,8 @@ public class SDAHis implements Serializable {
 		this.headId = sda.getHeadId();
 		this.version = sda.getVersion();
 		this.type = sda.getType();
+		this.length = sda.getLength();
+		this.required = sda.getRequired();
 	}
 
 
@@ -229,5 +237,21 @@ public class SDAHis implements Serializable {
 
 	public void setSeq(int seq) {
 		this.seq = seq;
+	}
+
+	public String getLength() {
+		return length;
+	}
+
+	public void setLength(String length) {
+		this.length = length;
+	}
+
+	public String getRequired() {
+		return required;
+	}
+
+	public void setRequired(String required) {
+		this.required = required;
 	}
 }

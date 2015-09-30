@@ -20,19 +20,19 @@
 <fieldset>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>服务代码</th>
+            <th><nobr>服务代码</nobr></th>
             <td><input class="easyui-textbox" type="text" name="1" id="1" value="${service.serviceId }"
                        disabled="disabled">
             </td>
-            <th>服务名称</th>
+            <th><nobr>服务名称</nobr></th>
             <td><input class="easyui-textbox" type="text" name="2" id="2" value="${service.serviceName }"
                        disabled="disabled">
             </td>
-            <th>场景号</th>
+            <th><nobr>场景号</nobr></th>
             <td><input class="easyui-textbox" type="text" name="3" id="3" value="${operation.operationId }"
                        disabled="disabled">
             </td>
-            <th>场景名称</th>
+            <th><nobr>场景名称</nobr></th>
             <td><input class="easyui-textbox" type="text" name="4" id="4" value="${operation.operationName }"
                        disabled="disabled">
             </td>
@@ -41,18 +41,18 @@
 
 
 </fieldset>
-<table id="sla" style="height:370px; width:auto;" title="服务SLA">
+<table id="sla" style="height:470px; width:auto;" title="服务SLA">
     <thead>
     <tr>
         <th field="slaId" width="100" editor="text"
             data-options="hidden:true">ID
         </th>
-        <th field="slaName" width="100" editor="text" align="center">SLA指标</th>
-        <th field="slaValue" width="150" align="center" editor="text">取值范围</th>
-        <th field="slaDesc" width="150" align="center" editor="text">描
+        <th field="slaName" width="150" editor="{type:'validatebox',options:{required:true,validType:['chineseB']}}" align="left">SLA指标</th>
+        <th field="slaValue" width="150" align="left" editor="{type:'validatebox'}">取值范围</th>
+        <th field="slaDesc" width="400" align="left" editor="{type:'validatebox'}">描
             述
         </th>
-        <th field="slaRemark" width="150" align="center" editor="text">备
+        <th field="slaRemark" width="150" align="left" editor="text">备
             注
         </th>
     </tr>
@@ -69,6 +69,7 @@
 <script type="text/javascript" src="/plugin/json/json2.js"></script>
 <script type="text/javascript" src="/assets/sla/js/slaManager.js"></script>
 <script type="text/javascript" src="<%=basePath %>/assets/sla/js/slaPage.js"></script>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 		var serviceId = "${service.serviceId}";
 		var operationId = "${operation.operationId}";
@@ -105,6 +106,10 @@
 			handler : function() {
 			for ( var per in editedRows) {
 				$("#sla").datagrid('endEdit', editedRows[per]);
+				if(!$("#sla").datagrid('validateRow',editedRows[per])){
+					alert("请以正确格式输入必输项");
+					return false;
+				}
 			}
 			var editData = $("#sla").datagrid('getChanges');
 				slaManager.add(editData,serviceId,operationId,function(result){
@@ -118,7 +123,7 @@
 
 			}
 		}, {
-			text : 'SLA模板',
+			text : 'SLA模版',
 			iconCls : 'icon-qxfp',
 			handler : function() {
 				uiinit.win({

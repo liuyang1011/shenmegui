@@ -129,7 +129,8 @@
 				var systemId;
 				var selectNode = $('.msinterfacetree').tree("getSelected");
 				if(selectNode){
-					systemId = selectNode.id;
+					var systemNode =  $('.msinterfacetree').tree("getParent",selectNode.target);
+					systemId = systemNode.id;
 					if(systemId){
 						$.ajax({
 							type: "GET",

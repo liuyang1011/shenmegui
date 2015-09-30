@@ -52,7 +52,7 @@
 
 <script type="text/javascript">
 	var systemId="<%=systemId%>";
-	if(systemId!= ""){
+	if(systemId!= "" && systemId != "null"){
 		$(document).ready(function(){
 			$('#systemId').combobox({
 //				url:'/system/getSystemAll',
@@ -82,7 +82,7 @@
 	}
 
 	function save(){
-		var processId = parent.PROCESS_INFO.processId;
+		var processId = parent.parent.PROCESS_INFO.processId;
 		if(processId){
 			$("#fileform").attr("action", "/fileManager/addfile/" +processId);
 		}

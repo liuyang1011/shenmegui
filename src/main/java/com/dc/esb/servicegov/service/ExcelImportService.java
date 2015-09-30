@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ExcelImportService {
     public List executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap);
 
-    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,String systemId);
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,ExcelImportServiceImpl.IndexDO indexDO);
 
 
     public boolean existSystem(String systemId);

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 @Controller
@@ -405,6 +407,37 @@ public class EnumController {
         result.put("total", rows.size());
         result.put("rows", rows);
         return result;
+    }
+
+    /**
+     * 主代码name唯一性验证
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueValid(String name) {
+        return enumService.uniqueValid("name",name);
+    }
+
+    /**
+     * 主代码name唯一性验证
+     *
+     * @param remark
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueChineseName", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueChineseName(String remark) {
+        try {
+            remark = URLDecoder.decode(URLDecoder.decode(remark, "utf-8"), "utf-8");
+        }catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return enumService.uniqueValid("remark",remark);
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

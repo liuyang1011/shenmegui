@@ -34,6 +34,10 @@ var delIds = [];
 		}
 		function removeIt(){
 			var node = $('#tg').treegrid('getSelected');
+			if(node.text == "root" && node.parentId == null){
+				alert("请选择其他节点！");
+				return false;
+			}
 			if (node){
 				delIds.push(node.id);
 				$('#tg').treegrid('remove', node.id);
@@ -41,6 +45,10 @@ var delIds = [];
 		}
 		function editIt(){
 				var row = $('#tg').treegrid('getSelected');
+				if(row.text == "root" && row.parentId == null){
+					alert("请选择其他节点！");
+					return false;
+				}
 				
 				if (row){
 					editingId = row.id
@@ -53,9 +61,9 @@ var delIds = [];
 		}
 		
 		function append(){
-			var uuid = new Date().getTime();
+			var uuid = "" + new Date().getTime();
 			var node = $('#tg').treegrid('getSelected');
-			if(node.text == "root"){
+			if(node.text == "root" && node.parentId == null){
 				alert("请选择其他节点！");
 				return false;
 			}
@@ -69,9 +77,21 @@ var delIds = [];
 			editingId = uuid;
 			newIds.push(uuid);
 			$('#tg').treegrid('reloadFooter');
+//			$('#tg').treegrid('beginEdit', uuid);
+			$('#tg').treegrid('select',uuid);
+			var tempNode = $('#tg').treegrid('getSelected');
+//			tempNode = node;
 			$('#tg').treegrid('beginEdit', uuid);
+//			tempNode.text =  "cs";
+//			$('#tg').treegrid('endEdit', uuid);
+//			$('#tg').treegrid('reload',{id:uuid, text:'mikel'});
+//			{'name':'mikel'})
+
 		}
 		function saveSDA(){
+			if (!confirm("确定保存吗？")) {
+				return;
+			}
 			if (!$("#sdaForm").form('validate')) {
                 return false;
             }
@@ -116,7 +136,10 @@ var delIds = [];
 			        	 	alert("保存成功");
 							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
 			        	 	//t.treegrid('reload');
-			        	 }
+			        	 }else{
+							 alert("只有服务定义状态和修订状态能进行修改");
+							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+						 }
 			            }
 				 });
 			}
@@ -176,9 +199,9 @@ var delIds = [];
 			            }
 				});
 			}
-			
+
 		}
-		
+
 		function moveDown(){
 			var node = $('#tg').treegrid('getSelected');
 			if(node != null){
@@ -202,7 +225,43 @@ var delIds = [];
 			            }
 				});
 			}
-			
+
+		}
+		function selectTab(title, content) {
+			var exsit = parent.$('#subtab').tabs('getTab', title);
+			if (exsit == null) {
+				parent.$('#subtab').tabs('add', {
+					title: title,
+					content: content
+				});
+			} else {
+				parent.$('#subtab').tabs('update', {
+					tab: exsit,
+					options: {
+						content: content
+					}
+				});
+			}
+		}
+		//跳转到对比页面
+		function comparePage(){
+			$.ajax({
+				type: "get",
+				async: false,
+				url: "/versionHis/judgeVersionHis?versionId=${operation.versionId}",
+				dataType: "json",
+				success: function (data) {
+					if(data.autoId != null){
+						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1=${operation.versionId }&type=0&versionId2="+data.autoId;
+						var opeDetailContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+						selectTab('${operation.operationName }-场景对比', opeDetailContent);
+						parent.$('#subtab').tabs('select', '场景对比');
+					}else{
+						alert("没有历史版本可以对比!");
+					}
+				}
+			});
+
 		}
 		$.extend($.fn.validatebox.defaults.rules, {
                         unique: {
@@ -215,6 +274,17 @@ var delIds = [];
                             message: '新建节点名称不能为“root、request、response”'
                         }
                     });
+	//选择元数据自动更新其他数据
+	function comboboxSelect(record){
+		var node = $('#tg').treegrid('getSelected');
+		$('#tg').treegrid('endEdit', node.id);
+		var node2 = $('#tg').treegrid('getSelected');
+		node2.text =  record.metadataId;
+		node2.append1 = record.chineseName;
+		node2.append2 = record.formula;
+		node2.append4 = record.metadataId;
+		$('#tg').treegrid('refreshRow',node2.id);
+	}
 </script>
 </head>
 <body >
@@ -227,16 +297,17 @@ var delIds = [];
 <fieldset>
  <legend>条件搜索</legend>
 <table border="0" cellspacing="0" cellpadding="0">
-
-  <tr>
-     <th>服务代码</th>
-    <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" ></td>
-    <th>服务名称</th>
-    <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }" ></td>
-     <th>场景号</th>
-    <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }" ></td>
- 	 <th>场景名称</th>
-        <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }" ></td>
+  <tr style="width:100%;">
+     <th><nobr>服务代码</nobr></th>
+    <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" style="width:100px"></td>
+    <th><nobr>服务名称</nobr></th>
+    <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }"  style="width:250px"></td>
+     <th><nobr>场景号</nobr></th>
+    <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }"   style="width:50px"></td>
+ 	 <th><nobr>场景名称</nobr></th>
+        <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }"  style="width:250px"></td>
+	  <th><nobr>版本</nobr></th>
+	  <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.version.code }"  style="width:50px"></td>
   </tr>
 
 </table>
@@ -260,11 +331,11 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'text'}" <%--readOnly="true"--%>>字段名</th>
-				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'text'}">字段别名</th>
-				<th data-options="field:'append2',width:50" editor="{type:'text'}">类型/长度</th>
+				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{validType:['englishB']}}">字段名</th>
+				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
+				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
-				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId'}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true,method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
@@ -283,12 +354,14 @@ var delIds = [];
 	    <a href="javascript:void(0)" onclick="addNode()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>&nbsp;&nbsp;
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
+	    <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton" iconCls="icon-save" plain="true">版本对比</a>
     </td>
     <td align="right"></td>
   </tr>
 </table>
 </div>
 </form>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 
   
   </body>

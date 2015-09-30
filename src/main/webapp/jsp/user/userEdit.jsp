@@ -17,7 +17,7 @@
             <td><input name="userId" class="easyui-textbox" type="text" id="userId" value="${user.id}"
                        disabled='disabled'/><font color="#FF0000">*</font></td>
             <th>用户名称</th>
-            <td><input name="userName" class="easyui-textbox" type="text" id="userName" value="${user.name}"/><font
+            <td><input name="userName" class="easyui-textbox" type="text" id="userName" value="${user.name}" data-options="required:true,validType:'chineseB'"/><font
                     color="#FF0000">*</font></td>
             <th>密 码</th>
             <td><input name="password" class="easyui-textbox" type="text" id="password" value="${user.password}"
@@ -25,21 +25,23 @@
         </tr>
         <tr>
             <th>手机号码</th>
-            <td><input name="userMobile" class="easyui-textbox" type="text" id="userMobile" value="${user.userMobile}"/>
+            <td><input name="userMobile" class="easyui-textbox" type="text" id="userMobile" value="${user.userMobile}" data-options="validType:'mobile'"/>
             </td>
             <th>电话号码</th>
-            <td><input name="userTel" class="easyui-textbox" type="text" id="userTel" value="${user.userTel}"/></td>
+            <td><input name="userTel" class="easyui-textbox" type="text" id="userTel" value="${user.userTel}" data-options="validType:'phone'"/></td>
             <th>所属机构</th>
-            <td><select class="easyui-combobox" style="width:173px;" name="select" id="orgEdit">
+            <td><select class="easyui-combobox" style="width:173px;" name="select" id="orgEdit" data-options="required:true">
                 <option value="${user.orgId}"></option>
             </select><font color="#FF0000">*</font></td>
         </tr>
-        <tr>
+        <tr style="display: none">
             <th>生效日期</th>
             <td><input name="startdate" type="text" class="easyui-datebox" id="startdate" value="${user.startdate}"/>
             </td>
             <th>失效日期</th>
             <td><input name="lastdate" class="easyui-datebox" id="lastdate" value="${user.lastdate}"/></td>
+        </tr>
+        <tr>
             <th>备 注</th>
             <td><input name="remark" class="easyui-textbox" type="text" id="remark" value="${user.remark}"/></td>
         </tr>
@@ -110,6 +112,9 @@
         });
     });
     $('#saveBtn').click(function () {
+        if(!$("#userEdit").form('validate')){
+            return false;
+        }
     	var name=$('#userName').val();
     	var orgEdit=$('#orgEdit').combobox('getValue');
     	var str1 = $('#startdate').datebox('getValue');

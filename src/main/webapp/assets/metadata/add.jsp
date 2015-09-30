@@ -29,25 +29,26 @@
     <table border="0" cellspacing="0" cellpadding="0">
         <input type="hidden" name="status" value="待审核"/>
         <tr>
-            <td colspan="2" style="text-align:center">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
-                <a href="#" onclick="save('metadataForm')" class="easyui-linkbutton" iconCls="icon-save">保存</a>
-            </td>
-        </tr>
-        <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataId"
-                       data-options="required:true, validType:['unique','english']"></td>
+                       data-options="required:true, validType:['unique','englishB']"></td>
         </tr>
         <tr>
             <th>中文名称</th>
-            <td><input class="easyui-textbox" type="text" name="chineseName"></td>
+            <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['uniqueName','chineseB']"></td>
         </tr>
         <%--<tr>--%>
         <%--<th>别名</th>--%>
         <%--<td><input class="easyui-textbox" type="text" name="metadataAlias"></td>--%>
         <%--</tr>--%>
         <tr>
+<<<<<<< HEAD
+=======
+            <th>别名</th>
+            <td><input class="easyui-textbox" type="text" name="metadataAlias" data-options="required:true, validType:['chineseB']"></td>
+        </tr>
+        <tr style="display:none;">
+>>>>>>> TaiZhouSG
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataName"></td>
         </tr>
@@ -104,8 +105,15 @@
             <th>任务id</th>
             <td><input class="easyui-textbox" disabled="disabled" type="text" name="processId" id="taskIdInput"></td>
         </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
+                <a href="#" onclick="save('metadataForm')" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+            </td>
+        </tr>
     </table>
 </form>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
     $.extend($.fn.validatebox.defaults.rules, {
         unique: {
@@ -125,12 +133,31 @@
             },
             message: '元数据名称已存在'
         },
+<<<<<<< HEAD
         english: {// 验证英语
             validator: function (value) {
                 // return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
                 return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
             },
             message: '请输入英文字母、下划线或数字'
+=======
+        uniqueName: {
+            validator: function (value, param) {
+                var result;
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/metadata/uniqueChineseNameValid",
+                    dataType: "json",
+                    data: {"chineseName": encodeURI(encodeURI(value))},
+                    success: function (data) {
+                        result = data;
+                    }
+                });
+                return result;
+            },
+            message: '元数据中文名称已存在'
+>>>>>>> TaiZhouSG
         }
     });
     if (typeof(processId) != 'undefined') {

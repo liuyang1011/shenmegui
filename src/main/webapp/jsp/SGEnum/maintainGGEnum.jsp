@@ -17,29 +17,30 @@
 		<legend>主代码</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr style="display:none">
-				<th>代码id</th>
+				<th><nobr>代码id</nobr></th>
 				<td><input class="easyui-textbox" type="text" name="name"
 					id="id" value="${master.id}">
 				</td>
 			</tr>
 			<tr>
-				<th>代码名称</th>
+				<th><nobr>代码名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" name="name"
 					id="name" readonly="true" value="${master.name}">
 				</td>
-				<th>是否标准代码</th>
+				<th><nobr>是否标准代码</nobr></th>
 				<td><select name="isStandard" id="isStandard" readonly="true"
 					panelHeight="auto" style="width:140px" value="${master.isStandard}">
 				</select>
 				</td>
-				<th>主代码数据来源</th>
+				<th><nobr>主代码数据来源</nobr></th>
 				<td><input class="easyui-textbox" readonly="true" type="text" name="dataSource"
 					value="${master.dataSource}">
 				</td>
-				<td colspan="4" align="right"><a href="#"
-												 class="easyui-linkbutton" iconCls="icon-qxfp" onclick="showZdm()">主代码值</a>
+				<td colspan="4" align="right"><nobr><a href="#"
+												 class="easyui-linkbutton" iconCls="icon-qxfp" onclick="showZdm()">主代码值</a></nobr>
 					&nbsp;&nbsp;
 				</td>
+
 			</tr>
 		</table>
 

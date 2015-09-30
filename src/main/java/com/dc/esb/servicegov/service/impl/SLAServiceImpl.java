@@ -71,6 +71,10 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
         return slaDAOImpl.getAllTemplateSLA();
     }
 
+    public List<SLA> getTemplateSLABy(Map<String, String> params){
+        return slaDAOImpl.getAllTemplateSLABy(params);
+    }
+
 //    public List<SLA> findBy(Map<String, String> params) {
 //        return slaDAOImpl.findBy(params);
 //    }

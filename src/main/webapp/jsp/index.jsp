@@ -17,7 +17,7 @@
           href="<%=basePath%>/resources/themes/icon.css">
     <link href="<%=basePath%>/resources/css/css.css" rel="stylesheet" type="text/css">
 </head>
-<body class="easyui-layout">
+<body id="body" class="easyui-layout" data-options="fit:true">
 <div data-options="region:'north',border:false" id="header">
     <div id="logo"></div>
     <ul id="nav">
@@ -58,12 +58,18 @@
     </div>
 </div>
 <div data-options="region:'west',collapsible:true,title:'菜单'"
-     class="west-menu" id="west-menu">
+     class="west-menu" id="west-menu" split="true">
 
 </div>
-<div data-options="region:'center',collapsible:true,border:false,tabHeight:39,"
-     class="easyui-tabs " id="mainContentTabs">
+
+<div region="center">
+    <div id="mainContentTabs" class="easyui-tabs" fit="true" border="false" plain="true">
+    </div>
 </div>
+
+<%--<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
+     class="easyui-tabs " id="mainContentTabs">
+</div>--%>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/app.js"></script>
@@ -73,6 +79,15 @@
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceManager.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceUIHelper.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceTree.js"></script>
+<script type="text/javascript" src="<%=basePath%>/assets/mainContent/js/mainContentUIHelper.js"></script>
+<script type="text/javascript" src="<%=basePath%>/assets/mainContent/js/mainContent.js"></script>
+
+<div id="mm-mxmaintabs" class="easyui-menu" style="width: 150px;">
+    <div id="maintabsCloseLeft" data-options="iconCls:'icon-clear'">关闭左侧</div>
+    <div id="maintabsCloseRight" data-options="iconCls:'icon-clear'">关闭右侧</div>
+    <div id="maintabsCloseOhters" data-options="iconCls:'icon-clear'">关闭其他</div>
+    <div id="maintabsCloseAll" data-options="iconCls:'icon-clear'">关闭所有</div>
+</div>
 
 <div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
@@ -140,9 +155,6 @@
         查看系统
     </div>
 </div>
-
-<>
-
 <div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
         新增接口

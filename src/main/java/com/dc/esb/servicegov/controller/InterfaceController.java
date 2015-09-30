@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.service.impl.TagServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
+import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.commons.logging.Log;
@@ -62,7 +63,8 @@ public class InterfaceController {
         root.setClick("system");
         List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
         if ("all".equals(systemIds)) {
-            systems = systemService.getAll();
+            //增加排序
+            systems = systemService.getAllOrderBySystemId();
         } else if (null != systemIds) {
             systemIds = systemIds.trim();
             if (!systemIds.equalsIgnoreCase("")) {
@@ -86,7 +88,35 @@ public class InterfaceController {
         resList.add(root);
         return resList;
     }
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getLeftLazyTree", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<TreeNode> getLeftLazyTree() {
+        List<TreeNode> resList = new ArrayList<TreeNode>();
+        TreeNode root = new TreeNode();
+        root.setId("root");
+        root.setText("系统");
+        root.setClick("system");
+        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAllOrderBySystemId();
+        List<TreeNode> children = new ArrayList<TreeNode>();
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("id","systemId");
+        fields.put("text", "systemChineseName");
+        for(int i = 0; i < systems.size(); i++){
+            System system = systems.get(i);
+            TreeNode treeNode = new TreeNode();
+            treeNode.setId(system.getSystemId());
+            treeNode.setText(system.getSystemChineseName());
+            treeNode.setState("closed");
+            treeNode.setClick("system");
+            children.add(treeNode);
+        }
 
+        root.setChildren(children);
+        resList.add(root);
+        return resList;
+    }
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/subtree/system/{systemId}", headers = "Accept=application/json")
     public
@@ -247,6 +277,26 @@ public class InterfaceController {
     @ResponseBody
     boolean delete(@PathVariable
                    String interfaceId) {
+        //TODO 删除接口要删除serviceInvoke（外键）
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy("interfaceId", interfaceId);
+        serviceInvokeService.deleteEntity(serviceInvokes);
+        //TODO 删除接口要删除ida
+        interfaceService.deleteById(interfaceId);
+        Map map = new HashMap();
+        map.put("interfaceId", interfaceId);
+        List<Ida> list = idaService.findBy(map);
+        idaService.deleteList(list);
+        return true;
+    }
+
+    @RequiresPermissions({"system-delete"})
+    @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean delete2(@RequestBody
+                   String interfaceId) {
+        //去掉''
+        interfaceId = interfaceId.substring(1,interfaceId.length()-1);
         //TODO 删除接口要删除serviceInvoke（外键）
         List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy("interfaceId", interfaceId);
         serviceInvokeService.deleteEntity(serviceInvokes);
@@ -422,7 +472,7 @@ public class InterfaceController {
         Page page = interfaceService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);
         page.setPage(Integer.parseInt(starpage));
 
-        hql.append(" order by t1.interfaceName ");
+        hql.append(" order by t1.interfaceId ");
 
         List<Interface> inters = interfaceService.findBy(hql.toString(), page, searchConds);
         for (Interface i : inters) {
@@ -456,6 +506,33 @@ public class InterfaceController {
         map.put("total", page.getResultCount());
         map.put("rows", inters);
         return map;
+    }
+
+    @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getHeadBySystemId/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<Map<String, Object>> getHeadBySystemId(@PathVariable String systemId,HttpServletRequest request) {
+        List<Map<String, Object>> resList = new ArrayList<Map<String, Object>>();
+        List<InterfaceHead> heads = interfaceHeadService.findBy("systemId",systemId);
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (request.getParameter("query") != null && !"".equals(request.getParameter("query"))) {
+            map.put("id", "");
+            map.put("text", "全部");
+            resList.add(map);
+        } else {
+            map.put("id", "");
+            map.put("text", "不关联");
+            resList.add(map);
+        }
+
+        for (InterfaceHead head : heads) {
+            map = new HashMap<String, Object>();
+            map.put("id", head.getHeadId());
+            map.put("text", head.getHeadName());
+            resList.add(map);
+        }
+        return resList;
     }
 
     @RequiresPermissions({"system-get"})

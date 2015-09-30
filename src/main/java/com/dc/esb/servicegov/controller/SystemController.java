@@ -182,8 +182,17 @@ public class SystemController {
     public @ResponseBody
     boolean delete(@PathVariable
                  String systemId) {
-        systemService.deleteSystemById(systemId);
-        return true;
+        return systemService.deleteSystemById(systemId);
+
+    }
+
+    @RequiresPermissions({"system-delete"})
+    @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
+    public @ResponseBody
+    boolean delete2(@RequestBody String systemId) {
+        //去掉''
+        systemId = systemId.substring(1,systemId.length()-1);
+        return systemService.deleteSystemById(systemId);
 
     }
 

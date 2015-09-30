@@ -12,7 +12,7 @@
 				接口ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceIdText" value="${inter.interfaceId }" readOnly>
+				<input class="easyui-textbox" type="text" id="interfaceIdText" value="${inter.interfaceId }" disabled>
 			</td>
 		</tr>
 		<tr>
@@ -50,12 +50,12 @@
 				</select>
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>
 				版本
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="versionText" value="${inter.version.code }" readOnly="true">
+				<input class="easyui-textbox" type="text" id="versionText" value="${inter.version.code }" disabled>
 				<input type="hidden" id="versionId" value="${inter.versionId }" >
 			</td>
 		</tr>
@@ -161,7 +161,8 @@
 			systemId = selectNode.id;
 			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
 			if(node){
-				 systemId = node.id;
+				var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
+				 systemId = systemNode.id;
 			}
 		} catch (e) { 
 			systemId = "${param.systemId}";
@@ -197,12 +198,12 @@
 		interfaceManager.add(data,'update',function(result){
 			if(result){
 				$('#w').window('close');
-				var selectNode = $('.msinterfacetree').tree("getSelected");
-				var parent = $('.msinterfacetree').tree("getParent", selectNode.target);
-				var urlPath = $('.msinterfacetree').tree('options').url;
-				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
-				$('.msinterfacetree').tree("reload", parent.target);
-				$('.msinterfacetree').tree('options').url = urlPath;
+				var selectNode = treeObj.tree("getSelected");
+				var parent = treeObj.tree("getParent", selectNode.target);
+				var urlPath = treeObj.tree('options').url;
+				treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
+				treeObj.tree("reload", parent.target);
+				treeObj.tree('options').url = urlPath;
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");

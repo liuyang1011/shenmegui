@@ -1,23 +1,21 @@
 package com.dc.esb.servicegov.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
+import com.dc.esb.servicegov.vo.OperationCompareVO;
+import com.dc.esb.servicegov.vo.SDACompareVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dc.esb.servicegov.dao.impl.VersionDAOImpl;
-import com.dc.esb.servicegov.dao.impl.VersionHisDAOImpl;
-import com.dc.esb.servicegov.entity.Version;
-import com.dc.esb.servicegov.entity.VersionHis;
 import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.util.DateUtils;
 @Service
@@ -27,8 +25,22 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 	VersionDAOImpl daoImpl;
 	@Autowired
 	VersionHisServiceImpl versionHisServiceImpl;
+	@Autowired
+	OperationDAOImpl operationDao;
+	@Autowired
+	OperationHisDAOImpl operationHisDao;
+	@Autowired
+	SDADAOImpl sdaDao;
+	@Autowired
+	SDAHisDAOImpl sdaHisDao;
+
 	
 	private final String initalVersion = "1.0.0";
+
+	@Override
+	public HibernateDAO<Version, String> getDAO() {
+		return daoImpl;
+	}
 
 	public String addVersion(String targetType, String targetId, String type) {
 		Version nv = new Version();
@@ -48,11 +60,13 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 
 	public boolean editVersion(String id) {
 		Version entity = daoImpl.findUniqueBy("id", id);
-		entity.setCode(editVersionCode(entity.getCode()));
-		entity.setOptDate(DateUtils.format(new Date()));
-		entity.setOptType(Constants.Version.OPT_TYPE_EDIT);
-//		entity.setOptUser(entity.getOptUser());
-		daoImpl.save(entity);
+		if(entity != null){
+			entity.setCode(editVersionCode(entity.getCode()));
+			entity.setOptDate(DateUtils.format(new Date()));
+			entity.setOptType(Constants.Version.OPT_TYPE_EDIT);
+			entity.setOptUser(entity.getOptUser());
+			daoImpl.save(entity);
+		}
 		return true;
 	}
 
@@ -104,11 +118,146 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 		}
 		return initalVersion;
 	}
-	
 
-	@Override
-	public HibernateDAO<Version, String> getDAO() {
-		return daoImpl;
+	/**
+	 * 获取场景对比数据
+	 */
+	public Map<String, Object> getOperationDiff(String type, String versionId1, String versionId2){
+		Map<String, Object> result = new HashMap<String, Object>();
+		OperationHis operationHis1 = null;
+		OperationHis operationHis2 = null;
+		List<SDAHis> sdaHisList1 = null;
+		List<SDAHis> sdaHisList2 = null;
+		if(Constants.Version.COMPARE_TYPE0.equals(type)){//当前版本与历史版本对比
+			Operation operation = operationDao.findUniqueBy("versionId", versionId1);
+			operationHis1 =  new OperationHis(operation);
+			String sdaHql = " from " + SDA.class.getName() + " where serviceId=? and operationId=?";
+			List<SDA> sdaList = sdaDao.find(sdaHql, operation.getServiceId(), operation.getOperationId());
+			sdaHisList1 = new ArrayList<SDAHis>();
+			for(int i = 0; i < sdaList.size(); i++){
+				sdaHisList1.add(new SDAHis(sdaList.get(i), operationHis1.getAutoId()));
+			}
+			VersionHis version2 = versionHisServiceImpl.findUniqueBy("autoId", versionId2);;
+			if(version2 != null){
+				operationHis2 = operationHisDao.findUniqueBy("versionHisId", version2.getAutoId());
+				sdaHisList2 = sdaHisDao.findBy("operationHisId", operationHis2.getAutoId());
+			}
+		}
+		else if(Constants.Version.COMPARE_TYPE1.equals(type)){//历史版本对比
+			operationHis1 = operationHisDao.findUniqueBy("versionHisId", versionId1);
+			sdaHisList1 = sdaHisDao.findBy("operationHisId", operationHis1.getAutoId());
+			operationHis2 = operationHisDao.findUniqueBy("versionHisId", versionId2);
+			sdaHisList2 = sdaHisDao.findBy("operationHisId", operationHis2.getAutoId());
+		}
+		else if(Constants.Version.COMPARE_TYPE2.equals(type)){//历史版本与当前版本对比
+			VersionHis version1 = versionHisServiceImpl.findUniqueBy("autoId", versionId1);;
+			if(version1 != null){
+				operationHis1 = operationHisDao.findUniqueBy("versionHisId", version1.getAutoId());
+				sdaHisList1 = sdaHisDao.findBy("operationHisId", operationHis1.getAutoId());
+			}
+			Operation operation = operationDao.findUniqueBy("versionId", versionId2);
+			operationHis2 =  new OperationHis(operation);
+			String sdaHql = " from " + SDA.class.getName() + " where serviceId=? and operationId=?";
+			List<SDA> sdaList = sdaDao.find(sdaHql, operation.getServiceId(), operation.getOperationId());
+			sdaHisList2 = new ArrayList<SDAHis>();
+			for(int i = 0; i < sdaList.size(); i++){
+				sdaHisList2.add(new SDAHis(sdaList.get(i), operationHis1.getAutoId()));
+			}
+		}
+		List<OperationCompareVO> operationHisList =  genderOperationData(operationHis1, operationHis2);
+		List<SDACompareVO> sdaHisList = genderSDAData(sdaHisList1, sdaHisList2);
+//		result.put( "operationHisList", operationHisList);
+//		result.put("sdaHisList", sdaHisList);
+		result.put("total", sdaHisList.size());
+		result.put("rows", sdaHisList);
+		return result;
+	}
+	public void fillVersionData(String versionId, OperationHis operationHis, List<SDAHis> sdaHisList){
+
+	}
+	public void fillVersionHisData(String versionHisId, OperationHis operationHis, List<SDAHis> sdaHisList){
+
+	}
+	//构造场景对比数据，以功能描述，备注，状态改变为标准
+	public List<OperationCompareVO> genderOperationData(OperationHis oper1, OperationHis oper2){
+		List<OperationCompareVO> list = new ArrayList<OperationCompareVO>();
+		OperationCompareVO vo1 = null;
+		OperationCompareVO vo2 = null;
+		OperationCompareVO vo3 = null;
+		OperationCompareVO vo4 = null;
+		if(oper2 == null){
+			vo1 = new OperationCompareVO("场景名称",oper1.getOperationName());
+			vo2 = new OperationCompareVO("描述",oper1.getOperationDesc());
+			vo3 = new OperationCompareVO("备注",oper1.getOperationRemark());
+			vo4 = new OperationCompareVO("状态",oper1.getState());
+		}else{
+			vo1 = new OperationCompareVO("场景名称",oper1.getOperationName(),"场景名称", oper2.getOperationName());
+			vo2 = new OperationCompareVO("描述", oper1.getOperationDesc(), "描述",oper2.getOperationDesc());
+			vo3 = new OperationCompareVO("备注", oper1.getOperationRemark(), "备注", oper2.getOperationRemark());
+			vo4 = new OperationCompareVO("状态", oper1.getState(), "状态", oper2.getState());
+		}
+
+		list.add(vo1);
+		list.add(vo2);
+		list.add(vo3);
+		list.add(vo4);
+		return list;
+	}
+	// 构建sda对比数据
+	public List<SDACompareVO> genderSDAData(List<SDAHis> sdaHisList1, List<SDAHis> sdaHisList2){
+		//匹配两个数组中相同id的sdaHIS
+		List<SDACompareVO> list = new ArrayList<SDACompareVO>();
+		if(sdaHisList2 != null){
+			for(int i = 0; i < sdaHisList1.size(); i++){
+				SDAHis s1 = sdaHisList1.get(i);
+				if(s1 != null){
+					for(int j = 0; j < sdaHisList2.size(); j ++){
+						SDAHis s2 = sdaHisList2.get(j);
+						if(s2 != null){
+							if(s2.getSdaId().equals(s1.getSdaId())){
+								SDACompareVO vo = new SDACompareVO(s1, s2);
+								list.add(vo);
+								sdaHisList1.set(i, null);
+								sdaHisList2.set(j, null);
+							}
+						}
+
+					}
+				}
+			}
+			//处理未匹配数据
+			for(int j = 0; j < sdaHisList2.size(); j++) {
+				SDAHis s2 = sdaHisList2.get(j);
+				if (s2 != null) {
+					SDACompareVO vo = new SDACompareVO(null, s2);
+					list.add(vo);
+					sdaHisList2.set(j, null);
+				}
+			}
+		}
+		//处理未匹配数据
+		for(int i = 0; i < sdaHisList1.size(); i++) {
+			SDAHis s1 = sdaHisList1.get(i);
+			if (s1 != null) {
+				SDACompareVO vo = new SDACompareVO(s1, null);
+				list.add(vo);
+				sdaHisList1.set(i, null);
+			}
+		}
+
+		return  list;
+	}
+	//拼接版本列表
+	public List<VersionHis> getVersions(String versionId){
+		Version version = daoImpl.findUniqueBy("id", versionId);
+		VersionHis versionHis = new VersionHis(version, null);
+		versionHis.setAutoId("");
+		List<VersionHis> hisList = new ArrayList<VersionHis>();
+		hisList.add(versionHis);
+		String hql = " from " + VersionHis.class.getName() + " where id=? order by code desc";
+		List<VersionHis> hisList2 = versionHisServiceImpl.find(hql, versionId);
+		hisList.addAll(hisList2);
+		return hisList;
 	}
 	
 }

@@ -99,7 +99,9 @@ public class SLATemplateController {
 	boolean setTemplateData(@PathVariable(value = "serviceId") String serviceId,
 					@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
 		//查询模版sla数据
-		List<SLA> templateList = slaServiceImpl.getAllTemplateSLA();
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("slaTemplateId",slaTemplateId);
+		List<SLA> templateList = slaServiceImpl.getTemplateSLABy(map);
 
 		//查询非模版sla数据
 		Map<String, String> params = new HashMap<String, String>();

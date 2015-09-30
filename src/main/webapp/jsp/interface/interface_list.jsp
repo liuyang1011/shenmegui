@@ -18,6 +18,7 @@
 	</head>
 
 	<body>
+	<form id="searchForm">
 		<fieldset>
 			<legend>
 				条件搜索
@@ -82,12 +83,14 @@
 					</td>
 					<td align="right">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
+						<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
 					</td>
 				</tr>
 			</table>
 
 
 		</fieldset>
+	</form>
 		<table id="tg" style="height: 370px; width: auto;">
 			<thead>
 				<tr>
@@ -110,7 +113,7 @@
 					<th data-options="field:'protocolName',width:'10%'">
 						接口协议
 					</th>
-					<th data-options="field:'status',width:'9%',align:'right'" formatter='formatter.interfaceState'>
+					<th data-options="field:'status',width:'9%',align:'left'" formatter='formatter.interfaceState'>
 						状态
 					</th>
 					<th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
@@ -136,14 +139,14 @@
 	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: 'auto', 
-	        height: '390px',
+	        height: '485px',
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
 	        singleSelect:true,//是否单选
 	        pagination:true,//分页控件 
-	        pageSize: 10,//每页显示的记录条数，默认为10
-		    pageList: [10,15,20],//可以设置每页记录条数的列表
+	        pageSize: 14,//每页显示的记录条数，默认为10
+		    pageList: [14,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
 	        toolbar: [{
 					text:'新增',
@@ -169,10 +172,7 @@
 						handler:function(){
 							var row = $("#tg").treegrid("getSelected");
 							if(row){
-								if (!confirm("确定要删除选中的记录吗？")) {
-									return;
-								}
-								interfaceManager.remove(row.interfaceId,row.interfaceName);
+								remove(row.interfaceId,row.interfaceName);
 							}else{
 								alert("请选择要删除的行");
 							}
@@ -188,14 +188,14 @@
 										w:500,
 										iconCls:'icon-add',
 										title:"关联报文头",
-										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId
+										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
 									});
 							}else{
 								alert("请选择要关联的行");
 							}
 
 					 	}
-					 },{
+					 }/*,{
 						text:'导入',
 						iconCls:'icon-save',
 						handler:function(){
@@ -213,7 +213,7 @@
 //							}
 
 						}
-					},{
+					}*/,{
 						text:'导出',
 						iconCls:'icon-save',
 						handler:function(){
@@ -327,7 +327,7 @@
 			 if (mainTabs.tabs('exists', title)) {
 				 mainTabs.tabs('select', title);
 			 } else {
-				 var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'?interfaceId='+field.interfaceId+'" style="width:100%;height:100%;"></iframe>';
+				 var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'?interfaceId='+field.interfaceId+'" style="width:100%;height:98%;"></iframe>';
 				 mainTabs.tabs('add', {
 					 title: title,
 					 content: content,
@@ -371,6 +371,37 @@
 				 }
 			 }
 		 };
+
+		 function remove(interfaceId,title){
+                 if (!confirm("确定要删除该接口吗？")) {
+                     return;
+                 }
+
+				treeObj = parent.$('.msinterfacetree');
+                tabObj = parent.$('#mainContentTabs');
+
+             	$.ajax({
+                     type: "post",
+                     contentType: "application/json; charset=utf-8",
+                     //测试中出现#&等特殊符号，没法删掉
+                     //url: "/interface/delete/"+sId,
+                     url: "/interface/delete2",
+                     dataType: "json",
+                     data:JSON.stringify(interfaceId),
+                     success: function(result) {
+                         if(result){
+                         	$("#tg").datagrid("reload");
+                            tabObj.tabs("close",title);
+                             var node = treeObj.tree("getSelected");
+                             var systemNode =  treeObj.tree("getParent",node.target);
+                             treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
+                             treeObj.tree("reload", node.target);
+
+                         }
+                     }
+                 });
+
+             }
 		</script>
 
 	</body>

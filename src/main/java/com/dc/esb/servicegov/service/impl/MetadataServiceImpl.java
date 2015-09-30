@@ -8,7 +8,9 @@ import com.dc.esb.servicegov.dao.impl.CategoryWordDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -31,6 +33,10 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     private MetadataDAOImpl metadataDAOImpl;
     @Autowired
     private CategoryWordDAOImpl categoryWordDAO;
+    @Autowired
+    private OperationServiceImpl operationServiceImpl;
+    @Autowired
+    private VersionServiceImpl versionService;
 
     public List<Metadata> getAllMetadata() {
     	List<Metadata> list = metadataDAOImpl.getAll();
@@ -166,11 +172,15 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
         metadata.setOptUser(userName);
 		metadata.setOptDate(DateUtils.format(new Date()));
         metadataDAOImpl.save(metadata);
+        String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);
+        metadata.setVersionId(versionId);
+        metadataDAOImpl.save(metadata);
         return true;
     }
 
     public boolean modifyMetadata(Metadata metadata) {
         metadataDAOImpl.save(metadata);
+        versionService.editVersion(metadata.getVersionId());
         return true;
     }
 
@@ -178,13 +188,18 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
         metadataDAOImpl.delete(metadataId);
     }
     
-    public void deleteMetadatas(String metadataIds){
+    public boolean deleteMetadatas(String metadataIds){
     	String[] ids = metadataIds.split("\\,");
     	if(ids != null && ids.length > 0){
     		for(String metadataId : ids){
+                //关联场景不予删除
+                if(operationServiceImpl.judgeByMetadataId(metadataId)){
+                    return false;
+                }
     			deleteMetadata(metadataId);
     		}
     	}
+        return true;
     }
     public String genderHql(Map<String, String[]> values){
         String hql = "";
@@ -223,6 +238,11 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                 if(key.equals("version") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
                         hql += " and a.version like '%" + values.get(key)[0] + "%' ";
+                    }
+                }
+                if(key.equals("optUser") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        hql += " and a.optUser like '%" + values.get(key)[0] + "%' ";
                     }
                 }
                 if(key.equals("startDate") && values.get(key) != null && values.get(key).length > 0 ){
@@ -379,7 +399,9 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
             setDataSource(md.getDataSource());
             setTemplateId(md.getTemplateId());
             setStatus(md.getStatus());
-            setVersion(md.getVersion());
+            //TZB没有version
+            if(null != md.getVersion())
+                setVersion(md.getVersion().getCode());
             setOptUser(md.getOptUser());
             setOptDate(md.getOptDate());
             setAuditUser(md.getAuditUser());
@@ -599,7 +621,15 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     	}
     	return true;
     }
-    
+
+    public boolean uniqueChineseNameValid(String chineseName){
+        List<Metadata> list = this.findBy("chineseName", chineseName);
+        if(list != null && list.size() > 0){
+            return false;
+        }
+        return true;
+    }
+
     public List<CategoryWord> categoryWord(){
     	return categoryWordDAO.getAll();
     }

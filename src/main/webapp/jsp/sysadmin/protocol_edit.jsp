@@ -39,7 +39,7 @@
 				<input class="easyui-textbox" type="text" id="timeoutText" value="${protocol.timeout}">
 			</td>
 		</tr>
-		<tr>
+		<tr style="display: none">
 			<th>
 				错误代码
 			</th>
@@ -48,7 +48,7 @@
 			</td>
 		</tr>
 
-        <tr>
+        <tr style="display:none">
 			<th>
 				成功代码
 			</th>
@@ -58,7 +58,7 @@
 		</tr>
 		<tr>
 			<th>
-				备注说明
+				备注
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="remarkText" value="${protocol.remark}">
@@ -92,8 +92,8 @@
 			</td>
 		</tr>
 	</table>
-	<input  type="hidden" id="protocolIdText" value="${protocol.protocolId}" readOnly>
-	<input  type="hidden" id="msgTemplateIdText" value="${protocol.msgTemplateId}" readOnly>
+	<input  type="hidden" id="protocolIdText" value="${protocol.protocolId}" disabled>
+	<input  type="hidden" id="msgTemplateIdText" value="${protocol.msgTemplateId}" disabled>
 </form>
 
 <script type="text/javascript">

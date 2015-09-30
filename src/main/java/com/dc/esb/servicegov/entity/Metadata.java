@@ -40,8 +40,6 @@ public class Metadata implements Serializable {
     private String templateId;
     @Column(name = "STATUS", length = 10)
     private String status;
-    @Column(name = "VERSION", length = 50)
-    private String version;
     @Column(name = "OPT_USER", length = 50)
     private String optUser;
     @Column(name = "OPT_DATE", length = 20)
@@ -58,10 +56,15 @@ public class Metadata implements Serializable {
     private String buzzCategory;
     @Column(name = "DATA_CATEGORY", length = 255)
     private String dataCategory;
+    @Column(name = "VERSION_ID")
+    private String versionId;
 
     @ManyToOne
     @JoinColumn(name = "CATEGORY_WORD_ID",referencedColumnName = "ESGLISG_AB", insertable = false, updatable = false)
     private CategoryWord categoryWord;
+    @ManyToOne()
+    @JoinColumn(name = "VERSION_ID", insertable = false, updatable = false)
+    private Version version;
 
     public CategoryWord getCategoryWord() {
         return categoryWord;
@@ -191,15 +194,6 @@ public class Metadata implements Serializable {
         this.status = status;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-
     public String getOptUser() {
         return optUser;
     }
@@ -264,6 +258,22 @@ public class Metadata implements Serializable {
 
     public void setDataCategory(String dataCategory) {
         this.dataCategory = dataCategory;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
+    public String getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
     }
 
     public String getFormula(){

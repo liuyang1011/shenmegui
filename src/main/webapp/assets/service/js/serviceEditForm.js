@@ -9,6 +9,7 @@ $(function(){
     $('#serviceCategory').val(node.service.categoryId);
     $('#state').val(node.service.state);
     $('#version').val(node.service.version);
+    $('#remark').val(node.service.remark);
     /**
      * 编辑对话框保存按钮事件
      */
@@ -16,9 +17,9 @@ $(function(){
         var service = {};
         service.serviceName = $('#serviceName').val();
         service.desc = $('#discription').val();
+        service.remark = $('#remark').val();
         var node = $('.mxservicetree').tree('getSelected');
         service.serviceId = node.id;
-        alert(node.id);
         service.categoryId = $('#serviceCategory').val();
         service.version = $('#version').val();
         service.state = $('#state').val();

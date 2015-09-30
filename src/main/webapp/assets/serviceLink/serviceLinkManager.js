@@ -69,5 +69,17 @@ var serviceLinkManager = {
                 callBack(result);
             }
         });
+    },
+    "saveNodeProperties" : function saveNodeProperties(nodeProperties, callBack){
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/json; charset=utf-8",
+            "url": "/serviceLink/saveNodeProperties",
+            "data": JSON.stringify(nodeProperties),
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            }
+        });
     }
 };

@@ -133,16 +133,16 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		List<SDA> sda = sdadao.findBy(map2);
 		List<IdaMappingBean> list = new ArrayList<IdaMappingBean>();
 		for (int i = 0; i < idas.size(); i++) {
-			if(null == idas.get(i).getMetadataId()){
+//			if(null == idas.get(i).getMetadataId()){
 				list.add(new IdaMappingBean(idas.get(i)));
-				continue;
-			}
-			for (SDA per : sda){
+//				continue;
+//			}
+			/*for (SDA per : sda){
 				if(null == per.getMetadataId()) continue;
 				if ( per.getMetadataId().equals(idas.get(i).getMetadataId())){
 					list.add(new IdaMappingBean(idas.get(i),per));
 				}
-			}
+			}*/
 		}
 		return list;
 	}

@@ -52,6 +52,11 @@ public class SDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/saveSDA", headers = "Accept=application/json")
 	@ResponseBody
 	public boolean saveSDA(@RequestBody SDA[] sdas){
+		//判断场景状态是否为服务定义或修订
+		boolean canModifyOperation = serviceImpl.judgeCanModifyOperation(sdas[0].getServiceId(), sdas[0].getOperationId());
+		if(!canModifyOperation){
+			return false;
+		}
 		return serviceImpl.save(sdas);
 	}
 

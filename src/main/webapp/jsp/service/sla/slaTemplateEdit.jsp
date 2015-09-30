@@ -7,8 +7,8 @@
 			<th data-options="field:'productid',checkbox:true"></th>
 			<th field="slaTemplateId" width="100" editor="text" id="idText"
 				data-options="hidden:true">ID</th>
-			<th field="templateName" width="100" editor="text" align="center">SLA模板名称</th>
-			<th field="desc" width="150" align="center" editor="text">描 述</th>
+			<th field="templateName" width="100" editor="{type:'validatebox',options:{required:true,validType:['chineseB']}}" align="left">SLA模版名称</th>
+			<th field="desc" width="150" align="left" editor="text">描 述</th>
 		</tr>
 	</thead>
 </table>

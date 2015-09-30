@@ -71,8 +71,29 @@
     <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
 
 </div>
-<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%"></ul>
+<script>
+    $('.mxservicetree').tree({
+        url:'/service/getTree',
+        method:'get',
+        animate:true,
+        onLoadSuccess:function(node, data){
+            parse(data);
+        }
+    });
+    function parse(data){
+        $.each(data, function (index, item) {
+            if(item.children.length > 1){
+                parse(item.children);
+            }else{
+                if(item.type == "serviceCategory"){
+                    item.iconCls = "icon-add";
+                }
+            }
+        });
+    }
 
+</script>
 <%
     }
 
@@ -94,7 +115,7 @@
 </div>
 
 <ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:90%"
-    data-options="url:'/interface/getLeftTree/all',method:'get',animate:true" style="overflow:auto;"></ul>
+    data-options="url:'/interface/getLeftLazyTree',method:'get',animate:true" style="overflow:auto;"></ul>
 
 <%
     }
@@ -146,8 +167,8 @@
 <script>
     var title = "服务检索";
     var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.SEARCH + '" style="width:100%;height:98%;"></iframe>';
-    if ($('#mainContentTabs').tabs('exists', title)) {
-        $('#mainContentTabs').tabs('select', title);
+    if ($('#mainContentTabs').tabs('exists',title)) {
+        $('#mainContentTabs').tabs('select',title);
     }else{
         $('#mainContentTabs').tabs('add', {
             title: title,

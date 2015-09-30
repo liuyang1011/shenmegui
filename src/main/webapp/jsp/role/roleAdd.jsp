@@ -13,16 +13,16 @@
     <table width="99%" border="0" cellspacing="0" cellpadding="0" id="roleTable">
         <tr>
             <th>角色代码</th>
-            <td><input name="roleId" class="easyui-validatebox" type="text" id="roleId" data-options="required:true,validType:'english'" /><font color="#FF0000">*</font></td>
+            <td><input name="roleId" class="easyui-validatebox" type="text" id="roleId" data-options="required:true,validType:'englishB'" /><font color="#FF0000">*</font></td>
         </tr>
         <tr>
             <th>角色名称</th>
-            <td><input name="roleName" class="easyui-textbox" type="text" id="roleName"/><font color="#FF0000">*</font>
+            <td><input name="roleName" class="easyui-textbox" type="text" id="roleName" data-options="required:true,validType:'chineseB'"/><font color="#FF0000">*</font>
             </td>
         </tr>
         <tr>
-            <th>备 注</th>
-            <td><input name="remark" class="easyui-textbox" type="text" id="roleRemark"/></td>
+            <th>角色描述</th>
+            <td><input name="remark" class="easyui-textbox" type="text" id="roleRemark" data-options="validType:'chineseB'"/></td>
         </tr>
 
     </table>
@@ -36,6 +36,9 @@
 <script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
     $('#saveBtn').click(function () {
+        if(!$("#roleTable").form('validate')){
+            return false;
+        }
     var isValid = $("#roleId").validatebox("isValid");
         if(isValid){
         var data = {};

@@ -11,8 +11,8 @@
 
 </head>
 <body>
-<div class="container">
-  <h3>导入原始接口Excel</h3>
+<fieldset>
+  <legend>导入原始接口Excel</legend>
   <form id="uploadimg-form"  action="/excelHelper/interfaceimport/noSystem" method="post" enctype="multipart/form-data">
     <input type="file" title="选择文件" name="file" id="file"/><br /><br />
     <br /><br />
@@ -23,9 +23,22 @@
       </td>
     </tr>--%>
   </form>
+</fieldset>
+<div class="container">
+  <%--<&lt;%&ndash;h3>导入原始接口Excel</h3>
+  <form id="uploadimg-form"  action="/excelHelper/interfaceimport/noSystem" method="post" enctype="multipart/form-data">
+    <input type="file" title="选择文件" name="file" id="file"/><br /><br />
+    <br /><br />
+    <input id="fileBtn" type="submit" class="btn" value="文件上传"/><br /><br />
+    &lt;%&ndash;<tr style="display:none">
+      <td>
+        <input style="display:none" type="text" id="systemId" name="systemId">
+      </td>
+    </tr>&ndash;%&gt;
+  </form>&ndash;%&gt;--%>
 
 </div>
-<table id="tt" style="height:370px; width:auto;"
+<table id="tt" style="height:420px; width:auto;"
        title="导入日志">
   <thead>
   <tr>

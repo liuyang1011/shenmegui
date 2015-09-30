@@ -130,14 +130,14 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
         if (null != system) {
             //构造接口操作节点
             TreeNode interfacesNode = new TreeNode();
-            interfacesNode.setId(system.getSystemId());
+            interfacesNode.setId(system.getSystemId()+"_interface");
             interfacesNode.setText("接口");
             interfacesNode.setClick("interfaces");
             List<TreeNode> interfaceTreeChildren = getInterfaceTreeChildren(system);
             interfacesNode.setChildren(interfaceTreeChildren);
             //构造报文头操作节点
             TreeNode headsNode = new TreeNode();
-            headsNode.setId(system.getSystemId());
+            headsNode.setId(system.getSystemId()+"_interface");
             headsNode.setText("报文头");
             headsNode.setClick("heads");
             //构造报文头数据节点
@@ -145,7 +145,7 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
             headsNode.setChildren(headTreeNodes);
             //构造协议操作节点
             TreeNode protocolNode = new TreeNode();
-            protocolNode.setId(system.getSystemId());
+            protocolNode.setId(system.getSystemId()+"_interface");
             protocolNode.setText("协议");
             protocolNode.setClick("protocols");
             protocolNode.setTarget("/interface/getLeftTree/subProtocolTree/system/" + system.getSystemId());
@@ -154,7 +154,7 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
             protocolNode.setChildren(protocolTreeNodes);
             //构造文档操作节点
             TreeNode fileNode = new TreeNode();
-            fileNode.setId(system.getSystemId());
+            fileNode.setId(system.getSystemId()+"_interface");
             fileNode.setText("文档");
             fileNode.setClick("files");
             //构造文档的数据节点

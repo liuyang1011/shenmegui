@@ -29,9 +29,11 @@ public class Constants {
     public static final String EXCEL_TEMPLATE_DATA_DICTIONARY= Constants.class.getResource("/").getPath() + "/template/excel_data_dictionary_template.xls";
 
     public static class Operation {
-        public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
+        public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线 6待审核 7修订
         public static final String OPT_STATE_PASS = "1";
         public static final String OPT_STATE_UNPASS = "2";
+        public static final String OPT_STATE_REQUIRE_UNAUDIT = "6";
+        public static final String OPT_STATE_REVISE = "7";
 
         public static final String LIFE_CYCLE_STATE_PUBLISHED = "3";
         public static final String LIFE_CYCLE_STATE_ONLINE = "4";
@@ -40,6 +42,9 @@ public class Constants {
         public static String getStateName(String state){
             if(OPT_STATE_UNAUDIT.equals(state)){
                 return "服务定义";
+            }
+            if(OPT_STATE_REQUIRE_UNAUDIT.equals(state)){
+                return "待审核";
             }
             if(OPT_STATE_PASS.equals(state)){
                 return "审核通过";
@@ -79,11 +84,16 @@ public class Constants {
         public static final String TARGET_TYPE_OPERATION = "1";//场景
         public static final String TARGET_TYPE_PC = "2";//公共代码
         public static final String TARGET_TYPE_INTERFACE = "3";//接口
+        public static final String TARGET_TYPE_METADATA = "4";//元数据
 
         public static final String OPT_TYPE_ADD = "0"; //操作类型，0：新增，1：修改，2：删除,3:发布
         public static final String OPT_TYPE_EDIT = "1";
         public static final String OPT_TYPE_DELETE = "2";
         public static final String OPT_TYPE_RELEASE = "3";
+
+        public static final String COMPARE_TYPE0 = "0";//对比类型：0：当前版本VS历史版本， 1：历史版本VS历史版本,2:历史版本VS当前版本
+        public static final String COMPARE_TYPE1 = "1";
+        public static final String COMPARE_TYPE2 = "2";
     }
 
     public static class Metadata {

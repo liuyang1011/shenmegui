@@ -67,6 +67,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     private InterfaceDAOImpl interfaceDAO;
     @Autowired
     private StatisticsServiceImpl statisticsService;
+    @Autowired
+    private InterfaceHeadServiceImpl interfaceHeadService;
     /**
      * TODO根据参数id和类型，返回excel文件
      */
@@ -165,9 +167,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             commonStyle = CellStyleSupport.leftStyle(workbook);
             arrayStyle = CellStyleSupport.arrayStyle(workbook);
             fillIndex(workbook, siList);
+            fillHeads(workbook, siList);
             fillMapings(workbook, siList);
-            //List<InterfaceHeadVO> ihvList = getByInterfaceHeadVOServiceId(serviceId);
-            //fillHeads(workbook, ihvList);
             return workbook;
         }
         return null;
@@ -185,16 +186,20 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for (int i = 0; i < voList.size(); i++){
                 HSSFRow row = sheet.createRow(i + 1);
                 InterfaceInvokeVO vo = voList.get(i);
+                Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());
+                Interface inter = interfaceDAO.findUniqueBy("interfaceId", vo.getInterfaceId());
 
                 setCellValue(row.createCell(0), commonStyle, vo.getInterfaceId());//交易码
                 setCellValue(row.createCell(1), commonStyle, vo.getInterfaceName());//交易名称
 
-                Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());
                 setCellValue(row.createCell(2), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
                 setCellValue(row.createCell(3), commonStyle, operation.getOperationId());//场景id
                 setCellValue(row.createCell(4), commonStyle, operation.getOperationName());//场景名称
-                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
-                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
+                //用systemAb
+//                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
+                setCellValue(row.createCell(5), commonStyle, vo.getConsumerNames());//调用方
+//                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
+                setCellValue(row.createCell(6), commonStyle, vo.getProviderNames());//提供者
                 String systemAb = Constants.INVOKE_TYPE_CONSUMER.equals(vo.getType())? "Consumer" : "Provider";
                 setCellValue(row.createCell(7), commonStyle, systemAb);//接口方向
                 setCellValue(row.createCell(8), commonStyle, vo.getProviderIds());//接口提供系统ID
@@ -208,66 +213,28 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 setCellValue(row.createCell(15), commonStyle, "");//参考文档
                 setCellValue(row.createCell(16), commonStyle, "");//模块划分
                 setCellValue(row.createCell(17), commonStyle, "");//是否穿透
-                setCellValue(row.createCell(18), commonStyle, "");//业务报文头
+                setCellValue(row.createCell(18), commonStyle, interfaceHeadService.getHeadNames(vo.getInterfaceId()));//业务报文头
+                if(inter != null){
+                    String interStatus = "";
+                    if( Constants.INTERFACE_STATUS_TC.equals(inter.getStatus())){
+                        interStatus = "投产";
+                    }
+                    if( Constants.INTERFACE_STATUS_FQ.equals(inter.getStatus())){
+                        interStatus = "废弃";
+                    }
+                    setCellValue(row.createCell(19), commonStyle, interStatus);//接口状态
+                }
+                String operaStatus = Constants.Operation.getStateName(operation.getState());
+                setCellValue(row.createCell(20), commonStyle, operaStatus);//场景状态
+                String isStandard = "";
+                if ( Constants.INVOKE_TYPE_STANDARD_Y.equals(vo.getIsStandard())){
+                    isStandard = "是";
+                }
+                if ( Constants.INVOKE_TYPE_STANDARD_N.equals(vo.getIsStandard())){
+                    isStandard = "否";
+                }
+                setCellValue(row.createCell(21), commonStyle, isStandard);//是否标准
             }
-//                for (int i = 0; i < siList.size(); i++) {
-//                ServiceInvoke si = siList.get(i);
-//                HSSFRow row = sheet.createRow(i + 1);
-//                if (si.getInterfaceId() != null) {
-//                    row.createCell(0).setCellValue(si.getInter().getEcode());//交易码
-//                } else {
-//                    continue;
-//                }
-//                if (si.getInter() != null) {
-//                    row.createCell(1).setCellValue(si.getInter().getInterfaceName());//交易名称
-//                }
-//                if (si.getServiceId() != null) {
-//                    Service service = serviceDao.findUniqueBy("serviceId", si.getServiceId());
-//                    row.createCell(2).setCellValue(service.getServiceName());//服务名称
-//                    if (si.getOperationId() != null) {
-//                        row.createCell(3).setCellValue(si.getOperationId());//场景id
-//                        Map<String, String> params = new HashMap<String, String>();
-//                        params.put("serviceId", si.getServiceId());
-//                        params.put("operationId", si.getOperationId());
-//                        Operation operation = operationDAO.findUniqureBy(params);
-//                        row.createCell(4).setCellValue(operation.getOperationName());//场景名称
-//                    }
-//                }
-//                if (si.getType() != null && si.getType().equals(Constants.INVOKE_TYPE_CONSUMER)) {
-//                    row.createCell(5).setCellValue(si.getSystem().getSystemAb());//调用方
-//                    row.createCell(7).setCellValue("Consumer");//消费者
-//                    row.createCell(14).setCellValue(si.getSystem().getSystemChineseName());
-//                    //根据消费者去查找对应提供者
-//                    ServiceInvoke serviceInvoke = siDao.getByOtherType(si.getInvokeId());
-//                    if (serviceInvoke != null) {
-//                        row.createCell(6).setCellValue(serviceInvoke.getSystem().getSystemAb());//系统ab
-//                        row.createCell(8).setCellValue(serviceInvoke.getSystemId());//接口提供系统ID
-//                    }
-//                }
-//                if (si.getType() != null && si.getType().equals(Constants.INVOKE_TYPE_PROVIDER)) {
-//                    row.createCell(6).setCellValue(si.getSystem().getSystemAb());//系统ab
-//                    row.createCell(7).setCellValue("Provider");//提供者
-//                    row.createCell(8).setCellValue(si.getSystemId());//接口提供系统ID
-//                    //根据提供者查询消费者
-//                    ServiceInvoke serviceInvoke = siDao.getByOtherType(si.getInvokeId());
-//                    if (serviceInvoke != null) {
-//                        row.createCell(5).setCellValue(serviceInvoke.getSystem().getSystemAb());//调用方
-//                        row.createCell(14).setCellValue(serviceInvoke.getSystem().getSystemChineseName());
-//                    }
-//
-//                }
-//                if (si.getInter() != null) {
-//                    row.createCell(9).setCellValue(si.getInter().getProtocolName());//报文名称
-//                    row.createCell(18).setCellValue(si.getInter().getHeadName());//业务报文头
-//                }
-//                row.createCell(10).setCellValue("");//处理人
-//                row.createCell(11).setCellValue("");//更新时间
-//                row.createCell(12).setCellValue("");//报文转换方向
-//                row.createCell(13).setCellValue("");//是否已有调用
-//                row.createCell(15).setCellValue("");//参考文档
-//                row.createCell(16).setCellValue("");//模块划分
-//                row.createCell(17).setCellValue("");//是否穿透
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");
@@ -324,20 +291,20 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             HSSFRow row2 = sheet.getRow(2);
             HSSFRow row3 = sheet.getRow(3);
             if (si.getInter() != null) {
-                row0.createCell(1).setCellValue(si.getInter().getEcode());//交易码
-                row1.createCell(1).setCellValue(si.getInter().getInterfaceName());//交易名称
+                setCellValue(row0.createCell(1), commonStyle, si.getInter().getEcode());//交易码
+                setCellValue(row1.createCell(1), commonStyle, si.getInter().getInterfaceName());//交易名称
             }
             if (si.getServiceId() != null) {
                 Service service = serviceDao.findUniqueBy("serviceId", si.getServiceId());
-                row0.createCell(8).setCellValue(service.getServiceName());//服务名称
-                row2.createCell(8).setCellValue(service.getDesc());//服务名称
+                setCellValue(row0.createCell(8), commonStyle, service.getServiceName() + "(" + service.getServiceId() +")");//服务名称
+                setCellValue(row2.createCell(8), commonStyle, service.getDesc());//服务描述
                 if (si.getOperationId() != null) {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("serviceId", si.getServiceId());
                     params.put("operationId", si.getOperationId());
                     Operation operation = operationDAO.findUniqureBy(params);
-                    row1.createCell(8).setCellValue(operation.getOperationName());//服务操作名称
-                    row3.createCell(8).setCellValue(operation.getOperationDesc());//服务操作描述
+                    setCellValue(row1.createCell(8), commonStyle, operation.getOperationName()+"("+ operation.getOperationId() +")");//服务操作名称
+                    setCellValue(row2.createCell(8), commonStyle, operation.getOperationDesc());//服务操作描述
                 }
             }
 
@@ -419,11 +386,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         HSSFRow row = sheet.getRow(index);
         setCellValue(row.createCell(7), commonStyle, sda.getStructName()); //英文名称
         setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
-        setCellValue(row.createCell(9), commonStyle, sda.getType());//数据类型
-        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
-        setCellValue(row.createCell(11), commonStyle, sda.getConstraint());//约束条件
-        setCellValue(row.createCell(12), commonStyle, sda.getRequired());//是否必输
-        setCellValue(row.createCell(13), commonStyle, sda.getRemark());//备注
+        //TZB数据类型和长度合并
+        setCellValue(row.createCell(9), commonStyle, sda.getType() + "("+sda.getLength()+")");//数据类型/长度
+//        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
+        setCellValue(row.createCell(10), commonStyle, sda.getConstraint());//约束条件
+        setCellValue(row.createCell(11), commonStyle, sda.getRequired());//是否必输
+        setCellValue(row.createCell(12), commonStyle, sda.getRemark());//备注
 //        row.createCell(7).setCellValue(sda.getStructName()); //英文名称
 //        row.createCell(8).setCellValue(sda.getStructAlias()); //中文名称
 //        row.createCell(9).setCellValue(sda.getType()); //数据类型
@@ -496,18 +464,21 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     /**
      * 循环填充head
      */
-    public void fillHeads(HSSFWorkbook workbook, List<InterfaceHeadVO> ihvList) {
+    public void fillHeads(HSSFWorkbook workbook, List<ServiceInvoke> siList) {
         HSSFSheet headSheet = workbook.getSheet("HEAD");
-        int poolSize = ihvList.size() > 10 ? 10 : ihvList.size();
+        List<InterfaceHead> heads = getInterfaceHeads(siList);
+
+        int poolSize = heads.size() > 10 ? 10 : heads.size();
+        if(poolSize == 0 ) return;
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
-        for (int i = 0; i < ihvList.size(); i++) {
-            InterfaceHeadVO ihv = ihvList.get(i);
-            HSSFSheet sheet = workbook.cloneSheet(workbook.getSheetIndex(headSheet));//复制模板中mapping页
-            workbook.setSheetName(workbook.getSheetIndex(sheet), ihv.getInterfaceHead().getHeadName());//修改sheet名称
+        for (int i = 0; i < heads.size(); i++) {
+            InterfaceHead interfaceHead = heads.get(i);
+            HSSFSheet sheet = workbook.cloneSheet(workbook.getSheetIndex(headSheet));//复制模板中head页
+            workbook.setSheetName(workbook.getSheetIndex(sheet), interfaceHead.getHeadName());//修改sheet名称
 //            MappingSheetTask msTask = new MappingSheetTask(sheet, si, this);
 //            pool.execute(msTask);
-            fillHead(sheet, ihv);
+            fillHead(sheet, interfaceHead);
         }
         pool.shutdown();
         while (true) { //判断多线程是否结束
@@ -524,26 +495,43 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         workbook.removeSheetAt(workbook.getSheetIndex(headSheet));//删除mapping页
 
     }
-
+    public List<InterfaceHead> getInterfaceHeads(List<ServiceInvoke> siList){
+        List<String> interfaceIds = new ArrayList<String>();
+        if(siList != null){
+            for(int i = 0; i < siList.size(); i++){
+                if(siList.get(i) != null){
+                    ServiceInvoke si = siList.get(i);
+                    if(StringUtils.isNotEmpty(si.getInterfaceId())){
+                        if(!interfaceIds.contains(si.getInterfaceId())){
+                            interfaceIds.add(si.getInterfaceId());
+                        }
+                    }
+                }
+            }
+        }
+        List<InterfaceHead> heads = interfaceHeadService.getByInterfaceIds(interfaceIds);
+        return heads;
+    }
     /**
      * 填充head页
      */
-    public void fillHead(HSSFSheet sheet, InterfaceHeadVO ihv) {
-        HSSFRow row1 = sheet.getRow(1);
-        row1.getCell(0).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceId());//交易码
-        row1.getCell(1).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceName());//交易名称
-        Operation operation = operationDAO.getBySO(ihv.getServiceInvoke().getServiceId(), ihv.getServiceInvoke().getOperationId());
-        if (operation != null) {
-            row1.getCell(6).setCellValue(operation.getService().getServiceName());//服务名称
-            row1.getCell(8).setCellValue(operation.getOperationName());//场景名称
-        }
-        Counter counter = new Counter(5);
-        List<Ida> reqListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "request");
-        List<Ida> resListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "response");
-        //输入
-        for (int i = 0; i < reqListIda.size(); i++) {
-            counter.increment();
-        }
+    public void fillHead(HSSFSheet sheet, InterfaceHead head) {
+        //根据head获取
+//        HSSFRow row1 = sheet.getRow(1);
+//        row1.getCell(0).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceId());//交易码
+//        row1.getCell(1).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceName());//交易名称
+//        Operation operation = operationDAO.getBySO(ihv.getServiceInvoke().getServiceId(), ihv.getServiceInvoke().getOperationId());
+//        if (operation != null) {
+//            row1.getCell(6).setCellValue(operation.getService().getServiceName());//服务名称
+//            row1.getCell(8).setCellValue(operation.getOperationName());//场景名称
+//        }
+//        Counter counter = new Counter(5);
+//        List<Ida> reqListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "request");
+//        List<Ida> resListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "response");
+//        //输入
+//        for (int i = 0; i < reqListIda.size(); i++) {
+//            counter.increment();
+//        }
 
 
     }
@@ -735,21 +723,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         cell.setCellValue(value);
     }
 
-    public List<InterfaceHeadVO> getByInterfaceHeadVOServiceId(String serviceId) {
-        try {
-            String hql = " select new " + InterfaceHeadVO.class.getName() + "(ih, ihr, si) from " + InterfaceHead.class.getName()
-                    + " as ih, " + InterfaceHeadRelate.class.getName() + " as ihr, " + ServiceInvoke.class.getName()
-                    + " as si where ih.headId = ihr.headId and ihr.interfaceId = si.interfaceId and si.serviceId = ?";
-            List<InterfaceHeadVO> list = this.find(hql, serviceId);
-            return list;
-        } catch (Exception e) {
-            e.printStackTrace();
-            ;
-        }
-
-        return null;
-    }
-
     @Override
     public HibernateDAO getDAO() {
         return null;
@@ -805,11 +778,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             interfaceInvokeVO.setProviders(joinServiceInvokeSystemName(provList, "systemChineseName"));
             interfaceInvokeVO.setProviderIds(joinServiceInvokeSystemName(provList, "systemId"));
+            interfaceInvokeVO.setProviderNames(joinServiceInvokeSystemName(provList, "systemAb"));
 
             String hql = "select si from " + ServiceInvoke.class.getName() + " as si ," +  InterfaceInvoke.class.getName() + " as ii"
                 + " where ii.providerInvokeId = ? and si.invokeId = ii.consumerInvokeId";
             String consumers = "";
             String consumerIds = "";
+            String consumerNames = "";
             List<ServiceInvoke> consumerList = new ArrayList<ServiceInvoke>();
             for(int i=0; i < provList.size(); i++){
                 ServiceInvoke si = provList.get(i);
@@ -822,8 +797,11 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             }
             consumers +=  joinServiceInvokeSystemName(consumerList, "systemChineseName");
             consumerIds +=  joinServiceInvokeSystemName(consumerList,  "systemId");
+            consumerNames += joinServiceInvokeSystemName(consumerList,  "systemAb");
+
             interfaceInvokeVO.setConsumers(consumers);
             interfaceInvokeVO.setConsumerIds(consumerIds);
+            interfaceInvokeVO.setConsumerNames(consumerNames);
         }
         if (StringUtils.isNotEmpty(interfaceInvokeVO.getType()) && interfaceInvokeVO.getType().equals(Constants.INVOKE_TYPE_CONSUMER)) {//如果是消费者方向
             String providerHql = " from " + ServiceInvoke.class.getName() + " as si where si.serviceId=? and si.operationId=? and si.type=? and si.interfaceId=?";
@@ -832,11 +810,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             interfaceInvokeVO.setConsumers(joinServiceInvokeSystemName(consList, "systemChineseName"));
             interfaceInvokeVO.setConsumerIds(joinServiceInvokeSystemName(consList, "systemId"));
+            interfaceInvokeVO.setConsumerNames(joinServiceInvokeSystemName(consList, "systemAb"));
 
             String hql = "select si from " + ServiceInvoke.class.getName() + " as si ," +  InterfaceInvoke.class.getName() + " as ii"
                     + " where ii.consumerInvokeId = ? and si.invokeId = ii.providerInvokeId";
             String providers = "";
             String providerIds = "";
+            String providerNames ="";
             for(int i=0; i < consList.size(); i++){
                 ServiceInvoke si = consList.get(i);
                 List<ServiceInvoke> provList =  siDao.find( hql, si.getInvokeId());
@@ -846,6 +826,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 }
                 providers +=  joinServiceInvokeSystemName(provList, "systemChineseName");
                 providerIds +=  joinServiceInvokeSystemName(provList, "systemId");
+                providerNames +=  joinServiceInvokeSystemName(provList, "systemId");
 
             }
             interfaceInvokeVO.setProviders(providers);
@@ -871,6 +852,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     providerIds.add(provider.getInvokeId());
                     vo.setServiceId(serviceId);
                     vo.setOperationId(operationId);
+                    vo.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     result.add(vo);
                 }else{
                     int index = providerIds.indexOf(provider.getInvokeId());
@@ -916,13 +898,14 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             vo.setServiceId(serviceId);
             vo.setOperationId(operationId);
             vo.setType(strs[0].toString());
+            vo.setIsStandard(strs[2].toString());
             String interfaceId = strs[1].toString();
             Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
             if(inter != null){
                 vo.setInterfaceId(interfaceId);
                 vo.setInterfaceName(inter.getInterfaceName());
                 vo.setEcode(inter.getEcode());
-            }
+        }
             fillInterfaceInvokeVO(vo);
             result.add(vo);
         }
@@ -958,10 +941,13 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             for(ServiceInvoke si : list){
                 if(si.getSystem() != null){
                     if("systemChineseName".equals(field)){
-                        result += si.getSystem().getSystemChineseName() + ", ";
+                        result += si.getSystem().getSystemChineseName() + ",";
                     }
                     if("systemId".equals(field)){
-                        result += si.getSystem().getSystemId() + ", ";
+                        result += si.getSystem().getSystemId() + ",";
+                    }
+                    if("systemAb".equals(field)){
+                        result += si.getSystem().getSystemAb() + ",";
                     }
                 }
             }
