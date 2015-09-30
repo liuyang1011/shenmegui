@@ -469,6 +469,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         List<InterfaceHead> heads = getInterfaceHeads(siList);
 
         int poolSize = heads.size() > 10 ? 10 : heads.size();
+        if(poolSize == 0 ) return;
         ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 
         for (int i = 0; i < heads.size(); i++) {

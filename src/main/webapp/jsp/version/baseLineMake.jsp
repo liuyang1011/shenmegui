@@ -95,7 +95,7 @@
 					<td><input class="easyui-textbox" type="text" id="blDesc" name="blDesc"
 						data-options="required:true,validType:['length']">
 					</td>
-					<td><a href="javascript:void(0)" onclick="release()" class="easyui-linkbutton" plain="true"
+					<td><a href="javascript:void(0)" onclick="release()" class="easyui-linkbutton"
 						iconCls="icon-save">发布</a>
 					</td>
 				</tr>

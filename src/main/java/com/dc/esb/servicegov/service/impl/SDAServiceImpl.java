@@ -509,4 +509,15 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         operationService.editReleate(serviceId, OperationId);
         return true;
     }
+
+    public boolean judgeCanModifyOperation(String serviceId, String OperationId){
+        Map map = new HashMap();
+        map.put("operationId",OperationId);
+        map.put("serviceId",serviceId);
+        Operation operation = operationService.findUniqueBy(map);
+        if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT) || operation.getState().equals(Constants.Operation.OPT_STATE_REVISE)){
+            return true;
+        }
+        return false;
+    }
 }

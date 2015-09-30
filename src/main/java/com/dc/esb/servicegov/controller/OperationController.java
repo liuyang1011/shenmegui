@@ -262,15 +262,19 @@ public class OperationController {
      * 修改场景
      *
      * @param req
-     * @param Operation
+     * @param operation
      * @return
      */
     @RequiresPermissions({"service-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/edit", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean edit(HttpServletRequest req, Operation Operation) {
-        return operationServiceImpl.editOperation(req, Operation);
+    boolean edit(HttpServletRequest req, Operation operation) {
+        //只有服务定义和修订状态能修改
+        if(!operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT) && !operation.getState().equals(Constants.Operation.OPT_STATE_REVISE)){
+            return false;
+        }
+        return operationServiceImpl.editOperation(req, operation);
     }
 
     /**
@@ -322,6 +326,14 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.POST, value = "/deletes", headers = "Accept=application/json")
     @ResponseBody
     public boolean deletes(@RequestBody OperationPK[] operationPks) {
+        //上线和发布的场景不能删除
+        for (int i = 0; i < operationPks.length; i++) {
+            Operation operation = operationServiceImpl.getById(operationPks[i]);
+            if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+                return false;
+            }
+        }
+
         operationServiceImpl.deleteOperations(operationPks);
         return true;
     }
@@ -498,6 +510,36 @@ public class OperationController {
             if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT)){
                 operation.setState(Constants.Operation.OPT_STATE_REQUIRE_UNAUDIT);
                 operationServiceImpl.save(operation);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 修订，变为修订状态  只有审核通过，已上线，已发布状态的服务才能进行修订
+     * @param list
+     * @return
+     * @throws Throwable
+     */
+    @RequiresPermissions({"service-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/revise", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean revise(@RequestBody List list) {
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String,String> params = new HashMap<String, String>();
+            params.put("serviceId",serviceId);
+            params.put("operationId",operationId);
+            Operation operation = operationServiceImpl.findUniqueBy(params);
+            boolean canRevise = operationServiceImpl.judgeCanRevise(operation);
+            if(canRevise){
+                operation.setState(Constants.Operation.OPT_STATE_REVISE);
+                operationServiceImpl.save(operation);
+            }else {
+                return false;
             }
         }
         return true;

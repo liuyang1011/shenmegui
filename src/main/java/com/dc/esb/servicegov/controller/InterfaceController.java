@@ -509,6 +509,33 @@ public class InterfaceController {
     }
 
     @RequiresPermissions({"system-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getHeadBySystemId/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<Map<String, Object>> getHeadBySystemId(@PathVariable String systemId,HttpServletRequest request) {
+        List<Map<String, Object>> resList = new ArrayList<Map<String, Object>>();
+        List<InterfaceHead> heads = interfaceHeadService.findBy("systemId",systemId);
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (request.getParameter("query") != null && !"".equals(request.getParameter("query"))) {
+            map.put("id", "");
+            map.put("text", "全部");
+            resList.add(map);
+        } else {
+            map.put("id", "");
+            map.put("text", "不关联");
+            resList.add(map);
+        }
+
+        for (InterfaceHead head : heads) {
+            map = new HashMap<String, Object>();
+            map.put("id", head.getHeadId());
+            map.put("text", head.getHeadName());
+            resList.add(map);
+        }
+        return resList;
+    }
+
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getHeadAll", headers = "Accept=application/json")
     public
     @ResponseBody

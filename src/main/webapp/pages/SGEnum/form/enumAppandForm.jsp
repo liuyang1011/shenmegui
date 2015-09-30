@@ -1,19 +1,18 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 
 <form class="formui">
 	<table border="0" cellspacing="0" cellpadding="0">
 
 		<tr>
 			<th>代码名称</th>
-			<td><input type="text" id="_enumName">
+			<td><input class="easyui-textbox" type="text" id="_enumName" data-options="required:true, validType:['unique','englishB']">
 			</td>
 		</tr>
 		<tr>
 			<th>中文名称</th>
-			<td><input class="easyui-textbox" type="text" id="_remark">
+			<td><input class="easyui-textbox" type="text" id="_remark" data-options="required:true, validType:['uniqueChineseName','chineseB']">
 			</td>
 		</tr>
 		<tr>
@@ -73,32 +72,44 @@
 <script type="text/javascript"
 	src="/assets/enumManager/js/enumManager.js"></script>
 <script type="text/javascript" src="/plugin/validate.js"></script>
-<script>
-	$(function () {
-		$('#_enumName').textbox({
-			required:true,
-			validType:['unique','englishB']
-		});
-		$.extend($.fn.validatebox.defaults.rules, {
-			unique: {
-				validator: function (value, param) {
-					var result;
-					$.ajax({
-						type: "get",
-						async: false,
-						url: "/enum/uniqueValid",
-						dataType: "json",
-						data: {"name": value},
-						success: function (data) {
-							result = data;
-						}
-					});
-					return result;
-				},
-				message: '已存在相同代码名称'
-			}
-		});
+<script type="text/javascript">
+	$.extend($.fn.validatebox.defaults.rules, {
+		unique: {
+			validator: function (value, param) {
+				var result;
+				$.ajax({
+					type: "get",
+					async: false,
+					url: "/enum/uniqueValid",
+					dataType: "json",
+					data: {"name": value},
+					success: function (data) {
+						result = data;
+					}
+				});
+				return result;
+			},
+			message: '已存在相同代码名称'
+		},
+		uniqueChineseName: {
+			validator: function (value, param) {
+				var result;
+				$.ajax({
+					type: "get",
+					async: false,
+					url: "/enum/uniqueChineseName",
+					dataType: "json",
+					data: {"remark": encodeURI(encodeURI(value))},
+					success: function (data) {
+						result = data;
+					}
+				});
+				return result;
+			},
+			message: '已存在相同中文名称'
+		}
 	});
+
 	$('#cancelBtn').click(function(){
 		$('#w').window('close');
 	});
@@ -140,12 +151,12 @@
 	});
 	$('#saveBtn').click(function() {
 		var anEnum = {};
-		anEnum.name = $('#_enumName').val();
+		anEnum.name = $('#_enumName').textbox('getValue');
 		anEnum.isStandard = $('#_isStandard').combobox('getValue');
 		anEnum.isMaster = $('#_isMaster').combobox('getValue');
 		anEnum.dataSource = $('#_dataSource').val();
 		anEnum.version = $('#_version').val();
-		anEnum.remark = $('#_remark').val();
+		anEnum.remark = $('#_remark').textbox('getValue');
 		anEnum.status = $('#_status').combobox('getValue');
 //		anEnum.optUser = $('#_optUser').val();
 		anEnum.processId = $('#taskIdInput').textbox('getValue');

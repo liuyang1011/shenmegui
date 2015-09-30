@@ -154,7 +154,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public void editReleate(String serviceId, String operationId){
         Operation operation = getOperation(serviceId, operationId);
         versionServiceImpl.editVersion(operation.getVersionId());
-        operation.setState(Constants.Operation.OPT_STATE_UNAUDIT);/*修改状态*/
+        //现在无需修改状态，因为只有服务定义状态，修订状态才能修改
+//        operation.setState(Constants.Operation.OPT_STATE_UNAUDIT);/*修改状态*/
         save(operation);
     }
     public void deleteOperations(OperationPK[] operationPks) {
@@ -630,6 +631,15 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             operList.add(new OperationBean(operation,providerSystems,consumerSystems));
         }
         return operList;
+    }
+
+    public boolean judgeCanRevise(Operation operation){
+        //审核通过，已上线，已发布 可以变为修订状态
+        String state = operation.getState();
+        if(state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+            return true;
+        }
+        return false;
     }
 
     public static class OperationBean{

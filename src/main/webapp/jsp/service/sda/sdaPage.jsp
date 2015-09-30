@@ -61,7 +61,7 @@ var delIds = [];
 		}
 		
 		function append(){
-			var uuid = new Date().getTime();
+			var uuid = "" + new Date().getTime();
 			var node = $('#tg').treegrid('getSelected');
 			if(node.text == "root" && node.parentId == null){
 				alert("请选择其他节点！");
@@ -77,8 +77,16 @@ var delIds = [];
 			editingId = uuid;
 			newIds.push(uuid);
 			$('#tg').treegrid('reloadFooter');
-			$('#tg').treegrid('beginEdit', uuid);
+//			$('#tg').treegrid('beginEdit', uuid);
 			$('#tg').treegrid('select',uuid);
+			var tempNode = $('#tg').treegrid('getSelected');
+//			tempNode = node;
+			$('#tg').treegrid('beginEdit', uuid);
+//			tempNode.text =  "cs";
+//			$('#tg').treegrid('endEdit', uuid);
+//			$('#tg').treegrid('reload',{id:uuid, text:'mikel'});
+//			{'name':'mikel'})
+
 		}
 		function saveSDA(){
 			if (!confirm("确定保存吗？")) {
@@ -128,7 +136,10 @@ var delIds = [];
 			        	 	alert("保存成功");
 							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
 			        	 	//t.treegrid('reload');
-			        	 }
+			        	 }else{
+							 alert("只有服务定义状态和修订状态能进行修改");
+							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+						 }
 			            }
 				 });
 			}
@@ -266,12 +277,12 @@ var delIds = [];
 	//选择元数据自动更新其他数据
 	function comboboxSelect(record){
 		var node = $('#tg').treegrid('getSelected');
-		console.log(record);
 		$('#tg').treegrid('endEdit', node.id);
 		var node2 = $('#tg').treegrid('getSelected');
 		node2.text =  record.metadataId;
 		node2.append1 = record.chineseName;
 		node2.append2 = record.formula;
+		node2.append4 = record.metadataId;
 		$('#tg').treegrid('refreshRow',node2.id);
 	}
 </script>
@@ -287,15 +298,15 @@ var delIds = [];
  <legend>条件搜索</legend>
 <table border="0" cellspacing="0" cellpadding="0">
   <tr style="width:100%;">
-     <th>服务代码</th>
+     <th><nobr>服务代码</nobr></th>
     <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" style="width:100px"></td>
-    <th>服务名称</th>
+    <th><nobr>服务名称</nobr></th>
     <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }"  style="width:250px"></td>
-     <th>场景号</th>
+     <th><nobr>场景号</nobr></th>
     <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }"   style="width:50px"></td>
- 	 <th>场景名称</th>
+ 	 <th><nobr>场景名称</nobr></th>
         <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }"  style="width:250px"></td>
-	  <th>版本</th>
+	  <th><nobr>版本</nobr></th>
 	  <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.version.code }"  style="width:50px"></td>
   </tr>
 
@@ -320,11 +331,11 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'textbox'}" <%--readOnly="true"--%>>字段名</th>
+				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{validType:['englishB']}}">字段名</th>
 				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
 				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
-				<th field="append4" width="80" editor="{type:'combobox', options:{method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true,method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
@@ -350,6 +361,7 @@ var delIds = [];
 </table>
 </div>
 </form>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 
   
   </body>

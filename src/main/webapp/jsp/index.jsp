@@ -17,7 +17,7 @@
           href="<%=basePath%>/resources/themes/icon.css">
     <link href="<%=basePath%>/resources/css/css.css" rel="stylesheet" type="text/css">
 </head>
-<body class="easyui-layout">
+<body id="body" class="easyui-layout" data-options="fit:true">
 <div data-options="region:'north',border:false" id="header">
     <div id="logo"></div>
     <ul id="nav">
@@ -61,10 +61,15 @@
      class="west-menu" id="west-menu" split="true">
 
 </div>
+
 <div region="center">
-			<div id="mainContentTabs" class="easyui-tabs" fit="true" border="false" plain="true">
-			</div>
+    <div id="mainContentTabs" class="easyui-tabs" fit="true" border="false" plain="true">
+    </div>
 </div>
+
+<%--<div data-options="region:'center',collapsible:true,border:false,tabHeight:39"
+     class="easyui-tabs " id="mainContentTabs">
+</div>--%>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/app.js"></script>
@@ -150,9 +155,6 @@
         查看系统
     </div>
 </div>
-
-<>
-
 <div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
         新增接口

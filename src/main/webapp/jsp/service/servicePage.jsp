@@ -58,6 +58,9 @@
         width: "auto",
         height: $("body").height(),
         onSelect: function (title, index) {
+//            if(index == 0){
+//                $("#serviceInfo").$("#operationList").datagrid("reload");
+//            }
             if (index == 1 && k == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {

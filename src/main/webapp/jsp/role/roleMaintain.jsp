@@ -19,13 +19,13 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>角色代码</th>
+            <th><nobr>角色代码</nobr></th>
             <td><input class="easyui-textbox" type="text" name="Id" id="Id">
             </td>
-            <th>角色名称</th>
+            <th><nobr>角色名称</nobr></th>
             <td><input class="easyui-textbox" type="text" name="Name" id="Name">
             </td>
-            <th>角色描述</th>
+            <th><nobr>角色描述</nobr></th>
             <td><input class="easyui-textbox" type="text" name="Remark" id="Remark">
             </td>
         </tr>
@@ -37,7 +37,7 @@
             <td>&nbsp;</td>
             <td align="right"><a href="#" class="easyui-linkbutton"
                                  iconCls="icon-search" id="search">搜索角色</a>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
             </td>
         </tr>
     </table>

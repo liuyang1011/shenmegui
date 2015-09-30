@@ -16,11 +16,11 @@
 		<legend>枚举映射</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<th>主代码名称</th>
+				<th><nobr>主代码名称</nobr></th>
 				<td>
 					<input class="easyui-text" readonly="true" value="${master.name}" style="width:140px" type="text" name="name" id="masterName"/>
 				</td>
-				<th>从代码名称</th>
+				<th><nobr>从代码名称</nobr></th>
 				<td>
 					<input class="easyui-text" readonly="true" value="${slave.name}" style="width:140px" type="text" name="name" id="slaveName"/>
 				</td>

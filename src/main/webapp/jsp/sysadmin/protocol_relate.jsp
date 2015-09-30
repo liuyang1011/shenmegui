@@ -11,7 +11,7 @@
 				系统Id
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" value="${param.systemId}" readOnly>
+				<input class="easyui-textbox" type="text" value="${param.systemId}" disabled>
 			</td>
 		</tr>
 		<tr  style="height:50px">

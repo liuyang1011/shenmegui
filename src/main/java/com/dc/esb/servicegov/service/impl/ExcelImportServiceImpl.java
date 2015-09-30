@@ -934,6 +934,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             logInfoService.saveLog(sheet.getSheetName() + "页,元数据[" + msg.toString() + "]未配置，导入失败...", "导入报文头");
             return null;
         }
+        resMap.put("sdas", sdas);
         resMap.put("input", input);
         resMap.put("output", output);
 
