@@ -1,68 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <esb_xml>
-  <request>
-    <sdoroot>
-      <SYS_HEAD>
-        <Mac metadataid="Mac"/>
-        <MacOrgId metadataid="MacOrgId"/>
-        <SrcSysId metadataid="SrcSysId"/>
-        <CnsmrId metadataid="CnsmrId"/>
-        <SvcAdr metadataid="SvcAdr"/>
-        <SvcOpr metadataid="SvcOpr"/>
-        <ReplyAdr metadataid="ReplyAdr"/>
-        <ExtdCntnt metadataid="ExtdCntnt"/>
-      </SYS_HEAD>
-      <APP_HEAD>
-        <TxnDt metadataid="TxnDt"/>
-        <TxnTm metadataid="TxnTm"/>
-        <TxnTrlNo metadataid="TxnTrlNo"/>
-        <TxnSeqNo metadataid="TxnSeqNo"/>
-        <CnsmrId metadataid="CnsmrId"/>
-        <GlblSeqNo metadataid="GlblSeqNo"/>
-        <SrcSysId metadataid="SrcSysId"/>
-        <BrId metadataid="BrId"/>
-        <ChnlTp metadataid="ChnlTp"/>
-        <TmlCd metadataid="TmlCd"/>
-        <CityCd metadataid="CityCd"/>
-        <PIN metadataid="PIN"/>
-        <KeyVsnNo metadataid="KeyVsnNo"/>
-        <SysOfst1 metadataid="SysOfst1"/>
-        <SysOfst2 metadataid="SysOfst2"/>
-        <AhrTrlNo metadataid="AhrTrlNo"/>
-        <AhrPswd metadataid="AhrPswd"/>
-        <AhrCardFlg metadataid="AhrCardFlg"/>
-        <AhrCardNo metadataid="AhrCardNo"/>
-        <LngCd metadataid="LngCd"/>
-      </APP_HEAD>
-        ${request}$
-    </sdoroot>
-  </request>
-  <response>
-    <sdoroot>
-      <SYS_HEAD>
-        <Mac metadataid="Mac"/>
-        <MacOrgId metadataid="MacOrgId"/>
-        <MsgId metadataid="MsgId"/>
-        <TrgtSysId metadataid="TrgtSysId"/>
-        <RelMsgId metadataid="RelMsgId"/>
-        <SvcAdr metadataid="SvcAdr"/>
-        <SvcOpr metadataid="SvcOpr"/>
-        <ExtdCntnt metadataid="ExtdCntnt"/>
-      </SYS_HEAD>
-      <APP_HEAD>
-        <TxnDt metadataid="TxnDt"/>
-        <TxnTm metadataid="TxnTm"/>
-        <BkndSeqNo metadataid="BkndSeqNo"/>
-        <BkndSysId metadataid="BkndSysId"/>
-        <GlblSeqNo metadataid="GlblSeqNo"/>
-        <RetCd metadataid="RetCd"/>
-        <RetMsg metadataid="RetMsg"/>
-        <LngCd metadataid="LngCd"/>
-        <FltMsg metadataid="FltMsg"/>
-        <FltCd metadataid="FltCd"/>
-      </APP_HEAD>
-       ${response}$
-    </sdoroot>
-  </response>
+    <request>
+        <sdoroot>
+            <APP_HEAD>
+                <BranchId metadataid="BranchId" chinese_name="机构代码"/>
+                <TellerNo metadataid="TellerNo" chinese_name="柜员号"/>
+                <AuthTellerNo metadataid="AuthTellerNo" chinese_name="授权柜员标识"/>
+                <AuthTellerPassword metadataid="AuthTellerPassword" chinese_name="授权柜员密码"/>
+            </APP_HEAD>
+            <SYS_HEAD>
+                <ServiceCode metadataid="ServiceCode" chinese_name="服务代码"/>
+                <ServiceScene metadataid="ServiceScene" chinese_name="服务场景"/>
+                <ConsumerId metadataid="ConsumerId" chinese_name="消费系统编号"/>
+                <ConsumerSeqNo metadataid="ConsumerSeqNo" chinese_name="系统流水号"/>
+                <OrgConsumerSeqNo metadataid="OrgConsumerSeqNo" chinese_name="发起方业务流水号"/>
+                <TranDate metadataid="TranDate" chinese_name="交易日期"/>
+                <TranTime metadataid="TranTime" chinese_name="交易时间"/>
+                <FilFlg metadataid="FilFlg" chinese_name="文件标志"/>
+                <TerminalCode metadataid="TerminalCode" chinese_name="终端号"/>
+            </SYS_HEAD>
+            ${request}$
+        </sdoroot>
+    </request>
+    <response>
+        <sdoroot>
+            <SYS_HEAD>
+                <ServiceCode metadataid="ServiceCode" chinese_name="服务代码"/>
+                <ServiceScene metadataid="ServiceScene" chinese_name="服务场景"/>
+                <ConsumerId metadataid="ConsumerId" chinese_name="消费系统编号"/>
+                <ConsumerSeqNo metadataid="ConsumerSeqNo" chinese_name="系统流水号"/>
+                <SplrSeqNo metadataid="SplrSeqNo" chinese_name="服务提供方流水号"/>
+                <TranDate metadataid="TranDate" chinese_name="交易日期"/>
+                <TranTime metadataid="TranTime" chinese_name="交易时间"/>
+                <Ret metadataid="Ret" type="array" is_struct="false">
+                    <sdo>
+                        <ReturnStatus metadataid="ReturnStatus" chinese_name="交易状态"/>
+                        <ReturnCode metadataid="ReturnCode" chinese_name="交易返回代码"/>
+                        <ReturnMsg metadataid="ReturnMsg" chinese_name="交易返回信息"/>
+                    </sdo>
+                </Ret>
+                <FilFlg metadataid="FilFlg" chinese_name="文件标志"/>
+                <TerminalCode metadataid="TerminalCode" chinese_name="终端号"/>
+            </SYS_HEAD>
+            <APP_HEAD>
+                <BranchId metadataid="BranchId" chinese_name="机构代码"/>
+                <TellerNo metadataid="TellerNo" chinese_name="柜员号"/>
+                <AuthTellerNo metadataid="AuthTellerNo" chinese_name="授权柜员标识"/>
+            </APP_HEAD>
+            ${response}$
+        </sdoroot>
+    </response>
 </esb_xml>

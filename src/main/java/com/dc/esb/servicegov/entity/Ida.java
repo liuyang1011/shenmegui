@@ -58,6 +58,9 @@ public class Ida {
     @Column(name = "REMARK",length = 1024)
     private String remark;
 
+    @Column
+    private String sdaId;
+
 //    @Column(name = "ARG_TYPE")
     //参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
 //    private String argType;
@@ -230,5 +233,13 @@ public class Ida {
 
     public void setHeads(InterfaceHead heads) {
         this.heads = heads;
+    }
+
+    public String getSdaId() {
+        return sdaId;
+    }
+
+    public void setSdaId(String sdaId) {
+        this.sdaId = sdaId;
     }
 }

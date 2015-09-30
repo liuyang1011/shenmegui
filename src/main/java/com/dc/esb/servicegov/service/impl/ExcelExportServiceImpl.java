@@ -516,26 +516,75 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * 填充head页
      */
     public void fillHead(HSSFSheet sheet, InterfaceHead head) {
-        //根据head获取
-//        HSSFRow row1 = sheet.getRow(1);
-//        row1.getCell(0).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceId());//交易码
-//        row1.getCell(1).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceName());//交易名称
-//        Operation operation = operationDAO.getBySO(ihv.getServiceInvoke().getServiceId(), ihv.getServiceInvoke().getOperationId());
-//        if (operation != null) {
-//            row1.getCell(6).setCellValue(operation.getService().getServiceName());//服务名称
-//            row1.getCell(8).setCellValue(operation.getOperationName());//场景名称
-//        }
-//        Counter counter = new Counter(5);
-//        List<Ida> reqListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "request");
-//        List<Ida> resListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "response");
-//        //输入
-//        for (int i = 0; i < reqListIda.size(); i++) {
-//            counter.increment();
-//        }
-
-
+        //根据head获取ida,sda数据
+        String hql = " from "+ Ida.class.getName() + " where headId = ? and structName=?";
+        Ida reqIda = idaDao.findUnique(hql, head.getHeadId(), "request");
+        Ida resIda = idaDao.findUnique(hql, head.getHeadId(), "response");
+        String hql2 = " from " + SDA.class.getName() +" where headId = ? and structName=?";
+        SDA reqSda = sdaDao.findUnique(hql2, head.getHeadId(), "request");
+        SDA resSda = sdaDao.findUnique(hql2, head.getHeadId(), "response");
+        Counter counter = new Counter(4);
+        fillHeadRow(sheet, counter, reqIda, reqSda);//填充请求数据
+        counter.increment();//中间行
+        fillHeadRow(sheet, counter, resIda, resSda);//填充输出数据
     }
+    public void fillHeadRow(HSSFSheet sheet, Counter counter, Ida ida, SDA sda){
+        if(ida == null && sda == null){
+            return;
+        }
+        //如果是请求或响应头，不插入行
+        if((ida != null && !"request".equalsIgnoreCase(ida.getStructName()) && !"response".equalsIgnoreCase(ida.getStructName()))
+                || (sda != null && !"request".equalsIgnoreCase(ida.getStructName()) && !"response".equalsIgnoreCase(ida.getStructName()))){
+            sheet.createRow(sheet.getLastRowNum() + 1);
+            counter.increment();
+            sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        }
 
+
+        List<String> subSdaIds = new ArrayList<String>();//sda子节点
+
+        if(ida != null){
+            if(!"request".equalsIgnoreCase(ida.getStructName()) && !"response".equalsIgnoreCase(ida.getStructName())){
+                fillIda(sheet, counter.getCount(), ida);
+            }
+        }
+
+        if(sda != null){
+            if(!"request".equalsIgnoreCase(sda.getStructName()) && !"response".equalsIgnoreCase(sda.getStructName())){
+                fillSDA(sheet, counter.getCount(), sda, commonStyle);
+            }
+        }
+        //处理子节点关系
+        if(ida != null){
+            String hql = " from " + Ida.class.getName() +" where _parentId = ? order by seq asc";
+            List<Ida> idaChildren = idaDao.find(hql, ida.getId());
+
+            if(idaChildren != null && idaChildren.size() > 0){ //处理ida子节点
+                for(Ida idaChild : idaChildren){
+                    SDA sdaChild = sdaDao.findUniqueBy("sdaId", idaChild.getSdaId());//子节点对应的sda
+                    fillHeadRow(sheet, counter, idaChild, sdaChild);
+                    if(sdaChild != null){
+                        subSdaIds.add(sdaChild.getSdaId());
+                    }
+                }
+            }
+        }
+
+        if(sda != null){
+            //处理sda剩余子节点
+            String subHql = subSdaIds.size() > 0 ? " and s.sdaId not in (:subSdaIds) " : "";
+            String hql2 = " from " + SDA.class.getName() + " as s where s.parentId = :parentId" +subHql + " order by s.seq asc";
+            Map<String, Object> param = new HashMap<String, Object>();
+            param.put("parentId", sda.getSdaId());
+            param.put("subSdaIds", subSdaIds);
+            List<SDA> sdaChildren = sdaDao.find(hql2, param);
+            if(sdaChildren != null && sdaChildren.size() > 0){
+                for(SDA sdaChild : sdaChildren){
+                    fillHeadRow(sheet, counter, null, sdaChild);
+                }
+            }
+        }
+    }
     /**
      * @param serviceId
      * @param operationId
