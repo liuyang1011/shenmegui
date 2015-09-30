@@ -817,12 +817,24 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 }
             }
         }
-        int order = 0;
+        //int order = 0;
         List<Ida> input = new ArrayList<Ida>();
+
+        String tempHeadId = UUID.randomUUID().toString();//临时替代headId,等保存head后，按此更新sda
+        Map<String, SDA> sdas = sdaService.genderSDAAuto(tempHeadId);
+        resMap.put("inputTempHeadId", tempHeadId);
+        List<SDA> inputArraySdas = new ArrayList<SDA>();//sda数组类型的列表
+        inputArraySdas.add(sdas.get("request"));
         for (int i = inputIndex; i < outIndex - 1; i++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(i);
             if(sheetRow == null) continue;
+
+            SDA sda = genderSDA(sheetRow, inputArraySdas, tempHeadId, i);
+            if(sda != null){
+                ida.setSdaId(sda.getSdaId());
+            }
+
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -865,18 +877,37 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 ida.setMetadataId(isNull(cell));
+                if (cell != null && !"".equals(cell)) {
+                    Metadata metadata = metadataService.findUniqueBy("metadataId", cell);
+                    if (metadata == null) {
+                        logger.error(sheet.getSheetName() + "页,元数据[" + cell + "]未配置，导入失败...");
+                        msg.append(cell).append(",");
+                        flag = false;
+                    }
+                }
             }
             input.add(ida);
-            ida.setSeq(order);
-            order++;
+            ida.setSeq(i);
+            //order++;
         }
 
-        order = 0;
+        //order = 0;
         List<Ida> output = new ArrayList<Ida>();
+
+        String outTempHeadId = UUID.randomUUID().toString();//临时替代headId,等保存head后，按此更新sda
+        resMap.put("outTempHeadId", outTempHeadId);
+        List<SDA> outArraySdas = new ArrayList<SDA>();//sda数组类型的列表
+        outArraySdas.add(sdas.get("response"));
         for (int j = outIndex; j <= end; j++) {
             Ida ida = new Ida();
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
+
+            SDA sda = genderSDA(sheetRow, outArraySdas, outTempHeadId, j);
+            if(sda != null){
+                ida.setSdaId(sda.getSdaId());
+            }
+
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -932,14 +963,16 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 }
             }
             output.add(ida);
-            ida.setSeq(order);
-            order++;
+            ida.setSeq(j);
+            //order++;
         }
 
         if (!flag) {
             logInfoService.saveLog(sheet.getSheetName() + "页,元数据[" + msg.toString() + "]未配置，导入失败...", "导入报文头");
             return null;
         }
+
+        resMap.put("sdas", sdas);
         resMap.put("input", input);
         resMap.put("output", output);
 
