@@ -16,9 +16,9 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
         <tr>
-            <th>元数据名称</th>
+            <th><nobr>元数据名称</nobr></th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
-            <th>中文名称</th>
+            <th><nobr>中文名称</nobr></th>
             <td><input class="easyui-textbox" type="text" style="width:100px" name="chineseName" id="chineseName">
             </td>
            <%-- <th>英文名称</th>--%>
@@ -27,7 +27,7 @@
             <%--<th style="text-align:right">别名</th>--%>
             <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
             </td>
-            <th>类别词</th>
+            <th><nobr>类别词</nobr></th>
             <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px"
                        class="easyui-combobox"
                        data-options="
@@ -41,15 +41,16 @@
 					"></td>
         </tr>
         <tr>
-            <th> 创建人</th>
+            <th><nobr> 创建人</nobr></th>
             <td><input class="easyui-textbox" style="width:100px" type="text" name="optUser" id="optUser"></td>
-            <th> 创建起始日期</th>
+            <th><nobr> 创建起始日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
-            <th> 创建结束日期</th>
+            <th><nobr> 创建结束日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
             <td align="right">
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
-                <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a></td>
+                <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+            </td>
         </tr>
     </table>
 </fieldset>
@@ -59,23 +60,23 @@
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
-        <th data-options="field:'metadataId'">元数据名称</th>
-        <th data-options="field:'chineseName'">中文名称</th>
-        <th data-options="field:'metadataAlias'">别名</th>
+        <th data-options="field:'metadataId'" width="15%">元数据名称</th>
+        <th data-options="field:'chineseName'" width="15%">中文名称</th>
+        <th data-options="field:'metadataAlias'" width="10%">别名</th>
         <%--<th data-options="field:'metadataName'">英文名称</th>--%>
-        <th data-options="field:'categoryChineseWord'">类别词</th>
-        <th data-options="field:'type'">类型</th>
-        <th data-options="field:'length'">长度</th>
-        <th data-options="field:'scale'">精度</th>
-        <th data-options="field:'dataCategory'">数据项分类</th>
+        <th data-options="field:'categoryChineseWord'" width="10%">类别词</th>
+        <th data-options="field:'type'" width="5%">类型</th>
+        <th data-options="field:'length'" width="4%">长度</th>
+        <th data-options="field:'scale'" width="3%">精度</th>
+        <th data-options="field:'dataCategory'" width="10%">数据项分类</th>
         <%--<th data-options="field:'buzzCategory'">业务项分类</th>
         <th data-options="field:'bussDefine'">业务定义</th>
         <th data-options="field:'bussRule'">业务规则</th>
         <th data-options="field:'dataSource'">数据来源</th>--%>
-        <th data-options="field:'status'">状态</th>
+        <%--<th data-options="field:'status'">状态</th>--%>
         <%--<th data-options="field:'version'">版本号</th>--%>
-        <th data-options="field:'optUser'">创建人</th>
-        <th data-options="field:'optDate'">创建时间</th>
+        <th data-options="field:'optUser'" width="10%">创建人</th>
+        <th data-options="field:'optDate'" width="15%">创建时间</th>
         <!--
         <th data-options="field:'  '">审核人</th>
         <th data-options="field:'  '">审核时间</th>

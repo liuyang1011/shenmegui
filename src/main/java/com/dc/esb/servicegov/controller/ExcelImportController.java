@@ -14,10 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.MetadataService;
-import com.dc.esb.servicegov.service.impl.ExcelImportServiceImpl;
-import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
-import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
-import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.GlobalImport;
 import org.apache.commons.io.FilenameUtils;
@@ -67,6 +64,9 @@ public class ExcelImportController {
 
     @Autowired
     InterfaceInvokeServiceImpl interfaceInvokeService;
+
+    @Autowired
+    InterfaceServiceImpl interfaceService;
     /**
      * Excel 2003
      */
@@ -133,6 +133,17 @@ public class ExcelImportController {
                         msg.append(sheetName + "导入失败，");
                         continue;
                     }
+                    //判断是否新增
+                    if(indexDO.getOptType().equals("0")){
+                        Interface tempInter = (Interface) infoMap.get("interface");
+                        Interface inter = interfaceService.getById(tempInter.getInterfaceId());
+                        if(inter != null){
+                            msg.append(sheetName + "导入失败，新增接口已经存在");
+                            logger.error(sheetName + "导入失败，新增接口已经存在");
+                            logInfoService.saveLog(sheetName + "导入失败，新增接口已经存在", "原始接口导入");
+                            continue;
+                        }
+                    }
                     logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
                     long time = java.lang.System.currentTimeMillis();
                     List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO);
@@ -192,7 +203,7 @@ public class ExcelImportController {
             } else if (extensionName.toLowerCase().equals(XLSX)) {
                 workbook = new XSSFWorkbook(is);
             } else {
-                outPutError(writer,null);
+                outPutError(writer,"noSystem");
                 return;
             }
             // 读取交易索引Sheet页
@@ -200,7 +211,7 @@ public class ExcelImportController {
             if (indexSheet == null) {
                 logger.error("缺少INDEX sheet页");
                 logInfoService.saveLog("缺少INDEX sheet页", "导入");
-                outPutError(writer,null);
+                outPutError(writer,"noSystem");
                 return;
             }
             // 从第一行开始读，获取所有接口行
@@ -230,6 +241,18 @@ public class ExcelImportController {
                         msg.append(sheetName + "导入失败，");
                         continue;
                     }
+                    //判断是否新增
+                    if(indexDO.getOptType().equals("0")){
+                        Interface tempInter = (Interface) infoMap.get("interface");
+                        Interface inter = interfaceService.getById(tempInter.getInterfaceId());
+                        if(inter != null){
+                            msg.append(sheetName + "导入失败，新增接口已经存在");
+                            logger.error(sheetName + "导入失败，新增接口已经存在");
+                            logInfoService.saveLog(sheetName + "导入失败，新增接口已经存在", "原始接口导入");
+                            continue;
+                        }
+                    }
+
                     logger.info("===========接口[" + sheetName + "],开始导入接口信息=============");
                     long time = java.lang.System.currentTimeMillis();
                     List result = excelImportService.executeInterfaceImport(infoMap, inputMap, outMap,indexDO);
@@ -537,7 +560,9 @@ public class ExcelImportController {
         writer.println("alert('缺少INDEX sheet页!');");
         if(null == systemId){
             writer.println("window.location='/jsp/sysadmin/fieldmapping_import.jsp'");
-        }else{
+        }else if(systemId.equals("noSystem")){
+            writer.println("window.location='/jsp/sysadmin/interface_import.jsp'");
+        } else{
             writer.println("window.location='/jsp/interface/interface_list.jsp?systemId="+systemId+"'");
         }
         writer.println("</script>");

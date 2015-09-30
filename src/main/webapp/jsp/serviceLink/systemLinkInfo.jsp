@@ -19,13 +19,13 @@
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
             <%--<th>接口ID</th>--%>
-            <th>交易码</th>
+            <th><nobr>交易码</nobr></th>
             <td><input class="easyui-textbox" type="text" name="interfaceId" id="interfaceId"></td>
-            <th>交易名称</th>
+            <th><nobr>交易名称</nobr></th>
             <td><input class="easyui-textbox" type="text" name="interfaceName" id="interfaceName"></td>
-            <th>服务码</th>
+            <th><nobr>服务码</nobr></th>
             <td><input class="easyui-textbox" type="text" name="serviceId" id="serviceId"></td>
-            <th>服务名称</th>
+            <th><nobr>服务名称</nobr></th>
             <td><input class="easyui-textbox" type="text" name="serviceName" id="serviceName"></td>
         </tr>
         <tr>
@@ -42,7 +42,7 @@
 
 
 </fieldset>
-<table title="交易节点" id="invokeLinkeTable" style="height:370px; width:auto;">
+<table title="交易节点" id="invokeLinkeTable" style="height:440px; width:auto;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
@@ -80,14 +80,15 @@
     var invokeId;
     $(function () {
         $('#invokeLinkeTable').datagrid({
-            rownumbers: true,
-            singleSelect: true,
-            url: '/serviceLink/getServiceLinkNode/system/<%=request.getParameter("systemId") %>',
-            method: 'get',
-            toolbar: toolbar,
-            pagination: true,
-            pageSize: 10,
-            onLoadSuccess: function (data) {
+            rownumbers:true,
+            singleSelect:true,
+            url:'/serviceLink/getServiceLinkNode/system/<%=request.getParameter("systemId") %>',
+            method:'get',
+            toolbar:toolbar,
+            pagination:true,
+            pageSize:13,
+            pageList: [13,30,50],
+            onLoadSuccess:function(data){
                 $.each(data.rows, function (index, item) {
                     var invokeType = item.invokeType;
                     if (invokeType == '0') {

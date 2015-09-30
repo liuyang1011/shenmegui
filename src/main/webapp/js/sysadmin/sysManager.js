@@ -89,7 +89,9 @@ var sysManager = {
     },
 
     remove: function () {
-
+        if (!confirm("确定要删除该报文头吗？")) {
+            return;
+        }
         var node = $('.msinterfacetree').tree("getSelected");
         $.ajax({
             type: "get",
@@ -98,10 +100,11 @@ var sysManager = {
             dataType: "json",
             success: function (result) {
                 if (result) {
-
+                    alert("删除成功！");
                     var parent = $('.msinterfacetree').tree("getParent", node.target);
+                    var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
                     $('.msinterfacetree').tree("remove", node.target);
-                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + parent.id;
+                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + systemNode.id;
                     $('.msinterfacetree').tree("reload", parent.target);
                     var title = node.text;
                     $('#mainContentTabs').tabs("close", title);
@@ -165,12 +168,19 @@ var sysManager = {
             return;
         }
         $.ajax({
-            type: "GET",
+            type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: "/system/delete/" + node.id,
+            //如果systemId包含#等特殊符号就会有问题
+            //url: "/system/delete/" + systemId,
+            url: "/system/delete2",
             dataType: "json",
+            data: JSON.stringify(node.id),
             success: function (result) {
-                $('.msinterfacetree').tree("reload");
+                if(result){
+                    $('.msinterfacetree').tree("reload");
+                }else{
+                    alert("包含接口的系统不予删除，请先删除系统下的接口")
+                }
             }
         });
     },
@@ -190,12 +200,14 @@ var sysManager = {
             url: "/jsp/sysadmin/file_add.jsp"
         });
     },
-    addFilePageBySystem: function (systemId) {
+    addFilePageBySystem: function () {
+        var node = $('.msinterfacetree').tree("getSelected");
         uiinit.win({
             w: 500,
+            top:100,
             iconCls: 'icon-add',
             title: "新增需求文件",
-            url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
+            url: "/jsp/sysadmin/file_add.jsp?systemId=" + node.id
         });
     },
     addProtocol: function (data, callBack) {
@@ -225,9 +237,11 @@ var sysManager = {
             url: "/protocol/delete/" + node.id,
             dataType: "json",
             success: function (result) {
+                alert("删除成功！");
                 var parent = $('.msinterfacetree').tree("getParent", node.target);
+                var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
                 $('.msinterfacetree').tree("remove", node.target);
-                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + parent.id;
+                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemNode.id;
                 $('.msinterfacetree').tree("reload", parent.target);
             }
         });
@@ -254,6 +268,7 @@ var sysManager = {
     },
     "refreshFile" : function(){
         var node = $('.msinterfacetree').tree("getSelected");
+        var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
         $('.msinterfacetree').tree('append', {
             parent: (node?node.target:null),
             data: [{
@@ -261,7 +276,7 @@ var sysManager = {
             }]
         });
         var urlPath = $('.msinterfacetree').tree('options').url;
-        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + node.id;
+        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id;
         $('.msinterfacetree').tree("reload", node.target);
         $('.msinterfacetree').tree('options').url = urlPath;
     }

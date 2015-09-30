@@ -131,7 +131,7 @@
 	      <input class="easyui-textbox" id="code" name="code"type="text" ></td>
 	    <th>版本描述</th>
 	    <td><input class="easyui-textbox" id="blDesc" name="blDesc" type="text" name="desc"></td>
-	    <td><a href="#" onclick="getBaseLine()" class="easyui-linkbutton" plain="true" iconcls="icon-search">查询</a>
+	    <td><a href="#" onclick="getBaseLine()" class="easyui-linkbutton" iconcls="icon-search">查询</a>
 	    	<%--&nbsp;&nbsp;<a href="#" class="easyui-linkbutton" plain="true" iconcls="icon-save">版本下载</a>--%>
 	    </td>
 	    <td>&nbsp;</td>

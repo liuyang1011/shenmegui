@@ -15,14 +15,14 @@
 	-->
 </style>
 
-<form class="formui">
+<form class="formui" id="form1">
 	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center">
 		<tr>
 			<th>
 				系统ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemIdText">
+				<input class="easyui-textbox" type="text" id="systemIdText" data-options="required:true, validType:['intOrFloat']">
 			</td>
 		</tr>
 		<tr>
@@ -30,7 +30,7 @@
 				系统简称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemAbText">
+				<input class="easyui-textbox" type="text" id="systemAbText" data-options="required:true, validType:['englishB']">
 			</td>
 		</tr>
 		<tr>
@@ -38,7 +38,7 @@
 				系统中文名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemChineseNameText">
+				<input class="easyui-textbox" type="text" id="systemChineseNameText" data-options="required:true, validType:['chineseB']">
 			</td>
 		</tr>
 		<tr style="display:none">
@@ -119,7 +119,7 @@
 
 	</table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 	$(document).ready(function (){
 
@@ -134,7 +134,9 @@
 
 
 	function save(){
-
+		if(!$("#form1").form('validate')){
+			return false;
+		}
         var systemId = $("#systemIdText").val();
         if(systemId==null || systemId == ''){
 			alert("请填写系统ID");

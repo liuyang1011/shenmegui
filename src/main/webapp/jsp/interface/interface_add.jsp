@@ -4,7 +4,7 @@
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<form class="formui">
+<form class="formui" id="form">
 	<table border="0" cellspacing="0" cellpadding="0">
 
 		<tr>
@@ -12,7 +12,7 @@
 				接口ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceIdText">
+				<input class="easyui-textbox" type="text" id="interfaceIdText"  data-options="required:true,validType:['englishB']">
 			</td>
 		</tr>
 		<tr>
@@ -20,7 +20,7 @@
 				交易名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceNameText">
+				<input class="easyui-textbox" type="text" id="interfaceNameText" data-options="validType:['chineseB']">
 			</td>
 		</tr>
 		<tr>
@@ -28,7 +28,7 @@
 				交易码
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="ecodeText">
+				<input class="easyui-textbox" type="text" id="ecodeText" data-options="validType:['intOrFloat']">
 			</td>
 		</tr>
 		<tr>
@@ -40,6 +40,28 @@
 					<option value="">全部</option>
 					<option value="0">投产</option>
 					<option value="1">废弃</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				调用关系
+			</th>
+			<td>
+				<select id="type" class="easyui-combobox"  panelHeight="auto" name="type" style="width: 155px"  data-options="editable:false">
+					<option value="0">提供方</option>
+					<option value="1">消费方</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				是否标准接口
+			</th>
+			<td>
+				<select id="isStandard" class="easyui-combobox"  panelHeight="auto" name="isStandard" style="width: 155px"  data-options="editable:false">
+					<option value="0">是</option>
+					<option value="1">否</option>
 				</select>
 			</td>
 		</tr>
@@ -82,9 +104,8 @@
 		</tr>
 	</table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
-
 	$(document).ready(function (){
 		var systemId ="";
 		try {
@@ -110,6 +131,11 @@
     	});
 
 	function save(){
+
+		if(!$("#form").form('validate')){
+			alert("请输入正确数据");
+			return false;
+		}
 		var interfaceId = $("#interfaceIdText").val();
 		 if(interfaceId==null || interfaceId == ''){
 			alert("接口ID不能为空");
@@ -155,8 +181,11 @@
 		var desc = $("#desc").val();
 		var remark = $("#remark").val();
 		var status = $("#status").combobox('getValue');
+		var type = $("#type").combobox('getValue');
+		var isStandard =  $("#isStandard").combobox('getValue');
 		var systemId ="";
 		var treeObj =$('.msinterfacetree') ;
+
 		try { 
 			var selectNode = $('.msinterfacetree').tree("getSelected");
 			systemId = selectNode.id;
@@ -185,23 +214,29 @@
 
 		serviceInvoke.protocolId = protocolId;
 		serviceInvoke.interfaceId = interfaceId;
+		serviceInvoke.type = type;
+		serviceInvoke.isStandard = isStandard;
 		invokes.push(serviceInvoke);
 		data.serviceInvoke = invokes;
 		interfaceManager.add(data,"add",function(result){
 			if(result){
 				$('#w').window('close');
-				var selectNode = $('.msinterfacetree').tree("getSelected");
-				$('.msinterfacetree').tree('append', {
+				//TODO selectNode 是null
+				var selectNode = treeObj.tree("getSelected");
+				treeObj.tree('append', {
 									parent: (selectNode?selectNode.target:null),
 									data: [{
 										text: 'new item1'
 									}]
 								});
-				var urlPath = $('.msinterfacetree').tree('options').url;
-				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
-				$('.msinterfacetree').tree("reload", selectNode.target);
-				$('.msinterfacetree').tree('options').url = urlPath;
-				$('#tg').datagrid("reload");
+				var urlPath = treeObj.tree('options').url;
+				treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
+				treeObj.tree("reload", selectNode.target);
+				treeObj.tree('options').url = urlPath;
+				$("#tg").datagrid("reload");
+				//var mainTabs = parent.$('#mainContentTabs');
+				//var ifName = "interface_"+interfaceId;
+				//mainTabs.tabs("getTab","接口("+systemId+")").tg.datagrid("reload");
 			}else{
 				alert("保存失败");
 			}

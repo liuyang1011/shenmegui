@@ -6,4 +6,5 @@ import com.dc.esb.servicegov.service.support.BaseService;
 
 public interface InterfaceHeadService extends BaseService<InterfaceHead, String> {
     public void initHDA(InterfaceHead interfaceHead);
+    public boolean uniqueValid(String headName);
 }

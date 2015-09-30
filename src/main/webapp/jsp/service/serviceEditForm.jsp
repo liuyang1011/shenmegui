@@ -9,11 +9,11 @@
 
   <tr>
     <th>服务名</th>
-    <td><input class="easyui-textbox" type="text" id="serviceName" ></td>
+    <td><input class="easyui-textbox" type="text" id="serviceName" data-options="required:true, validType:['chineseB']" ></td>
   </tr>
   <tr>
     <th>描述</th>
-    <td><input class="easyui-textbox" type="text" id="discription" ></td>
+    <td><input class="easyui-textbox" type="text" id="discription" data-options="validType:['chineseB']"></td>
   </tr>
   <tr>
     <th>服务分类</th>

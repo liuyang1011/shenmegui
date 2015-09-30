@@ -58,6 +58,10 @@
 			$.each(opItems, function(index, item) {
 				versionIds.push(item.versionHis.autoId);
 			});
+			if(versionIds.length <= 0){
+				alert("请先选择制作基线的历史版本");
+				return false;
+			}
 			$.ajax({
 				type: "post",
 				async: false,
@@ -91,7 +95,7 @@
 					<td><input class="easyui-textbox" type="text" id="blDesc" name="blDesc"
 						data-options="required:true,validType:['length']">
 					</td>
-					<td><a href="javascript:void(0)" onclick="release()" class="easyui-linkbutton" plain="true"
+					<td><a href="javascript:void(0)" onclick="release()" class="easyui-linkbutton"
 						iconCls="icon-save">发布</a>
 					</td>
 				</tr>

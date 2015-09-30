@@ -11,7 +11,7 @@
 				接口Id
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" value="${param.interfaceId}" readOnly>
+				<input class="easyui-textbox" type="text" value="${param.interfaceId}" disabled>
 			</td>
 		</tr>
 		<tr  style="height:50px">
@@ -37,10 +37,12 @@
 </form>
 
 <script type="text/javascript">
+	var tempHeadId;
 	$(document).ready(function (){
 
 		    $('#headerRelate').combobox({
-                url:'/interface/getHeadAll',
+//                url:'/interface/getHeadAll',
+				url:'/interface/getHeadBySystemId/${param.systemId}',
 				method:'get',
 				mode:'remote',
 				valueField:'id',
@@ -53,6 +55,7 @@
 							dataType: "json",
 							success: function(result) {
 								 $('#headerRelate').combobox("setValues",result);
+								tempHeadId = $("#headerRelate").combobox('getValues');
 							}
 						});
 
@@ -83,7 +86,13 @@
 			dataType: "json",
 			success: function(result) {
 				 if(true){
-				 	alert("关联成功");
+					 if(headId == "none"){
+						 alert("已取消关联报文头");
+					 }else if(tempHeadId.toString() == headId.toString()){
+						 alert("已关联此报文头");
+					 }else{
+						 alert("关联成功");
+					 }
 				 	$('#w').window('close');
 				 	$('#tg').datagrid("reload");
 				 }else{

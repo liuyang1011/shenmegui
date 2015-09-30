@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -35,7 +36,8 @@ public class MetadataArrayParserImpl implements IResourceParser {
     private static final int OPT_USER_COLUMN = 14;
     @Autowired
     private MetadataServiceImpl metadataService;
-
+    @Autowired
+    private VersionServiceImpl versionService;
     @Override
     public void parse(Workbook workbook) {
         Sheet sheet = workbook.getSheet(SHEET_NAME);
@@ -54,11 +56,17 @@ public class MetadataArrayParserImpl implements IResourceParser {
             metadata.setOptUser(userName);
             try {
                 metadataService.addMetadata(metadata);
+                versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
             } catch (NonUniqueObjectException e) {
                 log.error("元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", e);
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
                 metadataService.save(metadata);
+                if(StringUtils.isEmpty(metadataToDel.getVersionId())){
+                    versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
+                }else{
+                    versionService.editVersion(metadata.getVersionId());//编辑版本
+                }
             } catch(Exception e ){
                 log.error("元数据[" + metadata.getMetadataId() + "]导入出错");
             }

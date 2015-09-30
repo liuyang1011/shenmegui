@@ -93,8 +93,8 @@ var interfaceManager = {
     	}
     	uiinit.win({
 			w:500,
-            top:"20px",
-            left:"150px",
+            //top:"20px",
+            //left:"150px",
 			iconCls:'icon-add',
 			title:"编辑报文",
 			url : "/interface/edit/"+sId+"?systemId="+systemId
@@ -103,15 +103,17 @@ var interfaceManager = {
     },
     
     remove:function(interfaceId,title){
+        if (!confirm("确定要删除该接口吗？")) {
+            return;
+        }
     	
     	var node = $('.msinterfacetree').tree("getSelected");
-    	
     	var sId = interfaceId;
     	var tit = title;
     	var treeObj = $('.msinterfacetree');
     	var tabObj = $('#mainContentTabs');
     	try{
-    		sId= node.id
+    		sId= node.id;
     		tit = node.text;
     	}catch(e){
     		sId = interfaceId;
@@ -119,20 +121,24 @@ var interfaceManager = {
     		treeObj = parent.$('.msinterfacetree');
     		tabObj = parent.$('#mainContentTabs');
     	}
-    	
+
     	$.ajax({
-            type: "get",
+            type: "post",
             contentType: "application/json; charset=utf-8",
-            url: "/interface/delete/"+sId,
+            //测试中出现#&等特殊符号，没法删掉
+            //url: "/interface/delete/"+sId,
+            url: "/interface/delete2",
             dataType: "json",
+            data:JSON.stringify(sId),
             success: function(result) {
                 if(result){
 //                    $("#tg").datagrid("reload");
 //                	treeObj.tree("reload");
-                    var parent = $('.msinterfacetree').tree("getParent", node.target);
-                    $('.msinterfacetree').tree("remove", node.target);
-                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + parent.id;
-                    $('.msinterfacetree').tree("reload", parent.target);
+                    var parent = treeObj.tree("getParent", node.target);
+                    var systemNode =  treeObj.tree("getParent",parent.target);
+                    treeObj.tree("remove", node.target);
+                    treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
+                    treeObj.tree("reload", parent.target);
 
                     tabObj.tabs("close",tit);
                 }

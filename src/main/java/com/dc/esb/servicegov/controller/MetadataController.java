@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,6 +215,27 @@ public class MetadataController {
     }
 
     @RequiresPermissions({"metadata-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/modify/{oldMetadataId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean modify(Metadata metadata,@PathVariable String oldMetadataId) {
+        //TZB要求元数据能修改
+        if(!metadata.getMetadataId().equals(oldMetadataId)){
+            Metadata newMetadata = metadataService.getById(metadata.getMetadataId());
+            if(null != newMetadata){
+                return false;
+            }
+            //删除老数据
+            metadataService.deleteById(oldMetadataId);
+        }
+        String userName = (String) SecurityUtils.getSubject().getPrincipal();
+        metadata.setOptUser(userName);
+        metadata.setOptDate(DateUtils.format(new Date()));
+        metadataService.modifyMetadata(metadata);
+        return true;
+    }
+
+    @RequiresPermissions({"metadata-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/modify", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -233,8 +257,7 @@ public class MetadataController {
     @RequestMapping("/deletes")
     @ResponseBody
     public boolean deletes(String metadataIds) {
-        metadataService.deleteMetadatas(metadataIds);
-        return true;
+        return metadataService.deleteMetadatas(metadataIds);
     }
 
     @RequiresPermissions({"metadata-get"})
@@ -301,6 +324,19 @@ public class MetadataController {
     @ResponseBody
     boolean uniqueValid(String metadataId) {
         return metadataService.uniqueValid(metadataId);
+    }
+
+    @RequiresPermissions({"metadata-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueChineseNameValid", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueChineseNameValid(String chineseName) {
+        try {
+            chineseName = URLDecoder.decode(URLDecoder.decode(chineseName, "utf-8"),"utf-8");
+        }catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return metadataService.uniqueChineseNameValid(chineseName);
     }
 
     //获取类别词接口

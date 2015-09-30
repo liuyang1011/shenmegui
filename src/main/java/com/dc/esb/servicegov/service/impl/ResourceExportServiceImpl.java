@@ -43,7 +43,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     public HSSFWorkbook genderResourceExcel() {
         //读取数据字典模板
         HSSFWorkbook workbook = getTempalteWb(Constants.EXCEL_TEMPLATE_DATA_DICTIONARY);
-        commonStyle =  CellStyleSupport.commonStyle(workbook);
+        commonStyle =  CellStyleSupport.leftStyle(workbook);
         //填充修订记录页
         HSSFSheet recordSheet = workbook.getSheet(RecordSheetName);
         //填充英文单词页

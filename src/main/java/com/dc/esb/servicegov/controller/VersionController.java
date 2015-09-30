@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.entity.VersionHis;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -76,6 +78,33 @@ public class VersionController {
         result.put("total", page.getResultCount());
         result.put("rows", list);
         return result;
+    }
+
+    /**
+     * @param type 对比类型 0：当前版本VS历史版本， 1：历史版本VS历史版本
+     * @param versionId1
+     * @param versionId2
+     * @return
+     */
+    @RequiresPermissions({"version-get"})
+    @RequestMapping("/getOperationDiff")
+    @ResponseBody
+    public Map<String, Object> getOperationDiff(String type, String versionId1, String versionId2){
+        Map<String, Object> result = versionService.getOperationDiff(type, versionId1, versionId2);
+        return result;
+    }
+
+    /**
+     * 根据传入的版本号查询相关版本历史
+     * @param versionId 版本id
+     * @return
+     */
+    @RequiresPermissions({"version-get"})
+    @RequestMapping("/getVersions")
+    @ResponseBody
+    public List<VersionHis> getVersions(String versionId){
+        List<VersionHis> list = versionService.getVersions(versionId);
+        return list;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

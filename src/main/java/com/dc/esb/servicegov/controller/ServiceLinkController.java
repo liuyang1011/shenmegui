@@ -325,6 +325,24 @@ public class ServiceLinkController {
 
         String serviceId = req.getParameter("serviceId");
         String serviceName = req.getParameter("serviceName");
+        if(null == serviceName) serviceName="";
+        try {
+            serviceName = URLDecoder.decode(serviceName, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error(e,e);
+        }
+        //根据服务名查服务码
+        Map<String,String> map2 = new HashMap<String, String>();
+        map2.put("serviceName",serviceName);
+        List<Service> serviceList = serviceService.findLikeAnyWhere(map2);
+        String serviceIds = "";
+        for (int i = 0; i < serviceList.size(); i++) {
+            if(i==0){
+                serviceIds = "'"+serviceList.get(i).getServiceId()+"'";
+            }else{
+                serviceIds += ",'"+serviceList.get(i).getServiceId()+"'";
+            }
+        }
 
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
         StringBuffer hql = new StringBuffer("select c from ServiceInvoke c where systemId='" + systemId + "' ");
@@ -336,8 +354,20 @@ public class ServiceLinkController {
             hql.append(" and serviceId like ?");
             searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
         }
-        if (null != interfaceName && !"".equals(interfaceName)) {
-            hql.append(" and interfaceId in(" + interIds + ")");
+
+        if(null != interfaceName && !"".equals(interfaceName)){
+            if(interIds.equals("")){
+                hql.append(" and 1=2");
+            }else{
+                hql.append(" and interfaceId in("+interIds+")");
+            }
+        }
+        if(null != serviceName && !"".equals(serviceName)){
+            if(serviceIds.equals("")){
+                hql.append(" and 1=2");
+            }else{
+                hql.append(" and serviceId in("+serviceIds+")");
+            }
         }
 
         Page page = serviceInvokeService.findPage(hql.toString(), rowCount, searchConds);
@@ -361,18 +391,8 @@ public class ServiceLinkController {
                     serviceLinkNodeVO.setEsbAccessPattern(serviceLinkNode.getEsbAccessPattern());
                 }
             }
-            if (null != serviceName && !"".equals(serviceName)) {
-                try {
-                    serviceName = URLDecoder.decode(serviceName, "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    log.error(e, e);
-                }
-                if (serviceLinkNodeVO.getServiceName().indexOf(serviceName) >= 0) {
-                    serviceLinkNodeVOs.add(serviceLinkNodeVO);
-                }
-            } else {
-                serviceLinkNodeVOs.add(serviceLinkNodeVO);
-            }
+
+            serviceLinkNodeVOs.add(serviceLinkNodeVO);
         }
 
         HashMap<String, Object> map = new HashMap<String, Object>();

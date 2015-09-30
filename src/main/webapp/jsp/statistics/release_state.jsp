@@ -27,7 +27,7 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <th>系统编号</th>
+        <th><nobr>系统编号</nobr></th>
         <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:80px"
                    data-options="
                    onChange:function(newValue, oldValue){
@@ -42,7 +42,7 @@
                    "
                    type="text" >
         </td>
-        <th>系统名称</th>
+        <th><nobr>系统名称</nobr></th>
         <td><input name="systemName" id="systemName"  class="easyui-combobox" style="width:120px"
                    data-options="
                  method:'get',
@@ -61,7 +61,7 @@
                  "
                 >
         </td>
-        <th>服务类型</th>
+        <th><nobr>服务类型</nobr></th>
         <td>
           <select id="type" class="easyui-combobox" name="type"
                   data-options="width:100,valueField:'value', textField:'text',data:[
@@ -71,8 +71,8 @@
           </select>
         </td>
         <th style="width:200px">
-          <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-reload" style="margin-left:1em" >清空</a>
-          <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
+            <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
+            <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
         </th>
         <td></td>
 

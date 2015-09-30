@@ -12,17 +12,18 @@
 </head>
 
 <body>
+<form id="searchForm">
 	<fieldset>
 		<legend>条件搜索</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<th>代码名称</th>
+				<th><nobr>代码名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="name">
 				</td>
-				<th>中文名称</th>
+				<th><nobr>中文名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="remark">
 				</td>
-				<th>是否标准代码</th>
+				<th><nobr>是否标准代码</nobr></th>
 				<td><select id="isStandard" editable="false" 
 					panelHeight="auto" style="width:140px">
 				</select>
@@ -31,10 +32,10 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<th>主代码数据来源</th>
+				<th><nobr>主代码数据来源</nobr></th>
 				<td><input class="easyui-textbox" type="text" id="dataSource">
 				</td>
-				<th>代码状态</th>
+				<th><nobr>代码状态</nobr></th>
 				<td><select id="status" editable="false" panelHeight="auto" style="width:140px">
 				</select>
 				</td>
@@ -50,13 +51,17 @@
 				</td> 
 			</tr> -->
 				<td>&nbsp;</td>
-				<td align="right"><a href="#" class="easyui-linkbutton" id="searchBtn"
-					iconCls="icon-search">搜索</a></td>
+				<td align="right">
+					<a href="#" class="easyui-linkbutton" id="searchBtn"
+					   iconCls="icon-search">搜索</a>
+					<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+				</td>
 			</tr>
 		</table>
 
 
 	</fieldset>
+</form>
 	<table title="公共代码列表" id="dg"
 		style="height:420px;width:auto">
 		<thead>

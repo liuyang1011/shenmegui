@@ -1,9 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <%
     String path = request.getContextPath();
-    String basePath = request.getScheme() + "://"
-            + request.getServerName() + ":" + request.getServerPort()
-            + path + "/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -34,31 +32,34 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>服务代码</th>
+            <th><nobr>服务代码</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceId" value="${entity.serviceId }">
             </td>
-            <th>服务名称</th>
+            <th><nobr>服务名称</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceName" value="${entity.serviceName }">
             </td>
-            <th>服务备注</th>
+            <th><nobr>服务备注</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="remark" value="${entity.remark }">
             </td>
         </tr>
         <tr>
-            <th>服务功能描述</th>
+            <th><nobr>服务功能描述</nobr></th>
             <td colspan="7"><input class="easyui-textbox" disabled="true" style="width:100%" type="text" name="desc" value="${entity.desc }"></td>
         </tr>
         <tr>
-            <th>服务标签</th>
-            <td>
+            <th><nobr>服务标签</nobr></th>
+            <td><nobr>
                 <ul id="tags"></ul>
+                </nobr>
             </td>
 
             <th>
+                <nobr>
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+                </nobr>
             </th>
             <td>&nbsp;</td>
         </tr>
@@ -125,6 +126,12 @@
             if (value == 5) {
                 return "<font color='red'>已下线</font>";
             }
+            if (value == 6) {
+                return "<font color='red'>待审核</font>";
+            }
+            if (value == 7) {
+                return "<font color='red'>修订</font>";
+            }
         },
         version: function (value, row, index) {
             try {
@@ -190,6 +197,11 @@
                     return false;
                 }
                 else {
+                    if( checkedItems[0].optState != 0 &&  checkedItems[0].optState != 7){
+                        alert("只有服务定义和修订状态的场景才能修改");
+                        return false;
+                    }
+
                     var urlPath = "/operation/editPage?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;
                     var opeEditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
                     selectTab('服务场景', opeEditContent);
@@ -207,7 +219,15 @@
         text: '删除',
         iconCls: 'icon-remove',
         handler: function () {
+            var flag = true;
             var checkedItems = $('#operationList').datagrid('getChecked');
+            $.each(checkedItems, function (index, item) {
+                if(item.optState == 3 && item.optState != 4){
+                    alert("已上线和已发布的场景不能删除！");
+                    flag = false;
+                }
+            });
+            if(flag == false) return;
             if (checkedItems != null && checkedItems.length > 0) {
                 if (confirm("确定要删除已选中的" + checkedItems.length + "项吗？一旦删除无法恢复！")) {
                     var ids = [];
@@ -299,6 +319,37 @@
                     alert("请选中要发布的场景！");
                 }
             }
+        },{
+            text: '提交审核',
+            iconCls: 'icon-audit',
+            handler: function(){
+                var url = "";
+                var items = $('#operationList').datagrid('getSelections');
+                if (items != null && items.length > 0) {
+                    for(var i = 0; i < items.length; i++){
+                        if(items[i].optState != 0){
+                            alert("只有服务定义状态的服务能提交审核");
+                            return;
+                        }
+                    }
+                }
+                if (!confirm("确定要提交审核吗？")) {
+                    return;
+                }
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/operation/submitToAudit",
+                    "data": JSON.stringify(items),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result){
+                            $('#operationList').datagrid('reload');
+                        }
+                    }
+                });
+            }
         },
         {
             text: '审核',
@@ -309,7 +360,7 @@
                 var flag = false;
                 if (items != null && items.length > 0) {
                     for(var i = 0; i < items.length; i++){
-                        if(items[i].optState == 0){
+                        if(items[i].optState == 6){
                             flag = true;
                             break;
                         }
@@ -319,12 +370,47 @@
                     alert("该服务下没有要审核的数据！");
                     return false;
                 }
-                var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+                var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:98%;"></iframe>'
 
                 parent.parent.$('#mainContentTabs').tabs('add', {
                     title: '服务场景审核',
                     content: opeAuditContent,
                     closable: true
+                });
+            }
+        },
+        {
+            text: '修订',
+            iconCls: 'icon-audit',
+            handler: function () {
+                //审核通过，已上线，已发布 可以变为修订状态
+                var url = "";
+                var items = $('#operationList').datagrid('getSelections');
+                if (items != null && items.length > 0) {
+                    for(var i = 0; i < items.length; i++){
+                        if(items[i].optState == 1 || items[i].optState == 3 || items[i].optState == 4){
+
+                        }else{
+                            alert("审核通过，已上线，已发布状态的服务才能进行修订");
+                            return;
+                        }
+                    }
+                }
+                if (!confirm("确定要修订吗？")) {
+                    return;
+                }
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/operation/revise",
+                    "data": JSON.stringify(items),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result){
+                            $('#operationList').datagrid('reload');
+                        }
+                    }
                 });
             }
         },

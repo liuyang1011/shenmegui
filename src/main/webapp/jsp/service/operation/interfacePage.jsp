@@ -44,6 +44,12 @@
                 text: '映射元数据',
                 iconCls: 'icon-qxfp',
                 handler: function () {
+                    //标准的没有映射功能
+                    console.log(item);
+                    if(item.isStandard == 0){
+                        alert("标准接口没有映射");
+                        return false;
+                    }
                     /*var selectData = $('#ida').datagrid('getSelected');
                     if (selectData == null) {
                         alert("请先选择一条记录");
@@ -128,25 +134,25 @@
 		<div>
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<th>服务代码</th>
+					<th><nobr>服务代码</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="1" id="1"
 						value="${service.serviceId }" disabled="disabled">
 					</td>
-					<th>服务名称</th>
+					<th><nobr>服务名称</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="2" id="2"
 						value="${service.serviceName }" disabled="disabled">
 					</td>
-					<th>场景号</th>
+					<th><nobr>场景号</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="3" id="3"
 						value="${operation.operationId }" disabled="disabled">
 					</td>
-					<th>场景名称</th>
+					<th><nobr>场景名称</nobr></th>
 					<td><input class="easyui-textbox" type="text" name="4" id="4"
 						value="${operation.operationName }" disabled="disabled">
 					</td>
 				</tr>
 				<tr>
-					<th>映射关系列表</th>
+					<th><nobr>映射关系列表</nobr></th>
 					<td></td>
 				</tr>
 			</table>
@@ -156,16 +162,16 @@
 				<thead>
 					<tr>
 						<%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
-						<th data-options="field:'systemId', width:50">系统id</th>
-						<th data-options="field:'systemChineseName', width:150">系统名称</th>
-						<th data-options="field:'isStandard', width:50"
+						<th data-options="field:'systemId', width:'10%'">系统id</th>
+						<th data-options="field:'systemChineseName', width:'15%'">系统名称</th>
+						<th data-options="field:'isStandard', width:'10%'"
 							formatter='ff.isStandardText'>标准</th>
-						<th data-options="field:'interfaceId', width:50">接口id</th>
-						<th data-options="field:'interfaceName', width:150">接口名称</th>
-						<th data-options="field:'type', width:50"
+						<th data-options="field:'interfaceId', width:'15%'">接口id</th>
+						<th data-options="field:'interfaceName', width:'15%'">接口名称</th>
+						<th data-options="field:'type', width:'10%'"
 							formatter='ff.typeText'>类型</th>
-						<th data-options="field:'desc', width:100">描述</th>
-						<th data-options="field:'remark', width:100">备注</th>
+						<th data-options="field:'desc', width:'10%'">描述</th>
+						<th data-options="field:'remark', width:'10%'">备注</th>
 					</tr>
 				</thead>
 			</table>

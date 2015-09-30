@@ -25,6 +25,39 @@ $(function(){
 
 });
 
+function modify(formId,oldMetadataId){
+	if(!$("#"+formId).form('validate')){
+		return false;
+	}
+	var params = $("#"+formId).serialize();
+	params = decodeURIComponent(params, true);
+	$.ajax({
+		type: "post",
+		async: false,
+		url: "/metadata/modify/"+oldMetadataId,
+		dataType: "json",
+		data: params,
+		success: function(data){
+			if(data){
+				//关闭窗口
+				$("#w").window("close");
+				//刷新查询列表
+				$('#metadataList').datagrid('reload');
+			}else{
+				alert("元数据已存在");
+			}
+
+		},
+		complete:function(responce){
+			var resText = responce.responseText;
+			if(resText.toString().indexOf("没有操作权限") > 0){
+				alert("没有权限！");
+				//window.location.href = "/jsp/403.jsp";
+			}
+		}
+	});
+}
+
 function save(formId){
 	if(!$("#"+formId).form('validate')){
 		return false;
@@ -67,9 +100,14 @@ function deleteObj(){
 		         url: "/metadata/deletes",
 		         dataType: "json",
 		         data: {"metadataIds":ids.join(",")},
-		         success: function(data){
-		        	 alert("操作成功");
-		        	 $('#metadataList').datagrid('reload');
+		         success: function(result){
+					 if(result){
+						 alert("操作成功");
+						 $('#metadataList').datagrid('reload');
+					 }else{
+						 alert("关联服务场景不予删除");
+					 }
+
 		            }
 			 	});
 		}

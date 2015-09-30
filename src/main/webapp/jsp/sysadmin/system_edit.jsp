@@ -28,7 +28,7 @@
 				系统ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemIdText" value="${system.systemId}" readOnly>
+				<input class="easyui-textbox" type="text" id="systemIdText" value="${system.systemId}" disabled>
 			</td>
 		</tr>
 		<tr>
@@ -36,7 +36,7 @@
 				系统简称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemAbText" value="${system.systemAb}">
+				<input class="easyui-textbox" type="text" id="systemAbText" value="${system.systemAb}"  data-options="required:true, validType:['englishB']">
 			</td>
 		</tr>
 		<tr>
@@ -44,7 +44,7 @@
 				系统中文名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemChineseNameText" value="${system.systemChineseName}">
+				<input class="easyui-textbox" type="text" id="systemChineseNameText" value="${system.systemChineseName}" data-options="required:true, validType:['chineseB']">
 			</td>
 		</tr>
 		<tr style="display:none">
@@ -115,7 +115,7 @@
 		</tr>
 	</table>
 </form>
-
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
 	$(document).ready(function (){
 		$('#protocolId').combobox({

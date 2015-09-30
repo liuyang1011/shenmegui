@@ -119,7 +119,7 @@
 						data-options="required:true">
 					</td>
 					 -->
-					<th>版本描述</th>
+					<th><nobr>版本描述</nobr></th>
 					<td><input class="easyui-textbox" type="text" id="desc" name="desc"
 						data-options="required:true,validType:['length']">
 					</td>
@@ -128,27 +128,29 @@
 					</td>
 				</tr>
 				<tr>
-					<th>服务代码</th>
+					<th><nobr>服务代码</nobr></th>
 					<td>
 						<input class="easyui-textbox" id="serviceId"/>
 					</td>
-					<th>服务名称</th>
+					<th><nobr>服务名称</nobr></th>
 					<td>
 						<input class="easyui-textbox" id="serviceName"/>
 					</td>
-					<th>场景代码</th>
+					<th><nobr>场景代码</nobr></th>
 					<td>
 						<input class="easyui-textbox" id="operationId"/>
 					</td>
 				</tr>
 				<tr>
-					<th>场景名称</th>
+					<th><nobr>场景名称</nobr></th>
 					<td>
 						<input class="easyui-textbox" id="operationName"/>
 					</td>
 					<td>
+						<nobr>
 						<%--<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>--%>
-						<a href="#" id="search" class="easyui-linkbutton" plain="true" iconCls="icon-search" style="margin-left:1em">查询</a>
+						<a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
+						</nobr>
 					</td>
 				</tr>
 		</table>

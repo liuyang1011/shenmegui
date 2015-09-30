@@ -18,6 +18,7 @@
 	</head>
 
 	<body>
+	<form id="searchForm">
 		<fieldset>
 			<legend>
 				条件搜索
@@ -82,12 +83,14 @@
 					</td>
 					<td align="right">
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
+						<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
 					</td>
 				</tr>
 			</table>
 
 
 		</fieldset>
+	</form>
 		<table id="tg" style="height: 370px; width: auto;">
 			<thead>
 				<tr>
@@ -169,10 +172,7 @@
 						handler:function(){
 							var row = $("#tg").treegrid("getSelected");
 							if(row){
-								if (!confirm("确定要删除选中的记录吗？")) {
-									return;
-								}
-								interfaceManager.remove(row.interfaceId,row.interfaceName);
+								remove(row.interfaceId,row.interfaceName);
 							}else{
 								alert("请选择要删除的行");
 							}
@@ -188,14 +188,14 @@
 										w:500,
 										iconCls:'icon-add',
 										title:"关联报文头",
-										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId
+										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
 									});
 							}else{
 								alert("请选择要关联的行");
 							}
 
 					 	}
-					 },{
+					 }/*,{
 						text:'导入',
 						iconCls:'icon-save',
 						handler:function(){
@@ -213,7 +213,7 @@
 //							}
 
 						}
-					},{
+					}*/,{
 						text:'导出',
 						iconCls:'icon-save',
 						handler:function(){
@@ -371,6 +371,37 @@
 				 }
 			 }
 		 };
+
+		 function remove(interfaceId,title){
+                 if (!confirm("确定要删除该接口吗？")) {
+                     return;
+                 }
+
+				treeObj = parent.$('.msinterfacetree');
+                tabObj = parent.$('#mainContentTabs');
+
+             	$.ajax({
+                     type: "post",
+                     contentType: "application/json; charset=utf-8",
+                     //测试中出现#&等特殊符号，没法删掉
+                     //url: "/interface/delete/"+sId,
+                     url: "/interface/delete2",
+                     dataType: "json",
+                     data:JSON.stringify(interfaceId),
+                     success: function(result) {
+                         if(result){
+                         	$("#tg").datagrid("reload");
+                            tabObj.tabs("close",title);
+                             var node = treeObj.tree("getSelected");
+                             var systemNode =  treeObj.tree("getParent",node.target);
+                             treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemNode.id;
+                             treeObj.tree("reload", node.target);
+
+                         }
+                     }
+                 });
+
+             }
 		</script>
 
 	</body>
