@@ -18,7 +18,7 @@
   <table title="权限" id="tg" style=" width:400px;">
     <thead>
     <tr>
-      <th data-options="field:'check',checkbox:true"></th>
+      <th data-options="field:'check',checkbox:true,onclick:clickCheck"></th>
       <th data-options="field:'text',width:180"></th>
     </tr>
     </thead>
@@ -113,6 +113,10 @@
         pareseChildrenUnSelect(item);
       })
     }
+  }
+
+  var clickCheck = function(){
+
   }
 
 </script>
