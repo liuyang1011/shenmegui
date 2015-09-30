@@ -246,11 +246,7 @@ var SYSMENU = {
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//LOAD_URL.SYSADMINUI+
-<<<<<<< HEAD
-                                var content = '<iframe scrolling="yes" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id + '" style="width:100%;height:98%;"></iframe>';
-=======
                                 var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.PUBLICHEADER + '?headId=' + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
->>>>>>> 53547be99b75c4cd962e6c95023b8cb1427c2ac1
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
