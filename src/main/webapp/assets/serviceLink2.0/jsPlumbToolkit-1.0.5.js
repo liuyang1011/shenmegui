@@ -133,7 +133,7 @@
             x = a
         }, C && D(), w && this.execute()
     }
-}).call(this), this.eval('console.log("helloworld");'), function () {
+}).call(this), this.eval(''), function () {
     var exports = this;
     Array.prototype.peek = function () {
         return this.length > 0 ? this[this.length - 1] : null
@@ -649,7 +649,7 @@
         newInstance: newInstance,
         precompile: precompile
     }, exports.RotorsInstance = RotorsInstance) : (exports.newInstance = newInstance, exports.instanceClass = RotorsInstance, exports.precompile = precompile)
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     var a = this;
     a.jsPlumbToolkitUtil = a.jsPlumbToolkitUtil || {};
     var b = a.jsPlumbToolkitUtil, c = function (a, b) {
@@ -718,7 +718,7 @@
             return d
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this;
     a.jsPlumbToolkitUtil = a.jsPlumbToolkitUtil || {};
@@ -775,7 +775,7 @@
         }, h = g(a);
         return h ? f(e(h), h) : {}
     }
-}.call(this), this.eval(this.eval('console.log("helloworld");')), function () {
+}.call(this), this.eval(this.eval('')), function () {
     var a = {
         nodeTraverseStart: "startNodeTraversal",
         nodeTraverseEnd: "endNodeTraversal",
@@ -815,7 +815,7 @@
         };
         return d.previous ? d.previous.bind(a.end, B) : B(), f
     }
-}(), this.eval(this.eval('console.log("helloworld");')), function () {
+}(), this.eval(this.eval('')), function () {
     "use strict";
     var a = this, b = ["node", "port", "edge"], c = ["Refreshed", "Added", "Removed", "Updated", "Moved"];
     a.jsPlumbToolkitUtil.AutoSaver = function (a, d, e, f) {
@@ -827,7 +827,7 @@
             a.fire("dataUpdated")
         }, e = 0; e < b.length; e++)for (var f = 0; f < c.length; f++)a.bind(b[e] + c[f], d)
     }
-}.call(this), this.eval(this.eval('console.log("helloworld");')), function () {
+}.call(this), this.eval(this.eval('')), function () {
     var a = this, b = a.jsPlumbToolkitUtil, c = b, d = jsPlumbUtil;
     c.Selection = function (a) {
         jsPlumbUtil.EventGenerator.apply(this, arguments);
@@ -948,7 +948,7 @@
             return g[a]
         }, this.setCapacityPolicy(c.Selection.DISCARD_EXISTING)
     }, c.Selection.DISCARD_EXISTING = "discardExisting", c.Selection.DISCARD_NEW = "discardNew"
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbGraph = {};
     b.version = "0.1", b.name = "jsPlumbGraph";
@@ -1389,7 +1389,7 @@
             return l
         }
     }
-}.call(this), this.eval('console.log("helloworld");'),
+}.call(this), this.eval(''),
     function () {
         "use strict";
         var a = this, b = jsPlumbUtil, c = jsPlumbToolkitUtil, d = function (a) {
@@ -1817,7 +1817,7 @@
         }, b.extend(a.jsPlumbToolkitInstance, b.EventGenerator), a.jsPlumbToolkit = new a.jsPlumbToolkitInstance({}), a.jsPlumbToolkit.DefaultRendererType = null, a.jsPlumbToolkit.ready = jsPlumb.ready, a.jsPlumbToolkit.Renderers = {}, a.jsPlumbToolkit.Widgets = {}, a.jsPlumbToolkit.newInstance = function (b) {
             return new a.jsPlumbToolkitInstance(b)
         }
-    }.call(this), this.eval('console.log("helloworld");'), function () {
+    }.call(this), this.eval(''), function () {
     var a = jsPlumbToolkit, b = jsPlumbToolkitUtil, c = jsPlumbUtil;
     a.Model = function (d, e) {
         d = d || {}, d.nodes = d.nodes || {}, d.edges = d.edges || {}, d.ports = d.ports || {};
@@ -1849,7 +1849,7 @@
             }
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     var a = jsPlumbToolkit.ready, b = function (a) {
         var b = 0, c = function () {
             b--, 0 >= b && e()
@@ -1883,7 +1883,7 @@
             c.ensureNotEmpty()
         }
     })
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     this.jsPlumbToolkit.Classes = {
         LASSO: "jtk-lasso",
@@ -2037,7 +2037,7 @@
         resize: "resize",
         anchorChanged: "anchorChanged"
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this;
     a.jsPlumbToolkit.util = {
@@ -2076,7 +2076,7 @@
             }
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b;
     c.Path = function (a, b) {
@@ -2140,7 +2140,7 @@
             return _selectEdges(a, "getAllEdges", !0)
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkitIO = {}, c = jsPlumbUtil;
     b.version = "0.1", b.name = "jsPlumbToolkitIO";
@@ -2209,7 +2209,7 @@
     }, b.manage = function (a, c, d, e, f, g) {
         b.managers[d] && b.managers[d][a](c, e, f)
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     var a = this, b = a.jsPlumbToolkit, c = b;
     c.Support = {
         ingest: function (c) {
@@ -2247,7 +2247,7 @@
             return e
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Layouts = {Decorators: {}}, d = jsPlumbUtil, e = function (a) {
         var b = 1 / 0, c = 1 / 0, d = -(1 / 0), e = -(1 / 0);
@@ -2482,7 +2482,7 @@
         }, d
     };
     d.extend(h, c.AbstractLayout)
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Layouts;
     c.Circular = function (a) {
@@ -2508,7 +2508,7 @@
             b.setDone(!0)
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Layouts;
     c.Hierarchical = function (a) {
@@ -2587,7 +2587,7 @@
             n = [], y.apply(this, arguments)
         }
     }, jsPlumbUtil.extend(c.Hierarchical, c.AbstractHierarchicalLayout)
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Layouts;
     c.Spring = function (a) {
@@ -2693,7 +2693,7 @@
             for (var a in f)f[a].locked = !0
         }
     }, jsPlumbUtil.extend(c.Spring, c.AbsoluteBackedLayout)
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit.Renderers, c = a.jsPlumbToolkit, d = a.jsPlumbToolkitUtil, e = a.jsPlumbUtil;
     c.UIState = function (a, b, c) {
@@ -3321,7 +3321,7 @@
     b.DOM = function (a) {
         q.apply(this, arguments), p.apply(this, arguments)
     }
-}.call(this), this.eval('console.log("helloworld");'),
+}.call(this), this.eval(''),
     function () {
         "use strict";
         var a = this, b = {
@@ -3355,7 +3355,7 @@
             var d = g(b, c);
             a.addEventListener ? a.addEventListener(h, d, !1) : a.attachEvent && a.attachEvent("onmousewheel", d)
         }
-    }.call(this), this.eval('console.log("helloworld");'), function () {
+    }.call(this), this.eval(''), function () {
     var a = this;
     a.PinchListener = function (a) {
         var b = "onpointerdown"in document.documentElement, c = "ontouchstart"in document.documentElement, d = [0, 0], e = 0, f = 0, g = function (b) {
@@ -3410,7 +3410,7 @@
         };
         b ? r.pointer(a) : c && r.touch(a)
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     this.ZoomWidget = function (b) {
         function e(a) {
@@ -3988,7 +3988,7 @@
             return [g, h, g * f[0] / d, h * f[1] / e]
         }, b.apply(this, arguments)
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Renderers, d = a.jsPlumb, e = a.jsPlumbUtil, f = jsPlumb.getSelector, g = jsPlumbToolkit.Classes, h = jsPlumbToolkit.Constants, i = jsPlumbToolkit.Events;
     c.Surface = function (a) {
@@ -4384,7 +4384,7 @@
             j.state.clear(a)
         }, j.initialize(), a.zoomToFitIfNecessary ? j.zoomToFitIfNecessary() : a.zoomToFit && j.zoomToFit()
     }, b.DefaultRendererType = h.surfaceType
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Renderers, d = jsPlumbUtil, e = jsPlumb, f = jsPlumbToolkit.Classes, g = jsPlumbToolkit.Constants, h = jsPlumbToolkit.Events, i = jsPlumbToolkit.Attributes, j = jsPlumbToolkit.Methods;
     c.Miniview = function (a) {
@@ -4532,7 +4532,7 @@
             b && b.setHostLayout(a)
         }, this.setZoom = y.setZoom, this.getZoom = y.getZoom, this.getTransformOrigin = y.getTransformOrigin
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this, b = a.jsPlumbToolkit, c = b.Widgets, d = jsPlumbUtil, e = (/MSIE\s([\d.]+)/.test(navigator.userAgent) && new Number(RegExp.$1) < 9, "ontouchstart"in document.documentElement), f = e ? "touchstart" : "mousedown", g = e ? "touchend" : "mouseup", h = e ? "touchmove" : "mousemove", i = function (a, b) {
         a.style.width = b[0] + "px", a.style.height = b[1] + "px"
@@ -4566,7 +4566,7 @@
             c = a
         }
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a, b, c, d, e, f, g, h, i, j, k, l, m, n = this, o = {}, p = {
         ok: "OK",
@@ -4707,7 +4707,7 @@
             I(!0)
         }, clear: F
     }
-}.call(this), this.eval('console.log("helloworld");'), function () {
+}.call(this), this.eval(''), function () {
     "use strict";
     var a = this;
     a.jsPlumbToolkit.DrawingTools = function (a) {
@@ -4782,4 +4782,4 @@
             g = q.x, i = q.y, h = g + q.w, j = i + q.h, e = y[o], m.addClass(document.body, "jtk-draw-select-defeat"), m.on(document, "mousemove", z), m.on(document, "mouseup", A)
         })
     }
-}.call(this), this.eval('console.log("helloworld");');
+}.call(this), this.eval('');

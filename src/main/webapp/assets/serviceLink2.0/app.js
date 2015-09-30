@@ -94,8 +94,8 @@
                 // parent.
                 edges: {
                     "default": {
-                        //connector: ["Flowchart", {cornerRadius: 2}],
-                        connector: ["StateMachine", {cornerRadius: 2}],
+                        connector: ["Flowchart", {cornerRadius: 2}],
+                        //connector: ["StateMachine", {cornerRadius: 2}],
                         paintStyle: {
                             lineWidth: 2,
                             strokeStyle: "#f76258",

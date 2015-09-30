@@ -18,6 +18,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -150,6 +151,26 @@ public class ServiceLinkController {
         graphColumns.add(iconColumn);
         return graphColumns;
     }
+
+    /**
+     * 根据节点Id获取节点跳转条件
+     *
+     * @param nodeId
+     * @return
+     */
+    @RequiresPermissions({"link-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/nodeInfo/{nodeId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    ModelAndView nodeInfo(@PathVariable("nodeId") String nodeId) {
+        ModelAndView modelAndView = new ModelAndView("serviceLink/nodeInfo");
+        modelAndView.addObject("nodeId", nodeId);
+        ServiceInvoke serviceInvoke = serviceInvokeService.getById(nodeId);
+        ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+        modelAndView.addObject("node", serviceLinkNodeVO);
+        return modelAndView;
+    }
+
 
     /**
      * 添加获取交易链路的数据节点的方法
@@ -537,12 +558,15 @@ public class ServiceLinkController {
 
     /**
      * 获取一个节点的所有相邻下个节点
+     *
      * @param sourceId
      * @return
      */
     @RequiresPermissions({"link-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getTargetNode/sourceId/{sourceId}", headers = "Accept=application/json")
-    public @ResponseBody List<ServiceLinkNodeVO> getTargetNodes(@PathVariable("sourceId") String sourceId) {
+    public
+    @ResponseBody
+    List<ServiceLinkNodeVO> getTargetNodes(@PathVariable("sourceId") String sourceId) {
         List<ServiceLinkNodeVO> serviceInvokeInfoVOs = new ArrayList<ServiceLinkNodeVO>();
         List<InvokeConnection> connections = invokeConnectionService.findBy("sourceId", sourceId);
         List<InterfaceInvoke> invokeRelations = interfaceInvokeService.findBy("consumerInvokeId", sourceId);
@@ -566,38 +590,34 @@ public class ServiceLinkController {
             String targetId = connection.getTargetId();
             ServiceInvoke serviceInvoke = serviceInvokeService.getById(targetId);
             if (null != serviceInvoke) {
-                ServiceLinkNodeVO serviceLinkNodeVO = new ServiceLinkNodeVO(serviceInvoke);
-                List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy("invokeId", serviceInvoke.getInvokeId());
-                for(ServiceLinkProperty serviceLinkProperty : serviceLinkProperties){
-                    String propertyName = serviceLinkProperty.getPropertyName();
-                    String propertyValue = serviceLinkProperty.getPropertyValue();
-                    if("nodeType".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setNodeType(propertyValue);
-                    }
-                    if("location".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setLocation(propertyValue);
-                    }
-                    if("bussCategory".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setBussCategory(propertyValue);
-                    }
-                    if("status".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setStatus(propertyValue);
-                    }
-                    if("esbAccessPattern".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setEsbAccessPattern(propertyValue);
-                    }
-                    if("condition".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setCondition(propertyValue);
-                    }
-                    if("conditionDesc".equalsIgnoreCase(propertyName)){
-                        serviceLinkNodeVO.setConnectionDesc(propertyValue);
-                    }
-                }
+                ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
                 serviceInvokeInfoVOs.add(serviceLinkNodeVO);
             }
         }
         return serviceInvokeInfoVOs;
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/saveNodeProperties", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean save(@RequestBody ServiceLinkProperty[] serviceLinkProperties) {
+        if (null != serviceLinkProperties) {
+            if (serviceLinkProperties.length > 0) {
+                for (ServiceLinkProperty serviceLinkProperty : serviceLinkProperties) {
+                    Map<String, String> param = new HashMap<String, String>();
+                    param.put("invokeId", serviceLinkProperty.getInvokeId());
+                    param.put("propertyName", serviceLinkProperty.getPropertyName());
+                    List<ServiceLinkProperty> properties = serviceLinkPropertyService.findBy(param);
+                    for(ServiceLinkProperty property : properties){
+                        serviceLinkPropertyService.delete(property);
+                    }
+                    serviceLinkPropertyService.save(serviceLinkProperty);
+                }
+            }
+        }
+        return true;
+    }
+
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {

@@ -1,8 +1,8 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
@@ -78,35 +78,35 @@
 </div>
 <script type="text/javascript">
     var invokeId;
-    $(function (){
+    $(function () {
         $('#invokeLinkeTable').datagrid({
-            rownumbers:true,
-            singleSelect:true,
-            url:'/serviceLink/getServiceLinkNode/system/<%=request.getParameter("systemId") %>',
-            method:'get',
-            toolbar:toolbar,
-            pagination:true,
-            pageSize:10,
-            onLoadSuccess:function(data){
+            rownumbers: true,
+            singleSelect: true,
+            url: '/serviceLink/getServiceLinkNode/system/<%=request.getParameter("systemId") %>',
+            method: 'get',
+            toolbar: toolbar,
+            pagination: true,
+            pageSize: 10,
+            onLoadSuccess: function (data) {
                 $.each(data.rows, function (index, item) {
                     var invokeType = item.invokeType;
-                    if(invokeType == '0'){
+                    if (invokeType == '0') {
                         item.invokeType = '提供者';
-                    }else if(invokeType == '1'){
+                    } else if (invokeType == '1') {
                         item.invokeType = '消费者';
                     }
                 });
             },
             onLoadError: function (responce) {
                 var resText = responce.responseText;
-                if(resText.toString().indexOf("没有操作权限") > 0){
+                if (resText.toString().indexOf("没有操作权限") > 0) {
 //                    alert("没有权限！");
                     window.location.href = "/jsp/403.jsp";
                 }
             }
         });
     });
-    $("#search").click(function(){
+    $("#search").click(function () {
         var queryParams = $('#invokeLinkeTable').datagrid('options').queryParams;
         queryParams.interfaceId = $("#interfaceId").textbox("getValue");
         queryParams.interfaceName = encodeURI($("#interfaceName").textbox("getValue"));
@@ -134,7 +134,7 @@
                     content: content
                 }
             });
-            parent.$('#subtab').tabs('select',title);
+            parent.$('#subtab').tabs('select', title);
         }
     }
     var toolbar = [
@@ -151,7 +151,7 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
 //                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('预览', content);
                         selectTab('预览', content);
@@ -177,7 +177,7 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
                         selectTab('血缘分析', content);
                         selectTab('血缘分析', content);
                     }
@@ -186,7 +186,7 @@
                     alert("请选中要预览的节点！");
                 }
             }
-        },{
+        }, {
             text: '节点维护',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -199,7 +199,7 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/nodeInfo.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="/serviceLink/nodeInfo/' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
                         selectTab('节点维护', content);
                         selectTab('节点维护', content);
                     }
