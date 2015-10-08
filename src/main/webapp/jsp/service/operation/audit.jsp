@@ -57,6 +57,7 @@
             <th data-options="field:'version'" formatter='ff.version' width="100">版本号</th>
             <th data-options="field:'optDate'" width="130">更新时间</th>
             <th data-options="field:'optUser'" width="100">更新用户</th>
+            <th data-options="field:' ',formatter:formatConsole" width="100">操作</th>
         </tr>
         </thead>
     </table>
@@ -134,6 +135,43 @@
         //如果有任务在执行，则更新任务的状态
         parent.PROCESS_INFO.approved = false;
     }
+//操作按钮
+	function formatConsole(value, row, index){
+	    var versionId = "";
+	     try {
+                versionId = row.version.id;
+         } catch (exception) {
+         }
+		var s = '<a iconcls="icon-search" onclick="comparePage(\'' + versionId + '\')" style="margin-top:1px;margin-bottom:1px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="cancelbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">版本对比</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>';
+		return s;
 
+	}
+
+//弹出对比页面
+		function comparePage(versionId){
+			$.ajax({
+				type: "get",
+				async: false,
+				url: "/versionHis/judgeVersionHis?versionId="+versionId,
+				dataType: "json",
+				success: function (data) {
+					if(data.autoId != null){
+						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1="+versionId+"&type=0&versionId2="+data.autoId;
+						$("#dlg").dialog({
+                                title: '版本对比',
+                                left:'50px',
+                                width: 1000,
+                                closed: false,
+                                cache: false,
+                                href: urlPath,
+                                modal: true
+                            });
+					}else{
+						alert("没有历史版本可以对比!");
+					}
+				}
+			});
+
+		}
 </script>
 </html>

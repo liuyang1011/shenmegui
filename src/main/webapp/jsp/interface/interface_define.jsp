@@ -390,9 +390,10 @@
             * @param result
              */
             var initTags = function initTags(result){
-                result.forEach(function(tag){
+                for(var i = 0; i < result.length; i++){
+                    var tag = result[i];
                     $("#tags").append("<li>" + tag.tagName + "</li>");
-                });
+                }
                 $("#tags").tagit();
 
             };
@@ -402,11 +403,12 @@
             $("#saveTagBtn").click(function () {
                 var tagNames = $("#tags").tagit("assignedTags");
                 var tags = [];
-                tagNames.forEach(function (tagName){
-                    var tagToAdd = {};
-                    tagToAdd.tagName = tagName;
-                    tags.push(tagToAdd);
-                });
+                for(var i = 0; i < tagNames.length; i++){
+                     var tagName = tagNames[i];
+                     var tagToAdd = {};
+                     tagToAdd.tagName = tagName;
+                     tags.push(tagToAdd);
+                }
                 tagManager.addTagForInterface(interfaceId, tags, function (){
                     alert("标签保存成功");
                 });

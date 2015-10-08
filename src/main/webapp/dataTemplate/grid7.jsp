@@ -56,7 +56,7 @@
 </fieldset>
 </form>
 <table id="metadataList" title="元数据管理"
-        style="height:480px; width:auto;">
+        style="height:480px; width:100%;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
