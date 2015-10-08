@@ -24,9 +24,9 @@
 
 <div class="easyui-tabs" id="subtab" name="subtab" data-options="tools:'#tab-tools'" style="width:100%">
     <div title="服务基本信息" style="padding:0px;">
-        <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"
+       <%-- <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"
                 src="/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>"
-                style="width:100%;height:100%;"></iframe>
+                style="width:100%;height:100%;"></iframe>--%>
     </div>
     <div title="服务场景" style="padding:0px;">
     </div>
@@ -58,9 +58,17 @@
         width: "auto",
         height: $("body").height(),
         onSelect: function (title, index) {
-//            if(index == 0){
+            if(index == 0){
 //                $("#serviceInfo").$("#operationList").datagrid("reload");
-//            }
+                var urlPath = "/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>&_t" + new Date().getTime();
+                var currTab = $('#subtab').tabs('getSelected');
+                $('#subtab').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: ' <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                    }
+                });
+            }
             if (index == 1 && k == 0) {
                 var opId = serviceInfo.getSelected();
                 if (opId != null) {

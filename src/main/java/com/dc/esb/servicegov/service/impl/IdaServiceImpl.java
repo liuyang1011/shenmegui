@@ -76,6 +76,20 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 	}
 
+	/**
+	 * 前端唯一性验证
+	 * @param structName
+	 * @return
+	 */
+	@Override
+	public boolean uniqueValid(String structName) {
+		Ida entity = findUniqueBy("structName",structName);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public List findIdas(Map<String,String> reqMap, String orderStr){
 		List<Ida> idas = findBy(reqMap, orderStr);

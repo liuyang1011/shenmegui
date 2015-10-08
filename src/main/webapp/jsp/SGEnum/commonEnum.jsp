@@ -95,7 +95,7 @@
 		$(function(){
 			$('#dg').datagrid({
 				rownumbers:true,
-				singleSelect:true,
+//				singleSelect:true,
 				collapsible:true,
 				url:"/enum/getAll",
 				method:'POST',
@@ -183,8 +183,10 @@
 					text : '维护',
 					iconCls : 'icon-edit',
 					handler : function() {
-						var selectData = $('#dg').datagrid('getSelected');
-						if (selectData == null) {
+						var checkedItems = $('#dg').datagrid('getChecked');
+						var selectData = checkedItems[0];
+						console.log(selectData);
+						if (selectData == null || checkedItems.length > 1) {
 							alert("请先选择一条记录");
 							return;
 						}
@@ -212,6 +214,7 @@
 					iconCls : 'icon-remove',
 					handler : function() {
 						var selectData = $('#dg').datagrid('getSelected');
+//						var selectData = $('#dg').datagrid('getChecked');
 						if (selectData == null) {
 							alert("请先选择一条记录");
 							return;

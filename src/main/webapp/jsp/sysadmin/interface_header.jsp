@@ -58,6 +58,12 @@
 			text:'保存',
 			iconCls:'icon-save',
 			handler:function(){
+				if (!confirm("确定保存吗？")) {
+					return;
+				}
+				if (!$("#headForm").form('validate')) {
+					return false;
+				}
 				 $('#tg').treegrid('endEdit', editingId);
 				 var row = $('#tg').treegrid('find',editingId);
 				 
@@ -427,6 +433,7 @@
 			</div>
 
 		</div>
+		<form id="headForm">
 		<table title="报文头管理" class="easyui-treegrid" id="tg"
 			style="height: 560px; width: auto;"
 			data-options="
@@ -447,7 +454,7 @@
 			<thead>
 				<tr>
 					<th
-						data-options="field:'structName',width:160,align:'left',editor:{type:'validatebox',options:{required:true,validType:['englishB']}}">
+						data-options="field:'structName',width:160,align:'left',editor:{type:'validatebox',options:{required:true,validType:['unique','englishB']}}">
 						字段名称
 					</th>
 					<th
@@ -463,13 +470,13 @@
 					<%--<th data-options="field:'metadataId',width:100,editor:'text'">
 						元数据ID
 					</th>--%>
-					<th data-options="field:'remark',width:100,editor:'text'">
+					<th data-options="field:'remark',width:100,editor:{type:'combobox',options:{url:'/jsp/service/sda/combobox_data2.json',valueField:'id',textField:'text'}}">
 						约束条件
 					</th>
-					<th data-options="field:'scale',width:100,editor:'text'">
+					<th data-options="field:'scale',width:100,editor:{type:'validatebox',options:{validType:['integer']}}">
 						精度
 					</th>
-					<th data-options="field:'required',width:100,editor:'text'">
+					<th data-options="field:'required',width:100,editor:{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">
 						是否必须
 					</th>
 					<th data-options="field:'seq',width:50">
@@ -479,6 +486,30 @@
 
 			</thead>
 		</table>
+		</form>
 		<script type="text/javascript" src="/plugin/validate.js"></script>
+		<script type="text/javascript">
+			$(function () {
+				$.extend($.fn.validatebox.defaults.rules, {
+					unique: {
+						validator: function (value, param) {
+							var result;
+							$.ajax({
+								type: "get",
+								async: false,
+								url: "/ida/uniqueValid",
+								dataType: "json",
+								data: {"structName": value},
+								success: function (data) {
+									result = data;
+								}
+							});
+							return result;
+						},
+						message: '已存在相同字段名称'
+					}
+				})
+			});
+		</script>
 	</body>
 </html>

@@ -530,7 +530,7 @@
         <th data-options="field:'type',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['englishB']}}">
             类型
         </th>
-        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox',options:{required:true,validType:['intOrFloat']}}">
+        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['intOrFloat']}}">
             长度
         </th>
         <%--<th data-options="field:'metadataId',width:100,editor:'text'">

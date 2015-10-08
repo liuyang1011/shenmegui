@@ -7,6 +7,7 @@ $(function(){
     $('#serviceName').val(node.service.serviceName);
     $('#discription').val(node.service.desc);
     $('#serviceCategory').val(node.service.categoryId);
+    $('#serviceId').val(node.service.serviceId);
     $('#state').val(node.service.state);
     $('#version').val(node.service.version);
     $('#remark').val(node.service.remark);

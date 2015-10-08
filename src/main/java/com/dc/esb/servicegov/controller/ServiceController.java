@@ -91,6 +91,19 @@ public class ServiceController {
         return true;
     }
 
+    /**
+     * 服务serviceId唯一性验证
+     *
+     * @param serviceId
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueValid(String serviceId) {
+        return serviceServiceImpl.uniqueValid(serviceId);
+    }
+
     @RequiresPermissions({"service-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/editService", headers = "Accept=application/json")
     public
