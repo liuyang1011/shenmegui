@@ -22,7 +22,7 @@
     <legend>
         条件搜索
     </legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
         <tr>
             <th>
                 系统ID
@@ -84,7 +84,7 @@
 
 </fieldset>
 </form>
-<table id="tg">
+<table id="tg" style="width:100%">
     <thead>
     <tr>
         <th data-options="field:'systemId',width:'10%'">
@@ -121,7 +121,7 @@
         $('#tg').datagrid({
             title: '系统基本信息维护',
             iconCls: 'icon-edit',//图标
-            width: 'auto',
+            width: '100%',
             height: '440px',
             collapsible: true,
             method: 'post',

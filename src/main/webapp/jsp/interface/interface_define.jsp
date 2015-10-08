@@ -453,7 +453,7 @@
 
 
 </div>
-<table id="interfacetg" style="height: 370px; width: auto;">
+<table id="interfacetg" style="height: 370px; width: 100%;">
     <thead>
     <tr>
         <th data-options="field:'ecode',width:'10%'">
@@ -503,7 +503,7 @@
     </div>
 </div>
 <table title="接口定义信息" id="tg"
-       style="height: 440px; width: auto;"
+       style="height: 440px; width: 100%;"
        data-options="
 				iconCls:'icon-edit',
 				rownumbers: false,

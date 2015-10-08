@@ -112,7 +112,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         }
@@ -128,7 +129,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         }
@@ -205,11 +207,12 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
 
-                                var content = '<iframe scrolling="auto" frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX+'?_t='+new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
+                                var content = '<iframe name="serviceFrame" id="serviceFrame" scrolling="auto"  frameborder="0"  src="' + LOAD_URL.SYSTEMINDEX +'?_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else if (node.click == "interfaces") {
@@ -222,7 +225,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
 
@@ -236,7 +240,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
 
@@ -251,7 +256,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
 
@@ -265,7 +271,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else if (node.click == "protocols") {
@@ -281,7 +288,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else if(node.click == "file"){
@@ -296,7 +304,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         }
@@ -306,7 +315,7 @@ var SYSMENU = {
                             $.ajax({
                                 type: "get",
                                 async: false,
-                                url: "/interface/getLeftTree/subtree/system/"+node.id,
+                                url: "/interface/getLeftTree/subtree/system/"+node.id+"?_t="+ new Date().getTime(),
                                 dataType: "json",
                                 success: function (result) {
                                     $('.msinterfacetree').tree('append', {
@@ -334,7 +343,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else {
@@ -347,7 +357,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         }
@@ -376,7 +387,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else if (node.type == 'service') {//打开服务场景
@@ -470,7 +482,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -486,7 +499,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -565,7 +579,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     } else if (node.click == "interfaces") {
@@ -592,7 +607,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
 
@@ -606,7 +622,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
 
@@ -620,7 +637,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     } else if (node.click == "protocols") {
@@ -637,7 +655,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -658,7 +677,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     } else {
@@ -671,7 +691,7 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
                             });
                         }
                     }
@@ -781,7 +801,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -797,7 +818,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -876,7 +898,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     } else if (node.click == "interfaces") {
@@ -889,7 +912,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
 
@@ -903,7 +927,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
 
@@ -917,7 +942,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
 
@@ -931,7 +957,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     } else if (node.click == "protocols") {
@@ -950,7 +977,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -976,7 +1004,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     } else {
@@ -989,7 +1018,8 @@ var SYSMENU = {
                             $('#mainContentTabs').tabs('add', {
                                 title: title,
                                 content: content,
-                                closable: true
+                                closable: true,
+                                fit:true
                             });
                         }
                     }
@@ -1019,7 +1049,8 @@ var SYSMENU = {
                                 $('#mainContentTabs').tabs('add', {
                                     title: title,
                                     content: content,
-                                    closable: true
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else {

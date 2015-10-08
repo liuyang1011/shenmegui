@@ -138,7 +138,7 @@
 			  $('#tg').datagrid({ 
 	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
-	        width: 'auto', 
+	        width: '100%',
 	        height: '485px',
 	        method:'post',
 	        collapsible: true,

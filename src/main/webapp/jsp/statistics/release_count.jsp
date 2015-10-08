@@ -23,9 +23,9 @@
 
 <body>
 <form id="searchForm">
-  <fieldset>
+  <fieldset>h
     <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
       <tr>
         <th><nobr>系统编号</nobr></th>
         <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:80px"

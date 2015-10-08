@@ -42,7 +42,7 @@
 
 
 </fieldset>
-<table title="交易节点" id="invokeLinkeTable" style="height:440px; width:auto;">
+<table title="交易节点" id="invokeLinkeTable" style="height:440px; width:100%;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>

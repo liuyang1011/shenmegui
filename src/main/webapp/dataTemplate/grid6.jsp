@@ -42,7 +42,7 @@
 
 </fieldset>
 </form>
-<table id="tt" style="height:500px; width:auto;"
+<table id="tt" style="height:500px; width:100%;"
        title="所有类别词">
     <thead>
     <tr>
