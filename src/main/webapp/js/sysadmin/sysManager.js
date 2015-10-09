@@ -89,7 +89,7 @@ var sysManager = {
     },
 
     remove: function () {
-        if (!confirm("确定要删除该报文头吗？")) {
+        if (!confirm("删除报文头会删除接口和报文头的关联关系，确定要删除该报文头吗？")) {
             return;
         }
         var node = $('.msinterfacetree').tree("getSelected");

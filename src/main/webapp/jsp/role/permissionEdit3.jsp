@@ -57,7 +57,6 @@
       ]],
       onLoadSuccess:function(row, data){
         rows = data;
-        console.log(data);
         parsePermissionData(rows);
 
       },

@@ -19,6 +19,10 @@
     <th>服务功能描述</th>
     <td><input class="easyui-textbox" type="text" data-options="validType:['chineseB']" id="discription" ></td>
   </tr>
+  <tr>
+    <th>服务备注</th>
+    <td><input class="easyui-textbox" type="text" data-options="validType:['chineseB']" id="remark" ></td>
+  </tr>
   <tr style="display:none">
     <th>服务分类</th>
     <td><input class="easyui-textbox" type="text" id="serviceCategory" ></td>

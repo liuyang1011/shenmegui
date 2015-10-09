@@ -45,7 +45,6 @@
                 iconCls: 'icon-qxfp',
                 handler: function () {
                     //标准的没有映射功能
-                    console.log(item);
                     if (item.isStandard == 0) {
                         alert("标准接口没有映射");
                         return false;

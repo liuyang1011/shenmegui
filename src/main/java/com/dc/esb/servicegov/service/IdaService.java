@@ -21,5 +21,5 @@ public interface IdaService  extends BaseService<Ida, String> {
     public List findIdas(Map<String,String> reqMap, String orderStr);
     public boolean moveDown(String id);
     public boolean moveUp(String id);
-    public boolean uniqueValid(String structName);
+    public boolean uniqueValid(String structName,String headId);
 }

@@ -499,7 +499,7 @@
 								async: false,
 								url: "/ida/uniqueValid",
 								dataType: "json",
-								data: {"structName": value},
+								data: {"structName": value,"headId":headId},
 								success: function (data) {
 									result = data;
 								}

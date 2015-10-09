@@ -54,7 +54,6 @@ function save(formId, operation) {
 
 
     var params = $("#" + formId).serialize();
-    console.log(params);
     params = decodeURIComponent(params, true);
     var processId = parent.parent.PROCESS_INFO.processId;
     params = params + "&processId=" + processId;

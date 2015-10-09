@@ -71,7 +71,7 @@
        data-options="
 			rownumbers:true,
 			singleSelect:false,
-			fitColumns:true,
+			<%--fitColumns:true,--%>
 			url:'/operation/query?serviceId=${entity.serviceId }',
 			method:'get',toolbar:toolbar,
 			pagination:true,
@@ -80,16 +80,16 @@
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true,width:50"></th>
-        <th data-options="field:'operationId',width:100">场景代码</th>
-        <th data-options="field:'operationName',width:120">场景名称</th>
-        <th data-options="field:'operationDesc',width:150">场景功能描述</th>
+        <th data-options="field:'operationId',width:60">场景代码</th>
+        <th data-options="field:'operationName'">场景名称</th>
+        <th data-options="field:'operationDesc',width:300">场景功能描述</th>
         <th data-options="field:'consumers',width:150">消费者</th>
         <th data-options="field:'providers',width:150">提供者</th>
-        <th data-options="field:'version', width:80" >版本号</th>
+        <th data-options="field:'version'" >版本号</th>
         <th data-options="field:'versionRemark', width:80" >版本说明</th>
         <th data-options="field:'optDate',width:120">更新时间</th>
         <th data-options="field:'optUser', width:80">更新用户</th>
-        <th data-options="field:'optState',width:80"  formatter='formatter.operationState'>状态</th>
+        <th data-options="field:'optState'"  formatter='formatter.operationState'>状态</th>
     </thead>
 </table>
 <div id="w" class="easyui-window" title=""
@@ -245,7 +245,12 @@
                         dataType: "json",
                         data: JSON.stringify(ids),
                         success: function (data) {
-                            alert("操作成功");
+                            if(data){
+                                alert("操作成功");
+                            }else{
+                                alert("已上线和发布的场景不能删除");
+                            }
+
                             $('#operationList').datagrid('reload');
                         }
                     });

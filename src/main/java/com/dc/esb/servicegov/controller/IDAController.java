@@ -84,8 +84,8 @@ public class IDAController {
 	@RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
 	public
 	@ResponseBody
-	boolean uniqueValid(String structName) {
-		return idaService.uniqueValid(structName);
+	boolean uniqueValid(String structName,String headId) {
+		return idaService.uniqueValid(structName,headId);
 	}
 
 	@RequiresPermissions({"system-delete"})

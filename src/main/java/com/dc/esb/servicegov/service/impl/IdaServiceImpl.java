@@ -82,8 +82,11 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	 * @return
 	 */
 	@Override
-	public boolean uniqueValid(String structName) {
-		Ida entity = findUniqueBy("structName",structName);
+	public boolean uniqueValid(String structName,String headId) {
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("structName",structName);
+		map.put("headId",headId);
+		Ida entity = findUniqueBy(map);
 		if (entity != null) {
 			return false;
 		}

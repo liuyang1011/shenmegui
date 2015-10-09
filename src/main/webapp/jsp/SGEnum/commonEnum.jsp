@@ -185,7 +185,6 @@
 					handler : function() {
 						var checkedItems = $('#dg').datagrid('getChecked');
 						var selectData = checkedItems[0];
-						console.log(selectData);
 						if (selectData == null || checkedItems.length > 1) {
 							alert("请先选择一条记录");
 							return;
