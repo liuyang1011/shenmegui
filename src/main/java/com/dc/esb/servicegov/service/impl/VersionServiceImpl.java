@@ -108,12 +108,13 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 		return nv.getAutoId();
 	}
 
-	// 发布时调用方法，每次中间一位+1
-	public String releaseVersionCode(String versionCode) {
+	// 发布时调用方法，每次中间一位+1,最后一位置零
+	public String releaseVersionCode(String versionCode) {//格式:1.0.0
 		if (StringUtils.isNotEmpty(versionCode)) {
 			String[] s = versionCode.split("\\.");
 			int s1 = Integer.parseInt(s[1]);
 			s[1] = String.valueOf(s1 + 1);
+			s[2] = "0";
 			return s[0] + "." + s[1] + "." + s[2];
 		}
 		return initalVersion;

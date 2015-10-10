@@ -20,10 +20,10 @@
     <script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
 </head>
 <body>
-<table id="tg" style="height:370px;width: auto;" data-options="pageSize:5">
+<table id="tg" style="height:370px;width: 100%;" data-options="pageSize:5">
     <thead>
     <tr>
-        <th data-options="field:'fileName',width:'15%'">
+        <th data-options="field:'fileName',width:'15%'">h
             文件名称
         </th>
         <th data-options="field:'systemName',width:'10%'">
@@ -61,7 +61,7 @@
         $('#tg').datagrid({
             title: '文件管理',
             iconCls: 'icon-edit',//图标
-            width: 'auto',
+            width: '100%',
             height: '400px',
             collapsible: true,
             method: method,

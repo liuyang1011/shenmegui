@@ -21,10 +21,6 @@
 
     <script type="text/javascript" src="/resources/js/ui.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
-            $("#version1").combobox("setValue", "");
-            $("#version2").combobox("setValue", "${param.versionId2}");
-        });
         function compare(){
             var versionId1 =  $("#version1").combobox("getValue");
             var versionId2 =  $("#version2").combobox("getValue");
@@ -63,6 +59,7 @@
 				 		 method:'get',
 				 		 valueField: 'autoId',
 				 		 textField: 'code',
+				 		 value:'',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
 						}
@@ -77,6 +74,7 @@
 				 		 method:'get',
 				 		 valueField: 'autoId',
 				 		 textField: 'code',
+				 		 value:'${param.versionId2}',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
 						}
@@ -100,7 +98,7 @@
     </tr>
 
 </table>
-<table class="easyui-treegrid" id="sdaHisTree" title="SDA对比" style=" width:100%; height:500px"
+<table class="easyui-treegrid" id="sdaHisTree" title="SDA对比" style=" width:100%; height:auto"
        data-options="
 				rownumbers: true,
 				animate: true,

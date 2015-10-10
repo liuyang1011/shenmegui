@@ -88,6 +88,17 @@ var roleManager = {
             }
         });
     },
+    "checkRoleNameUnique" : function(name, callBack){
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/role/checkRoleNameUnique/name/"+name,
+            dataType: "json",
+            success: function(result) {
+                callBack(result);
+            }
+        });
+    },
     "relation" : function(roleId, callBack){
         $.ajax({
             type: "GET",

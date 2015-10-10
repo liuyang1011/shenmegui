@@ -18,8 +18,7 @@
 
 <div class="easyui-tabs" id="subtab">
     <div title="交易链路信息查询" style="padding:0px;">
-        <iframe scrolling="auto" frameborder="0" src="/jsp/serviceLink/systemLinkInfo.jsp?systemId=<%=request.getParameter("systemId")%>"
-                style="width:100%;height:100%;"></iframe>
+
     </div>
 </div>
 
@@ -27,6 +26,22 @@
 <script type="text/javascript" src="<%=basePath%>/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/ui.js"></script>
 <script type="text/javascript">
+    //页面拖动宽度自适应
+    $('#subtab').tabs({
+        border: false,
+        border: false,
+        width: "auto",
+        height: $("body").height()
+    });
+    var tabUrl = "/jsp/serviceLink/systemLinkInfo.jsp?systemId=<%=request.getParameter("systemId")%>";
+    var tabItem = $('#subtab').tabs('getTab','交易链路信息查询');
+    $('#subtab').tabs('update', {
+        tab: tabItem,
+        options: {
+            content: ' <iframe id="serviceLink"  scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(tabUrl)) + '"  style="width:100%;height:99%;"></iframe>',
+            fit:true
+        }
+    });
     var k = 0;
     $('#subtab').tabs({
         border: false,

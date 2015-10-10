@@ -24,9 +24,9 @@
 
 <div class="easyui-tabs" id="subtab" name="subtab" data-options="tools:'#tab-tools'" style="width:100%">
     <div title="服务基本信息" style="padding:0px;">
-       <%-- <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"
+        <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"
                 src="/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>"
-                style="width:100%;height:100%;"></iframe>--%>
+                style="width:100%;height:99%;"></iframe>
     </div>
     <div title="服务场景" style="padding:0px;">
     </div>
@@ -65,7 +65,7 @@
                 $('#subtab').tabs('update', {
                     tab: currTab,
                     options: {
-                        content: ' <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                        content: ' <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:99%;"></iframe>'
                     }
                 });
             }
@@ -77,7 +77,8 @@
                                 $('#subtab').tabs('update', {
                                     tab: currTab,
                                     options: {
-                                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:99%;"></iframe>',
+                                        fit:true
                                     }
                                 });
                 }else {
@@ -93,7 +94,8 @@
                     $('#subtab').tabs('update', {
                         tab: currTab,
                         options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:99%;"></iframe>',
+                            fit:true
                         }
                     });
                 } else {
@@ -110,7 +112,8 @@
                     $('#subtab').tabs('update', {
                         tab: currTab,
                         options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
+                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:99%;"></iframe>',
+                            fit:true
                         }
                     });
                 } else {
@@ -142,7 +145,8 @@
                     $('#subtab').tabs('update', {
                         tab: currTab,
                         options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
+                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:99%;"></iframe>',
+                            fit:true
                         }
                     });
                 } else {
@@ -171,6 +175,16 @@
     n = 0;
     q = 0;
     p = 0;
+//页面拖动宽度自适应
+    var tabUrl = "/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>";
+    var tabItem = $('#subtab').tabs('getTab','服务基本信息');
+    $('#subtab').tabs('update', {
+        tab: tabItem,
+        options: {
+            content: ' <iframe id="serviceInfo"  scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(tabUrl)) + '"  style="width:100%;height:99%;"></iframe>',
+            fit:true
+        }
+    });
 </script>
 </body>
 </html>

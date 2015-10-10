@@ -25,27 +25,32 @@
 			</legend>
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<th>
+					<th><nobr>
 						交易码
+					</nobr>
 					</th>
 					<td>
 						<input class="easyui-textbox" type="text" id="ecode">
 					</td>
 
-					<th>
+					<th><nobr>
 						交易名称
+						</nobr>
 					</th>
 					<td>
 						<input class="easyui-textbox" type="text" id="interfaceName">
 					</td>
-					<th>
+					<th><nobr>
 						接口功能描述
+						</nobr>
 					</th>
 					<td>
 						<input class="easyui-textbox" type="text" id="remarkSearch">
 					</td>
 					<th>
+						<nobr>
 						状态
+						</nobr>
 					</th>
 					<td>
 
@@ -57,22 +62,25 @@
 					</td>
 				</tr>
 				<tr>
-					<th>
+					<th><nobr>
 						接口标签
+					</nobr>
 					</th>
 					<td>
 						<select class="easyui-textbox" id="interfaceTag" style="width: 170px">
 						</select>
 					</td>
-					<th>
+					<th><nobr>
 						报文头
+					</nobr>
 					</th>
 					<td>
 						<select class="easyui-combobox" id="headIdSearch" style="width: 170px" panelHeight="auto" data-options="editable:false">
                          </select>
 					</td>
-					<th>
+					<th><nobr>
 						通讯协议
+						</nobr>
 					</th>
 					<td>
 						<select class="easyui-combobox" id="protocolIdSearch" style="width: 165px" panelHeight="auto" data-options="editable:false">
@@ -138,7 +146,7 @@
 			  $('#tg').datagrid({ 
 	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
-	        width: 'auto', 
+	        width: '100%',
 	        height: '485px',
 	        method:'post',
 	        collapsible: true,

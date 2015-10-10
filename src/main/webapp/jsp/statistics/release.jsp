@@ -25,9 +25,7 @@
 
 <div class="easyui-tabs" id="releaseTab" name="subtab" data-options="tools:'#tab-tools'">
   <div title="发布状况" style="padding:0px;">
-    <iframe id="systemReuse" name="serviceInfo" scrolling="auto" frameborder="0"
-            src="/jsp/statistics/release_state.jsp"
-            style="width:100%;height:100%;"></iframe>
+
   </div>
 
   <div title="发布次数" style="padding:0px;">
@@ -35,6 +33,22 @@
   </div>
 </div>
   <script type="text/javascript">
+    //页面拖动宽度自适应
+    $('#releaseTab').tabs({
+      border: false,
+      border: false,
+      width: "auto",
+      height: $("body").height()
+    });
+    var tabUrl = "/jsp/statistics/release_state.jsp";
+    var tabItem = $('#releaseTab').tabs('getTab','发布状况');
+    $('#releaseTab').tabs('update', {
+      tab: tabItem,
+      options: {
+        content: ' <iframe id="serviceInfo"  scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(tabUrl)) + '"  style="width:100%;height:99%;"></iframe>',
+        fit:true
+      }
+    });
     var k = 1;
     $('#releaseTab').tabs({
       border: false,
@@ -48,7 +62,8 @@
           $('#releaseTab').tabs('update', {
             tab: currTab,
             options: {
-              content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+              content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>',
+              fit:true
             }
           });
         }

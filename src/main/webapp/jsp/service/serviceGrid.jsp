@@ -30,7 +30,7 @@
 <body>
 <fieldset>
     <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" >
         <tr>
             <th><nobr>服务代码</nobr></th>
             <td><input class="easyui-textbox" disabled="true"
@@ -76,7 +76,7 @@
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				pageSize:10"
-       style="height:370px; width:auto;">
+       style="height:370px; width:100%;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true,width:50"></th>
@@ -87,9 +87,9 @@
         <th data-options="field:'providers',width:150">提供者</th>
         <th data-options="field:'version'" >版本号</th>
         <th data-options="field:'versionRemark', width:80" >版本说明</th>
+        <th data-options="field:'optState'"  formatter='formatter.operationState'>状态</th>
         <th data-options="field:'optDate',width:120">更新时间</th>
         <th data-options="field:'optUser', width:80">更新用户</th>
-        <th data-options="field:'optState'"  formatter='formatter.operationState'>状态</th>
     </thead>
 </table>
 <div id="w" class="easyui-window" title=""
@@ -517,9 +517,10 @@
          * @param result
          */
         var initTags = function initTags(result){
-            result.forEach(function(tag){
+            for(var i = 0; i < result.length; i++){
+                var tag = result[i];
                 $("#tags").append("<li>" + tag.tagName + "</li>");
-            });
+            }
             $("#tags").tagit();
 
         };
@@ -528,11 +529,12 @@
         $("#saveTagBtn").click(function () {
             var tagNames = $("#tags").tagit("assignedTags");
             var tags = [];
-            tagNames.forEach(function (tagName){
-                var tagToAdd = {};
-                tagToAdd.tagName = tagName;
-                tags.push(tagToAdd);
-            });
+            for(var i = 0; i < tagNames.length; i++){
+                 var tagName = tagNames[i];
+                 var tagToAdd = {};
+                 tagToAdd.tagName = tagName;
+                 tags.push(tagToAdd);
+            }
             tagManager.addTagForService(serviceId, tags, function (){
                 alert("标签保存成功");
             });

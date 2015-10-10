@@ -4,7 +4,7 @@
 var tagManager = {
     "url": "/tag",
     "getTagForInterface": function (interfaceId, callBack) {
-        var getTagForInterfaceUrl = this.url + "/interface/" + interfaceId;
+        var getTagForInterfaceUrl = this.url + "/interface/" + interfaceId+ "?_t="+ new Date().getTime();
         $.ajax({
             "type": "GET",
             "contentType": "application/json; charset=utf-8",
@@ -36,7 +36,7 @@ var tagManager = {
         });
     },
     "getTagForService": function (serviceId, callBack) {
-        var getTagForServiceUrl = this.url + "/service/" + serviceId;
+        var getTagForServiceUrl = this.url + "/service/" + serviceId+ "?_t="+ new Date().getTime();
         $.ajax({
             "type": "GET",
             "contentType": "application/json; charset=utf-8",
@@ -61,7 +61,7 @@ var tagManager = {
         });
     },
     "getTagForOperation": function (serviceId, operationId, callBack) {
-        var getTagForOperationUrl = this.url + "/service/" + serviceId + "/operation/" + operationId;
+        var getTagForOperationUrl = this.url + "/service/" + serviceId + "/operation/" + operationId+ "?_t="+ new Date().getTime();
         $.ajax({
             "type": "GET",
             "contentType": "application/json; charset=utf-8",

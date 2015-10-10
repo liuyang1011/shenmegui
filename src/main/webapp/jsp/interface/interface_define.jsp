@@ -390,9 +390,10 @@
             * @param result
              */
             var initTags = function initTags(result){
-                result.forEach(function(tag){
+                for(var i = 0; i < result.length; i++){
+                    var tag = result[i];
                     $("#tags").append("<li>" + tag.tagName + "</li>");
-                });
+                }
                 $("#tags").tagit();
 
             };
@@ -402,11 +403,12 @@
             $("#saveTagBtn").click(function () {
                 var tagNames = $("#tags").tagit("assignedTags");
                 var tags = [];
-                tagNames.forEach(function (tagName){
-                    var tagToAdd = {};
-                    tagToAdd.tagName = tagName;
-                    tags.push(tagToAdd);
-                });
+                for(var i = 0; i < tagNames.length; i++){
+                     var tagName = tagNames[i];
+                     var tagToAdd = {};
+                     tagToAdd.tagName = tagName;
+                     tags.push(tagToAdd);
+                }
                 tagManager.addTagForInterface(interfaceId, tags, function (){
                     alert("标签保存成功");
                 });
@@ -451,7 +453,7 @@
 
 
 </div>
-<table id="interfacetg" style="height: 370px; width: auto;">
+<table id="interfacetg" style="height: 370px; width: 100%;">
     <thead>
     <tr>
         <th data-options="field:'ecode',width:'10%'">
@@ -501,7 +503,7 @@
     </div>
 </div>
 <table title="接口定义信息" id="tg"
-       style="height: 440px; width: auto;"
+       style="height: 440px; width: 100%;"
        data-options="
 				iconCls:'icon-edit',
 				rownumbers: false,

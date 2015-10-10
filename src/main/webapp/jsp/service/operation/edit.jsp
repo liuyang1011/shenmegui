@@ -34,27 +34,15 @@
              * @param result
              */
             var initTags = function initTags(result){
-                result.forEach(function(tag){
+                for(var i = 0; i < result.length; i++){
+                    var tag = result[i];
                     $("#tags").append("<li>" + tag.tagName + "</li>");
-                });
+                }
                 $("#tags").tagit();
             };
             serviceId = $("#serviceId").attr("value");
             operationId = $("#operationId").textbox("getValue");
             tagManager.getTagForOperation(serviceId,operationId,initTags);
-
-            /*$("#saveTagBtn").click(function () {
-                var tagNames = $("#tags").tagit("assignedTags");
-                var tags = [];
-                tagNames.forEach(function (tagName){
-                    var tagToAdd = {};
-                    tagToAdd.tagName = tagName;
-                    tags.push(tagToAdd);
-                });
-                tagManager.addTagForOperation(serviceId,operationId, tags, function (){
-                    alert("标签保存成功");
-                });
-            });*/
         })
         var toolbar = [{
             text: '新增',

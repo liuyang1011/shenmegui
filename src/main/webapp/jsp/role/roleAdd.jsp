@@ -60,7 +60,15 @@
                 alert("该角色已经存在，放弃新增，或者选择修改");
             }
         };
-        roleManager.checkUnique(data.id, checkUniqueCallBack);
+            var checkUniqueCallBack2 = function checkUniqueCallBack2(result) {
+                if (result) {
+                    roleManager.checkUnique(data.id, checkUniqueCallBack);
+                } else {
+                    alert("该角色名已经存在，放弃新增，或者选择修改");
+                }
+            };
+            roleManager.checkRoleNameUnique(data.name, checkUniqueCallBack2);
+
         }else{
             alert("输入错误！");
         }

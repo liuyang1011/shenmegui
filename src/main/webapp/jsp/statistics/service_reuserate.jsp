@@ -67,7 +67,7 @@
     </fieldset>
 </form>
 <div style="width:100%">
-    <table  class="easyui-treegrid" id="resultList" style=" width:auto;"
+    <table  class="easyui-treegrid" id="resultList" style=" width:100%;"
            data-options="
 				rownumbers: true,
 				animate: true,

@@ -435,7 +435,7 @@
 		</div>
 		<form id="headForm">
 		<table title="报文头管理" class="easyui-treegrid" id="tg"
-			style="height: 560px; width: auto;"
+			style="height: 560px; width: 100%;"
 			data-options="
 				iconCls: 'icon-folder',
 				rownumbers: false,

@@ -119,10 +119,10 @@
                             <a href="#" id="saveNodeInfoBtn" class="easyui-linkbutton" iconCls="icon-save"
                                style="margin-left:1em">保存</a>
                         </th>
-                        <td>
+                        <%--<td>
                             <a href="#" id="refreshNodeInfoBtn" class="easyui-linkbutton" iconCls="icon-save"
                                style="margin-left:1em">清空</a>
-                        </td>
+                        </td>--%>
                     </tr>
                 </table>
 
@@ -132,7 +132,7 @@
         <td>
             <fieldset style="height: 230px">
                 <legend>节点依赖信息</legend>
-                <table>
+                <table border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <th>
                             <NOBR>ESB标识</NOBR>
@@ -169,10 +169,10 @@
                             <a href="#" id="saveNodeDepBtn" class="easyui-linkbutton" iconCls="icon-save"
                                style="margin-left:1em">保存</a>
                         </th>
-                        <td>
+                       <%-- <td>
                             <a href="#" id="refreshNodeDepBtn" class="easyui-linkbutton" iconCls="icon-save"
                                style="margin-left:1em">清空</a>
-                        </td>
+                        </td>--%>
                     </tr>
                 </table>
             </fieldset>

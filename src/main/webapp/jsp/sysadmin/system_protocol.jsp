@@ -57,10 +57,10 @@
 
 
 </fieldset>--%>
-<table id="tg" style="height: 300px; width: auto;" data-options="pageSize:5">
+<table id="tg" style="height: 300px; width: 100%;" data-options="pageSize:5">
     <thead>
     <tr>
-        <th data-options="field:'protocolName',width:'14%'">
+        <th> data-options="field:'protocolName',width:'14%'">
             协议名称
         </th>
         <th data-options="field:'msgType',width:'12%'">
@@ -101,7 +101,7 @@
         $('#tg').datagrid({
             title: '协议基本信息维护',
             iconCls: 'icon-edit',//图标
-            width: 'auto',
+            width: '100%',
             height: '520px',
             collapsible: true,
             method: 'post',

@@ -155,7 +155,6 @@
                         allowNodeLoopback:false, // do not allow connections from this port to any other port on the same node.
                         events: {
                             "dblclick": function () {
-                                //console.log(arguments);
                             }
                         }
                     }

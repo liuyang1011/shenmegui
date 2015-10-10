@@ -129,7 +129,8 @@ var sysManager = {
             $('#mainContentTabs').tabs('add', {
                 title: "系统",
                 content: content,
-                closable: true
+                closable: true,
+                fit:true
             });
         }
     },

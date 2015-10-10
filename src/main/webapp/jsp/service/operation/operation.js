@@ -40,17 +40,23 @@ function save(formId, operation) {
     }
     //TODO IE8不能用，先注释了
     //保存标签
-    /*var tagNames = $("#tags").tagit("assignedTags");
+    var tagNames = $("#tags").tagit("assignedTags");
     var tags = [];
-    tagNames.forEach(function (tagName){
+    for(var i = 0; i < tagNames.length; i++){
+        var tagToAdd = {};
+        var tagName = tagNames[i];
+        tagToAdd.tagName = tagName;
+        tags.push(tagToAdd);
+    }
+    /*tagNames.forEach(function (tagName){
         var tagToAdd = {};
         tagToAdd.tagName = tagName;
         tags.push(tagToAdd);
-    });
+    });*/
     var serviceId = $("#serviceId").attr("value");
     var operationId = $("#operationId").textbox("getValue");
     tagManager.addTagForOperation(serviceId,operationId, tags, function (){
-    });*/
+    });
 
 
     var params = $("#" + formId).serialize();
@@ -123,19 +129,24 @@ function saveAdd(formId, operation) {
     if (!$("#" + formId).form('validate')) {
         return false;
     }
-    //TODO IE8不能用，先注释了
-    ////保存标签
-    //var tagNames = $("#tags").tagit("assignedTags");
-    //var tags = [];
-    //tagNames.forEach(function (tagName){
-    //    var tagToAdd = {};
-    //    tagToAdd.tagName = tagName;
-    //    tags.push(tagToAdd);
-    //});
-    //var serviceId = $("#serviceId").attr("value");
-    //var operationId = $("#operationId").textbox("getValue");
-    //tagManager.addTagForOperation(serviceId,operationId, tags, function (){
-    //});
+    //保存标签
+    var tagNames = $("#tags").tagit("assignedTags");
+    var tags = [];
+    for(var i = 0; i < tagNames.length; i++){
+        var tagToAdd = {};
+        var tagName = tagNames[i];
+        tagToAdd.tagName = tagName;
+        tags.push(tagToAdd);
+    }
+   /* tagNames.forEach(function (tagName){
+        var tagToAdd = {};
+        tagToAdd.tagName = tagName;
+        tags.push(tagToAdd);
+    });*/
+    var serviceId = $("#serviceId").attr("value");
+    var operationId = $("#operationId").textbox("getValue");
+    tagManager.addTagForOperation(serviceId,operationId, tags, function (){
+    });
 
 
     var params = $("#" + formId).serialize();
