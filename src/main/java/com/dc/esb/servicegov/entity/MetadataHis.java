@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "METADATA")
+@Table(name = "METADATA_HIS")
 public class MetadataHis implements Serializable {
     @Id
     @Column(name = "AUTO_ID")
