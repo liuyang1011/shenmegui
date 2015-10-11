@@ -265,6 +265,13 @@ ul,li{
 	background-repeat: no-repeat;
 	background-position: center center;
 }
+.icon-dc {
+	background-attachment: scroll;
+	background-color: rgba(0, 0, 0, 0);
+	background-image: url(../themes/icons/318.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
 
 .formui table{
 	width:100%;	

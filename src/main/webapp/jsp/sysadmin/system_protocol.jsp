@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -60,7 +61,7 @@
 <table id="tg" style="height: 300px; width: 100%;" data-options="pageSize:5">
     <thead>
     <tr>
-        <th> data-options="field:'protocolName',width:'14%'">
+        <th data-options="field:'protocolName',width:'14%'">
             协议名称
         </th>
         <th data-options="field:'msgType',width:'12%'">
@@ -118,23 +119,26 @@
                 handler: function () {
                     sysManager.addProtocolPage();
                 }
-            },*/ {
-                text: '修改',
-                iconCls: 'icon-edit',
-                handler: function () {
-                    var node = $('#tg').datagrid("getSelected");
-                    if (node) {
-                        uiinit.win({
-                            w: 500,
-                            iconCls: 'icon-add',
-                            title: "编辑协议",
-                            url: "/protocol/edit/" + node.protocolId
-                        });
-                    } else {
-                        alert("请选择要修改的行");
+            },*/
+                <shiro:hasPermission name="system-update">
+                {
+                    text: '修改',
+                    iconCls: 'icon-edit',
+                    handler: function () {
+                        var node = $('#tg').datagrid("getSelected");
+                        if (node) {
+                            uiinit.win({
+                                w: 500,
+                                iconCls: 'icon-add',
+                                title: "编辑协议",
+                                url: "/protocol/edit/" + node.protocolId
+                            });
+                        } else {
+                            alert("请选择要修改的行");
+                        }
                     }
-                }
-            }, {
+                },
+                {
                 text: '删除',
                 iconCls: 'icon-remove',
                 handler: function () {
@@ -164,7 +168,9 @@
                     }
                 }
 
-            }],
+            }
+                </shiro:hasPermission>
+            ],
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().indexOf("没有操作权限") > 0){

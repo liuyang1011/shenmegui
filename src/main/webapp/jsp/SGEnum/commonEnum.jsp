@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -52,9 +53,11 @@
 			</tr> -->
 				<td>&nbsp;</td>
 				<td align="right">
+					<shiro:hasPermission name="enum-get">
 					<a href="#" class="easyui-linkbutton" id="searchBtn"
 					   iconCls="icon-search">搜索</a>
 					<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+					</shiro:hasPermission>
 				</td>
 			</tr>
 		</table>
@@ -165,6 +168,7 @@
 			}
 		};
 		var toolbar = [
+			<shiro:hasPermission name="enum-add">
 				{
 					text : '新增代码',
 					iconCls : 'icon-add',
@@ -179,6 +183,8 @@
 						});
 					}
 				},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-get">
 				{
 					text : '维护',
 					iconCls : 'icon-edit',
@@ -208,7 +214,10 @@
 							});
 						}
 					}
-				}, {
+				},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-delete">
+			{
 					text : '删除',
 					iconCls : 'icon-remove',
 					handler : function() {
@@ -222,7 +231,9 @@
 							enumManager.deleteEnum(selectData.id);
 						}
 					}
-				}/*, {
+				}
+			</shiro:hasPermission>
+				/*, {
 					text: '提交任务',
 					iconCls: 'icon-qxfp',
 					handler: function () {

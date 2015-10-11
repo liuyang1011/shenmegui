@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -59,7 +60,9 @@
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>
+					<shiro:hasPermission name="enum-update">
 					<a href="#" onclick="save()" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+					</shiro:hasPermission>
 				</td>
 			</tr>
 		</table>
@@ -133,7 +136,9 @@
 			});
 		});
 
-		var toolbar2 =[{
+		var toolbar2 =[
+			<shiro:hasPermission name="enum-delete">
+			{
 			text : '删除',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -153,7 +158,10 @@
 							});
 				}
 			}
-		},{
+		},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-add">
+			{
 			text : '新增',
 			iconCls : 'icon-add',
 			handler : function() {
@@ -164,7 +172,9 @@
 					url : "/pages/SGEnum/form/elementAppandForm.jsp"
 				});
 			}
-		}];
+		}
+			</shiro:hasPermission>
+		];
 		function showZdm() {
 			var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/masterEnum.jsp" style="width:100%;height:100%;"></iframe>';
 

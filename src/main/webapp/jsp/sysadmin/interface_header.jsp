@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -24,7 +25,9 @@
 	var editArray = new Array();
 	var parentIdAry = new Array();
 	var headId;
-	var toolbar = [{
+	var toolbar = [
+		<shiro:hasPermission name="system-update">
+		{
 			text:'刪除',
 			iconCls:'icon-remove',
 			handler:function(){
@@ -307,6 +310,7 @@
 			}
 
 	  }
+		</shiro:hasPermission>
 
 		]
 		function onContextMenu(e,row){

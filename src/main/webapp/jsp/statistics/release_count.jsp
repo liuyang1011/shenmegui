@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
   String path = request.getContextPath();
   String basePath = request.getScheme() + "://"
@@ -23,7 +24,7 @@
 
 <body>
 <form id="searchForm">
-  <fieldset>h
+  <fieldset>
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
       <tr>
@@ -75,10 +76,12 @@
         <th><nobr> 结束日期</nobr></th>
         <td><input class="easyui-datebox" style="width:80px" type="text" name="endDate" id="endDate" ></td>
         <th style="width:200px">
+          <shiro:hasPermission name="statistics-get">
           <nobr>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
           <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
           </nobr>
+          </shiro:hasPermission>
         </th>
         <td></td>
 
@@ -131,6 +134,7 @@
     }
   };
   var toolbar = [
+  <shiro:hasPermission name="exportStatistics-get">
     {
       text:'导出EXCEL',
       iconCls:'icon-excel-export',
@@ -162,6 +166,7 @@
         }
       }
     }
+    </shiro:hasPermission>
   ];
   function query(){
     var params = {

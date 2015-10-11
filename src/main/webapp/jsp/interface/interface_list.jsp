@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -156,36 +157,46 @@
 	        pageSize: 14,//每页显示的记录条数，默认为10
 		    pageList: [14,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
-	        toolbar: [{
+	        toolbar: [
+				<shiro:hasPermission name="system-update">
+				{
 					text:'新增',
 					iconCls:'icon-add',
 					handler:function(){
-
-							interfaceManager.append("${param.systemId}");
+						interfaceManager.append("${param.systemId}");
+					}
+				},
+				</shiro:hasPermission>
+				<shiro:hasPermission name="system-update">
+				{
+					text:'修改',
+					iconCls:'icon-edit',
+					handler:function(){
+						var row = $("#tg").treegrid("getSelected");
+						if(row){
+							interfaceManager.edit(row.interfaceId,"${param.systemId}");
+						}else{
+							alert("请选择要修改的行");
 						}
-					},{
-						text:'修改',
-						iconCls:'icon-edit',
-						handler:function(){
-							var row = $("#tg").treegrid("getSelected");
-							if(row){
-								interfaceManager.edit(row.interfaceId,"${param.systemId}");
-							}else{
-								alert("请选择要修改的行");
-							}
+					}
+				},
+				</shiro:hasPermission>
+				<shiro:hasPermission name="system-update">
+				{
+					text:'删除',
+					iconCls:'icon-remove',
+					handler:function(){
+						var row = $("#tg").treegrid("getSelected");
+						if(row){
+							remove(row.interfaceId,row.interfaceName);
+						}else{
+							alert("请选择要删除的行");
 						}
-					},{
-						text:'删除',
-						iconCls:'icon-remove',
-						handler:function(){
-							var row = $("#tg").treegrid("getSelected");
-							if(row){
-								remove(row.interfaceId,row.interfaceName);
-							}else{
-								alert("请选择要删除的行");
-							}
-						 }
-					},{
+					 }
+				},
+				</shiro:hasPermission>
+				<shiro:hasPermission name="system-update">
+				{
 						text:'关联报文头',
 						iconCls:'icon-save',
 						handler:function(){
@@ -221,7 +232,10 @@
 //							}
 
 						}
-					}*/,{
+					}*/,
+				</shiro:hasPermission>
+				<shiro:hasPermission name="exportInterface-get">
+				{
 						text:'导出',
 						iconCls:'icon-save',
 						handler:function(){
@@ -271,6 +285,8 @@
 
 						}
 					},
+				</shiro:hasPermission>
+				<shiro:hasPermission name="system-update">
 					{
 						text: '发布',
 						iconCls: 'icon-save',
@@ -293,11 +309,14 @@
 									href: urlPath,
 									modal: true
 								});
+							}else{
+								alert("请先选一个接口");
 							}
 
 							//interfaceManager.release();
 						}
 					}
+				</shiro:hasPermission>
 				],
 			onDblClickRow : dbClick
 	   		});  

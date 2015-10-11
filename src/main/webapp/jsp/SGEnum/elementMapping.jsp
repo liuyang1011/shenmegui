@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -177,7 +178,9 @@
 				textField : 'elementName'
 			});
 		});
-		var toolbar = [ {
+		var toolbar = [
+			<shiro:hasPermission name="enum-delete">
+			{
 			text : '删除映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -194,7 +197,10 @@
 					});
 				}
 			}
-		},{
+		},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-update">
+			{
 			text : '保存映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -209,7 +215,10 @@
 				});
 				editedRows = [];
 			}
-		},{
+		},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-get">
+			{
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
@@ -217,8 +226,13 @@
 				document.getElementById('div2').style.display="block";
 				$('#mappingdatagrid2').datagrid([]);
 			}
-		} ];
-		var toolbar2 = [ {
+		}
+			</shiro:hasPermission>
+		];
+
+		var toolbar2 = [
+			<shiro:hasPermission name="enum-delete">
+			{
 			text : '删除映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -235,7 +249,10 @@
 					});
 				}
 			}
-		},{
+		},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-update">
+			{
 			text : '保存映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -250,7 +267,10 @@
 				});
 				editedRows = [];
 			}
-		},{
+		},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-get">
+			{
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
@@ -258,7 +278,9 @@
 				$('#mappingdatagrid').datagrid([]);
 				document.getElementById('div2').style.display="none";
 			}
-		} ];
+		}
+			</shiro:hasPermission>
+		];
 	</script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -96,7 +97,9 @@
 		var operationId = "${operation.operationId}";
 
 		var slaUrl = "/sla/getAll/" + serviceId + "/" + operationId;
-		var toolbar = [ {
+		var toolbar = [
+			<shiro:hasPermission name="service-update">
+			{
 			text : '新增',
 			iconCls : 'icon-add',
 			handler : function() {
@@ -154,7 +157,9 @@
 					url : "/jsp/service/sla/slaTemplateEdit.jsp?serviceId="+serviceId+"&operationId="+operationId
 				})
 			}
-		} ];
+		}
+			</shiro:hasPermission>
+				];
 		
 		var editedRows = [];
 		$(function() {

@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -44,24 +45,28 @@
             operationId = $("#operationId").textbox("getValue");
             tagManager.getTagForOperation(serviceId,operationId,initTags);
         })
-        var toolbar = [{
-            text: '新增',
-            iconCls: 'icon-add',
-            handler: function () {
-                if (!$("#operationForm").form('validate')) {
-                    alert("请先完善基础信息!");
-                    return false;
+        var toolbar = [
+            <shiro:hasPermission name="service-update">
+            {
+                text: '新增',
+                iconCls: 'icon-add',
+                handler: function () {
+                    if (!$("#operationForm").form('validate')) {
+                        alert("请先完善基础信息!");
+                        return false;
+                    }
+                    $('#interfaceDlg').dialog({
+                        title: '添加消费者-提供者关系',
+                        width: 500,
+                        height: 500,
+                        closed: false,
+                        cache: false,
+                        href: '/jsp/service/operation/consumer_provider_add.jsp',
+                        modal: true
+                    });
                 }
-                $('#interfaceDlg').dialog({
-                    title: '添加消费者-提供者关系',
-                    width: 500,
-                    height: 500,
-                    closed: false,
-                    cache: false,
-                    href: '/jsp/service/operation/consumer_provider_add.jsp',
-                    modal: true
-                });
-            }},{
+             },
+            {
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
@@ -82,6 +87,7 @@
                 });
 //                invokeList = new Array();
             }}
+            </shiro:hasPermission>
         ];
         var systemList = ${systemList};
         var consumerList = new Array();

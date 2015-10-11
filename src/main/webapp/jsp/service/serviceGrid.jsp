@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -57,9 +58,11 @@
             </td>
 
             <th>
+                <shiro:hasPermission name="service-update">
                 <nobr>
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
                 </nobr>
+                </shiro:hasPermission>
             </th>
             <td>&nbsp;</td>
         </tr>
@@ -169,97 +172,107 @@
         return null;
     }
 
-    var toolbar = [{
-        text: '新增',
-        iconCls: 'icon-add',
-        handler: function () {
-            var opeAddContent = ' <iframe scrolling="auto" frameborder="0"  src="/operation/addPage/${entity.serviceId }"  style="width:100%;height:100%;"></iframe>'
-            selectTab('服务场景', opeAddContent);
-            //var sdaAddContent = ' <iframe scrolling="auto" frameborder="0"  src="/sda/sdaPPage?serviceId=${entity.serviceId }"  style="width:100%;height:100%;"></iframe>'
-            //selectTab('服务接口SDO', '');
+    var toolbar = [
+        <shiro:hasPermission name="service-add">
+        {
+            text: '新增',
+            iconCls: 'icon-add',
+            handler: function () {
+                var opeAddContent = ' <iframe scrolling="auto" frameborder="0"  src="/operation/addPage/${entity.serviceId }"  style="width:100%;height:100%;"></iframe>'
+                selectTab('服务场景', opeAddContent);
+                //var sdaAddContent = ' <iframe scrolling="auto" frameborder="0"  src="/sda/sdaPPage?serviceId=${entity.serviceId }"  style="width:100%;height:100%;"></iframe>'
+                //selectTab('服务接口SDO', '');
 
-            //selectTab('服务SLA', '');
-            //selectTab('服务OLA', '');
-            //selectTab('服务接口隐射', '');
-            parent.k++;
-            parent.$('#subtab').tabs('select', '服务场景');
+                //selectTab('服务SLA', '');
+                //selectTab('服务OLA', '');
+                //selectTab('服务接口隐射', '');
+                parent.k++;
+                parent.$('#subtab').tabs('select', '服务场景');
 
-        }
-    }, {
-        text: '修改',
-        iconCls: 'icon-edit',
-        handler: function () {
-            var checkedItems = $('#operationList').datagrid('getChecked');
-            var checkedItem;
-            if (checkedItems != null && checkedItems.length > 0) {
-                if (checkedItems.length > 1) {
-                    alert("请只选中一行要修改的数据！");
-                    return false;
-                }
-                else {
-                    if( checkedItems[0].optState != 0 &&  checkedItems[0].optState != 7){
-                        alert("只有服务定义和修订状态的场景才能修改");
+            }
+        },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="service-update">
+        {
+            text: '修改',
+            iconCls: 'icon-edit',
+            handler: function () {
+                var checkedItems = $('#operationList').datagrid('getChecked');
+                var checkedItem;
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (checkedItems.length > 1) {
+                        alert("请只选中一行要修改的数据！");
                         return false;
                     }
-
-                    var urlPath = "/operation/editPage?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;
-                    var opeEditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
-                    selectTab('服务场景', opeEditContent);
-                    parent.k++;
-
-                    parent.$('#subtab').tabs('select', '服务场景');
-                }
-            }
-            else {
-                alert("请选中要修改的数据！");
-            }
-
-        }
-    }, {
-        text: '删除',
-        iconCls: 'icon-remove',
-        handler: function () {
-            var flag = true;
-            var checkedItems = $('#operationList').datagrid('getChecked');
-            $.each(checkedItems, function (index, item) {
-                if(item.optState == 3 && item.optState != 4){
-                    alert("已上线和已发布的场景不能删除！");
-                    flag = false;
-                }
-            });
-            if(flag == false) return;
-            if (checkedItems != null && checkedItems.length > 0) {
-                if (confirm("确定要删除已选中的" + checkedItems.length + "项吗？一旦删除无法恢复！")) {
-                    var ids = [];
-                    $.each(checkedItems, function (index, item) {
-                        var operationPK = {};
-                        operationPK.serviceId = "${entity.serviceId }";
-                        operationPK.operationId = item.operationId;
-                        ids.push(operationPK);
-                    });
-                    $.ajax({
-                        type: "post",
-                        async: false,
-                        contentType: "application/json; charset=utf-8",
-                        url: "/operation/deletes",
-                        dataType: "json",
-                        data: JSON.stringify(ids),
-                        success: function (data) {
-                            if(data){
-                                alert("操作成功");
-                            }else{
-                                alert("已上线和发布的场景不能删除");
-                            }
-
-                            $('#operationList').datagrid('reload');
+                    else {
+                        if( checkedItems[0].optState != 0 &&  checkedItems[0].optState != 7){
+                            alert("只有服务定义和修订状态的场景才能修改");
+                            return false;
                         }
-                    });
+
+                        var urlPath = "/operation/editPage?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;
+                        var opeEditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
+                        selectTab('服务场景', opeEditContent);
+                        parent.k++;
+
+                        parent.$('#subtab').tabs('select', '服务场景');
+                    }
                 }
-            } else {
-                alert("没有选中项！");
+                else {
+                    alert("请选中要修改的数据！");
+                }
+
             }
-        }
-    }, '-',
+        },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="service-delete">
+        {
+            text: '删除',
+            iconCls: 'icon-remove',
+            handler: function () {
+                var flag = true;
+                var checkedItems = $('#operationList').datagrid('getChecked');
+                $.each(checkedItems, function (index, item) {
+                    if(item.optState == 3 && item.optState != 4){
+                        alert("已上线和已发布的场景不能删除！");
+                        flag = false;
+                    }
+                });
+                if(flag == false) return;
+                if (checkedItems != null && checkedItems.length > 0) {
+                    if (confirm("确定要删除已选中的" + checkedItems.length + "项吗？一旦删除无法恢复！")) {
+                        var ids = [];
+                        $.each(checkedItems, function (index, item) {
+                            var operationPK = {};
+                            operationPK.serviceId = "${entity.serviceId }";
+                            operationPK.operationId = item.operationId;
+                            ids.push(operationPK);
+                        });
+                        $.ajax({
+                            type: "post",
+                            async: false,
+                            contentType: "application/json; charset=utf-8",
+                            url: "/operation/deletes",
+                            dataType: "json",
+                            data: JSON.stringify(ids),
+                            success: function (data) {
+                                if(data){
+                                    alert("操作成功");
+                                }else{
+                                    alert("已上线和发布的场景不能删除");
+                                }
+
+                                $('#operationList').datagrid('reload');
+                            }
+                        });
+                    }
+                } else {
+                    alert("没有选中项！");
+                }
+            }
+        },
+        </shiro:hasPermission>
+            '-',
         /*{
             text: '场景明细',
             iconCls: 'icon-qxfp',
@@ -277,7 +290,9 @@
                     alert("请只选中场景后再查看！");
                 }
             }
-        },*/{
+        },*/
+        <shiro:hasPermission name="service-get">
+        {
             text: '历史版本',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -291,6 +306,8 @@
                 parent.parent.addTab('历史场景', opeHisContent);
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="version-add">
         {
             text: '发布版本',
             iconCls: 'icon-qxfp',
@@ -324,7 +341,10 @@
                     alert("请选中要发布的场景！");
                 }
             }
-        },{
+        },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="service-update">
+        {
             text: '提交审核',
             iconCls: 'icon-audit',
             handler: function(){
@@ -356,6 +376,8 @@
                 });
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="version-check">
         {
             text: '审核',
             iconCls: 'icon-audit',
@@ -384,6 +406,8 @@
                 });
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="service-update">
         {
             text: '修订',
             iconCls: 'icon-audit',
@@ -419,6 +443,8 @@
                 });
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="excelExport-get">
         {
             text:'导出EXCEL',
             iconCls:'icon-excel-export',
@@ -453,6 +479,7 @@
                 }
             }
         },
+        </shiro:hasPermission>
 //        {
 //            text: '导出配置文件',
 //            iconCls: 'icon-qxfp',
@@ -472,8 +499,9 @@
 //
 //            }
 //        }/*,
+        <shiro:hasPermission name="exportConfig-get">
         {
-            text: '导出',
+            text: '导出配置文件',
             iconCls: 'icon-qxfp',
             handler: function () {
 
@@ -498,6 +526,7 @@
 
             }
         }
+        </shiro:hasPermission>
     ];
     //版本发布
     function releaseOp(desc, operationId) {
