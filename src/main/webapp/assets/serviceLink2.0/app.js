@@ -19,7 +19,11 @@
             canvasElement = mainElement.querySelector(".jtk-demo-canvas"),
             miniviewElement = mainElement.querySelector(".miniview"),
             nodePalette = mainElement.querySelector(".node-palette"),
-            controls = mainElement.querySelector(".controls");
+            controls = mainElement.querySelector(".controls")
+
+
+        console.log(mainElement);
+        console.log(document.getElementById("jtk-demo-flowchart"));
 
         // Declare an instance of the Toolkit, and supply the functions we will use to get ids and types from nodes.
         var toolkit = jsPlumbToolkit.newInstance({

@@ -46,7 +46,7 @@
                 handler: function () {
                     //标准的没有映射功能
                     console.log(item);
-                    if(item.isStandard == 0){
+                    if (item.isStandard == 0) {
                         alert("标准接口没有映射");
                         return false;
                     }
@@ -130,51 +130,63 @@
 </head>
 
 <body>
-	<fieldset>
-		<div>
-			<table border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<th><nobr>服务代码</nobr></th>
-					<td><input class="easyui-textbox" type="text" name="1" id="1"
-						value="${service.serviceId }" disabled="disabled">
-					</td>
-					<th><nobr>服务名称</nobr></th>
-					<td><input class="easyui-textbox" type="text" name="2" id="2"
-						value="${service.serviceName }" disabled="disabled">
-					</td>
-					<th><nobr>场景号</nobr></th>
-					<td><input class="easyui-textbox" type="text" name="3" id="3"
-						value="${operation.operationId }" disabled="disabled">
-					</td>
-					<th><nobr>场景名称</nobr></th>
-					<td><input class="easyui-textbox" type="text" name="4" id="4"
-						value="${operation.operationName }" disabled="disabled">
-					</td>
-				</tr>
-				<tr>
-					<th><nobr>映射关系列表</nobr></th>
-					<td></td>
-				</tr>
-			</table>
-		</div>
-		<div>
-			<table id="invokeList" style="height:200px; width:100%;">
-				<thead>
-					<tr>
-						<%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
-						<th data-options="field:'systemId', width:'10%'">系统id</th>
-						<th data-options="field:'systemChineseName', width:'15%'">系统名称</th>
-						<th data-options="field:'isStandard', width:'10%'"
-							formatter='ff.isStandardText'>标准</th>
-						<th data-options="field:'interfaceId', width:'15%'">接口id</th>
-						<th data-options="field:'interfaceName', width:'15%'">接口名称</th>
-						<th data-options="field:'type', width:'10%'"
-							formatter='ff.typeText'>类型</th>
-						<th data-options="field:'desc', width:'10%'">描述</th>
-						<th data-options="field:'remark', width:'10%'">备注</th>
-					</tr>
-				</thead>
-			</table>
+<fieldset>
+    <div>
+        <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>
+                    <nobr>服务代码</nobr>
+                </th>
+                <td><input class="easyui-textbox" type="text" name="1" id="1"
+                           value="${service.serviceId }" disabled="disabled">
+                </td>
+                <th>
+                    <nobr>服务名称</nobr>
+                </th>
+                <td><input class="easyui-textbox" type="text" name="2" id="2"
+                           value="${service.serviceName }" disabled="disabled">
+                </td>
+                <th>
+                    <nobr>场景号</nobr>
+                </th>
+                <td><input class="easyui-textbox" type="text" name="3" id="3"
+                           value="${operation.operationId }" disabled="disabled">
+                </td>
+                <th>
+                    <nobr>场景名称</nobr>
+                </th>
+                <td><input class="easyui-textbox" type="text" name="4" id="4"
+                           value="${operation.operationName }" disabled="disabled">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <nobr>映射关系列表</nobr>
+                </th>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <table id="invokeList" style="height:200px; width:100%;">
+            <thead>
+            <tr>
+                <%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
+                <th data-options="field:'systemId', width:'10%'">系统id</th>
+                <th data-options="field:'systemChineseName', width:'15%'">系统名称</th>
+                <th data-options="field:'isStandard', width:'10%'"
+                    formatter='ff.isStandardText'>标准
+                </th>
+                <th data-options="field:'interfaceId', width:'15%'">接口id</th>
+                <th data-options="field:'interfaceName', width:'15%'">接口名称</th>
+                <th data-options="field:'type', width:'10%'"
+                    formatter='ff.typeText'>类型
+                </th>
+                <th data-options="field:'desc', width:'10%'">描述</th>
+                <th data-options="field:'remark', width:'10%'">备注</th>
+            </tr>
+            </thead>
+        </table>
     </div>
     <%--<div id="tb" style="padding:5px;height:auto">
             <a href="javascript:void(0);" onclick="relateInterface()" class="easyui-linkbutton" iconCls="icon-save" plain="true">关联映射结果</a>

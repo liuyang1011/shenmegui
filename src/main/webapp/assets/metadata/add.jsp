@@ -8,23 +8,14 @@
 <html>
 <head>
     <base href="<%=basePath%>">
-
     <title>My JSP 'MyJsp.jsp' starting page</title>
-
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
     <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
     <meta http-equiv="description" content="This is my page">
-    <!--
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    -->
-
 </head>
-
-
 <body>
-
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">
     <table border="0" cellspacing="0" cellpadding="0">
         <input type="hidden" name="status" value="待审核"/>
@@ -42,13 +33,6 @@
         <%--<td><input class="easyui-textbox" type="text" name="metadataAlias"></td>--%>
         <%--</tr>--%>
         <tr>
-<<<<<<< HEAD
-=======
-            <th>别名</th>
-            <td><input class="easyui-textbox" type="text" name="metadataAlias" data-options="required:true, validType:['chineseB']"></td>
-        </tr>
-        <tr style="display:none;">
->>>>>>> TaiZhouSG
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataName"></td>
         </tr>
@@ -84,7 +68,6 @@
             <th>类型</th>
             <td><input class="easyui-textbox" type="text" name="type"></td>
         </tr>
-
         <tr>
             <th>长度</th>
             <td><input class="easyui-textbox" type="text" name="length"></td>
@@ -133,14 +116,13 @@
             },
             message: '元数据名称已存在'
         },
-<<<<<<< HEAD
         english: {// 验证英语
             validator: function (value) {
                 // return (/^[A-Za-z]+$/i.test(value)||/^\d+(\.\d+)?$/i.test(value));
                 return /^[a-zA-Z0-9_ ]{1,}$/.test(value);
             },
             message: '请输入英文字母、下划线或数字'
-=======
+        },
         uniqueName: {
             validator: function (value, param) {
                 var result;
@@ -157,7 +139,6 @@
                 return result;
             },
             message: '元数据中文名称已存在'
->>>>>>> TaiZhouSG
         }
     });
     if (typeof(processId) != 'undefined') {
