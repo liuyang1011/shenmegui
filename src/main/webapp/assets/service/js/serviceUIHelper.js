@@ -46,6 +46,9 @@ var serviceUIHelper = {
         }
     },
     "deleteServiceFormTree" : function removeService(){
+        if (!confirm("删除服务，该服务下所有场景都会被删除，确定要删除该服务吗？")) {
+            return;
+        }
         var node = $('.mxservicetree').tree('getSelected');
         var id = node.id;
         if(node.type=="service"){

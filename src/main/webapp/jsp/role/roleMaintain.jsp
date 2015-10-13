@@ -138,7 +138,7 @@
                     iconCls: 'icon-qxfp',
                     title: "权限分配",
 //                    url: "permissionEdit.jsp?id=" + row.id
-                     url: "permissionEdit2.jsp?id=" + row.id
+                     url: "permissionEdit3.jsp?id=" + row.id
                 })
 			  }else {
                 alert("请选中要分配权限的角色！");

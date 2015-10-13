@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -48,8 +49,10 @@
             <th><nobr> 创建结束日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
             <td align="right">
+                <shiro:hasPermission name="metadata-get">
                 <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
                 <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                </shiro:hasPermission>
             </td>
         </tr>
     </table>
@@ -116,8 +119,10 @@
                 }
             }
         });
-    })
-    var toolbar = [{
+    });
+    var toolbar = [
+         <shiro:hasPermission name="metadata-add">
+        {
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
@@ -130,7 +135,10 @@
                 url: "/assets/metadata/add.jsp"
             });
         }
-    }, {
+    },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="metadata-update">
+        {
         text: '修改',
         iconCls: 'icon-edit',
         handler: function () {
@@ -157,13 +165,19 @@
                 alert("请选中要修改的数据！");
             }
         }
-    }, {
+    },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="metadata-delete">
+        {
         text: '删除',
         iconCls: 'icon-remove',
         handler: function () {
             deleteObj();
         }
-    }, '-',
+    },
+        </shiro:hasPermission>
+        '-',
+        <shiro:hasPermission name="metadata-get">
         {
             text: '关联服务场景',
             iconCls: 'icon-cfp',
@@ -207,7 +221,10 @@
             handler: function () {
                 alert('移出')
             }
-        }*/, '-',
+        }*/,
+        </shiro:hasPermission>
+        '-',
+        <shiro:hasPermission name="metadata-update">
         {
             text: '导入',
             iconCls: 'icon-cfp',
@@ -220,6 +237,8 @@
                 });
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="metadata-get">
         {
             text: '导出XML',
             iconCls: 'icon-save',
@@ -240,6 +259,7 @@
                 });
             }
         }
+        </shiro:hasPermission>
 //        {
 //            text: '检出',
 //            iconCls: 'icon-qxfp',

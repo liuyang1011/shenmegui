@@ -20,6 +20,11 @@
             miniviewElement = mainElement.querySelector(".miniview"),
             nodePalette = mainElement.querySelector(".node-palette"),
             controls = mainElement.querySelector(".controls");
+        //var mainElement = document.getElementById("#jtk-demo-flowchart"),
+        //    canvasElement = document.getElementById(".jtk-demo-canvas"),
+        //    miniviewElement = document.getElementById(".miniview"),
+        //    nodePalette = document.getElementById(".node-palette"),
+        //    controls = document.getElementById(".controls");
 
         // Declare an instance of the Toolkit, and supply the functions we will use to get ids and types from nodes.
         var toolkit = jsPlumbToolkit.newInstance({
@@ -155,7 +160,6 @@
                         allowNodeLoopback:false, // do not allow connections from this port to any other port on the same node.
                         events: {
                             "dblclick": function () {
-                                console.log(arguments);
                             }
                         }
                     }

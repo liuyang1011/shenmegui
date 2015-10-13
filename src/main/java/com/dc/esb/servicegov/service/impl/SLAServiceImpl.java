@@ -75,6 +75,19 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
         return slaDAOImpl.getAllTemplateSLABy(params);
     }
 
+    /**
+     * 前端唯一性验证
+     * @param slaName
+     * @return
+     */
+    public boolean uniqueValid(String slaName) {
+        SLA entity = findUniqueBy("slaName",slaName);
+        if (entity != null) {
+            return false;
+        }
+        return true;
+    }
+
 //    public List<SLA> findBy(Map<String, String> params) {
 //        return slaDAOImpl.findBy(params);
 //    }

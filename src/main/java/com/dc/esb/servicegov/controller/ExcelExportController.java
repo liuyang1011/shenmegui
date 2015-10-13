@@ -100,7 +100,7 @@ public class ExcelExportController {
     /**
      * 导出复用率统计execl
      * */
-    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"exportStatistics-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportSystemReuserate", headers = "Accept=application/json")
     public
     @ResponseBody

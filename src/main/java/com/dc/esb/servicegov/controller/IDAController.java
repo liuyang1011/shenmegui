@@ -77,6 +77,19 @@ public class IDAController {
 		return true;
 	}
 
+	/**
+	 * ida的structName唯一性验证
+	 *
+	 * @param structName
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+	public
+	@ResponseBody
+	boolean uniqueValid(String structName,String headId) {
+		return idaService.uniqueValid(structName,headId);
+	}
+
 	@RequiresPermissions({"system-delete"})
 	@RequestMapping(method = RequestMethod.POST, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody

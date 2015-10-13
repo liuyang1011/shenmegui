@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.service.InterfaceService;
 import com.dc.esb.servicegov.service.SDAService;
 import com.dc.esb.servicegov.service.SystemService;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -144,6 +145,12 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
 
     public void setSdaService(SDAService sdaService){
     }
+
+    @Override
+    public void setOperationService(OperationServiceImpl operationService) {
+
+    }
+
 
     public static void main(String[] args) {
 

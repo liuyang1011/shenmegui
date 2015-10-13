@@ -617,7 +617,7 @@ public class InterfaceController {
         return JSONUtil.getInterface().convert(rows, Interface.simpleFields());
     }
 
-    @RequiresPermissions({"system-add"})
+    @RequiresPermissions({"system-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/release", headers = "Accept=application/json")
     public
     @ResponseBody

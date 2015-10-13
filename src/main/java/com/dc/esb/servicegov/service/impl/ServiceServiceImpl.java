@@ -124,4 +124,17 @@ public class ServiceServiceImpl extends AbstractBaseService<com.dc.esb.servicego
         super.deleteById(id);
     }
 
+    /**
+     * 前端唯一性验证
+     * @param serviceId
+     * @return
+     */
+    public boolean uniqueValid(String serviceId) {
+        com.dc.esb.servicegov.entity.Service entity = findUniqueBy("serviceId",serviceId);
+        if (entity != null) {
+            return false;
+        }
+        return true;
+    }
+
 }

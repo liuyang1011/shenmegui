@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"
 	import="java.sql.*" errorPage=""%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -123,8 +124,11 @@
 					<td><input class="easyui-textbox" type="text" id="desc" name="desc"
 						data-options="required:true,validType:['length']">
 					</td>
-					<td><a href="javascript:void(0)" onclick="releaseBatch()" class="easyui-linkbutton" plain="true"
+					<td>
+						<shiro:hasPermission name="version-add">
+						<a href="javascript:void(0)" onclick="releaseBatch()" class="easyui-linkbutton" plain="true"
 						iconCls="icon-save">发布</a>
+						</shiro:hasPermission>
 					</td>
 				</tr>
 				<tr>
@@ -147,10 +151,12 @@
 						<input class="easyui-textbox" id="operationName"/>
 					</td>
 					<td>
+						<shiro:hasPermission name="service-get">
 						<nobr>
-						<%--<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >清空</a>--%>
-						<a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
+							<a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
+							<a href="#" id="clean" onclick="$('#baseForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
 						</nobr>
+						</shiro:hasPermission>
 					</td>
 				</tr>
 		</table>

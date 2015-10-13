@@ -210,8 +210,9 @@ public class ServiceInvokeController {
             for (int j = 0; j < consumers.size(); j++) {
                 LinkedHashMap<String, Object> mapConsumer = (LinkedHashMap)consumers.get(j);
                 LinkedHashMap<String, Object> mapProvider = (LinkedHashMap)providers.get(i);
-                Long l = (Long)mapConsumer.get("invokeId");
-                String invokeId = "" + l;
+//                Long l = (Long)mapConsumer.get("invokeId");
+//                String invokeId = "" + l;
+                String invokeId = "" + mapConsumer.get("invokeId").toString();
                 String systemId = mapConsumer.get("systemId").toString();
                 String systemChineseName = mapConsumer.get("systemChineseName").toString();
                 String interfaceId = mapConsumer.get("interfaceId").toString();

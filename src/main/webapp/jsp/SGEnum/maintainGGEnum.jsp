@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -36,10 +37,12 @@
 				<td><input class="easyui-textbox" readonly="true" type="text" name="dataSource"
 					value="${master.dataSource}">
 				</td>
+				<shiro:hasPermission name="enum-get">
 				<td colspan="4" align="right"><nobr><a href="#"
 												 class="easyui-linkbutton" iconCls="icon-qxfp" onclick="showZdm()">主代码值</a></nobr>
 					&nbsp;&nbsp;
 				</td>
+				</shiro:hasPermission>
 
 			</tr>
 		</table>
@@ -133,6 +136,7 @@
 			}
 		};
 		var toolbar = [
+				<shiro:hasPermission name="enum-delete">
 				{
 					text : '删除',
 					iconCls : 'icon-remove',
@@ -153,6 +157,8 @@
 						}
 					}
 				},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-add">
 				{
 					text : '新增从代码',
 					iconCls : 'icon-add',
@@ -165,6 +171,8 @@
 						});
 					}
 				},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-get">
 				{
 					text : '从代码维护',
 					iconCls : 'icon-edit',
@@ -202,6 +210,8 @@
 						}
 					}
 				},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-get">
 				{
 					text : '枚举映射',
 					iconCls : 'icon-add',
@@ -226,8 +236,11 @@
 							});
 						}
 					}
-				} ];
+				}
+			</shiro:hasPermission>
+		];
 		var toolbar2 = [
+			<shiro:hasPermission name="enum-delete">
 				{
 					text : '删除',
 					iconCls : 'icon-remove',
@@ -248,7 +261,10 @@
 									});
 						}
 					}
-				}, {
+				},
+			</shiro:hasPermission>
+			<shiro:hasPermission name="enum-add">
+			{
 					text : '新增',
 					iconCls : 'icon-add',
 					handler : function() {
@@ -259,7 +275,9 @@
 							url : "/pages/SGEnum/form/elementAppandForm.jsp"
 						});
 					}
-				} ];
+				}
+			</shiro:hasPermission>
+		];
 		function showZdm() {
 			var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getByEnumId/'
 					+ "${master.id}"

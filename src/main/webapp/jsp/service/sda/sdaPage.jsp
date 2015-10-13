@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -348,13 +349,18 @@ var delIds = [];
     <div id="tb" style="padding:5px;height:auto">
     	<table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><a href="javascript:void(0)" onclick="moveUp()" class="easyui-linkbutton" iconCls="icon-up" plain="true">上移</a>&nbsp;&nbsp;
+    <td>
+		<shiro:hasPermission name="service-update">
+		<a href="javascript:void(0)" onclick="moveUp()" class="easyui-linkbutton" iconCls="icon-up" plain="true">上移</a>&nbsp;&nbsp;
     	<a href="javascript:void(0)" onclick="moveDown()" class="easyui-linkbutton" iconCls="icon-down" plain="true">下移</a>&nbsp;&nbsp;
 	    <!--
 	    <a href="javascript:void(0)" onclick="addNode()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>&nbsp;&nbsp;
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="service-get">
 	    <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton" iconCls="icon-save" plain="true">版本对比</a>
+		</shiro:hasPermission>
     </td>
     <td align="right"></td>
   </tr>

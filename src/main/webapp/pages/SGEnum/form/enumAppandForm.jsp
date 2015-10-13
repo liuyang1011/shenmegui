@@ -2,7 +2,7 @@
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<form class="formui">
+<form class="formui" id="form1">
 	<table border="0" cellspacing="0" cellpadding="0">
 
 		<tr>
@@ -150,6 +150,11 @@
 		}]
 	});
 	$('#saveBtn').click(function() {
+		//数据校验
+		if(!$("#form1").form('validate')){
+			alert("请正确输入必输项");
+			return false;
+		}
 		var anEnum = {};
 		anEnum.name = $('#_enumName').textbox('getValue');
 		anEnum.isStandard = $('#_isStandard').combobox('getValue');

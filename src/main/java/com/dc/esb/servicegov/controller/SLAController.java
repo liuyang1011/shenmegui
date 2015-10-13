@@ -147,6 +147,19 @@ public class SLAController {
 		}
 		return mv;
 	}
+
+	/**
+	 * slaName唯一性验证
+	 *
+	 * @param slaName
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
+	public
+	@ResponseBody
+	boolean uniqueValid(String slaName) {
+		return slaServiceImpl.uniqueValid(slaName);
+	}
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {
 		return "403";

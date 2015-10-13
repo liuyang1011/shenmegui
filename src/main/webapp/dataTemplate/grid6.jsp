@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -34,8 +35,10 @@
                 <input class="easyui-textbox" id="remark"/>
             </td>
             <td>
+                <shiro:hasPermission name="categoryWord-get">
                 <a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em"><nobr>查询</nobr></a>
                 <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                </shiro:hasPermission>
             </td>
         </tr>
     </table>
@@ -67,13 +70,17 @@
 <script type="text/javascript" src="/assets/categoryWord/js/categoryWordManager.js"></script>
 <script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
-    var toolbar = [{
+    var toolbar = [
+        <shiro:hasPermission name="categoryWord-add">
+        {
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
             $('#tt').edatagrid('addRow');
         }
-    },
+    } ,
+        </shiro:hasPermission>
+        <shiro:hasPermission name="categoryWord-delete">
         {
             text: '删除',
             iconCls: 'icon-remove',
@@ -83,6 +90,8 @@
                 $('#tt').edatagrid('deleteRow', rowIndex);
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name="categoryWord-update">
         {
             text: '保存',
             iconCls: 'icon-save',
@@ -125,7 +134,9 @@
                 }
                 editedRows = [];
             }
-        }];
+        }
+        </shiro:hasPermission>
+    ];
     var editedRows = [];
     $(function () {
         $.extend($.fn.validatebox.defaults.rules, {

@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://"
@@ -53,9 +54,9 @@
                 </th>
                 <td></td>
                 <th>
-
+                    <shiro:hasPermission name="exportStatistics-get">
                     <a href="#" id="clean" onclick="exportExcel()" class="easyui-linkbutton" iconCls="icon-excel-export" style="margin-left:1em" >导出EXCEL</a>
-
+                    </shiro:hasPermission>
                 </th>
                 <td></td>
                 <td></td>

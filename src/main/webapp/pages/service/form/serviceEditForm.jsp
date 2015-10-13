@@ -6,7 +6,10 @@
 </script>
 <form class="formui">
 <table border="0" cellspacing="0" cellpadding="0">
-
+  <tr>
+    <th>服务码</th>
+    <td><input class="easyui-textbox" type="text" id="serviceId" disabled="disabled"></td>
+  </tr>
   <tr>
     <th>服务名称</th>
     <td><input class="easyui-textbox" type="text" id="serviceName" data-options="required:true, validType:['chineseB']"></td>

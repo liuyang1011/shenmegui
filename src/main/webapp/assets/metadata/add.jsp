@@ -39,7 +39,7 @@
         </tr>
         <tr>
             <th>别名</th>
-            <td><input class="easyui-textbox" type="text" name="metadataAlias" data-options="required:true, validType:['chineseB']"></td>
+            <td><input class="easyui-textbox" type="text" name="metadataAlias" data-options="validType:['chineseB']"></td>
         </tr>
         <tr style="display:none;">
             <th>英文名称</th>

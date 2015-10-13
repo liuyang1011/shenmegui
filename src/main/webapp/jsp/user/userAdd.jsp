@@ -158,13 +158,14 @@
                             alert("保存失败");
                         }
                     });
+                    $('#w').window('close');
                 } else {
                     alert("该用户已经存在，放弃新增，或者选择修改");
                 }
             }
             userManager.checkUnique(data.id, checkUniqueCallBack);
 
-            $('#w').window('close');
+
         }else{
             alert("输入错误！用户代码只能是英文");
         }

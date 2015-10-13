@@ -103,6 +103,18 @@ public class RoleController {
     }
 
     @RequiresRoles({"admin"})
+    @RequestMapping(method = RequestMethod.GET, value = "/checkRoleNameUnique/name/{name}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean checkRoleNameUnique(@PathVariable("name") String name) {
+        List<Role> roles = roleServiceImpl.findBy("name",name);
+        if(roles.size() > 0){
+            return false;
+        }
+        return true;
+    }
+
+    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getRelation/{id}", headers = "Accept=application/json")
     public @ResponseBody
     boolean getRelation(@PathVariable String id) {
