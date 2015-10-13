@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.service.IdaService;
 import com.dc.esb.servicegov.service.InterfaceService;
 import com.dc.esb.servicegov.service.SystemService;
 import com.dc.esb.servicegov.service.impl.*;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -31,6 +32,7 @@ public class IdaHisController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceHisId", interfaceHisId);
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
 		List<IdaHIS> idaHISs = idaHISService.findBy(reqMap,"seq");
 		for(IdaHIS idaHIS:idaHISs){
 			idaHIS.setHeads(null);

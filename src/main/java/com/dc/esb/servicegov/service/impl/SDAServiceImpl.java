@@ -101,7 +101,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRes.setSdaId(UUID.randomUUID().toString());
         sdaRes.setStructName("response");
         sdaRes.setStructAlias("响应头");
-        sdaReq.setHeadId(headId);
+        sdaRes.setHeadId(headId);
         sdaRes.setSeq(2);
         sdaRes.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaRes);

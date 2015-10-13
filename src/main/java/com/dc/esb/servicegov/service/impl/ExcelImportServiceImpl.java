@@ -162,7 +162,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             boolean exists = (Boolean)list1.get(0);
             provider_invoke = (ServiceInvoke)list1.get(1);
             insertIDA(exists, inter, idainput, idaoutput);
-            insertSDA(existsOper, operation, service, sdainput, sdaoutput);
+            insertSDA(false, existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             if (headMap != null && headMap.size()>0) {
                 insertInterfaceHead(exists, inter, headMap,systemId);
@@ -585,7 +585,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
-    public Map<String, Object> getServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+    public Map<String, Object> getServiceInfo(Sheet tranSheet,IndexDO indexDO) {
 
         return null;
     }
@@ -754,7 +754,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         return resMap;
     }
 
-    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,IndexDO indexDO) {
         return null;
     }
     protected Map<String, Object> getInterfaceHead(Sheet sheet) {
@@ -1243,6 +1243,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             ida.set_parentId(null);
             ida.setStructName("root");
             ida.setStructAlias("根节点");
+            ida.setState(Constants.IDA_STATE_COMMON);
             idaDao.save(ida);
             rootId = ida.getId();
 
@@ -1252,6 +1253,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             ida.setStructName("request");
             ida.setStructAlias("请求头");
             ida.setSeq(0);
+            ida.setState(Constants.IDA_STATE_COMMON);
             idaDao.save(ida);
             requestId = ida.getId();
 
@@ -1261,6 +1263,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             ida.setSeq(1);
             ida.setStructName("response");
             ida.setStructAlias("响应头");
+            ida.setState(Constants.IDA_STATE_COMMON);
             idaDao.save(ida);
             responseId = ida.getId();
         }
@@ -1287,13 +1290,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             if (parentId != null) {
                 ida.set_parentId(parentId);
             }
-
+            ida.setState(Constants.IDA_STATE_COMMON);
             //包含bug，当节点end后，下一节点 不在request 或 response下 就会出现问题，
             if ("end".equalsIgnoreCase(ida.getRemark()) || "不映射".equalsIgnoreCase(ida.getRemark()) || ida.getStructName() == null || "".equals(ida.getStructName())) {
                 if ("end".equalsIgnoreCase(ida.getRemark())) {
                     parentId = null;
                 }
-                continue;
+//                continue;
+                ida.setState(Constants.IDA_STATE_DISABLE);
             }
             //ida.setArgType("input");
             idaDao.save(ida);
@@ -1326,12 +1330,13 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             if (parentId != null) {
                 ida.set_parentId(parentId);
             }
-
+            ida.setState(Constants.IDA_STATE_COMMON);
             if ("end".equalsIgnoreCase(ida.getRemark()) || "不映射".equalsIgnoreCase(ida.getRemark()) || ida.getStructName() == null || "".equals(ida.getStructName())) {
                 if ("end".equalsIgnoreCase(ida.getRemark())) {
                     parentId = null;
                 }
-                continue;
+//                continue;
+                ida.setState(Constants.IDA_STATE_DISABLE);
             }
             //ida.setArgType("output");
             idaDao.save(ida);
@@ -1343,7 +1348,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 
     }
 
-    protected void insertSDA(boolean existsOper, Operation operation, com.dc.esb.servicegov.entity.Service service, List<SDA> sdainput, List<SDA> sdaoutput) {
+    protected void insertSDA(boolean isStandard, boolean existsOper, Operation operation, com.dc.esb.servicegov.entity.Service service, List<SDA> sdainput, List<SDA> sdaoutput) {
         SDA sda = new SDA();
         String rootId = "", requestId = "", responseId = "";
 
@@ -1364,6 +1369,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             sda.setStructName("root");
             sda.setStructAlias("根节点");
             sda.setServiceId(service.getServiceId());
+            sda.setXpath("/");
             sdaDAO.save(sda);
             rootId = sda.getSdaId();
 
@@ -1375,6 +1381,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             sda.setStructAlias("请求头");
             sda.setServiceId(service.getServiceId());
             sda.setSeq(0);
+            sda.setXpath("/request");
             sdaDAO.save(sda);
             requestId = sda.getSdaId();
 
@@ -1386,12 +1393,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             sda.setStructName("response");
             sda.setStructAlias("响应头");
             sda.setServiceId(service.getServiceId());
+            sda.setXpath("/response");
             sdaDAO.save(sda);
             responseId = sda.getSdaId();
         }
 
 
         String parentId = null;
+        String parentPath = "/request";
         for (int i = 0; i < sdainput.size(); i++) {
             sda = sdainput.get(i);
 
@@ -1410,51 +1419,71 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 //				sda.setParentId(sdadb.getParentId());
 //				continue;
 //			}
-            sda.setSdaId(UUID.randomUUID().toString());
+//            sda.setSdaId(UUID.randomUUID().toString());
             sda.setOperationId(operation.getOperationId());
             sda.setParentId(requestId);
             sda.setServiceId(service.getServiceId());
-
-
+            sda.setXpath(parentPath + "/" + sda.getMetadataId());
             if (parentId != null) {
                 sda.setParentId(parentId);
             }
             if ("end".equalsIgnoreCase(sda.getRemark()) || "不映射".equalsIgnoreCase(sda.getRemark()) || sda.getStructName() == null || "".equals(sda.getStructName())) {
                 if ("end".equalsIgnoreCase(sda.getRemark())) {
                     parentId = null;
+                    parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
+                    sda.setXpath(parentPath+"/");
                 }
-                continue;
+//                continue;
+                sda.setServiceId(null);
+                sda.setOperationId(null);
+                sda.setParentId(null);
             }
             //sda.setArgType("input");
             sdaDAO.save(sda);
+            if(!isStandard){
+                Ida ida = idaDao.findUniqueBy("sdaId", sda.getSdaId());
+                ida.setXpath(sda.getXpath());
+                idaDao.save(ida);
+            }
             //包含子节点
             if ("start".equalsIgnoreCase(sda.getRemark())) {
                 parentId = sda.getSdaId();
+                parentPath = parentPath + "/" + sda.getMetadataId();
             }
         }
 
         parentId = null;
+        parentPath = "/response";
         for (int i = 0; i < sdaoutput.size(); i++) {
             sda = sdaoutput.get(i);
-            sda.setSdaId(UUID.randomUUID().toString());
+//            sda.setSdaId(UUID.randomUUID().toString());
             sda.setOperationId(operation.getOperationId());
             sda.setParentId(responseId);
             sda.setServiceId(service.getServiceId());
-
+            sda.setXpath(parentPath + "/" + sda.getMetadataId());
             if (parentId != null) {
                 sda.setParentId(parentId);
             }
             if ("end".equalsIgnoreCase(sda.getRemark()) || "不映射".equalsIgnoreCase(sda.getRemark()) || sda.getStructName() == null || "".equals(sda.getStructName())) {
                 if ("end".equalsIgnoreCase(sda.getRemark())) {
                     parentId = null;
+                    parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
+                    sda.setXpath(parentPath+"/");
                 }
-                continue;
+//                continue;
+                sda.setServiceId(null);
+                sda.setOperationId(null);
+                sda.setParentId(null);
             }
             //sda.setArgType("output");
             sdaDAO.save(sda);
+            Ida ida = idaDao.findUniqueBy("sdaId", sda.getSdaId());
+            ida.setXpath(sda.getXpath());
+            idaDao.save(ida);
             //包含子节点
             if ("start".equalsIgnoreCase(sda.getRemark())) {
                 parentId = sda.getSdaId();
+                parentPath = parentPath + "/" + sda.getMetadataId();
             }
         }
     }

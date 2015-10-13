@@ -113,8 +113,8 @@ public class StatisticsServiceImpl implements StatisticsService{
             vo.setResueOperationNum(String.valueOf(operationReuseNum));//复用场景数
 //            long operationInvokeNum = getOperationInvokeCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
 //            vo.setOperationInvokeNum(String.valueOf(operationInvokeNum));//场景消费者系统数
-//            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
-//            vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
+            long serviceNum = getServiceRelaCount(String.valueOf(strs[0]), String.valueOf(strs[1]));
+            vo.setServiceNum(String.valueOf(serviceNum));//关联服务数
 ////            long sum = getServiceInvokeCount( String.valueOf(strs[1]));//提供者或消费者被调用总数
 //            long sum = operationDAO.getAllCount();//场景总数
 //            vo.setSum(String.valueOf(sum));

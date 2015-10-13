@@ -102,6 +102,7 @@
                         data.headId = "${param.headId}";
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
+                        data.state = "0";
                         reqAry.push(data);
                     }
                 }
@@ -134,6 +135,7 @@
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
                         data.id = row.id;
+                        data.state = "0";
                         reqAry.push(data);
                     }
                 }

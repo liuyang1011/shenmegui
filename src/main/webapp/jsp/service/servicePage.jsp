@@ -170,7 +170,7 @@
     $('#subtab').tabs('update', {
         tab: tabItem,
         options: {
-            content: ' <iframe id="serviceInfo"  scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(tabUrl)) + '"  style="width:100%;height:99%;"></iframe>',
+            content: ' <iframe id="serviceInfo" name="serviceInfo"  scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(tabUrl)) + '"  style="width:100%;height:99%;"></iframe>',
             fit:true
         }
     });

@@ -14,7 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-   <table title="定义接口" class="easyui-treegrid" id="sdaHisTree" style=" width:auto;"
+   <table title="定义接口" class="easyui-treegrid" id="sdaHisTree" style=" width:100%;"
 			data-options="
 				iconCls: 'icon-ok',
 				rownumbers: true,

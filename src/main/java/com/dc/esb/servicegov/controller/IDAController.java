@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.service.impl.IdaServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -57,7 +58,8 @@ public class IDAController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceId", interfaceId);
-		List<Ida> idas = idaService.findBy(reqMap,"seq");
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
+		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		for(Ida ida:idas){
 			ida.setHeads(null);
 		}
@@ -140,6 +142,7 @@ public class IDAController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceId", interfaceId);
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
 		List<IdaServiceImpl.IdaMappingBean> list = idaService.findIdaMappingBy(reqMap, "seq", serviceId, operationId);
 //		for(Ida ida:idas){
 //			ida.setHeads(null);

@@ -60,6 +60,13 @@ public class IdaHIS {
 
 	@Column(name = "REMARK",length = 1024)
 	private String remark;
+
+	@Column(name = "sdaId")
+	private String sdaId;
+
+	@Column(name = "state")
+	private String state;//状态，0：普通（可以在页面看到），1：空白（文件导出使用）
+
 	public IdaHIS(){
 
 	}
@@ -83,6 +90,8 @@ public class IdaHIS {
 		this.remark = ida.getRemark();
 //		this.interObj = ida.getInterObj();
 		this.heads = ida.getHeads();
+		this.sdaId = ida.getSdaId();
+		this.state = ida.getState();
 	}
 
 	//    @Column(name = "ARG_TYPE")
@@ -247,5 +256,21 @@ public class IdaHIS {
 
 	public void setAutoId(String autoId) {
 		this.autoId = autoId;
+	}
+
+	public String getSdaId() {
+		return sdaId;
+	}
+
+	public void setSdaId(String sdaId) {
+		this.sdaId = sdaId;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 }

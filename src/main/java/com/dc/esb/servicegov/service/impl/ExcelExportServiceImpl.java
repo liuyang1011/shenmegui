@@ -304,38 +304,46 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     params.put("operationId", si.getOperationId());
                     Operation operation = operationDAO.findUniqureBy(params);
                     setCellValue(row1.createCell(8), commonStyle, operation.getOperationName()+"("+ operation.getOperationId() +")");//服务操作名称
-                    setCellValue(row2.createCell(8), commonStyle, operation.getOperationDesc());//服务操作描述
+                    setCellValue(row3.createCell(8), commonStyle, operation.getOperationDesc());//服务操作描述
                 }
             }
 
-            //获取request元数据
+            Counter counter = new Counter(6);
             List<Ida> reqListIda = getIdaByParentName(si.getInterfaceId(), "request");
             List<Ida> resListIda = getIdaByParentName(si.getInterfaceId(), "response");
             if(Constants.INVOKE_TYPE_STANDARD_Y.equals(si.getIsStandard())){//如果是标准接口，不输出ida
                 reqListIda = new ArrayList<Ida>();
                 resListIda = new ArrayList<Ida>();
             }
-            List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
-            List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
-            Counter counter = new Counter(6);
-            for (int i = 0; i < reqListSDA.size(); i++) {
-                fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
-            }
-        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
             for(int i = 0; i < reqListIda.size(); i++){
-                fillIdaNewRow(sheet, counter, reqListIda.get(i));
+                fillMappRow(sheet, counter, reqListIda.get(i), si.getServiceId(), si.getOperationId());
             }
-        }
-            // sheet.createRow(8+reqListSDA.size());
-            counter.increment();
-            for (int i = 0; i < resListSDA.size(); i++) {
-                fillMappRow(sheet, counter, resListSDA.get(i), resListIda);
+            counter.increment();//分隔行
+            for(int i = 0; i < resListIda.size(); i++){
+                fillMappRow(sheet, counter, resListIda.get(i), si.getServiceId(), si.getOperationId());
             }
-            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
-                for(int i = 0; i < resListIda.size(); i++){
-                    fillIdaNewRow(sheet, counter, resListIda.get(i));
-                }
-            }
+//
+//            List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
+//            List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
+//
+//            for (int i = 0; i < reqListSDA.size(); i++) {
+//                fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
+//            }
+//        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
+//            for(int i = 0; i < reqListIda.size(); i++){
+//                fillIdaNewRow(sheet, counter, reqListIda.get(i));
+//            }
+//        }
+//            // sheet.createRow(8+reqListSDA.size());
+//            counter.increment();
+//            for (int i = 0; i < resListSDA.size(); i++) {
+//                fillMappRow(sheet, counter, resListSDA.get(i), resListIda);
+//            }
+//            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
+//                for(int i = 0; i < resListIda.size(); i++){
+//                    fillIdaNewRow(sheet, counter, resListIda.get(i));
+//                }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");
@@ -382,51 +390,52 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             fillSDA(sheet, counter.getCount(), sda, commonStyle);
         }
     }
-    public void fillMappRow(HSSFSheet sheet, Counter counter, Ida ida, List<SDA> sdaList) {//根据左侧SDA顺序为准填充
-//        sheet.createRow(sheet.getLastRowNum() + 1);
-//        counter.increment();
-//        sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
-//
-//        SDA sda = judgeMetadataId(ida.getMetadataId(), sdaList);
-//        if (sda != null) {
-//            fillSDA(sheet, counter.getCount(), sda, commonStyle);
-//            sdaList.remove(sda);
-//        } else {
-//            String[] values = {"", "", "", "", "", ""};
-//            setRowValue(sheet.getRow(counter.getCount()), commonStyle, values);
-//        }
-//        if ((!StringUtils.isEmpty(sda.getType()) && (sda.getType().equalsIgnoreCase("array") || sda.getType().equalsIgnoreCase("struct"))) ||
-//                (!StringUtils.isEmpty(sda.getLength()) && (sda.getLength().equalsIgnoreCase("array") || sda.getLength().equalsIgnoreCase("struct")))) {
-//            sda.setRemark("start");
-//            fillSDA(sheet, counter.getCount(), sda, arrayStyle);
-//
-//            List<SDA> childList = getSDAChildren(sda.getSdaId());
-//            for (int i = 0; i < childList.size(); i++) {
-//                fillMappRow(sheet, counter, childList.get(i), idaList);
-//            }
-//            sheet.createRow(sheet.getLastRowNum() + 1);
-//            counter.increment();
-//            sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
-//            sda.setRemark("end");
-//            fillSDA(sheet, counter.getCount(), sda, arrayStyle);
-//            if (ida != null) {
-//                fillIda(sheet, counter.getCount(), ida);
-//            } else {
-//                String[] values = {"", "", "", "", "", "不映射"};
-//                setRowValue(sheet.getRow(counter.getCount()), commonStyle, values);
-//            }
-//        }
-//        else{
-//            fillSDA(sheet, counter.getCount(), sda, commonStyle);
-//        }
+    public void fillMappRow(HSSFSheet sheet, Counter counter, Ida ida, String serviceId, String operationId) {
+        if(ida != null){
+            sheet.createRow(sheet.getLastRowNum() + 1);
+            counter.increment();
+            sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+
+            fillIda(sheet, counter.getCount(), ida);
+
+            String xpath = ida.getXpath();
+            SDA sda = new SDA();
+            if(StringUtils.isNotEmpty(xpath)){
+                if(xpath.endsWith("/")){
+                    sda = sdaDao.findUniqueBy("sdaId", ida.getSdaId());
+                }else{
+                    String hql = " from SDA where serviceId = ? and operationId = ? and xpath =?";
+                    List<SDA> sdas = sdaDao.find(hql, serviceId, operationId, ida.getXpath());
+                    if(sdas.size() > 0){
+                        sda = sdas.get(0);
+                    }
+                }
+
+            }
+            fillSDA(sheet, counter.getCount(), sda, commonStyle);
+        }
+
+
     }
 
     public void fillSDA(HSSFSheet sheet, int index, SDA sda, HSSFCellStyle commonStyle) {
+        if(sda == null){
+            sda = new SDA();
+        }
         HSSFRow row = sheet.getRow(index);
+        //TZB数据类型和长度合并
+        String typeLength = (StringUtils.isEmpty(sda.getType()) ? "" : sda.getType()) + "(" + (StringUtils.isEmpty(sda.getLength()) ? "" : sda.getLength()) + ")";
+        if(StringUtils.isEmpty(sda.getType()) && StringUtils.isEmpty(sda.getLength())){
+            typeLength = "";
+        }
+        if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+            typeLength = sda.getType();
+            commonStyle = arrayStyle;
+        }
         setCellValue(row.createCell(7), commonStyle, sda.getStructName()); //英文名称
         setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
-        //TZB数据类型和长度合并
-        setCellValue(row.createCell(9), commonStyle, sda.getType() + "("+sda.getLength()+")");//数据类型/长度
+
+        setCellValue(row.createCell(9), commonStyle, typeLength);//数据类型/长度
 //        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
         setCellValue(row.createCell(10), commonStyle, sda.getConstraint());//约束条件
         setCellValue(row.createCell(11), commonStyle, sda.getRequired());//是否必输
@@ -437,12 +446,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         HSSFRow row = sheet.getRow(index);
         String[]  values = {ida.getStructName(), ida.getStructAlias(), ida.getType(), ida.getLength(), ida.getRequired(), ida.getRemark()};
         setRowValue(row, commonStyle, values);
-//        row.createCell(0).setCellValue(ida.getStructName());//英文名称
-//        row.createCell(1).setCellValue(ida.getStructAlias());//中文名称
-//        row.createCell(2).setCellValue(ida.getType());//类型
-//        row.createCell(3).setCellValue(ida.getLength());//长度
-//        row.createCell(4).setCellValue(ida.getRequired());//是否必输
-//        row.createCell(5).setCellValue(ida.getRemark());//备注
     }
     public void fillIdaNewRow(HSSFSheet sheet, Counter counter, Ida ida){
         sheet.createRow(sheet.getLastRowNum() + 1);
