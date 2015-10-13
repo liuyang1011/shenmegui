@@ -85,10 +85,11 @@ function selectOperation(){
 
 function formatConsole(val,row,index){
 	var s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="sdaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SDAHis</a>&nbsp;&nbsp;\
-<!--		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="slaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SLAHis</a>&nbsp;&nbsp;\
-<!--		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="olaList(\''+row.autoId+'\')"  href="javascript:void(0)" >OLAHis</a>&nbsp;&nbsp;\
 			';
 	return s;
+
+<!--		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="slaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SLAHis</a>&nbsp;&nbsp;\ -->
+<!--		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="olaList(\''+row.autoId+'\')"  href="javascript:void(0)" >OLAHis</a>&nbsp;&nbsp;\ -->
 }
 function operation(val,row,index){
 	var s = "";
@@ -213,8 +214,8 @@ var formatter = {
 				<%--<th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>--%>
 				<th data-options="field:'optDate',width:120">更新时间</th>
 				<th data-options="field:'optUser',width:50">更新用户</th>
-				<th data-options="field:' ',formatter:formatConsole,width:190">数据</th>
-				<th data-options="field:'  ',formatter:operation,width:190">操作</th>
+				<th data-options="field:' ',formatter:formatConsole,width:120">数据</th>
+				<th data-options="field:'  ',formatter:operation,width:120">操作</th>
 			</tr>
 		</thead>
 	</table>
