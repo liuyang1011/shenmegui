@@ -332,6 +332,8 @@ function chooseInterface(oldListId, newListId, type) {
             dataType: "json",
             data: {"systemId": $(this).val(),"type":type},
             success: function (data) {
+                //台州只有提供方接口
+                if(newListId == 'consumer') data = false;
                 //如果系统没有接口，直接转移
                 if (!data) {
 //		     		$("#"+oldListId+" option[value="+value+"]").remove();

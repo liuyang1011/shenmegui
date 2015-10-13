@@ -6,6 +6,7 @@ import com.dc.esb.servicegov.export.bean.ExportBean;
 import com.dc.esb.servicegov.service.InterfaceService;
 import com.dc.esb.servicegov.service.SDAService;
 import com.dc.esb.servicegov.service.SystemService;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 
 import java.io.File;
 import java.util.List;
@@ -33,5 +34,7 @@ public interface IMetadataConfigGenerator {
     public void setInterfaceService(InterfaceService interfaceService);
 
     public void setSdaService(SDAService sdaService);
+
+    public void setOperationService(OperationServiceImpl operationService);
 
 }

@@ -182,7 +182,11 @@
                             dataType: "json",
                             data: JSON.stringify(node.systemId),
                             success: function (result) {
-                                $('#tg').datagrid("reload");
+                                if(result){
+                                    $('#tg').datagrid("reload");
+                                }else{
+                                    alert("系统有下挂接口，无法删除");
+                                }
                             },
                             complete: function (responce) {
                                 var resText = responce.responseText;

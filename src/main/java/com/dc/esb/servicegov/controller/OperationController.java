@@ -507,7 +507,7 @@ public class OperationController {
             params.put("serviceId",serviceId);
             params.put("operationId",operationId);
             Operation operation = operationServiceImpl.findUniqueBy(params);
-            if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT)){
+            if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT) || operation.getState().equals(Constants.Operation.OPT_STATE_REVISE)){
                 operation.setState(Constants.Operation.OPT_STATE_REQUIRE_UNAUDIT);
                 operationServiceImpl.save(operation);
             }

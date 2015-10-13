@@ -163,7 +163,7 @@ public class ExportUtil {
                         map.put("serviceId",serviceId);
                         map.put("metadataId",ida.getMetadataId());
                         map.put("operationId",operationId);
-                        SDA sda = sdaService.findUniqueBy(map);
+                        SDA sda = ((List<SDA>)sdaService.findBy(map)).get(0);
 
                         root.addComment(ida.getStructAlias());
                         Element ele = root.addElement(prefix + "item");
@@ -204,7 +204,7 @@ public class ExportUtil {
                         map.put("serviceId",serviceId);
                         map.put("metadataId",ida.getMetadataId());
                         map.put("operationId",operationId);
-                        SDA sda = sdaService.findUniqueBy(map);
+                        SDA sda = ((List<SDA>)sdaService.findBy(map)).get(0);
                         root.addComment(ida.getStructAlias());
                         Element ele = root.addElement(prefix + "item");
                         if(null != sda.getConstraint()){
@@ -260,6 +260,75 @@ public class ExportUtil {
         String xml = doc.asXML();
 
         return xml.substring(xml.indexOf("<BODY>"));
+    }
+
+    public static String generatorIdentifyOutXML(String systemAb,String interfaceName,String ecode, String serviceId, String operationId) {
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+
+        Element element = null;
+        String body = "";
+
+        element = doc.addElement("system");
+        element.addComment(interfaceName);
+        element.addAttribute("id", systemAb);
+        element.addAttribute("adapter-id",systemAb+"Adapter");
+
+        Element ele1 = element.addElement("service");
+        ele1.addAttribute("id", serviceId + operationId);
+        ele1.addAttribute("mapping-id",ecode);
+        ele1.addAttribute("package-id",ecode);
+
+        body = "<system";
+
+        String xml = doc.asXML();
+
+        return xml.substring(xml.indexOf(body));
+    }
+
+    public static String generatorIdentifyInXML(String systemAb,String serviceName,String systemId, String serviceId, String operationId) {
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+
+        Element element = null;
+        String body = "";
+
+        element = doc.addElement("channel-config");
+        element.addAttribute("channel", systemAb);
+        element.addAttribute("encoding", "UTF-8");
+
+        Element ele1 = element.addElement("message-head");
+        ele1.addAttribute("position", "0");
+        ele1.addAttribute("length", "0");
+        ele1.addAttribute("remove", "false");
+
+        element.addComment(serviceName);
+        Element ele2 = element.addElement("tran");
+        ele2.addAttribute("id", serviceId + operationId);
+        ele2.addAttribute("mapping-id","");
+        ele2.addAttribute("service-id",serviceId+operationId);
+        ele2.addAttribute("encoding","UTF-8");
+
+        Element ele3 = ele2.addElement("condition");
+        ele3.addAttribute("position", "SYS_HEAD.SERVICE_CODE");
+        ele3.addAttribute("length", "11");
+        ele3.addAttribute("value", serviceId);
+
+        Element ele4 = ele2.addElement("condition");
+        ele4.addAttribute("position", "SYS_HEAD.SERVICE_SCENE");
+        ele4.addAttribute("length", "2");
+        ele4.addAttribute("value", operationId);
+
+        Element ele5 = ele2.addElement("condition");
+        ele5.addAttribute("position", "SYS_HEAD.CONSUMER_ID");
+        ele5.addAttribute("length", "6");
+        ele5.addAttribute("value", systemId);
+
+        body = "<channel-config";
+
+        String xml = doc.asXML();
+
+        return xml.substring(xml.indexOf(body));
     }
 
     public static String generatorMappingXML(List<Ida> idas,String type,String systemAb,SDAService sdaService, String serviceId, String operationId) {

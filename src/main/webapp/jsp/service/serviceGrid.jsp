@@ -352,8 +352,8 @@
                 var items = $('#operationList').datagrid('getSelections');
                 if (items != null && items.length > 0) {
                     for(var i = 0; i < items.length; i++){
-                        if(items[i].optState != 0){
-                            alert("只有服务定义状态的服务能提交审核");
+                        if(items[i].optState != 0 && items[i].optState != 7){
+                            alert("只有服务定义状态和修订状态的服务能提交审核");
                             return;
                         }
                     }
