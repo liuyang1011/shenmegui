@@ -22,25 +22,25 @@
     <script type="text/javascript" src="/resources/js/ui.js"></script>
     <script type="text/javascript">
         function compare(){
-            var versionId1 =  $("#version1").combobox("getValue");
-            var versionId2 =  $("#version2").combobox("getValue");
-            if(versionId1 == versionId2){
+            var autoId1 =  $("#version1").combobox("getValue");
+            var autoId2 =  $("#version2").combobox("getValue");
+            if(autoId1 == autoId2){
                 alert("两个版本相同！");
             }else{
                 var type=0;
-                if(versionId1 != "" && versionId2 != ""){
+                if(autoId1 != "" && autoId2 != ""){
                     type = 1;
                 }
-                if(versionId1 != "" && versionId2 == ""){
+                if(autoId1 != "" && autoId2 == ""){
                     type = 2;
                 }
                 if(type == 0){
-                    versionId1 = "${param.versionId1}";
+                    autoId1 = "${param.autoId1}";
                 }
                 if(type == 2){
-                    versionId2 = "${param.versionId1}";
+                    autoId2 = "${param.autoId2}";
                 }
-                var urlPath = "/version/getOperationDiff?_t="+ new Date().getTime()+"&type=" + type +"&versionId1="+versionId1+"&versionId2="+versionId2;
+                var urlPath = "/version/getOperationDiff?type=" + type +"&versionId=${param.versionId}&autoId1="+autoId1+"&autoId2="+autoId2 + "&_t=" + new Date().getTime();
                 $("#sdaHisTree").treegrid({url:urlPath});
             }
 
@@ -55,11 +55,11 @@
                    class="easyui-combobox"
                    data-options="
                        panelHeight:'300px',
-						url:'/version/getVersions?versionId=${param.versionId1}',
+						url:'/version/getVersions?versionId=${param.versionId}',
 				 		 method:'get',
 				 		 valueField: 'autoId',
 				 		 textField: 'code',
-				 		 value:'',
+				 		 value:'${param.autoId1}',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
 						}
@@ -70,11 +70,11 @@
                    class="easyui-combobox"
                    data-options="
                        panelHeight:'300px',
-						url:'/version/getVersions?versionId=${param.versionId1}',
+						url:'/version/getVersions?versionId=${param.versionId}',
 				 		 method:'get',
 				 		 valueField: 'autoId',
 				 		 textField: 'code',
-				 		 value:'${param.versionId2}',
+				 		 value:'${param.autoId2}',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
 						}
@@ -105,7 +105,7 @@
 				collapsible: true,
 				fitColumns: false,
 				method : 'get',
-				url: '/version/getOperationDiff?versionId1=${param.versionId1}&versionId2=${param.versionId2}&type=${param.type}&_t='+ new Date().getTime(),
+				url: '/version/getOperationDiff?versionId=${param.versionId}&autoId1=${param.autoId1}&autoId2=${param.autoId2}&type=${param.type}&_t='+ new Date().getTime(),
 				idField: 'id',
 				treeField: 'text',
 				 rowStyler:function(row, index){

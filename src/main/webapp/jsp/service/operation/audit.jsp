@@ -156,7 +156,7 @@
 				dataType: "json",
 				success: function (data) {
 					if(data.autoId != null){
-						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1="+versionId+"&type=0&versionId2="+data.autoId;
+						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId="+  versionId + "&versionId1=&type=0&versionId2="+data.autoId;
 						$("#dlg").dialog({
                                 title: '版本对比',
                                 left:'50px',

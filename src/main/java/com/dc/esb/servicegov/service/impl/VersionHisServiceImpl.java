@@ -280,4 +280,14 @@ public class VersionHisServiceImpl  extends AbstractBaseService<VersionHis, Stri
 	public HibernateDAO<VersionHis, String> getDAO() {
 		return hisDaoImpl;
 	}
+
+	public VersionHis getPreVersion(String autoId){
+		VersionHis  his = hisDaoImpl.findUniqueBy("autoId", autoId);
+		String hql = " from " + VersionHis.class.getName() + " where code < ? and id = ?  order by code desc";
+		List<VersionHis> list = hisDaoImpl.find(hql, his.getCode(), his.getId());
+		if(list.size() > 0){
+			return list.get(0);
+		}
+		return new VersionHis();
+	}
 }

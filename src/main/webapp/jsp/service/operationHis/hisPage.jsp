@@ -87,29 +87,30 @@ function formatConsole(val,row,index){
 	var s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="sdaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SDAHis</a>&nbsp;&nbsp;\
 			';
 	return s;
+	//		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="slaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SLAHis</a>&nbsp;&nbsp;\
+	//<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="olaList(\''+row.autoId+'\')"  href="javascript:void(0)" >OLAHis</a>&nbsp;&nbsp;\
 
-<!--		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="slaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SLAHis</a>&nbsp;&nbsp;\ -->
-<!--		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="olaList(\''+row.autoId+'\')"  href="javascript:void(0)" >OLAHis</a>&nbsp;&nbsp;\ -->
+
 }
 function operation(val,row,index){
 	var s = "";
 	try{
-		s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="comparePage(\''+row.versionHis.id+'\')"  href="javascript:void(0)" >版本对比</a>&nbsp;&nbsp;';
+		s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="comparePage(\''+row.versionHis.autoId+'\')"  href="javascript:void(0)" >版本对比</a>&nbsp;&nbsp;';
 	}catch(exception){
 	}
 	return s;
 }
 //弹出对比页面
-function comparePage(versionId){
-	alert(versionId);
+function comparePage(autoId){
+	alert(autoId)
 	$.ajax({
 		type: "get",
 		async: false,
-		url: "/versionHis/judgeVersionHis?versionId="+versionId,
+		url: "/versionHis/judgeVersionPre?autoId="+autoId,
 		dataType: "json",
 		success: function (data) {
 			if(data.autoId != null){
-				var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1="+versionId+"&type=0&versionId2="+data.autoId;
+				var urlPath = "/jsp/version/sdaComparePage.jsp?autoId1="+autoId+"&type=1&autoId2="+data.autoId+"&versionId="+ data.id;
 				$("#dlg").dialog({
 					title: '版本对比',
 					left:'50px',
@@ -120,7 +121,7 @@ function comparePage(versionId){
 					modal: true
 				});
 			}else{
-				alert("没有历史版本可以对比!");
+				alert("该版本第一次发布，所有数据均为新增!");
 			}
 		}
 	});

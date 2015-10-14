@@ -1477,9 +1477,11 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
             //sda.setArgType("output");
             sdaDAO.save(sda);
-            Ida ida = idaDao.findUniqueBy("sdaId", sda.getSdaId());
-            ida.setXpath(sda.getXpath());
-            idaDao.save(ida);
+            if(!isStandard){
+                Ida ida = idaDao.findUniqueBy("sdaId", sda.getSdaId());
+                ida.setXpath(sda.getXpath());
+                idaDao.save(ida);
+            }
             //包含子节点
             if ("start".equalsIgnoreCase(sda.getRemark())) {
                 parentId = sda.getSdaId();
@@ -1847,7 +1849,6 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                                 sda.setLength(length);
                             }
                         }
-                        sda.setStructAlias(cell);
                     }
                     sdaDAO.save(sda);
                     return sda;
