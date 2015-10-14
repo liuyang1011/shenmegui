@@ -258,7 +258,6 @@ var delIds = [];
 							title: '版本对比',
 							left:'50px',
 							width: 1000,
-							height:auto,
 							closed: false,
 							cache: false,
 							href: urlPath,
