@@ -117,8 +117,12 @@
     <div id="serviceTreeAddBtn" data-options="iconCls:'icon-add'">新增</div>
     <div id="serviceTreeEditBtn" data-options="iconCls:'icon-edit'">编辑</div>
     <div id="serviceTreeDeleteBtn" data-options="iconCls:'icon-remove'">删除</div>
+    <shiro:hasPermission name="exportPdf-get">
     <div id="servicePdf" data-options="iconCls:'icon-excel-export'">导出白皮书PDF</div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="excelExport-get">
     <div id="serviceExcel" data-options="iconCls:'icon-excel-export'">导出字段映射Excel</div>
+    </shiro:hasPermission>
     <div id="serviceView" data-options="iconCls:'icon-excel-export'">导出服务视图Excel</div>
 </div>
 
