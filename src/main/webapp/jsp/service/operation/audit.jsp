@@ -19,6 +19,7 @@
     <script type="text/javascript" src="resources/js/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
+    <script type="text/javascript" src="/js/version/versionManager.js"></script>
 </head>
 <body>
 <fieldset>
@@ -90,6 +91,7 @@
                 title: '审核意见-' + text,
                 width: 500,
                 height: 300,
+                left:300,
                 closed: false,
                 cache: false,
                 href: '/jsp/service/operation/audit_remark.jsp?type=' + type,
@@ -156,11 +158,12 @@
 				dataType: "json",
 				success: function (data) {
 					if(data.autoId != null){
-						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId="+  versionId + "&versionId1=&type=0&versionId2="+data.autoId;
+						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId="+  versionId + "&autoId1=&type=0&autoId2="+data.autoId;
 						$("#dlg").dialog({
                                 title: '版本对比',
                                 left:'50px',
                                 width: 1000,
+                                height:'auto',
                                 closed: false,
                                 cache: false,
                                 href: urlPath,

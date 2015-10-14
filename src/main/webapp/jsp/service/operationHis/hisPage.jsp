@@ -20,6 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
 
 <script type="text/javascript" src="/resources/js/ui.js"></script>
+	  <script type="text/javascript" src="/js/version/versionManager.js"></script>
 <script type="text/javascript">
 var serviceId = "${service.serviceId}";
 var operationId = "${operation.operationId}";
@@ -102,7 +103,6 @@ function operation(val,row,index){
 }
 //弹出对比页面
 function comparePage(autoId){
-	alert(autoId)
 	$.ajax({
 		type: "get",
 		async: false,
@@ -115,13 +115,14 @@ function comparePage(autoId){
 					title: '版本对比',
 					left:'50px',
 					width: 1000,
+					height:'auto',
 					closed: false,
 					cache: false,
 					href: urlPath,
 					modal: true
 				});
 			}else{
-				alert("该版本第一次发布，所有数据均为新增!");
+				alert("该版本为初始版本!");
 			}
 		}
 	});

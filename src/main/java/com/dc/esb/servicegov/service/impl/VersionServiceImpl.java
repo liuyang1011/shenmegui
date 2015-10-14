@@ -156,7 +156,7 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 				operationHis1 = operationHisDao.findUniqueBy("versionHisId", version1.getAutoId());
 				sdaHisList1 = sdaHisDao.findBy("operationHisId", operationHis1.getAutoId());
 			}
-			Operation operation = operationDao.findUniqueBy("versionId", autoId2);
+			Operation operation = operationDao.findUniqueBy("versionId", versionId);
 			operationHis2 =  new OperationHis(operation);
 			String sdaHql = " from " + SDA.class.getName() + " where serviceId=? and operationId=?";
 			List<SDA> sdaList = sdaDao.find(sdaHql, operation.getServiceId(), operation.getOperationId());
