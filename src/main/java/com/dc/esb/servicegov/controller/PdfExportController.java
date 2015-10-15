@@ -1,6 +1,8 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.PdfServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.vo.OperationPKVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +27,9 @@ public class PdfExportController {
     protected Log log = LogFactory.getLog(getClass());
 
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     PdfServiceImpl pfdServiceImpl;
 
     @InitBinder
@@ -38,6 +43,7 @@ public class PdfExportController {
     @ResponseBody
     boolean exportService(HttpServletRequest request, HttpServletResponse response,
                           String id, String type) {
+        OperationLog operationLog = systemLogService.record("服务白皮书","导出PDF","从服务树导出，节点类型：" + type + "; 节点ID:" + id);
         InputStream in = null;
         OutputStream out = null;
         File pdfDir = new File("tmppdf");
@@ -89,6 +95,7 @@ public class PdfExportController {
             log.error(e, e);
         }
         deleteFile(pdfDir);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -97,6 +104,8 @@ public class PdfExportController {
     public
     @ResponseBody
     boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
+        OperationLog operationLog = systemLogService.record("服务白皮书","导出PDF","根据选中场景节点导出，数量:" + pkvo.getPks().size());
+
         InputStream in = null;
         OutputStream out = null;
         File pdfDir = new File("tmppdf");
@@ -148,6 +157,8 @@ public class PdfExportController {
             log.error(e, e);
         }
         deleteFile(pdfDir);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
     public boolean deleteFile(File file) {

@@ -35,6 +35,9 @@ public class ServiceLinkController {
     private static final Log log = LogFactory.getLog(ServiceLinkController.class);
 
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     private ServiceInvokeServiceImpl serviceInvokeService;
     @Autowired
     private InvokeConnectionServiceImpl invokeConnectionService;
@@ -519,6 +522,8 @@ public class ServiceLinkController {
     public
     @ResponseBody
     boolean save(@RequestBody InvokeConnection[] connections) {
+        OperationLog operationLog = systemLogService.record("交易链路","添加","数量" + connections.length);
+
         for (InvokeConnection connection : connections) {
             String sourceId = connection.getSourceId();
             String targetId = connection.getTargetId();
@@ -533,6 +538,8 @@ public class ServiceLinkController {
                 invokeConnectionService.save(connection);
             }
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

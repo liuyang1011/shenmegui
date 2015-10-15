@@ -2,14 +2,8 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
-import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.Organization;
-import com.dc.esb.servicegov.entity.SGUser;
-import com.dc.esb.servicegov.entity.UserRoleRelation;
-import com.dc.esb.servicegov.service.impl.OrgServiceImpl;
-import com.dc.esb.servicegov.service.impl.RoleServiceImpl;
-import com.dc.esb.servicegov.service.impl.UserRoleRelationServiceImpl;
-import com.dc.esb.servicegov.service.impl.UserServiceImpl;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.vo.UserVO;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -29,6 +23,9 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     private UserServiceImpl userServiceImpl;
     @Autowired
     private UserRoleRelationServiceImpl userRoleRelationService;
@@ -42,7 +39,11 @@ public class UserController {
     public
     @ResponseBody
     boolean add(@RequestBody SGUser user) {
+        OperationLog operationLog = systemLogService.record("用户","添加","用户名称：" + user.getName());
+
         userServiceImpl.save(user);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -51,9 +52,13 @@ public class UserController {
     public
     @ResponseBody
     boolean add(@RequestBody UserRoleRelation[] userRoleRelations) {
+        OperationLog operationLog = systemLogService.record("用户","添加角色关系","");
+
         for(UserRoleRelation userRoleRelation : userRoleRelations){
             userRoleRelationService.save(userRoleRelation);
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -105,8 +110,12 @@ public class UserController {
     public
     @ResponseBody
     boolean delete(@PathVariable String id) {
+        OperationLog operationLog = systemLogService.record("用户","删除","用户ID:" + id);
+
     	userRoleRelationService.deleteRelation(id);
         userServiceImpl.deleteById(id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -134,8 +143,12 @@ public class UserController {
     public
     @ResponseBody
     boolean modify(@RequestBody SGUser SGUser) {
+        OperationLog operationLog = systemLogService.record("用户","修改","用户名称：" + SGUser.getName());
+
     	userRoleRelationService.deleteRelation(SGUser.getId());
         userServiceImpl.update(SGUser);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -155,7 +168,11 @@ public class UserController {
     public
     @ResponseBody
     boolean pwEdit(@PathVariable String id,@PathVariable String passWord) {
+        OperationLog operationLog = systemLogService.record("用户","密码修改","用户ID：" + id);
+
         userServiceImpl.passWord(passWord, id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

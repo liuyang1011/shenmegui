@@ -6,7 +6,9 @@ import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.TagServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.JSONUtil;
@@ -30,7 +32,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/interface")
 public class InterfaceController {
-
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
     private static final Log log = LogFactory.getLog(InterfaceController.class);
     @Autowired
     private InterfaceService interfaceService;
@@ -167,6 +170,8 @@ public class InterfaceController {
     @ResponseBody
     boolean save(@RequestBody
                  Interface inter, HttpServletRequest request) {
+        OperationLog operationLog = systemLogService.record("接口","添加","接口名称：" + inter.getInterfaceName());
+
         //新增操作
         boolean add = "add".equals(request.getParameter("type"));
         if (!add) {
@@ -184,6 +189,7 @@ public class InterfaceController {
             ida.set_parentId(null);
             ida.setStructName("root");
             ida.setStructAlias("根节点");
+            ida.setState(Constants.IDA_STATE_COMMON);
             idaService.save(ida);
             String parentId = ida.getId();
 
@@ -193,6 +199,7 @@ public class InterfaceController {
             ida.setStructName("request");
             ida.setStructAlias("请求头");
             ida.setSeq(0);
+            ida.setState(Constants.IDA_STATE_COMMON);
             idaService.save(ida);
 
             ida = new Ida();
@@ -201,10 +208,11 @@ public class InterfaceController {
             ida.setSeq(1);
             ida.setStructName("response");
             ida.setStructAlias("响应头");
+            ida.setState(Constants.IDA_STATE_COMMON);
             idaService.save(ida);
         }
 
-
+        systemLogService.updateResult(operationLog);
         return true;
 
     }
@@ -215,6 +223,7 @@ public class InterfaceController {
     @ResponseBody
     boolean saveWithProcess(@RequestBody
                             Interface inter, @PathVariable("processId") String processId, HttpServletRequest request) {
+        OperationLog operationLog = systemLogService.record("接口","添加（任务）","接口名称:" + inter.getInterfaceName());
         //新增操作
         String optUser = SecurityUtils.getSubject().getPrincipal().toString();
         String optDate = DateUtils.format(new Date());
@@ -267,6 +276,8 @@ public class InterfaceController {
         processContext.setOptDate(optDate);
         processContext.setOptUser(optUser);
         processContextService.save(processContext);
+
+        systemLogService.updateResult(operationLog);
         return true;
 
     }
@@ -277,6 +288,7 @@ public class InterfaceController {
     @ResponseBody
     boolean delete(@PathVariable
                    String interfaceId) {
+        OperationLog operationLog = systemLogService.record("接口","删除","接口ID：" + interfaceId);
         //TODO 删除接口要删除serviceInvoke（外键）
         List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy("interfaceId", interfaceId);
         serviceInvokeService.deleteEntity(serviceInvokes);
@@ -286,6 +298,8 @@ public class InterfaceController {
         map.put("interfaceId", interfaceId);
         List<Ida> list = idaService.findBy(map);
         idaService.deleteList(list);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -295,6 +309,7 @@ public class InterfaceController {
     @ResponseBody
     boolean delete2(@RequestBody
                    String interfaceId) {
+        OperationLog operationLog = systemLogService.record("接口","删除","接口ID：" + interfaceId);
         //去掉''
         interfaceId = interfaceId.substring(1,interfaceId.length()-1);
         //TODO 删除接口要删除serviceInvoke（外键）
@@ -306,6 +321,8 @@ public class InterfaceController {
         map.put("interfaceId", interfaceId);
         List<Ida> list = idaService.findBy(map);
         idaService.deleteList(list);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -583,6 +600,8 @@ public class InterfaceController {
     public
     @ResponseBody
     boolean headRelate(@PathVariable String interfaceId, @PathVariable String headIds) {
+        OperationLog operationLog = systemLogService.record("接口","关联报文头","接口ID：" + interfaceId + "; 报文头ID" + headIds);
+
         if (headIds.equals("none")) {
             interfaceHeadRelateService.deleteRelate(interfaceId);
             return true;
@@ -590,6 +609,8 @@ public class InterfaceController {
         if (interfaceId != null && headIds != null) {
             interfaceHeadRelateService.relateSave(interfaceId, headIds);
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -622,7 +643,11 @@ public class InterfaceController {
     public
     @ResponseBody
     boolean release(String interfaceIds, String versionDesc) {
+        OperationLog operationLog = systemLogService.record("接口","发布","接口id："+ interfaceIds + "; 版本描述" + versionDesc);
+
         boolean result = interfaceService.releaseBatch(interfaceIds, versionDesc);
+
+        systemLogService.updateResult(operationLog);
         return result;
     }
 }

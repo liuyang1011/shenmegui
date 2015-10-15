@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import com.dc.esb.servicegov.service.impl.OLATemplateServiceImpl;
 @Controller
 @RequestMapping("/olaTemplate")
 public class OLATemplateController {
+	@Autowired
+	private SystemLogServiceImpl systemLogService;
 	@Autowired
 	private OLATemplateServiceImpl olaTemplateServiceImpl;
 	@Autowired
@@ -44,6 +48,8 @@ public class OLATemplateController {
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	   boolean save(@RequestBody List list) {
+		OperationLog operationLog = systemLogService.record("ola模板","保存","ola数量：" + list.size());
+
   	 for (int i = 0; i < list.size(); i++) {
            LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
            Set<String> keySet = map.keySet();
@@ -55,6 +61,7 @@ public class OLATemplateController {
            olaTemplate.setDesc(map.get("desc"));
            olaTemplateServiceImpl.save(olaTemplate);
   	 }
+		systemLogService.updateResult(operationLog);
       return true;
   }
 
@@ -62,12 +69,16 @@ public class OLATemplateController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
+		OperationLog operationLog = systemLogService.record("ola模板","删除","ola数量：" + list.size());
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
             String id = map.get("olaTemplateId");
             olaTemplateServiceImpl.deleteById(id);
         }
+
+		systemLogService.updateResult(operationLog);
         return true;
  
 	}
@@ -76,6 +87,7 @@ public class OLATemplateController {
 	public @ResponseBody
 	   boolean saveOla(@RequestBody List list,@PathVariable(value = "serviceId") String serviceId,
 				@PathVariable(value = "operationId") String operationId,@PathVariable(value = "olaTemplateId") String olaTemplateId) {
+		OperationLog operationLog = systemLogService.record("ola","服务ID:"+ serviceId + "; 场景ID：" + operationId + "; 按模板保存","模板ID:" + olaTemplateId);
    	 for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
@@ -92,6 +104,7 @@ public class OLATemplateController {
             ola.setOlaTemplateId(olaTemplateId);
             olaServiceImpl.save(ola);
    	 }
+		systemLogService.updateResult(operationLog);
        return true;
    }
 

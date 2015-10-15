@@ -3,9 +3,11 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.FileManager;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.FileManagerService;
 import com.dc.esb.servicegov.service.SystemService;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.Utils;
 import org.apache.commons.io.FileUtils;
@@ -35,6 +37,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/fileManager")
 public class FileManagerController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
@@ -164,6 +168,8 @@ public class FileManagerController {
     @RequestMapping(method = RequestMethod.POST, value = "/addfile")
     public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileDesc") String fileDesc,
                              @RequestParam("systemId") String systemId, HttpServletRequest request) {
+        OperationLog operationLog = systemLogService.record("文件管理","上传文件","文件名称：" + file.getName());
+
         String fileName = file.getOriginalFilename();
         long fileSize = file.getSize();
         FileManager fm = new FileManager();
@@ -189,6 +195,8 @@ public class FileManagerController {
         } catch (Exception e) {
             logger.error("保存文件失败，出现异常：" + e.getMessage());
         }
+
+        systemLogService.updateResult(operationLog);
         return "forward:/jsp/sysadmin/file_list.jsp";
     }
 
@@ -198,6 +206,8 @@ public class FileManagerController {
                                         @RequestParam("fileDesc") String fileDesc,
                                         @RequestParam("systemId") String systemId,
                                         @PathVariable("processId") String processId, HttpServletRequest request) {
+        OperationLog operationLog = systemLogService.record("文件管理","上传文件(任务)","文件名称：" + file.getName());
+
         String optUser = (String)SecurityUtils.getSubject().getPrincipal();
         String optDate = DateUtils.format(new Date());
         String fileName = file.getOriginalFilename();
@@ -250,6 +260,8 @@ public class FileManagerController {
         } catch (Exception e) {
             logger.error("保存文件失败，出现异常：" + e.getMessage());
         }
+
+        systemLogService.updateResult(operationLog);
         return "forward:/jsp/sysadmin/file_list.jsp";
     }
 
@@ -259,6 +271,8 @@ public class FileManagerController {
     @ResponseBody
     boolean delete(@PathVariable
                    String fileId) {
+        OperationLog operationLog = systemLogService.record("文件管理","删除文件","");
+
         FileManager fm = fileManagerService.getById(fileId);
         if (fm != null && fm.getFilePath() != null) {
             File file = new File(fm.getFilePath());
@@ -267,12 +281,17 @@ public class FileManagerController {
             }
         }
         fileManagerService.delete(fm);
+
+        operationLog.setParams("文件名称:" + fm.getFileName() );
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
     @RequiresPermissions({"file-download"})
     @RequestMapping("download")
     public ResponseEntity<byte[]> download(HttpServletResponse res, String fileId) throws IOException {
+        OperationLog operationLog = systemLogService.record("文件管理","下载文件","");
+
         FileManager fm = fileManagerService.findUniqueBy("fileId", fileId);
         if(fm != null){
             File file=new File(fm.getFilePath());
@@ -297,6 +316,9 @@ public class FileManagerController {
                 }
             }
         }
+
+        operationLog.setParams("文件名称：" + fm.getFileName());
+        systemLogService.updateResult(operationLog);
         return null;
     }
 

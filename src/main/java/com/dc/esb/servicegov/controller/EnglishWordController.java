@@ -2,7 +2,9 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.EnglishWord;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -17,6 +19,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/englishWord")
 public class EnglishWordController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
 
     @Autowired
     private EnglishWordServiceImpl englishWordService;
@@ -126,7 +130,11 @@ public class EnglishWordController {
     @ResponseBody
     boolean save(@RequestBody
                  EnglishWord word) {
+        OperationLog operationLog = systemLogService.record("英文单词","添加","中文名称：" + word.getChineseWord() + ";英文名称：" + word.getEnglishWord());
+
         englishWordService.save(word);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -136,7 +144,11 @@ public class EnglishWordController {
     @ResponseBody
     boolean modify(@RequestBody
                    EnglishWord word) {
+        OperationLog operationLog = systemLogService.record("英文单词","修改","中文名称：" + word.getChineseWord() + ";英文名称：" + word.getEnglishWord());
+
         englishWordService.save(word);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -146,7 +158,11 @@ public class EnglishWordController {
     @ResponseBody
     boolean delete(
             @PathVariable String id) {
+        OperationLog operationLog = systemLogService.record("英文单词","删除","英文单词ID" + id);
+
         englishWordService.deleteById(id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

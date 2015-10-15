@@ -4,10 +4,7 @@ import java.util.*;
 
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.*;
-import com.dc.esb.servicegov.service.impl.IdaServiceImpl;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -21,7 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/ida")
 public class IDAController {
-	
+	@Autowired
+	private SystemLogServiceImpl systemLogService;
+
 	@Autowired
 	IdaService idaService;
 	@Autowired
@@ -95,8 +94,11 @@ public class IDAController {
 	public @ResponseBody
 	boolean delete(@RequestBody
 	String [] ids) {
+		OperationLog operationLog = systemLogService.record("IDA","批量删除","删除ida数：" + ids.length );
+
 		idaService.deletes(ids);
 
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 
@@ -128,7 +130,12 @@ public class IDAController {
 	@RequiresPermissions({"system-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/updateMetadataId", headers = "Accept=application/json")
 	public @ResponseBody boolean updateMetadataId( String metadataId, String id){
-		return idaService.updateMetadataId(metadataId, id);
+		OperationLog operationLog = systemLogService.record("IDA","更新元数据id","IDA ID:"+ id +"； 元数据id" + metadataId);
+
+		boolean result = idaService.updateMetadataId(metadataId, id);
+
+		systemLogService.updateResult(operationLog);
+		return result;
 	}
 
 	@RequiresPermissions({"system-update"})
@@ -181,6 +188,8 @@ public class IDAController {
 	@RequiresPermissions({"system-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/saveIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean saveIdaMapping(@RequestBody List list){
+		OperationLog operationLog = systemLogService.record("IDA","批量保存","数量:" + list.size());
+
 		for (int i = 0; i < list.size(); i++) {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
@@ -189,12 +198,16 @@ public class IDAController {
 			ida.setMetadataId(metadaId);
 			idaService.save(ida);
 		}
+
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 
 	@RequiresPermissions({"system-update"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
+		OperationLog operationLog = systemLogService.record("IDA","批量更新（置空元数据）","数量:" + list.size());
+
 		for (int i = 0; i < list.size(); i++) {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
@@ -202,19 +215,31 @@ public class IDAController {
 			ida.setMetadataId(null);
 			idaService.save(ida);
 		}
+
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 
 	@RequestMapping("/moveUp")
 	@ResponseBody
 	public boolean moveUp(String id){
-		return idaService.moveUp(id);
+		OperationLog operationLog = systemLogService.record("IDA","位置上移","ID:"+id);
+
+		boolean result = idaService.moveUp(id);
+
+		systemLogService.updateResult(operationLog);
+		return result;
 	}
 
 	@RequestMapping("/moveDown")
 	@ResponseBody
 	public boolean moveDown(String id){
-		return idaService.moveDown(id);
+		OperationLog operationLog = systemLogService.record("IDA","位置下移","ID:"+id);
+
+		boolean result = idaService.moveDown(id);
+
+		systemLogService.updateResult(operationLog);
+		return result;
 	}
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {

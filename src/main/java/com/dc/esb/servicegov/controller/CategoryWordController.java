@@ -8,7 +8,9 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.EnglishWord;
 import com.dc.esb.servicegov.entity.Metadata;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -29,6 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/categoryWord")
 public class CategoryWordController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
     protected Log logger = LogFactory.getLog(getClass());
     @Autowired
     private CategoryWordServiceImpl categoryWordService;
@@ -156,8 +161,12 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean add(@RequestBody CategoryWord categoryWord) {
-    	categoryWord.setOptDate(DateUtils.format(new Date()));
+        OperationLog operationLog = systemLogService.record("类别词","添加","中文名称：" + categoryWord.getChineseWord()+"; 英文名称："+ categoryWord.getEnglishWord());
+
+        categoryWord.setOptDate(DateUtils.format(new Date()));
         categoryWordService.save(categoryWord);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -166,7 +175,11 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean modify(@RequestBody CategoryWord categoryWord) {
+        OperationLog operationLog = systemLogService.record("类别词","修改","中文名称：" + categoryWord.getChineseWord()+"; 英文名称："+ categoryWord.getEnglishWord());
+
         categoryWordService.save(categoryWord);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -175,7 +188,11 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean delete(@PathVariable String Id) {
+        OperationLog operationLog = systemLogService.record("类别词","删除", "类别词ID" + Id );
+
         categoryWordService.deleteById(Id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -212,6 +229,8 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean saveCategoryWord(@RequestBody List list,@PathVariable String type) {//type 1 insert  2 update
+        OperationLog operationLog = systemLogService.record("类别词","批量保存","类别词列表：");
+        String logParams = "";
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             List<CategoryWord> list1 = categoryWordService.findBy("englishWord", map.get("esglisgAb"));
@@ -235,7 +254,10 @@ public class CategoryWordController {
             categoryWord.setOptDate(DateUtils.format(new Date()));
             categoryWord.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
             categoryWordService.save(categoryWord);
+            logParams += categoryWord.getChineseWord()+",";
         }
+        operationLog.setParams("类别词列表："+ logParams);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -244,6 +266,9 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean deleteCategoryWord(@RequestBody List list) throws Exception {
+        OperationLog operationLog = systemLogService.record("类别词","批量删除","类别词列表：");
+        String logParams = "";
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
@@ -255,7 +280,11 @@ public class CategoryWordController {
                 return false;
             }
             categoryWordService.deleteById(id);
+            logParams += esglisgAb + ",";
         }
+
+        operationLog.setParams("类别词列表（英文缩写）："+ logParams);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
