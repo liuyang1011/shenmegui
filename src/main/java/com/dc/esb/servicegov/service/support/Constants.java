@@ -19,6 +19,10 @@ public class Constants {
     public static final String INVOKE_TYPE_STANDARD_Y = "0";//是否标准接口，1：否，0：是
     public static final String INVOKE_TYPE_STANDARD_N = "1";
 
+
+    public static final String IDA_STATE_COMMON = "0";//0:普通，1：导出使用
+    public static final String IDA_STATE_DISABLE = "1";
+
     public static final String EXCEL_TEMPLATE_SERVICE = Constants.class.getResource("/").getPath() + "/template/excel_service_template.xls";
     public static final String EXCEL_TEMPLATE_SERVICE_VIEW = Constants.class.getResource("/").getPath() + "/template/excel_service_view_template.xls";
     public static final String EXCEL_TEMPLATE_INTERFACE = Constants.class.getResource("/").getPath() + "/template/excel_interface_template.xls";
@@ -103,5 +107,4 @@ public class Constants {
         public static final String ARRAY_TYPE = "Array";
         public static final String STRUCT_TYPE = "Struct";
     }
-
 }

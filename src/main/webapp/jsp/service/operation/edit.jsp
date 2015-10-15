@@ -46,7 +46,7 @@
             tagManager.getTagForOperation(serviceId,operationId,initTags);
         })
         var toolbar = [
-            <shiro:hasPermission name="service-update">
+            <shiro:hasPermission name="invoke-add">
             {
                 text: '新增',
                 iconCls: 'icon-add',
@@ -66,6 +66,8 @@
                     });
                 }
              },
+            </shiro:hasPermission>
+            <shiro:hasPermission name="invoke-delete">
             {
             text: '删除',
             iconCls: 'icon-remove',
@@ -171,11 +173,12 @@
 
 <body>
 <form class="formui" id="operationForm">
-    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="clean()">取消</a><a href="#"
-                                                                                  onclick="save('operationForm',1)"
-                                                                                  class="easyui-linkbutton"
-                                                                                  iconCls="icon-save">保存</a></div>
+    <div class="win-bbar" style="text-align:center">
+        <shiro:hasPermission name="operation-update">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="clean()">取消</a>
+            <a href="#" onclick="save('operationForm',1)" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+        </shiro:hasPermission>
+    </div>
     <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
         <input type="hidden" name="versionId" value="${operation.versionId }" />
         <input type="hidden" name="deleted" value="${operation.deleted }" />

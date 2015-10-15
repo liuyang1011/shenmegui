@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.service.impl.IdaServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -50,14 +51,16 @@ public class IDAController {
 		return map;
 	}
 
-	@RequiresPermissions({"system-get"})
+//	@RequiresPermissions({"system-get"})
+	@RequiresPermissions({"ida-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getInterfaces/{interfaceId}", headers = "Accept=application/json")
 	public @ResponseBody
 	Map<String,Object> getInterfaces(@PathVariable String interfaceId) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceId", interfaceId);
-		List<Ida> idas = idaService.findBy(reqMap,"seq");
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
+		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		for(Ida ida:idas){
 			ida.setHeads(null);
 		}
@@ -66,7 +69,8 @@ public class IDAController {
 		return map;
 	}
 
-	@RequiresPermissions({"system-add"})
+//	@RequiresPermissions({"system-add"})
+	@RequiresPermissions({"ida-add"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean save(@RequestBody
@@ -88,7 +92,8 @@ public class IDAController {
 		return idaService.uniqueValid(structName,headId);
 	}
 
-	@RequiresPermissions({"system-delete"})
+//	@RequiresPermissions({"system-delete"})
+	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.POST, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody
@@ -106,7 +111,8 @@ public class IDAController {
 	 * @param seq2
 	 * @return
 	 */
-	@RequiresPermissions({"system-update"})
+//	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"ida-update"})
 	@RequestMapping(method = RequestMethod.GET, value = "/modifySEQ/{id}/{seq}/{id2}/{seq2}", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean modifySEQ(@PathVariable
@@ -123,7 +129,8 @@ public class IDAController {
 	 * @param id
 	 * @return
 	 */
-	@RequiresPermissions({"system-update"})
+//	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"ida-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/updateMetadataId", headers = "Accept=application/json")
 	public @ResponseBody boolean updateMetadataId( String metadataId, String id){
 		return idaService.updateMetadataId(metadataId, id);
@@ -147,12 +154,14 @@ public class IDAController {
 		return modelAndView;
 	}
 
-	@RequiresPermissions({"system-update"})
+//	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"ida-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getIdaMapping/{interfaceId}/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody Map<String,Object> getIdaMapping(@PathVariable String interfaceId, @PathVariable String serviceId, @PathVariable String operationId){
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceId", interfaceId);
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
 		List<IdaServiceImpl.IdaMappingBean> list = idaService.findIdaMappingBy(reqMap, "seq", serviceId, operationId);
 //		for(Ida ida:idas){
 //			ida.setHeads(null);
@@ -175,7 +184,8 @@ public class IDAController {
 		return sdaList;
 	}
 
-	@RequiresPermissions({"system-update"})
+//	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"ida-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/saveIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean saveIdaMapping(@RequestBody List list){
 		for (int i = 0; i < list.size(); i++) {
@@ -189,7 +199,8 @@ public class IDAController {
 		return true;
 	}
 
-	@RequiresPermissions({"system-update"})
+//	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
 		for (int i = 0; i < list.size(); i++) {
@@ -202,12 +213,14 @@ public class IDAController {
 		return true;
 	}
 
+	@RequiresPermissions({"ida-update"})
 	@RequestMapping("/moveUp")
 	@ResponseBody
 	public boolean moveUp(String id){
 		return idaService.moveUp(id);
 	}
 
+	@RequiresPermissions({"ida-update"})
 	@RequestMapping("/moveDown")
 	@ResponseBody
 	public boolean moveDown(String id){

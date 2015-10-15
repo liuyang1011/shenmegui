@@ -238,7 +238,7 @@
             }
         },
         </shiro:hasPermission>
-        <shiro:hasPermission name="metadata-get">
+        <shiro:hasPermission name="exportXML-get">
         {
             text: '导出XML',
             iconCls: 'icon-save',
@@ -249,6 +249,8 @@
                 });
             }
         },
+        </shiro:hasPermission>
+        <shiro:hasPermission name=" exportMetadataExcel-get">
         {
             text: '导出EXCEL',
             iconCls: 'icon-save',

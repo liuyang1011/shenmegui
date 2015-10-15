@@ -95,7 +95,8 @@ public class ServiceInvokeController {
         return result;
     }
 
-    @RequiresPermissions({"service-update"})
+//    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"invoke-delete"})
     @RequestMapping(method = RequestMethod.POST, value = "/deleteInvoke", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -198,7 +199,8 @@ public class ServiceInvokeController {
         return true;
     }
 
-    @RequiresPermissions({"service-update"})
+//    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"invoke-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addServiceLink", headers = "Accept=application/json")
     public
     @ResponseBody

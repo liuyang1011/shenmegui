@@ -202,6 +202,7 @@
                 }
             },
                 </shiro:hasPermission>
+                <shiro:hasPermission name="file-get">
                 {
                 text: '文件管理',
                 iconCls: 'icon-save',
@@ -222,6 +223,7 @@
                     }
                 }
             }
+                </shiro:hasPermission>
             ],
             onLoadError: function (responce) {
                 var resText = responce.responseText;

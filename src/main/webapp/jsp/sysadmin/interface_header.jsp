@@ -26,7 +26,7 @@
 	var parentIdAry = new Array();
 	var headId;
 	var toolbar = [
-		<shiro:hasPermission name="system-update">
+		<shiro:hasPermission name="ida-delete">
 		{
 			text:'刪除',
 			iconCls:'icon-remove',
@@ -57,7 +57,10 @@
 				}
 				
 			}
-		},{
+		},
+		</shiro:hasPermission>
+		<shiro:hasPermission name="ida-update">
+		{
 			text:'保存',
 			iconCls:'icon-save',
 			handler:function(){
@@ -429,12 +432,16 @@
 
 	<body onload="loadData();">
 		<div id="mm" class="easyui-menu" style="width: 120px;">
+			<shiro:hasPermission name="ida-add">
 			<div onclick="append()" data-options="iconCls:'icon-add'">
 				新增
 			</div>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="ida-udate">
 			<div onclick="editIt()" data-options="iconCls:'icon-edit'">
 				编辑
 			</div>
+			</shiro:hasPermission>
 
 		</div>
 		<form id="headForm">

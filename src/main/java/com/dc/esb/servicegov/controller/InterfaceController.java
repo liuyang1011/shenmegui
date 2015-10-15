@@ -161,7 +161,8 @@ public class InterfaceController {
         return interfaceService.getFileTreeChildren(system);
     }
 
-    @RequiresPermissions({"system-add"})
+//    @RequiresPermissions({"system-add"})
+    @RequiresPermissions({"interface-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -271,7 +272,8 @@ public class InterfaceController {
 
     }
 
-    @RequiresPermissions({"system-delete"})
+//    @RequiresPermissions({"system-delete"})
+    @RequiresPermissions({"interface-delete"})
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{interfaceId}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -289,7 +291,8 @@ public class InterfaceController {
         return true;
     }
 
-    @RequiresPermissions({"system-delete"})
+//    @RequiresPermissions({"system-delete"})
+    @RequiresPermissions({"interface-delete"})
     @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -309,7 +312,8 @@ public class InterfaceController {
         return true;
     }
 
-    @RequiresPermissions({"system-update"})
+//    @RequiresPermissions({"system-update"})
+    @RequiresPermissions({"interface-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/edit/{interfaceId}", headers = "Accept=application/json")
     public ModelAndView getInterface(@PathVariable
                                      String interfaceId) {
@@ -321,7 +325,8 @@ public class InterfaceController {
         return modelAndView;
     }
 
-    @RequiresPermissions({"system-get"})
+//    @RequiresPermissions({"system-get"})
+    @RequiresPermissions({"interface-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getInterById/{interfaceId}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -578,7 +583,8 @@ public class InterfaceController {
         return resList;
     }
 
-    @RequiresPermissions({"system-get"})
+//    @RequiresPermissions({"system-get"})
+    @RequiresPermissions({"interface-headRelation"})
     @RequestMapping(method = RequestMethod.GET, value = "/headRelate/{interfaceId}/{headIds}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -617,7 +623,8 @@ public class InterfaceController {
         return JSONUtil.getInterface().convert(rows, Interface.simpleFields());
     }
 
-    @RequiresPermissions({"system-update"})
+//    @RequiresPermissions({"system-update"})
+    @RequiresPermissions({"interface-release"})
     @RequestMapping(method = RequestMethod.GET, value = "/release", headers = "Accept=application/json")
     public
     @ResponseBody

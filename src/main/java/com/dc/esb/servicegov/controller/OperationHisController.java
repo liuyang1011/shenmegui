@@ -35,7 +35,8 @@ public class OperationHisController {
 	}
 	
 	//根据服务和场景id
-	@RequiresPermissions({"service-get"})
+//	@RequiresPermissions({"service-get"})
+	@RequiresPermissions({"version-get"})
 	@RequestMapping("/getByOS/{serviceId}/{operationId}")
 	@ResponseBody
 	public Map<String, Object> getByOS(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId) {

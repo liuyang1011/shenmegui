@@ -158,7 +158,7 @@
 		    pageList: [14,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
 	        toolbar: [
-				<shiro:hasPermission name="system-update">
+				<shiro:hasPermission name="interface-add">
 				{
 					text:'新增',
 					iconCls:'icon-add',
@@ -167,7 +167,7 @@
 					}
 				},
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
+				<shiro:hasPermission name="interface-update">
 				{
 					text:'修改',
 					iconCls:'icon-edit',
@@ -181,7 +181,7 @@
 					}
 				},
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
+				<shiro:hasPermission name="interface-delete">
 				{
 					text:'删除',
 					iconCls:'icon-remove',
@@ -195,7 +195,7 @@
 					 }
 				},
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
+				<shiro:hasPermission name="interface-headRelation">
 				{
 						text:'关联报文头',
 						iconCls:'icon-save',
@@ -286,7 +286,7 @@
 						}
 					},
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
+				<shiro:hasPermission name="interface-release">
 					{
 						text: '发布',
 						iconCls: 'icon-save',

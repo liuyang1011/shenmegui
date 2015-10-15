@@ -34,7 +34,7 @@
         var parentIdAry = new Array();
         var versionCode="";
         var toolbar = [
-            <shiro:hasPermission name="system-update">
+            <shiro:hasPermission name="ida-delete">
             {
                 text: '刪除',
                 iconCls: 'icon-remove',
@@ -67,6 +67,8 @@
 
                 }
             },
+            </shiro:hasPermission>
+            <shiro:hasPermission name="ida-update">
             {
             text: '保存',
             iconCls: 'icon-save',
@@ -106,6 +108,7 @@
                         data.headId = "${param.headId}";
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
+                        data.state = "0";
                         reqAry.push(data);
                     }
                 }
@@ -138,6 +141,7 @@
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
                         data.id = row.id;
+                        data.state = "0";
                         reqAry.push(data);
                     }
                 }
@@ -216,6 +220,8 @@
                 }
             }
         },
+            </shiro:hasPermission>
+            <shiro:hasPermission name="interface-release">
             {
                 text: '发布',
                 iconCls: 'icon-save',
@@ -449,7 +455,7 @@
                 </ul>
             </td>
             <td>
-                <shiro:hasPermission name="system-update">
+                <shiro:hasPermission name="interface-update">
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
                 </shiro:hasPermission>
             </td>

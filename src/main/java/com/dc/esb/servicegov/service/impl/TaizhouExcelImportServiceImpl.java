@@ -28,7 +28,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
      * @return
      */
     @Override
-    public Map<String, Object> getServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+    public Map<String, Object> getServiceInfo(Sheet tranSheet,IndexDO indexDO) {
         boolean flag = true;
         // 读取每个sheet页服务信息
         int start = tranSheet.getFirstRowNum();
@@ -194,6 +194,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         int order = 0;
         for (int j = start; j <= end; j++) {
             SDA sda = new SDA();
+            sda.setSdaId(UUID.randomUUID().toString());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -293,6 +294,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         int order = 0;
         for (int j = start; j <= end; j++) {
             SDA sda = new SDA();
+            sda.setSdaId( UUID.randomUUID().toString());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -458,6 +460,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             Ida ida = new Ida();
             SDA sda = new SDA();
+            sda.setSdaId( UUID.randomUUID().toString());
+            ida.setSdaId(sda.getSdaId());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -556,9 +560,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 String remark = isNull(cell);
-                if("start".equalsIgnoreCase(remark)) {
-                    sda.setMetadataId("");
-                }
+//                if("start".equalsIgnoreCase(remark)) {
+//                    sda.setMetadataId("");
+//                }
                 sda.setRemark(remark);
             }
 
@@ -661,6 +665,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             Ida ida = new Ida();
             SDA sda = new SDA();
+            sda.setSdaId(UUID.randomUUID().toString());
+            ida.setSdaId(sda.getSdaId());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null){
                 continue;
@@ -757,9 +763,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 String remark = isNull(cell);
-                if ("start".equalsIgnoreCase(cell)) {
-                    sda.setMetadataId("");
-                }
+//                if ("start".equalsIgnoreCase(cell)) {
+//                    sda.setMetadataId("");
+//                }
                 sda.setRemark(remark);
             }
 
@@ -1028,7 +1034,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             provider_invoke = (ServiceInvoke)list1.get(1);
 
 
-            insertSDA(existsOper, operation, service, sdainput, sdaoutput);
+            insertSDA(true, existsOper, operation, service, sdainput, sdaoutput);
             //处理业务报文头
             //TODO 标准不管报文头
 //            if (headMap != null && headMap.size()>0) {
@@ -1557,7 +1563,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
      * @return
      */
     @Override
-    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO) {
+    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,IndexDO indexDO) {
         boolean flag = true;
         // 读取每个sheet页交易信息与服务信息
         int start = tranSheet.getFirstRowNum();

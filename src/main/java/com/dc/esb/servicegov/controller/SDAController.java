@@ -30,7 +30,8 @@ public class SDAController {
 		return serviceImpl.sdaPage(operationId, serviceId, req);
 	}
 
-	@RequiresPermissions({"service-get"})
+//	@RequiresPermissions({"service-get"})
+	@RequiresPermissions({"sda-get"})
 	//根据serviceId，operationId获取sda树
 	@RequestMapping("/sdaTree")
 	@ResponseBody
@@ -47,7 +48,8 @@ public class SDAController {
 		return result;
 	}
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sda-update"})
 	//保存对象数组
 	@RequestMapping(method = RequestMethod.POST, value = "/saveSDA", headers = "Accept=application/json")
 	@ResponseBody
@@ -60,7 +62,8 @@ public class SDAController {
 		return serviceImpl.save(sdas);
 	}
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sda-delete"})
 	//删除数据
 	@RequestMapping(method = RequestMethod.POST, value = "/deleteSDA", headers = "Accept=application/json")
 	@ResponseBody
@@ -68,14 +71,16 @@ public class SDAController {
 		return serviceImpl.delete(delIds);
 	}
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sda-update"})
 	@RequestMapping("/moveUp")
 	@ResponseBody
 	public boolean moveUp(String sdaId){
 		return serviceImpl.moveUp(sdaId);
 	}
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sda-update"})
 	@RequestMapping("/moveDown")
 	@ResponseBody
 	public boolean moveDown(String sdaId){

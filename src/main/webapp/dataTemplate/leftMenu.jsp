@@ -18,7 +18,9 @@
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
+        <shiro:hasRole name="admin">
             <li><a href="javascript:;" class="openable" mid="5.2">角色维护</a></li>
+        </shiro:hasRole>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="1.11">日志管理</a>
@@ -125,12 +127,14 @@
     if (mid.equals("11")) {
 %>
 <ul id="menu-tree" style="overflow:scroll;height:100%">
+    <shiro:hasPermission name="exportStatistics-get">
     <li><a href="javascript:;" mid="11.1">统计报表</a>
         <ul>
-            <li><a href="javascript:;" class="openable" mid="11.2">复用率统计</a></li>
-            <li><a href="javascript:;" class="openable" mid="11.3">发布统计</a></li>
+                <li><a href="javascript:;" class="openable" mid="11.2">复用率统计</a></li>
+                <li><a href="javascript:;" class="openable" mid="11.3">发布统计</a></li>
         </ul>
     </li>
+    </shiro:hasPermission>
 </ul>
 <%
     }
@@ -139,13 +143,19 @@
 <ul id="menu-tree" style="overflow:scroll;height:100%">
     <li><a href="javascript:;" mid="1.1">版本管理</a>
         <ul>
+            <shiro:hasPermission name="version-get">
             <li><a href="javascript:;" class="openable" mid="1.2">版本发布</a></li>
+            </shiro:hasPermission>
+            <shiro:hasPermission name="versionHis-get">
             <li><a href="javascript:;" class="openable" mid="1.3">版本历史</a></li>
+            </shiro:hasPermission>
             <!--
             <li><a href="javascript:;" class="openable" mid="1.4">版本公告</a></li>
              -->
+            <shiro:hasPermission name="baseLine-get">
             <li><a href="javascript:;" class="openable" mid="1.5">基线制作</a></li>
             <li><a href="javascript:;" class="openable" mid="1.6">基线历史</a></li>
+            </shiro:hasPermission>
         </ul>
     </li>
 </ul>

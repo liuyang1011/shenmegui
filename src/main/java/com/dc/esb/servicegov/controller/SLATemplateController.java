@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -33,13 +34,15 @@ public class SLATemplateController {
 		params.put("slaTemplateId", templateId);
 		return slaServiceImpl.getTemplateSLA(params);
 	}
-	
+
+	@RequiresPermissions({"slaTemp-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
 	public @ResponseBody
 	List<SLATemplate> getAll() {
 		return slaTemplateServiceImpl.getAll();
 	}
 
+	@RequiresPermissions({"slaTemp-add"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	   boolean save(@RequestBody List list) {
@@ -57,7 +60,7 @@ public class SLATemplateController {
       return true;
   }
 
-
+	@RequiresPermissions({"slaTemp-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
@@ -70,7 +73,8 @@ public class SLATemplateController {
         return true;
  
 	}
-	
+
+	@RequiresPermissions({"slaTemp-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/addSla/{serviceId}/{operationId}/{slaTemplateId}", headers = "Accept=application/json")
 	public @ResponseBody
 	   boolean saveOla(@RequestBody List list,@PathVariable(value = "serviceId") String serviceId,

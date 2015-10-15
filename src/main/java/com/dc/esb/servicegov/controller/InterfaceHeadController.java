@@ -52,7 +52,8 @@ public class InterfaceHeadController {
 		return rootList;
 	}
 
-	@RequiresPermissions({"system-add"})
+//	@RequiresPermissions({"system-add"})
+	@RequiresPermissions({"interfaceHead-add"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean save(@RequestBody
@@ -95,7 +96,8 @@ public class InterfaceHeadController {
 		return true;
 	}
 
-	@RequiresPermissions({"system-update"})
+//	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"interfaceHead-update"})
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/{headId}", headers = "Accept=application/json")
 	public ModelAndView getInterfaceHead(@PathVariable
 	String headId) {
@@ -107,7 +109,8 @@ public class InterfaceHeadController {
 		return modelAndView;
 	}
 
-	@RequiresPermissions({"system-delete"})
+//	@RequiresPermissions({"system-delete"})
+	@RequiresPermissions({"interfaceHead-delete"})
 	@RequestMapping(method = RequestMethod.GET, value = "/delete/{headId}", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@PathVariable

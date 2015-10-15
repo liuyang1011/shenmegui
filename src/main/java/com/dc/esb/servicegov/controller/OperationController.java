@@ -172,7 +172,8 @@ public class OperationController {
         return operationServiceImpl.uniqueValid(serviceId, operationId);
     }
 
-    @RequiresPermissions({"service-add"})
+//    @RequiresPermissions({"service-add"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -265,7 +266,8 @@ public class OperationController {
      * @param operation
      * @return
      */
-    @RequiresPermissions({"service-update"})
+//    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"operation-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/edit", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -322,7 +324,8 @@ public class OperationController {
         return mv;
     }
 
-    @RequiresPermissions({"service-delete"})
+//    @RequiresPermissions({"service-delete"})
+    @RequiresPermissions({"operation-delete"})
     @RequestMapping(method = RequestMethod.POST, value = "/deletes", headers = "Accept=application/json")
     @ResponseBody
     public boolean deletes(@RequestBody OperationPK[] operationPks) {
@@ -349,7 +352,8 @@ public class OperationController {
         return info;
     }
 
-    @RequiresPermissions({"service-get"})
+//    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/detailPage")
     public ModelAndView detailPage(HttpServletRequest req, String operationId, String serviceId) {
         return operationServiceImpl.detailPage(req, operationId, serviceId);
@@ -472,7 +476,8 @@ public class OperationController {
         return "403";
     }
 
-    @RequiresPermissions({"service-get"})
+//    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/query")
     @ResponseBody
     public Map<String, Object> query(HttpServletRequest req) throws  Throwable{
@@ -494,7 +499,8 @@ public class OperationController {
      * @return
      * @throws Throwable
      */
-    @RequiresPermissions({"service-update"})
+//    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"operation-commit"})
     @RequestMapping(method = RequestMethod.POST, value = "/submitToAudit", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -521,7 +527,8 @@ public class OperationController {
      * @return
      * @throws Throwable
      */
-    @RequiresPermissions({"service-update"})
+//    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"operation-revise"})
     @RequestMapping(method = RequestMethod.POST, value = "/revise", headers = "Accept=application/json")
     public
     @ResponseBody

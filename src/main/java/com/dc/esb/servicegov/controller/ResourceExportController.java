@@ -33,7 +33,7 @@ public class ResourceExportController {
     /**
      * 导出元数据
      * */
-    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"exportMetadataExcel-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/export")
     public
     @ResponseBody

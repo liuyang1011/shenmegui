@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -141,7 +142,9 @@
     }
 
   }
-  var toolbar = [ {
+  var toolbar = [
+      <shiro:hasPermission name="ida-delete">
+      {
     text : '删除映射关系',
     iconCls : 'icon-remove',
     handler : function() {
@@ -158,7 +161,10 @@
         });
       }
     }
-  },{
+  },
+      </shiro:hasPermission>
+      <shiro:hasPermission name="ida-update">
+      {
     text : '保存映射关系',
     iconCls : 'icon-remove',
     handler : function() {
@@ -173,7 +179,9 @@
       });
       editedRows = [];
     }
-  } ];
+  }
+      </shiro:hasPermission>
+  ];
 </script>
 </body>
 </html>

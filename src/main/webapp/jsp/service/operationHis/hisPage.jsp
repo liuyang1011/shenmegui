@@ -83,24 +83,58 @@ function selectOperation(){
 	}
 }
 
+/*function formatConsole(val,row,index){
+ var s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="sdaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SDAHis</a>&nbsp;&nbsp;\
+ <a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="slaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SLAHis</a>&nbsp;&nbsp;\
+ <a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="olaList(\''+row.autoId+'\')"  href="javascript:void(0)" >OLAHis</a>&nbsp;&nbsp;\
+ ';
+ return s;
+ }*/
+
 function formatConsole(val,row,index){
 	var s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="sdaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SDAHis</a>&nbsp;&nbsp;\
 			';
 	return s;
 }
-
-/*function formatConsole(val,row,index){
-	var s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="sdaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SDAHis</a>&nbsp;&nbsp;\
-		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="slaList(\''+row.autoId+'\')"  href="javascript:void(0)" >SLAHis</a>&nbsp;&nbsp;\
-		<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="olaList(\''+row.autoId+'\')"  href="javascript:void(0)" >OLAHis</a>&nbsp;&nbsp;\
-			';
+function operation(val,row,index){
+	var s = "";
+	try{
+		s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="comparePage(\''+row.versionHis.id+'\')"  href="javascript:void(0)" >版本对比</a>&nbsp;&nbsp;';
+	}catch(exception){
+	}
 	return s;
-}*/
+}
+//弹出对比页面
+function comparePage(versionId){
+	alert(versionId);
+	$.ajax({
+		type: "get",
+		async: false,
+		url: "/versionHis/judgeVersionHis?versionId="+versionId,
+		dataType: "json",
+		success: function (data) {
+			if(data.autoId != null){
+				var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1="+versionId+"&type=0&versionId2="+data.autoId;
+				$("#dlg").dialog({
+					title: '版本对比',
+					left:'50px',
+					width: 1000,
+					closed: false,
+					cache: false,
+					href: urlPath,
+					modal: true
+				});
+			}else{
+				alert("没有历史版本可以对比!");
+			}
+		}
+	});
 
+}
 function sdaList(id){
 	$('#dlg').dialog({
 		title : 'SDAHis',
-		width : 500,
+		width : 600,
 		closed : false,
 		cache : false,
 		href : '/jsp/service/sdaHis/sdaHisPage.jsp?autoId='+id,
@@ -185,7 +219,8 @@ var formatter = {
 				<%--<th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>--%>
 				<th data-options="field:'optDate',width:120">更新时间</th>
 				<th data-options="field:'optUser',width:50">更新用户</th>
-				<th data-options="field:' ',formatter:formatConsole,width:190">操作</th>
+				<th data-options="field:' ',formatter:formatConsole,width:120">数据</th>
+				<th data-options="field:'  ',formatter:operation,width:120">操作</th>
 			</tr>
 		</thead>
 	</table>

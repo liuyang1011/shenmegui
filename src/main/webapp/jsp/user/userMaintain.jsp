@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"
 		 errorPage=""%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -83,7 +84,9 @@
 <script type="text/javascript"
 		src="/js/user/userManager.js"></script>
 <script type="text/javascript">
-	var toolbar = [{
+	var toolbar = [
+			<shiro:hasRole name="admin">
+		{
 			text : '新增',
 			iconCls : 'icon-add',
 			handler : function() {
@@ -141,6 +144,8 @@
              }
 		   }
 		},
+		</shiro:hasRole>
+		<shiro:hasPermission name="password-update">
 		{
 			text : '重置密码',
 			iconCls : 'icon-qxfp',
@@ -158,7 +163,8 @@
                 alert("请选中要重置密码的用户！");
              }
 		   }
-		} 
+		}
+		</shiro:hasPermission>
 		
 	 ];
 	$(function() {

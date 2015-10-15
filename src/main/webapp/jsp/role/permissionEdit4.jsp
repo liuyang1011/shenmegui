@@ -40,7 +40,7 @@
       collapsible: true,
       fitColumns: true,
       singleSelect:false,
-      url: '/permission/getPermissionTree/'+roleId +'?t=' + (new Date()).valueOf(),
+      url: '/permission/getPermissionTree2/'+roleId +'?t=' + (new Date()).valueOf(),
       method: 'get',
       idField: 'id',
       treeField: 'text',
@@ -53,7 +53,7 @@
           }
 
         },width:5},
-        {field:'text',title:'Persons',width:60,align:'left'}
+        {field:'text',title:'权限',width:60,align:'left'}
       ]],
       onLoadSuccess:function(row, data){
         rows = data;
@@ -67,6 +67,7 @@
           }else{
             row.permissionState = "0";
           }
+          selectSamePermision(row.permissionId,rows,row.permissionState);
           $('#tg').treegrid("refresh",row.id);
         }else{
           //勾上或去掉子记录
@@ -86,7 +87,7 @@
         type: "post",
         contentType : "application/json;charset=utf-8",
         async: false,
-        url: "/permission/savePermission/"+roleId,
+        url: "/permission/savePermission2/"+roleId,
         dataType: "json",
         data: JSON.stringify(rows),
         success: function (data) {
@@ -127,6 +128,7 @@
       $.each(row.children,function (index, item){
         $('#tg').treegrid('select',item.id);
         item.permissionState = "1";
+        selectSamePermision(item.permissionId,rows,item.permissionState);
         pareseChildrenSelect(item);
       })
     }
@@ -138,10 +140,29 @@
       $.each(row.children,function (index, item){
         $('#tg').treegrid('unselect',item.id);
         item.permissionState = "0";
+        selectSamePermision(item.permissionId,rows,item.permissionState);
         pareseChildrenUnSelect(item);
       })
     }
     $('#tg').treegrid("refresh",row.id);
+  }
+
+  //遍历rows
+  var selectSamePermision = function(permissionId,row,permissionState){
+    $.each(row,function (index, item){
+      if(null !=permissionId && item.permissionId == permissionId){
+        item.permissionState = permissionState
+        if(permissionState == "0"){
+          $('#tg').treegrid('unselect',item.id);
+        }else{
+          $('#tg').treegrid('select',item.id);
+        }
+        $('#tg').treegrid("refresh",item.id);
+      }
+      if(item.children.length > 0){
+        selectSamePermision(permissionId,item.children,permissionState);
+      }
+    })
   }
 
 </script>

@@ -173,7 +173,7 @@
     }
 
     var toolbar = [
-        <shiro:hasPermission name="service-add">
+        <shiro:hasPermission name="operation-add">
         {
             text: '新增',
             iconCls: 'icon-add',
@@ -192,7 +192,7 @@
             }
         },
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-update">
+        <shiro:hasPermission name="operation-update">
         {
             text: '修改',
             iconCls: 'icon-edit',
@@ -225,7 +225,7 @@
             }
         },
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-delete">
+        <shiro:hasPermission name="operation-delete">
         {
             text: '删除',
             iconCls: 'icon-remove',
@@ -291,7 +291,7 @@
                 }
             }
         },*/
-        <shiro:hasPermission name="service-get">
+        <shiro:hasPermission name="version-get">
         {
             text: '历史版本',
             iconCls: 'icon-qxfp',
@@ -343,7 +343,7 @@
             }
         },
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-update">
+        <shiro:hasPermission name="operation-commit">
         {
             text: '提交审核',
             iconCls: 'icon-audit',
@@ -407,7 +407,7 @@
             }
         },
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-update">
+        <shiro:hasPermission name="operation-revise">
         {
             text: '修订',
             iconCls: 'icon-audit',
