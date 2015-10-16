@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.ServiceLinkNodeDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.entity.ServiceLinkNode;
 import com.dc.esb.servicegov.entity.ServiceLinkProperty;
@@ -24,6 +25,10 @@ public class ServiceLinkNodeServiceImpl extends AbstractBaseService<ServiceLinkN
     private ServiceLinkNodeDAOImpl serviceLinkNodeDAO;
     @Autowired
     private ServiceLinkPropertyServiceImpl serviceLinkPropertyService;
+    @Autowired
+    private OperationServiceImpl operationService;
+    @Autowired
+    private ServiceServiceImpl serviceService;
 
     @Override
     public HibernateDAO<ServiceLinkNode, String> getDAO() {
@@ -32,6 +37,12 @@ public class ServiceLinkNodeServiceImpl extends AbstractBaseService<ServiceLinkN
 
     public ServiceLinkNodeVO getServiceLinkNode(ServiceInvoke serviceInvoke){
         ServiceLinkNodeVO serviceLinkNodeVO = new ServiceLinkNodeVO(serviceInvoke);
+        if (serviceInvoke.getOperationId() != null && serviceInvoke.getServiceId() != null) {
+            Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
+            com.dc.esb.servicegov.entity.Service service = serviceService.getById(serviceInvoke.getServiceId());
+            serviceLinkNodeVO.setServiceName(service.getServiceName());
+            serviceLinkNodeVO.setOperationName(operation.getOperationName());
+        }
         List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy("invokeId", serviceInvoke.getInvokeId());
         for(ServiceLinkProperty serviceLinkProperty : serviceLinkProperties){
             String propertyName = serviceLinkProperty.getPropertyName();
