@@ -49,7 +49,7 @@ public class ResourceImportController {
     public ModelAndView importMetadata(HttpServletRequest request, HttpServletResponse response,
                           @RequestParam("file") MultipartFile file
     ) throws Exception {
-        OperationLog operationLog = systemLogService.record("数据字典","导入","文件名称：" + file.getName());
+        OperationLog operationLog = systemLogService.record("数据字典","导入","文件名称：" + file.getOriginalFilename());
 
         ModelAndView mv = new org.springframework.web.servlet.ModelAndView("message");
         String url= "/dataTemplate/grid7.jsp";

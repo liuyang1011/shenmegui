@@ -82,7 +82,7 @@ public class ExcelImportController {
     @RequiresPermissions({"importInterface-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport")
     public void importInterfaceField(@RequestParam("systemId")String systemId, @RequestParam("file") MultipartFile file, HttpServletResponse response){
-        OperationLog operationLog = systemLogService.record("接口文档","导入","文件名称："+ file.getName());
+        OperationLog operationLog = systemLogService.record("接口文档","导入","文件名称："+ file.getOriginalFilename());
 
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
@@ -194,7 +194,7 @@ public class ExcelImportController {
     @RequiresPermissions({"importInterface-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport/noSystem")
     public void importInterfaceField(@RequestParam("file") MultipartFile file, HttpServletResponse response){
-        OperationLog operationLog = systemLogService.record("接口文档","导入","文件名称："+ file.getName());
+        OperationLog operationLog = systemLogService.record("接口文档","导入","文件名称："+ file.getOriginalFilename());
 
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
@@ -309,7 +309,7 @@ public class ExcelImportController {
     public void importFieldMapping(@RequestParam("file")
                                    MultipartFile file, Model model, HttpServletResponse response, @RequestParam("select")
                                    String operateFlag) {
-        OperationLog operationLog = systemLogService.record("字段映射文档","导入","文件名称："+ file.getName());
+        OperationLog operationLog = systemLogService.record("字段映射文档","导入","文件名称："+ file.getOriginalFilename());
 
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
