@@ -294,23 +294,23 @@
         //
         //  dataGenerator: this function takes a node type and returns some default data for that node type.
         //
-        renderer.registerDroppableNodes({
-            droppables: nodePalette.querySelectorAll("li"),
-            dragOptions: {
-                zIndex: 50000,
-                cursor: "move",
-                clone: true
-            },
-            typeExtractor: function (el) {
-                return el.getAttribute("jtk-node-type");
-            },
-            dataGenerator: function (type) {
-                return {
-                    w: 120,
-                    h: 80
-                };
-            }
-        });
+        //renderer.registerDroppableNodes({
+        //    droppables: nodePalette.querySelectorAll("li"),
+        //    dragOptions: {
+        //        zIndex: 50000,
+        //        cursor: "move",
+        //        clone: true
+        //    },
+        //    typeExtractor: function (el) {
+        //        return el.getAttribute("jtk-node-type");
+        //    },
+        //    dataGenerator: function (type) {
+        //        return {
+        //            w: 120,
+        //            h: 80
+        //        };
+        //    }
+        //});
 
 // ------------------------ / drag and drop new tables/views -----------------
 

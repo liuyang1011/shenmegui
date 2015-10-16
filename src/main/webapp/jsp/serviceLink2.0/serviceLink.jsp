@@ -8,7 +8,7 @@
 <script type="text/javascript">
     var sourceId = "<%=sourceId%>";
 </script>
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN” “http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
     <meta charset="utf-8">
@@ -41,22 +41,6 @@
             <div class="clearfix"></div>
 
             <div id="jtk-demo-flowchart" class="jtk-demo-main" style="width:100%;margin-top:-4px;">
-                <!-- the node palette
-                <div class="sidebar node-palette">
-                    <ul>
-                        <li jtk-node-type="question" title="Drag to add new">
-                            <i class="icon-tablet"></i>Question
-                        </li>
-                        <li jtk-node-type="action" title="Drag to add new">
-                            <i class="icon-eye-open"></i>Action
-                        </li>
-                        <li jtk-node-type="output" title="Drag to add new">
-                            <i class="icon-eye-open"></i>Output
-                        </li>
-                    </ul>
-                </div>
-                -->
-
                 <!-- this is the main drawing area -->
                 <div class="jtk-demo-canvas">
                     <!-- controls -->
@@ -68,7 +52,6 @@
                     <!-- miniview -->
                     <div class="miniview"></div>
                 </div>
-
                 <!-- the current dataset -->
                 <div class="jtk-demo-dataset"></div>
             </div>
