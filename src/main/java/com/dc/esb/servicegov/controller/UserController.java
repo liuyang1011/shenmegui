@@ -13,6 +13,7 @@ import com.dc.esb.servicegov.service.impl.UserServiceImpl;
 import com.dc.esb.servicegov.vo.UserVO;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,7 +58,8 @@ public class UserController {
         return true;
     }
 
-    @RequiresRoles({"admin"})
+//    @RequiresRoles({"admin"})
+@RequiresPermissions({"user-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -139,7 +141,8 @@ public class UserController {
         return true;
     }
 
-    @RequiresRoles({"admin"})
+//    @RequiresRoles({"admin"})
+    @RequiresPermissions({"password-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByPW/{id}", headers = "Accept=application/json")
     public ModelAndView getByPW(
             @PathVariable String id) {
@@ -150,7 +153,8 @@ public class UserController {
         return model;
     }
 
-    @RequiresRoles({"admin"})
+//    @RequiresRoles({"admin"})
+    @RequiresPermissions({"password-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/passWord/{id}/{passWord}", headers = "Accept=application/json")
     public
     @ResponseBody

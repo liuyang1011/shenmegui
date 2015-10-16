@@ -236,7 +236,7 @@
 			text : '删除映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
-				var selectData = $('#mappingdatagrid').datagrid('getSelections');
+				var selectData = $('#mappingdatagrid2').datagrid('getSelections');
 				if (selectData.length == 0) {
 					alert("请先选择一条记录");
 					return;
@@ -244,7 +244,7 @@
 				if(confirm('确定删除吗 ？')){
 					enumManager.deleteElementsMapping(selectData, function(result){
 						if(result){
-							$('#mappingdatagrid').datagrid('reload');
+							$('#mappingdatagrid2').datagrid('reload');
 						}
 					});
 				}
@@ -257,12 +257,12 @@
 			iconCls : 'icon-remove',
 			handler : function() {
 				for ( var per in editedRows) {
-					$("#mappingdatagrid").datagrid('endEdit', editedRows[per]);
+					$("#mappingdatagrid2").datagrid('endEdit', editedRows[per]);
 				}
-				var editData = $("#mappingdatagrid").datagrid('getChanges');
+				var editData = $("#mappingdatagrid2").datagrid('getChanges');
 				enumManager.saveElementMappingSToM(editData,function(result){
 					if(result){
-						$('#mappingdatagrid').datagrid('reload');
+						$('#mappingdatagrid2').datagrid('reload');
 					}
 				});
 				editedRows = [];

@@ -259,6 +259,22 @@ public class CategoryWordController {
         return true;
     }
 
+    @RequiresPermissions({"categoryWord-delete"})
+    @RequestMapping(method = RequestMethod.POST, value = "/deleteCategoryWord2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean deleteCategoryWord2(@RequestBody CategoryWord categoryWord) throws Exception {
+        String id = categoryWord.getId();
+        //与元数据关联的不能删除
+        String esglisgAb = categoryWord.getEsglisgAb();
+        List<Metadata> metadatas = metadataService.findBy("categoryWordId", esglisgAb);
+        if (metadatas.size() > 0) {
+            return false;
+        }
+        categoryWordService.delete(categoryWord);
+        return true;
+    }
+
     /**
      * 类别词esglisgAb唯一性验证
      *

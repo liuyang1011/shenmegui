@@ -258,7 +258,7 @@ public class SystemController {
         return resList;
     }
 
-    @RequiresPermissions({"systemProtocol-update"})
+    @RequiresPermissions({"protocol-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/protocolRelate/{systemId}/{protocols}", headers = "Accept=application/json")
     public @ResponseBody boolean protocolRelate(@PathVariable String systemId,@PathVariable String protocols) {
         if(protocols.equals("none")){

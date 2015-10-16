@@ -325,8 +325,7 @@ public class InterfaceController {
         return modelAndView;
     }
 
-//    @RequiresPermissions({"system-get"})
-    @RequiresPermissions({"interface-get"})
+    @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getInterById/{interfaceId}", headers = "Accept=application/json")
     public
     @ResponseBody

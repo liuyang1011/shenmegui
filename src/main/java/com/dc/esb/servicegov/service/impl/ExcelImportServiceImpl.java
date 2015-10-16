@@ -1849,7 +1849,6 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                                 sda.setLength(length);
                             }
                         }
-//                        sda.setStructAlias(cell);
                     }
                     sdaDAO.save(sda);
                     return sda;

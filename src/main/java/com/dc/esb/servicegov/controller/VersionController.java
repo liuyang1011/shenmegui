@@ -89,8 +89,8 @@ public class VersionController {
     @RequiresPermissions({"version-get"})
     @RequestMapping("/getOperationDiff")
     @ResponseBody
-    public Map<String, Object> getOperationDiff(String type, String versionId1, String versionId2){
-        Map<String, Object> result = versionService.getOperationDiff(type, versionId1, versionId2);
+    public Map<String, Object> getOperationDiff(String type,String versionId, String autoId1, String autoId2){
+        Map<String, Object> result = versionService.getOperationDiff(type, versionId, autoId1, autoId2);
         return result;
     }
 

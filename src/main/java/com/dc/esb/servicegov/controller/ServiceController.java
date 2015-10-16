@@ -35,6 +35,8 @@ public class ServiceController {
     @Autowired
     private ServiceServiceImpl serviceServiceImpl;
     @Autowired
+    private OperationServiceImpl operationServiceImpl;
+    @Autowired
     private ServiceCategoryServiceImpl serviceCategoryServiceImpl;
     @Autowired
     private ProcessContextServiceImpl processContextService;
@@ -118,6 +120,10 @@ public class ServiceController {
     public
     @ResponseBody
     boolean deleteService(@PathVariable String Id) {
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("serviceId",Id);
+        List<Operation> list = operationServiceImpl.findBy(map);
+        if(list.size() > 0) return false;
         serviceServiceImpl.deleteById(Id);
         return true;
     }
@@ -145,6 +151,9 @@ public class ServiceController {
     public
     @ResponseBody
     boolean deleteServiceCategory(@PathVariable String Id) {
+        //大类下是否有服务
+        List<Service> list = serviceServiceImpl.findBy("categoryId", Id);
+        if(list.size()>0) return false;
         serviceCategoryServiceImpl.deleteById(Id);
         return true;
     }

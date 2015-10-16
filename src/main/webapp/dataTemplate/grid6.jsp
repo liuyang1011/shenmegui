@@ -85,9 +85,21 @@
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
-                var row = $('#tt').edatagrid('getSelected');
+                /*var row = $('#tt').edatagrid('getSelected');
                 var rowIndex = $('#tt').edatagrid('getRowIndex', row);
-                $('#tt').edatagrid('deleteRow', rowIndex);
+                $('#tt').edatagrid('deleteRow', rowIndex);*/
+                if (!confirm("确定要删除该类别词吗？")) {
+                    return;
+                }
+                var row = $('#tt').edatagrid('getSelected');
+                categoryWordManager.deleteCategoryWord2(row,function(result){
+                    if(result){
+                        alert("删除成功");
+                        $("#tt").datagrid('reload');
+                    }else{
+                        alert("不能删除，有元数据关联");
+                    }
+                })
             }
         },
         </shiro:hasPermission>

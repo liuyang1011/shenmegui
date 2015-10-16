@@ -20,6 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
 
 <script type="text/javascript" src="/resources/js/ui.js"></script>
+	  <script type="text/javascript" src="/js/version/versionManager.js"></script>
 <script type="text/javascript">
 var serviceId = "${service.serviceId}";
 var operationId = "${operation.operationId}";
@@ -99,33 +100,33 @@ function formatConsole(val,row,index){
 function operation(val,row,index){
 	var s = "";
 	try{
-		s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="comparePage(\''+row.versionHis.id+'\')"  href="javascript:void(0)" >版本对比</a>&nbsp;&nbsp;';
+		s = '<a iconcls="icon-search"  class="easyui-linkbutton l-btn l-btn-small" onclick="comparePage(\''+row.versionHis.autoId+'\')"  href="javascript:void(0)" >版本对比</a>&nbsp;&nbsp;';
 	}catch(exception){
 	}
 	return s;
 }
 //弹出对比页面
-function comparePage(versionId){
-	alert(versionId);
+function comparePage(autoId){
 	$.ajax({
 		type: "get",
 		async: false,
-		url: "/versionHis/judgeVersionHis?versionId="+versionId,
+		url: "/versionHis/judgeVersionPre?autoId="+autoId,
 		dataType: "json",
 		success: function (data) {
 			if(data.autoId != null){
-				var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1="+versionId+"&type=0&versionId2="+data.autoId;
+				var urlPath = "/jsp/version/sdaComparePage.jsp?autoId1="+autoId+"&type=1&autoId2="+data.autoId+"&versionId="+ data.id;
 				$("#dlg").dialog({
 					title: '版本对比',
 					left:'50px',
 					width: 1000,
+					height:'auto',
 					closed: false,
 					cache: false,
 					href: urlPath,
 					modal: true
 				});
 			}else{
-				alert("没有历史版本可以对比!");
+				alert("该版本为初始版本!");
 			}
 		}
 	});

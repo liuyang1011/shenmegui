@@ -21,6 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
 
 <script type="text/javascript" src="/resources/js/ui.js"></script>
+	  <script type="text/javascript" src="/js/version/versionManager.js"></script>
 <script type="text/javascript">
 var editingId;
 var newIds = [];
@@ -253,10 +254,17 @@ var delIds = [];
 				dataType: "json",
 				success: function (data) {
 					if(data.autoId != null){
-						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId1=${operation.versionId }&type=0&versionId2="+data.autoId;
-						var opeDetailContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
-						selectTab('${operation.operationName }-场景对比', opeDetailContent);
-						parent.$('#subtab').tabs('select', '场景对比');
+						var urlPath = "/jsp/version/sdaComparePage.jsp?autoId1=&type=0&autoId2="+data.autoId+"&versionId=${operation.versionId }";
+						$("#dlg").dialog({
+							title: '版本对比',
+							left:'50px',
+							width: 1000,
+							height:'auto',
+							closed: false,
+							cache: false,
+							href: urlPath,
+							modal: true
+						});
 					}else{
 						alert("没有历史版本可以对比!");
 					}
@@ -373,7 +381,9 @@ var delIds = [];
 </div>
 </form>
 <script type="text/javascript" src="/plugin/validate.js"></script>
-
+<div id="dlg" class="easyui-dialog"
+	 style="width:400px;height:280px;padding:10px 20px" closed="true"
+	 resizable="true"></div>
   
   </body>
 </html>
