@@ -2,10 +2,12 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.Protocol;
 import com.dc.esb.servicegov.entity.SystemProtocol;
 import com.dc.esb.servicegov.service.ProtocolService;
 import com.dc.esb.servicegov.service.SystemProtocolService;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -24,6 +26,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/protocol")
 public class ProtocolController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
 
     @Autowired
     private ProtocolService protocolService;
@@ -103,6 +107,8 @@ public class ProtocolController {
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public @ResponseBody
         Protocol add(@RequestBody Protocol protocol) {
+        OperationLog operationLog = systemLogService.record("协议","添加","协议名称：" + protocol.getProtocolName());
+
         if(protocol.getMsgTemplateId()==null || "".equals(protocol.getMsgTemplateId())) {
             String msgtemplateId = UUID.randomUUID().toString();
             protocol.setMsgTemplateId(msgtemplateId);
@@ -110,6 +116,8 @@ public class ProtocolController {
             protocol.getMsgTemplate().setTemplateName(protocol.getProtocolName() + "协议模板");
         }
         protocolService.save(protocol);
+
+        systemLogService.updateResult(operationLog);
         return protocol;
     }
 
@@ -117,11 +125,15 @@ public class ProtocolController {
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{protocolId}", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete (@PathVariable String protocolId) {
+        OperationLog operationLog = systemLogService.record("协议","删除","协议ID：" + protocolId);
+
         List<SystemProtocol> systemProtocols = systemProtocolService.findBy("protocolId", protocolId);
         for(SystemProtocol systemProtocol : systemProtocols){
             systemProtocolService.delete(systemProtocol);
         }
         protocolService.deleteById(protocolId);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

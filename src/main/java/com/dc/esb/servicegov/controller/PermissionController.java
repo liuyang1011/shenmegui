@@ -1,12 +1,14 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.impl.PermissionDAOImpl;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.Permission;
 import com.dc.esb.servicegov.entity.PermissionCategory;
 import com.dc.esb.servicegov.entity.RolePermissionRelation;
 import com.dc.esb.servicegov.service.impl.PermissionCategoryServiceImpl;
 import com.dc.esb.servicegov.service.impl.PermissionServiceImpl;
 import com.dc.esb.servicegov.service.impl.RolePermissionRelationServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/permission")
 public class PermissionController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
     @Autowired
     private PermissionDAOImpl permissionDAOImpl;
     @Autowired
@@ -64,7 +68,10 @@ public class PermissionController {
     public
     @ResponseBody
     boolean savePermission(@RequestBody ArrayList list,@PathVariable("roleId") String roleId) {
+        OperationLog operationLog = systemLogService.record("权限","保存权限","角色ID：" + roleId + "； 权限数量：" + list.size());
         parsePermissionData(list,roleId);
+
+        systemLogService.updateResult(operationLog);
         return true;
 
     }

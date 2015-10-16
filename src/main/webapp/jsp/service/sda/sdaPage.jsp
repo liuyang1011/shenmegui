@@ -21,6 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
 
 <script type="text/javascript" src="/resources/js/ui.js"></script>
+	  <script type="text/javascript" src="/js/version/versionManager.js"></script>
 <script type="text/javascript">
 var editingId;
 var newIds = [];
@@ -258,6 +259,7 @@ var delIds = [];
 							title: '版本对比',
 							left:'50px',
 							width: 1000,
+							height:'auto',
 							closed: false,
 							cache: false,
 							href: urlPath,

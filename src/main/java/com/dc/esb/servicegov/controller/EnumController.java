@@ -1,11 +1,9 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.SearchCondition;
-import com.dc.esb.servicegov.entity.EnumElementMap;
-import com.dc.esb.servicegov.entity.EnumElements;
-import com.dc.esb.servicegov.entity.MasterSlaveEnumMap;
-import com.dc.esb.servicegov.entity.SGEnum;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.EnumServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -24,6 +22,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/enum")
 public class EnumController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
 
     @Autowired
     private EnumServiceImpl enumService;
@@ -33,10 +33,14 @@ public class EnumController {
     public
     @ResponseBody
     boolean addEnum(@RequestBody SGEnum anEnum) {
+        OperationLog operationLog = systemLogService.record("公共代码","添加","代码名称"+ anEnum.getName());
+
         anEnum.setOptDate(DateUtils.format(new Date()));
         String userId = SecurityUtils.getSubject().getPrincipal().toString();
         anEnum.setOptUser(userId);
         enumService.insertEnum(anEnum);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -45,6 +49,8 @@ public class EnumController {
     public
     @ResponseBody
     boolean addSlaveEnum(@RequestBody SGEnum anEnum, @PathVariable(value = "masterId") String masterId) {
+        OperationLog operationLog = systemLogService.record("公共代码","添加从代码","代码名称"+ anEnum.getName());
+
         anEnum.setOptDate(DateUtils.format(new Date()));
         anEnum.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
         enumService.insertEnum(anEnum);
@@ -53,6 +59,8 @@ public class EnumController {
         mapping.setMasterId(masterId);
         mapping.setSlaveId(slaveId);
         enumService.addMasterSlaveEnumMap(mapping);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -278,7 +286,12 @@ public class EnumController {
     public
     @ResponseBody
     boolean deleteEnumById(@PathVariable(value = "id") String id) {
-        return enumService.deleteEnumById(id);
+        OperationLog operationLog = systemLogService.record("公共代码","删除","代码ID"+ id);
+
+        boolean result = enumService.deleteEnumById(id);
+
+        systemLogService.updateResult(operationLog);
+        return result;
 
     }
 
@@ -307,6 +320,9 @@ public class EnumController {
     public
     @ResponseBody
     boolean saveElementMapping(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("公共代码","批量保存","主代码ID列表");
+        String logParams = "";
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
@@ -322,7 +338,11 @@ public class EnumController {
                 enumService.deleteElementsMappingByPK(map.get("MASTERID"), map.get("SLAVEID"));
             }
             enumService.addEnumElementMap(elementMap);
+            logParams += elementMap.getMasterElementId() +", ";
         }
+
+        operationLog.setParams("主代码ID列表" + logParams);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

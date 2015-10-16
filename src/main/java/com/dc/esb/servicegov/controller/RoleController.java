@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -27,6 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/role")
 public class RoleController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
 	@Autowired
 	private RoleServiceImpl roleServiceImpl;
     @Autowired
@@ -35,7 +40,9 @@ public class RoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody Role role) {
+        OperationLog operationLog = systemLogService.record("角色","添加","名称：" + role.getName());
 		roleServiceImpl.save(role);
+        systemLogService.updateResult(operationLog);
 		return true;
 	}
 
@@ -73,7 +80,11 @@ public class RoleController {
     public
     @ResponseBody
     boolean delete(@PathVariable String id) {
+        OperationLog operationLog = systemLogService.record("角色","删除","角色ID:" + id);
+
         roleServiceImpl.deleteById(id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

@@ -11,43 +11,9 @@
     <base href="<%=basePath%>">
 
     <title>版本对比</title>
-
-    <link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
-    <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
-
-    <script type="text/javascript" src="/resources/js/ui.js"></script>
-    <script type="text/javascript">
-        function compare(){
-            var autoId1 =  $("#version1").combobox("getValue");
-            var autoId2 =  $("#version2").combobox("getValue");
-            if(autoId1 == autoId2){
-                alert("两个版本相同！");
-            }else{
-                var type=0;
-                if(autoId1 != "" && autoId2 != ""){
-                    type = 1;
-                }
-                if(autoId1 != "" && autoId2 == ""){
-                    type = 2;
-                }
-                if(type == 0){
-                    autoId1 = "${param.autoId1}";
-                }
-                if(type == 2){
-                    autoId2 = "${param.autoId2}";
-                }
-                var urlPath = "/version/getOperationDiff?type=" + type +"&versionId=${param.versionId}&autoId1="+autoId1+"&autoId2="+autoId2 + "&_t=" + new Date().getTime();
-                $("#sdaHisTree").treegrid({url:urlPath});
-            }
-
-        }
-        </script>
 </head>
 <body>
+    <input id="versionId" value="${param.versionId}" type="hidden">
 <table>
     <tr>
         <td>选择版本1</td>
@@ -81,7 +47,7 @@
 					"
                 /></td>
         <td>
-            <a href="javascript:void(0)" id="saveTagBtn" onclick="compare()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >对比</a>
+            <a href="javascript:void(0)" id="saveTagBtn" onclick="userManager.compare()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >对比</a>
         </td>
         <td>
             <table >

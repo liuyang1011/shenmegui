@@ -49,6 +49,9 @@ import com.dc.esb.servicegov.util.ExcelTool;
 @RequestMapping("/excelHelper")
 public class ExcelImportController {
 
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
     protected Log logger = LogFactory.getLog(getClass());
 
     @Qualifier("TaizhouExcelImportService")
@@ -79,6 +82,8 @@ public class ExcelImportController {
     @RequiresPermissions({"importInterface-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport")
     public void importInterfaceField(@RequestParam("systemId")String systemId, @RequestParam("file") MultipartFile file, HttpServletResponse response){
+        OperationLog operationLog = systemLogService.record("接口文档","导入","文件名称："+ file.getName());
+
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
         Workbook workbook = null;
@@ -182,11 +187,15 @@ public class ExcelImportController {
         writer.println("</script>");
         writer.flush();
         writer.close();
+
+        systemLogService.updateResult(operationLog);
     }
 
     @RequiresPermissions({"importInterface-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/interfaceimport/noSystem")
     public void importInterfaceField(@RequestParam("file") MultipartFile file, HttpServletResponse response){
+        OperationLog operationLog = systemLogService.record("接口文档","导入","文件名称："+ file.getName());
+
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
         Workbook workbook = null;
@@ -291,6 +300,8 @@ public class ExcelImportController {
         writer.println("</script>");
         writer.flush();
         writer.close();
+
+        systemLogService.updateResult(operationLog);
     }
 
     @RequiresPermissions({"importExcel-update"})
@@ -298,6 +309,8 @@ public class ExcelImportController {
     public void importFieldMapping(@RequestParam("file")
                                    MultipartFile file, Model model, HttpServletResponse response, @RequestParam("select")
                                    String operateFlag) {
+        OperationLog operationLog = systemLogService.record("字段映射文档","导入","文件名称："+ file.getName());
+
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
         logger.info("覆盖标识: " + operateFlag);
@@ -548,6 +561,8 @@ public class ExcelImportController {
         writer.println("</script>");
         writer.flush();
         writer.close();
+
+        systemLogService.updateResult(operationLog);
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
