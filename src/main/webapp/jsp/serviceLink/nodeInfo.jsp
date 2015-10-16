@@ -84,15 +84,14 @@
                         <th>
                             <NOBR>节点类型</NOBR>
                         </th>
-                        <td><input class="easyui-textbox" type="text" name="nodeType" id="nodeType"
+                        <td><select name="nodeType" id="nodeType" panelHeight="auto" style="width:180px" editable="false"
                                    value="${node.nodeType}"/></td>
                     </tr>
                     <tr>
                         <th>
                             <NOBR>交易属性标识</NOBR>
                         </th>
-                        <td><input class="easyui-textbox" type="text" name="location" id="location"
-                                   value="${node.location}"/></td>
+                        <td><select name="location" id="location" panelHeight="auto" style="width:180px" editable="false"/></td>
                     </tr>
                     <tr>
                         <th>
@@ -135,10 +134,9 @@
                 <table border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <th>
-                            <NOBR>ESB标识</NOBR>
+                            <NOBR>ESB调用方式</NOBR>
                         </th>
-                        <td><input class="easyui-textbox" type="text" name="esbAccessPattern" id="esbAccessPattern"
-                                   value="${node.esbAccessPattern}"/>
+                        <td><select name="esbAccessPattern" id="esbAccessPattern"panelHeight="auto" style="width:180px" editable="false"/>
                         </td>
                     </tr>
                     <tr>
@@ -199,12 +197,12 @@
         <th data-options="field:'operationName'">场景名称</th>
         <th data-options="field:'invokeType'">调用类型</th>
 
-        <th data-options="field:'nodeType'">节点类型</th>
-        <th data-options="field:'location'">交易属性标识</th>
+        <th data-options="field:'nodeType'" formatter='formatter.nodeType'>节点类型</th>
+        <th data-options="field:'location'" formatter='formatter.location'>交易属性标识</th>
         <th data-options="field:'bussCategory'">节点业务分类</th>
         <th data-options="field:'status'">节点状态</th>
 
-        <th data-options="field:'esbAccessPattern'">ESB调用方式</th>
+        <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern'>ESB调用方式</th>
         <th data-options="field:'condition'">条件位</th>
         <th data-options="field:'conditionDesc'">条件信息</th>
     </tr>
@@ -220,6 +218,41 @@
 <script type="text/javascript">
 
     var nodeId = "${nodeId}";
+    var formatter = {
+        esbAccessPattern: function (value, row, index) {
+            if (value == 0) {
+                return "穿透模式，ESB不负责任何处理";
+            }
+            if (value == 1) {
+                return "代理模式，ESB负责服务适配";
+            }
+            if (value == 2) {
+                return "寻址模式，ESB提供寻址功能，仅负责寻址、监控";
+            }
+            if (value == 4) {
+                return "组合模式，ESB提供服务的组合";
+            }
+        },
+        location: function (value, row, index) {
+            if (value == 1) {
+                return "本系统发起";
+            }
+            if (value == 2) {
+                return "上游系统调用";
+            }
+        },
+        nodeType: function (value, row, index) {
+            if (value == 0) {
+                return "消费方节点";
+            }
+            if (value == 1) {
+                return "提供方节点";
+            }
+            if (value == 2) {
+                return "复合型节点";
+            }
+        }
+    };
 
     /**
      * 交易链路相邻节点table的ToolBar
@@ -294,6 +327,63 @@
             }
         });
 
+        $('#nodeType').combobox({
+            valueField: 'value',
+            textField: 'label',
+            data: [{
+                label: '消费方节点',
+                value: '0'
+            },{
+                label: '提供方节点',
+                value: '1'
+            },{
+                label: '复合型节点',
+                value: '2'
+            }]
+        });
+        var nodeType = "${node.nodeType}"
+        if(nodeType != ""){
+            $('#nodeType').combobox('setValue',nodeType);
+        }
+
+        $('#location').combobox({
+            valueField: 'value',
+            textField: 'label',
+            data: [{
+                label: '本系统发起',
+                value: '1'
+            },{
+                label: '上游系统调用',
+                value: '2'
+            }]
+        });
+        var location = "${node.location}"
+        if(location != ""){
+            $('#location').combobox('setValue',location);
+        }
+
+        $('#esbAccessPattern').combobox({
+            valueField: 'value',
+            textField: 'label',
+            data: [{
+                label: '穿透模式，ESB不负责任何处理',
+                value: '0'
+            },{
+                label: '代理模式，ESB负责服务适配',
+                value: '1'
+            },{
+                label: '寻址模式，ESB提供寻址功能，仅负责寻址、监控',
+                value: '2'
+            },{
+                label: '组合模式，ESB提供服务的组合',
+                value: '4'
+            }]
+        });
+        var esbAccessPattern = "${node.esbAccessPattern}"
+        if(esbAccessPattern != ""){
+            $('#esbAccessPattern').combobox('setValue',esbAccessPattern);
+        }
+
 
         $("#saveNodeInfoBtn").click(function () {
             var nodeProperties = [];
@@ -305,7 +395,7 @@
             var location = {
                 "invokeId": nodeId,
                 "propertyName": "location",
-                "propertyValue": $("#location").val()
+                "propertyValue": $('#location').combobox('getValue')
             };
             var bussCategory = {
                 "invokeId": nodeId,
@@ -332,7 +422,7 @@
             var esbAccessPattern = {
                 "invokeId": nodeId,
                 "propertyName": "esbAccessPattern",
-                "propertyValue": $("#esbAccessPattern").val()
+                "propertyValue": $('#esbAccessPattern').combobox('getValue')
             };
             var condition = {
                 "invokeId": nodeId,

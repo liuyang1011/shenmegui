@@ -42,18 +42,18 @@
 
             <div id="jtk-demo-flowchart" class="jtk-demo-main" style="width:100%;margin-top:-4px;">
                 <!-- this is the main drawing area -->
-                <div class="jtk-demo-canvas">
+                <div class="jtk-demo-canvas" id="jtk-demo-canvas">
                     <!-- controls -->
-                    <div class="controls">
-                        <i class="fa fa-arrows selected-mode" mode="pan" title="Pan Mode"></i>
-                        <i class="fa fa-pencil" mode="select" title="Select Mode"></i>
-                        <i class="fa fa-home" reset title="Zoom To Fit"></i>
-                    </div>
+                    <%--<div class="controls">--%>
+                        <%--<i class="fa fa-arrows selected-mode" mode="pan" title="Pan Mode"></i>--%>
+                        <%--<i class="fa fa-pencil" mode="select" title="Select Mode"></i>--%>
+                        <%--<i class="fa fa-home" reset title="Zoom To Fit"></i>--%>
+                    <%--</div>--%>
                     <!-- miniview -->
-                    <div class="miniview"></div>
+                    <%--<div class="miniview"></div>--%>
                 </div>
                 <!-- the current dataset -->
-                <div class="jtk-demo-dataset"></div>
+                <div class="jtk-demo-dataset" id="jtk-demo-dataset"></div>
             </div>
         </div>
     </div>
