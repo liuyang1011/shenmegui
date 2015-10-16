@@ -381,20 +381,7 @@ public class ServiceLinkController {
         List<ServiceLinkNode> serviceLinkNodes = serviceLinkNodeService.getAll();
 
         for (ServiceInvoke serviceInvoke : serviceInvokes) {
-            ServiceLinkNodeVO serviceLinkNodeVO = new ServiceLinkNodeVO(serviceInvoke);
-            if (serviceInvoke.getOperationId() != null && serviceInvoke.getServiceId() != null) {
-                Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
-                Service service = serviceService.getById(serviceInvoke.getServiceId());
-                serviceLinkNodeVO.setServiceName(service.getServiceName());
-                serviceLinkNodeVO.setOperationName(operation.getOperationName());
-            }
-            for (ServiceLinkNode serviceLinkNode : serviceLinkNodes) {
-                if (serviceInvoke.getInvokeId().equalsIgnoreCase(serviceLinkNode.getServiceInvokeId())) {
-                    serviceLinkNodeVO.setCondition(serviceLinkNode.getCondition());
-                    serviceLinkNodeVO.setEsbAccessPattern(serviceLinkNode.getEsbAccessPattern());
-                }
-            }
-
+            ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
             serviceLinkNodeVOs.add(serviceLinkNodeVO);
         }
 
