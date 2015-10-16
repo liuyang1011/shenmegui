@@ -17,6 +17,8 @@ public class OperationLog {
     private  String id;
     @Column(name = "opt_user")
     private String optUser;
+    @Column(name = "user_name")
+    private String user_name;
     @Column(name = "opt_date")
     private String optDate;
     @Column(name = "opt_result")
@@ -102,5 +104,13 @@ public class OperationLog {
 
     public void setChineseName(String chineseName) {
         this.chineseName = chineseName;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 }

@@ -11,6 +11,7 @@ import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -37,6 +38,9 @@ import java.util.Map;
 public class ConfigExportController {
 
     protected Log logger = LogFactory.getLog(getClass());
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
     @Autowired
     SystemService systemService;
 
@@ -73,6 +77,8 @@ public class ConfigExportController {
     @ResponseBody
     List<String> export(@PathVariable String serviceId, @PathVariable String operationId, @PathVariable String providerSystemId, @PathVariable String providerInterfaceId, @PathVariable boolean providerIsStandard,
                          @PathVariable String consumerInterfaceId, @PathVariable String consumerSystemId, @PathVariable boolean consumerIsStandard, @PathVariable String providerStandardType, @PathVariable String consumerStandardType, HttpServletResponse response) {
+        OperationLog operationLog = systemLogService.record("服务","配置导出","服务ID:"+serviceId+";操作ID："+operationId+";提供者ID" +providerSystemId+";消费者ID:"+consumerSystemId+", 提供者接口ID"+providerInterfaceId+", consumerSystemId 消费者接口ID:");
+
         File in_file = null;
         ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId, providerIsStandard, consumerSystemId, consumerInterfaceId, consumerIsStandard);
         Map<String, String> sdaMap = new HashMap<String, String>();
@@ -264,6 +270,7 @@ public class ConfigExportController {
             }
             out.flush();
 
+            systemLogService.updateResult(operationLog);
 
         } catch (Exception e) {
 

@@ -6,7 +6,9 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.rsimport.impl.MetadataArrayParserImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +31,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/resourceImport")
 public class ResourceImportController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
     private Log log = LogFactory.getLog(ResourceImportController.class);
     @Autowired
     private CategoryWordParserImpl categoryWordParserImpl;
@@ -44,6 +49,8 @@ public class ResourceImportController {
     public ModelAndView importMetadata(HttpServletRequest request, HttpServletResponse response,
                           @RequestParam("file") MultipartFile file
     ) throws Exception {
+        OperationLog operationLog = systemLogService.record("数据字典","导入","文件名称：" + file.getName());
+
         ModelAndView mv = new org.springframework.web.servlet.ModelAndView("message");
         String url= "/dataTemplate/grid7.jsp";
         String msg = "";
@@ -88,6 +95,8 @@ public class ResourceImportController {
         }
         mv.addObject("msg", msg);
         mv.addObject("url", url);
+
+        systemLogService.updateResult(operationLog);
         return mv;
     }
 

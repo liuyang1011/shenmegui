@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,6 +22,9 @@ import com.dc.esb.servicegov.util.TreeNode;
 @Controller
 @RequestMapping("sda")
 public class SDAController {
+	@Autowired
+	private SystemLogServiceImpl systemLogService;
+
 	@Autowired
 	SDAServiceImpl serviceImpl;
 
@@ -54,11 +59,14 @@ public class SDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/saveSDA", headers = "Accept=application/json")
 	@ResponseBody
 	public boolean saveSDA(@RequestBody SDA[] sdas){
+		OperationLog operationLog = systemLogService.record("SDA","批量保存","数量：" + sdas.length);
 		//判断场景状态是否为服务定义或修订
 		boolean canModifyOperation = serviceImpl.judgeCanModifyOperation(sdas[0].getServiceId(), sdas[0].getOperationId());
 		if(!canModifyOperation){
 			return false;
 		}
+
+		systemLogService.updateResult(operationLog);
 		return serviceImpl.save(sdas);
 	}
 
@@ -68,7 +76,12 @@ public class SDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/deleteSDA", headers = "Accept=application/json")
 	@ResponseBody
 	public boolean deleteSDA(@RequestBody String[] delIds){
-		return serviceImpl.delete(delIds);
+		OperationLog operationLog = systemLogService.record("SDA","批量删除","数量：" + delIds.length);
+
+		boolean result = serviceImpl.delete(delIds);
+
+		systemLogService.updateResult(operationLog);
+		return result;
 	}
 
 //	@RequiresPermissions({"service-update"})
@@ -76,7 +89,12 @@ public class SDAController {
 	@RequestMapping("/moveUp")
 	@ResponseBody
 	public boolean moveUp(String sdaId){
-		return serviceImpl.moveUp(sdaId);
+		OperationLog operationLog = systemLogService.record("SDA","元素上移","元素ID:" + sdaId);
+
+		boolean result = serviceImpl.moveUp(sdaId);
+
+		systemLogService.updateResult(operationLog);
+		return result;
 	}
 
 //	@RequiresPermissions({"service-update"})
@@ -84,7 +102,12 @@ public class SDAController {
 	@RequestMapping("/moveDown")
 	@ResponseBody
 	public boolean moveDown(String sdaId){
-		return serviceImpl.moveDown(sdaId);
+		OperationLog operationLog = systemLogService.record("SDA","元素上移","元素ID:" + sdaId);
+
+		boolean result = serviceImpl.moveDown(sdaId);
+
+		systemLogService.updateResult(operationLog);
+		return result;
 	}
 
 	@RequestMapping("comparePage")

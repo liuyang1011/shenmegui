@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,6 +24,9 @@ import com.dc.esb.servicegov.service.impl.SLATemplateServiceImpl;
 @Controller
 @RequestMapping("/slaTemplate")
 public class SLATemplateController {
+	@Autowired
+	private SystemLogServiceImpl systemLogService;
+
 	@Autowired
 	private SLATemplateServiceImpl slaTemplateServiceImpl;
 	@Autowired
@@ -46,6 +51,8 @@ public class SLATemplateController {
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	   boolean save(@RequestBody List list) {
+		OperationLog operationLog = systemLogService.record("SLA模板","批量保存元素","数量：" + list.size());
+
   	 for (int i = 0; i < list.size(); i++) {
            LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
            Set<String> keySet = map.keySet();
@@ -57,6 +64,8 @@ public class SLATemplateController {
            slaTemplate.setDesc(map.get("desc"));
            slaTemplateServiceImpl.save(slaTemplate);
   	 }
+
+		systemLogService.updateResult(operationLog);
       return true;
   }
 
@@ -64,12 +73,16 @@ public class SLATemplateController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
+		OperationLog operationLog = systemLogService.record("SLA模板","批量删除元素","数量：" +  list.size());
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
             String id = map.get("slaTemplateId");
             slaTemplateServiceImpl.deleteById(id);
         }
+
+		systemLogService.updateResult(operationLog);
         return true;
  
 	}
@@ -79,6 +92,8 @@ public class SLATemplateController {
 	public @ResponseBody
 	   boolean saveOla(@RequestBody List list,@PathVariable(value = "serviceId") String serviceId,
 				@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
+		OperationLog operationLog = systemLogService.record("SLA模板","根据服务场景添加SLA模板","服务ID" + serviceId + "; 场景ID:" + operationId +"; SLA模板ID:" + slaTemplateId );
+
    	 for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
@@ -95,6 +110,8 @@ public class SLATemplateController {
             sla.setSlaTemplateId(slaTemplateId);
             slaServiceImpl.saveTemplate(sla);
    	 }
+
+		systemLogService.updateResult(operationLog);
        return true;
    }
 
@@ -102,6 +119,8 @@ public class SLATemplateController {
 	public @ResponseBody
 	boolean setTemplateData(@PathVariable(value = "serviceId") String serviceId,
 					@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
+		OperationLog operationLog = systemLogService.record("SLA模板","根据服务场景添加SLA模板","服务ID" + serviceId + "; 场景ID:" + operationId +"; SLA模板ID:" + slaTemplateId );
+
 		//查询模版sla数据
 		Map<String,String> map = new HashMap<String, String>();
 		map.put("slaTemplateId",slaTemplateId);
@@ -137,6 +156,8 @@ public class SLATemplateController {
 				slaServiceImpl.insert(sla);
 			}
 		}
+
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 

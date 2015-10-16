@@ -7,6 +7,7 @@ import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.ProtocolService;
 import com.dc.esb.servicegov.service.SystemProtocolService;
 import com.dc.esb.servicegov.service.SystemService;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -31,6 +32,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/system")
 public class SystemController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -159,7 +162,11 @@ public class SystemController {
     public @ResponseBody
     boolean save(@RequestBody
                  System entity) {
+        OperationLog operationLog = systemLogService.record("系统","保存","系统名称：" + entity.getSystemChineseName());
+
         systemService.save(entity);
+
+        systemLogService.updateResult(operationLog);
         return true;
 
     }
@@ -182,7 +189,12 @@ public class SystemController {
     public @ResponseBody
     boolean delete(@PathVariable
                  String systemId) {
-        return systemService.deleteSystemById(systemId);
+        OperationLog operationLog = systemLogService.record("系统","删除","系统ID:" + systemId);
+
+        boolean result = systemService.deleteSystemById(systemId);
+
+        systemLogService.updateResult(operationLog);
+        return result;
 
     }
 
@@ -190,9 +202,13 @@ public class SystemController {
     @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete2(@RequestBody String systemId) {
+        OperationLog operationLog = systemLogService.record("系统","删除","系统ID:" + systemId);
         //去掉''
         systemId = systemId.substring(1,systemId.length()-1);
-        return systemService.deleteSystemById(systemId);
+        boolean result =  systemService.deleteSystemById(systemId);
+
+        systemLogService.updateResult(operationLog);
+        return result;
 
     }
 
@@ -261,6 +277,8 @@ public class SystemController {
     @RequiresPermissions({"protocol-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/protocolRelate/{systemId}/{protocols}", headers = "Accept=application/json")
     public @ResponseBody boolean protocolRelate(@PathVariable String systemId,@PathVariable String protocols) {
+        OperationLog operationLog = systemLogService.record("系统","关联协议","系统ID:" + systemId + "; 协议ID:" + protocols);
+
         if(protocols.equals("none")){
             systemProtocolService.deleteSystemProtocol(systemId);
             return true;
@@ -281,6 +299,8 @@ public class SystemController {
                 systemProtocolService.save(systemProtocol);
             }
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

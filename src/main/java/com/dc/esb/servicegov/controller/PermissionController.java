@@ -19,6 +19,8 @@ import java.util.*;
 @RequestMapping("/permission")
 public class PermissionController {
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+    @Autowired
     private PermissionDAOImpl permissionDAOImpl;
     @Autowired
     private PermissionServiceImpl permissionService;
@@ -84,8 +86,11 @@ public class PermissionController {
     @RequestMapping(method = RequestMethod.POST, value = "/savePermission/{roleId}", headers = "Accept=application/json")
      public
      @ResponseBody
-     boolean savePermission(@RequestBody ArrayList list,@PathVariable("roleId") String roleId) {
+    boolean savePermission(@RequestBody ArrayList list,@PathVariable("roleId") String roleId) {
+        OperationLog operationLog = systemLogService.record("权限","保存权限","角色ID：" + roleId + "； 权限数量：" + list.size());
         parsePermissionData(list,roleId);
+
+        systemLogService.updateResult(operationLog);
         return true;
 
     }

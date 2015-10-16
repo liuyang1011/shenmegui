@@ -5,9 +5,11 @@ import java.util.*;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
 import com.dc.esb.servicegov.service.impl.InterfaceServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
@@ -31,6 +33,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/serviceLink")
 public class ServiceInvokeController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
     @Autowired
     private ServiceInvokeServiceImpl serviceInvokeService;
     @Autowired
@@ -101,6 +106,7 @@ public class ServiceInvokeController {
     public
     @ResponseBody
     boolean deleteInvoke(@RequestBody LinkedHashMap map) {
+        OperationLog operationLog = systemLogService.record("映射关系","删除","");
         String serviceId = map.get("serviceId").toString();
         String operationId = map.get("operationId").toString();
         String[] consumers = map.get("consumers").toString().replaceAll("，", ",").split(",");
@@ -196,6 +202,9 @@ public class ServiceInvokeController {
                 }
             }
         }
+
+        operationLog.setParams("服务ID:" + serviceId + "; 场景ID:" + operationId);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -205,6 +214,8 @@ public class ServiceInvokeController {
     public
     @ResponseBody
     boolean addServiceLink(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("映射关系","添加","数量：" + list.size());
+
         List consumers = (ArrayList)list.get(0);
         List providers = (ArrayList)list.get(1);
         List<ServiceInvoke> temp = new ArrayList<ServiceInvoke>();
@@ -309,6 +320,8 @@ public class ServiceInvokeController {
                 interfaceInvokeService.insert(interfaceInvoke);
             }
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

@@ -1,11 +1,11 @@
-<%@ page contentType="text/html; charset=utf-8" language="java"%>
+	<%@ page contentType="text/html; charset=utf-8" language="java"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <form class="formui">
-	<table border="0" cellspacing="0" cellpadding="0">
+	<table id="#tg" border="0" cellspacing="0" cellpadding="0">
 
 		<tr>
 			<th>
@@ -99,7 +99,7 @@
 <script type="text/javascript">
 
 	function save(){
-
+		var systemId;
 		var protocolId = $("#protocolIdText").val();
         var protocolName = $("#protocolNameText").val();
 		var msgType = $("#msgTypeText").val();
@@ -111,6 +111,20 @@
 		var templateContent = $("#templateContent").val();
 		var msgTemplateId = $("#msgTemplateIdText").val();
 		var generatorId = $("#generatorIdText").val();
+		var treeObj =$('.msinterfacetree') ;
+		try {
+			var selectNode = treeObj.tree("getSelected");
+			systemId = selectNode.id;
+			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
+			if(node){
+				var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
+				console.log(systemNode);
+				systemId = systemNode.id;
+			}
+		} catch (e) {
+			systemId = "${param.systemId}";
+			treeObj = parent.$('.msinterfacetree');
+		}
 		var data = {};
 
 		data.protocolId = protocolId;
@@ -132,12 +146,15 @@
 		sysManager.addProtocol(data,function(result){
 			if(result){
 				$('#w').window('close');
-				var selectNode = $('.msinterfacetree').tree("getSelected");
-				var parent = $('.msinterfacetree').tree("getParent", selectNode.target);
-				var urlPath = $('.msinterfacetree').tree('options').url;
-				$('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
-				$('.msinterfacetree').tree("reload", parent.target);
-				$('.msinterfacetree').tree('options').url = urlPath;
+				var selectNode = treeObj.tree("getSelected");
+				var parent = treeObj.tree("getParent", selectNode.target);
+				if(systemId == null || systemId == ''){
+					systemId = treeObj.tree("getParent", parent.target).id;
+				}
+				var urlPath = treeObj.tree('options').url;
+				treeObj.tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
+				treeObj.tree("reload", parent.target);
+				treeObj.tree('options').url = urlPath;
 				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");

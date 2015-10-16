@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.BaseLine;
+import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 
@@ -31,6 +33,8 @@ import com.dc.esb.servicegov.util.JSONUtil;
 @RequestMapping("/baseLine")
 public class BaseLineController {
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+    @Autowired
     private BaseLineServiceImpl baseLineServiceImpl;
     @Autowired
     private ServiceInvokeServiceImpl serviceInvokeServiceImpl;
@@ -42,7 +46,12 @@ public class BaseLineController {
     @ResponseBody
     boolean release(HttpServletRequest req, String code, String blDesc,
                     String versionHisIds) {
-        return baseLineServiceImpl.release(req, code, blDesc, versionHisIds);
+        OperationLog operationLog = systemLogService.record("基线","基线发布","版本号：" + code + "；描述：" + blDesc);
+
+        boolean result = baseLineServiceImpl.release(req, code, blDesc, versionHisIds);
+
+        systemLogService.updateResult(operationLog);
+        return result;
 
     }
 

@@ -1,12 +1,10 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.Service;
 import com.dc.esb.servicegov.entity.ServiceCategory;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceCategoryServiceImpl;
-import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ServiceTreeViewBean;
@@ -33,6 +31,9 @@ public class ServiceController {
     private static final Log log = LogFactory.getLog(ServiceController.class);
 
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     private ServiceServiceImpl serviceServiceImpl;
     @Autowired
     private OperationServiceImpl operationServiceImpl;
@@ -56,6 +57,7 @@ public class ServiceController {
     public
     @ResponseBody
     boolean addService(@RequestBody Service service) {
+        OperationLog operationLog = systemLogService.record("服务","添加","服务名称：" + service.getServiceName());
         //TODO 新增相同id就被覆盖了
         try {
             serviceServiceImpl.insert(service);
@@ -63,6 +65,8 @@ public class ServiceController {
             log.error(e,e);
             return false;
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -71,6 +75,7 @@ public class ServiceController {
     public
     @ResponseBody
     boolean addServiceWithProcess(@RequestBody Service service, @PathVariable String processId) {
+        OperationLog operationLog = systemLogService.record("服务","添加(任务)","服务名称：" + service.getServiceName());
         //TODO 新增相同id就被覆盖了
         String optUser = SecurityUtils.getSubject().getPrincipal().toString();
         String optDate = DateUtils.format(new Date());
@@ -90,6 +95,8 @@ public class ServiceController {
             log.error(e,e);
             return false;
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -111,7 +118,11 @@ public class ServiceController {
     public
     @ResponseBody
     boolean editService(@RequestBody Service service) {
+        OperationLog operationLog = systemLogService.record("服务","修改","服务名称：" + service.getServiceName());
+
         serviceServiceImpl.save(service);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -124,7 +135,11 @@ public class ServiceController {
         map.put("serviceId",Id);
         List<Operation> list = operationServiceImpl.findBy(map);
         if(list.size() > 0) return false;
+        OperationLog operationLog = systemLogService.record("服务","删除","服务ID：" +Id);
+
         serviceServiceImpl.deleteById(Id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -133,7 +148,11 @@ public class ServiceController {
     public
     @ResponseBody
     boolean addServiceCategory(@RequestBody ServiceCategory serviceCategory) {
+        OperationLog operationLog = systemLogService.record("服务分类", "添加", "分类名称：" + serviceCategory.getCategoryName());
+
         serviceCategoryServiceImpl.save(serviceCategory);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -142,7 +161,11 @@ public class ServiceController {
     public
     @ResponseBody
     boolean editService(@RequestBody ServiceCategory serviceCategory) {
+        OperationLog operationLog = systemLogService.record("服务分类","修改","分类名称：" + serviceCategory.getCategoryName());
+
         serviceCategoryServiceImpl.save(serviceCategory);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -154,7 +177,11 @@ public class ServiceController {
         //大类下是否有服务
         List<Service> list = serviceServiceImpl.findBy("categoryId", Id);
         if(list.size()>0) return false;
+        OperationLog operationLog = systemLogService.record("服务分类", "删除", "分类ID：" + Id);
+
         serviceCategoryServiceImpl.deleteById(Id);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

@@ -1,6 +1,8 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.ResourceExportServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.vo.ReleaseListVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +30,9 @@ public class ResourceExportController {
     private static Log log = LogFactory.getLog(ResourceExportController.class);
 
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     ResourceExportServiceImpl resourceExportService;
 
     /**
@@ -37,11 +42,16 @@ public class ResourceExportController {
     @RequestMapping(method = RequestMethod.GET, value = "/export")
     public
     @ResponseBody
-    boolean exportReleaseCount(HttpServletRequest request, HttpServletResponse response,
+    boolean exportDictionary(HttpServletRequest request, HttpServletResponse response,
                                ReleaseListVO listVO) {
+        OperationLog operationLog = systemLogService.record("数据字典","导出","");
+
         String fileName ="data_dictionary_" + new Date().getTime();
         HSSFWorkbook workbook = resourceExportService.genderResourceExcel();
-        return export(request, response,fileName, workbook);
+        boolean result = export(request, response,fileName, workbook);
+
+        systemLogService.updateResult(operationLog);
+        return result;
 
     }
 

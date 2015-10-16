@@ -8,7 +8,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.OperationPK;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -32,9 +32,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.Service;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
 import net.sf.json.JSONArray;
@@ -57,6 +54,8 @@ import static com.dc.esb.servicegov.service.support.Constants.STATE_UNPASS;
 @Controller
 @RequestMapping("/operation")
 public class OperationController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
     @Autowired
     private OperationServiceImpl operationServiceImpl;
     @Autowired
@@ -178,6 +177,7 @@ public class OperationController {
     public
     @ResponseBody
     boolean add(Operation operation) {
+        OperationLog operationLog = systemLogService.record("服务场景","添加","服务ID:" + operation.getServiceId() + "; 场景ID:" + operation.getOperationId() + "; 场景名称:" + operation.getOperationName());
 //        if(Integer.parseInt(operation.getOperationId()) < 10){
 //            operation.setOperationId("0"+Integer.parseInt(operation.getOperationId()));
 //        }
@@ -189,6 +189,8 @@ public class OperationController {
             return false;
         }else{
             operationServiceImpl.addOperation(operation);
+
+            systemLogService.updateResult(operationLog);
             return true;
         }
     }
@@ -272,11 +274,15 @@ public class OperationController {
     public
     @ResponseBody
     boolean edit(HttpServletRequest req, Operation operation) {
+        OperationLog operationLog = systemLogService.record("服务场景","修改","服务ID:" + operation.getServiceId() + "; 场景ID:" + operation.getOperationId() + "; 场景名称:" + operation.getOperationName());
         //只有服务定义和修订状态能修改
         if(!operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT) && !operation.getState().equals(Constants.Operation.OPT_STATE_REVISE)){
             return false;
         }
-        return operationServiceImpl.editOperation(req, operation);
+        boolean result = operationServiceImpl.editOperation(req, operation);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
 
     /**
@@ -329,6 +335,8 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.POST, value = "/deletes", headers = "Accept=application/json")
     @ResponseBody
     public boolean deletes(@RequestBody OperationPK[] operationPks) {
+        OperationLog operationLog = systemLogService.record("服务场景","批量删除","数量：" + operationPks.length);
+
         //上线和发布的场景不能删除
         for (int i = 0; i < operationPks.length; i++) {
             Operation operation = operationServiceImpl.getById(operationPks[i]);
@@ -338,6 +346,8 @@ public class OperationController {
         }
 
         operationServiceImpl.deleteOperations(operationPks);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -362,15 +372,25 @@ public class OperationController {
     @RequiresPermissions({"version-add"})
     @RequestMapping("/release")
     public ModelAndView release(HttpServletRequest req, String operationId, String serviceId, String versionDesc) {
+        OperationLog operationLog = systemLogService.record("服务场景","发布","服务ID:" + serviceId + "; 场景ID:" + operationId + "; 版本描述:" + versionDesc);
+
         operationServiceImpl.release(operationId, serviceId, versionDesc);
-        return detailPage(req, operationId, serviceId);
+        ModelAndView result = detailPage(req, operationId, serviceId);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
 
     @RequiresPermissions({"version-add"})
     @RequestMapping("/releaseBatch")
     @ResponseBody
     public boolean releaseBatch(@RequestBody Operation[] operations) {
-        return operationServiceImpl.releaseBatch(operations);
+        OperationLog operationLog = systemLogService.record("服务场景","版本发布","发布数量：" + operations.length);
+
+        boolean result = operationServiceImpl.releaseBatch(operations);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
 
     @RequiresPermissions({"service-update"})
@@ -389,13 +409,20 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.POST, value = "/auditSave", headers = "Accept=application/json")
     @ResponseBody
     public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) throws  Throwable{
-        return operationServiceImpl.auditOperation(state, auditRemark, operationIds);
+        OperationLog operationLog = systemLogService.record("服务场景","审核","场景数量：" + operationIds.length + "； 审核结果:" + Constants.Operation.getStateName(state) + "; 审核备注：" + auditRemark);
+
+        boolean result = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
 
     @RequiresPermissions({"version-check"})
     @RequestMapping(method = RequestMethod.POST, value = "/auditSave/{processId}", headers = "Accept=application/json")
     @ResponseBody
     public boolean auditSaveWithProcess(String state , String auditRemark, @RequestBody String[] operationIds, @PathVariable("processId") String processId) throws  Throwable{
+        OperationLog operationLog = systemLogService.record("服务场景","审核(任务)","场景数量：" + operationIds.length + "； 审核结果:" + Constants.Operation.getStateName(state) + "; 审核备注：" + auditRemark);
+
         String optUser = SecurityUtils.getSubject().getPrincipal().toString();
         String optDate = DateUtils.format(new Date());
         boolean result = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
@@ -414,6 +441,7 @@ public class OperationController {
             processContext.setOptUser(optUser);
             processContextService.save(processContext);
         }
+        systemLogService.updateResult(operationLog);
         return result;
     }
 
@@ -505,6 +533,8 @@ public class OperationController {
     public
     @ResponseBody
     boolean submitToAudit(@RequestBody List list) throws  Throwable{
+        OperationLog operationLog = systemLogService.record("服务场景","提交审核","数量：" + list.size());
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
             String serviceId = map.get("serviceId").toString();
@@ -518,6 +548,8 @@ public class OperationController {
                 operationServiceImpl.save(operation);
             }
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -533,6 +565,8 @@ public class OperationController {
     public
     @ResponseBody
     boolean revise(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("服务场景","","修订数量：" + list.size());
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
             String serviceId = map.get("serviceId").toString();
@@ -549,6 +583,8 @@ public class OperationController {
                 return false;
             }
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 }

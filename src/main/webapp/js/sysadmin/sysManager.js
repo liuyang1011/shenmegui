@@ -79,6 +79,7 @@ var sysManager = {
 
     edit: function () {
         var node = $('.mxsysadmintree').tree("getSelected");
+        console.log(node);
         uiinit.win({
             w: 500,
             iconCls: 'icon-add',
