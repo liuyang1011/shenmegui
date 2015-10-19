@@ -21,9 +21,7 @@
 	<body>
 	<form id="searchForm">
 		<fieldset>
-			<legend>
-				条件搜索
-			</legend>
+			<legend>条件搜索</legend>
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<th><nobr>

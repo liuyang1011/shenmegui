@@ -150,23 +150,23 @@
 			text : '修改密码',
 			iconCls : 'icon-qxfp',
 			handler : function() {
-			var row = $('#tt').edatagrid('getSelected');
-			var checkedItems = $('#tt').edatagrid('getChecked');
-			if (checkedItems != null && checkedItems.length > 0) {
- 			uiinit.win({
- 					w : 370,
- 					iconCls : 'icon-qxfp',
- 					title : "修改密码",
-					url : "/user/getByPW/"+row.id
- 				})
-		}else {
-                alert("请选中要修改密码的用户！");
-             }
+				var row = $('#tt').edatagrid('getSelected');
+				var checkedItems = $('#tt').edatagrid('getChecked');
+				if (checkedItems != null && checkedItems.length > 0) {
+				uiinit.win({
+						w : 370,
+						iconCls : 'icon-qxfp',
+						title : "修改密码",
+						url : "/user/getByPW/"+row.id
+					})
+			}else {
+				alert("请选中要修改密码的用户！");
+			 }
 		   }
-		},
+		}
 		</shiro:hasPermission>
 		<shiro:hasRole name="admin">
-		{
+		,{
 			text : '初始化密码',
 			iconCls : 'icon-qxfp',
 			handler : function() {

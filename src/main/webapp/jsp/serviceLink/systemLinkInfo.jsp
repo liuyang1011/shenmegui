@@ -69,7 +69,7 @@
 
         <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern' width="10%">ESB调用方式</th>
         <th data-options="field:'condition'" width="10%">条件位</th>
-        <th data-options="field:'conditionDesc'" width="10%">条件信息</th>
+        <th data-options="field:'connectionDesc'" width="10%">条件信息</th>
     </tr>
     </thead>
 </table>
