@@ -60,7 +60,7 @@ public class InterfaceHeadController {
 	public @ResponseBody
 	boolean save(@RequestBody
 	InterfaceHead head) {
-		OperationLog operationLog = systemLogService.record("报文头","添加","名称：" + head.getHeadName());
+		OperationLog operationLog = systemLogService.record("报文头","保存","名称：" + head.getHeadName());
 
 		boolean add = false;
 		if(head.getHeadId()==null || "".equals(head.getHeadId())){

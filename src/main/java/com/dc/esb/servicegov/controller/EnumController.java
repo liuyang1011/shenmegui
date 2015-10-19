@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.EnumServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -286,7 +287,11 @@ public class EnumController {
     public
     @ResponseBody
     boolean deleteEnumById(@PathVariable(value = "id") String id) {
-        OperationLog operationLog = systemLogService.record("公共代码","删除","代码ID"+ id);
+        OperationLog operationLog = systemLogService.record("公共代码","删除","代码："+ id);
+        SGEnum entity = enumService.findUniqueBy("id", id);
+        if(entity != null){
+            operationLog.setParams("代码：" + entity.getName());
+        }
 
         boolean result = enumService.deleteEnumById(id);
 
@@ -300,10 +305,15 @@ public class EnumController {
     public
     @ResponseBody
     boolean saveEnum(@RequestBody SGEnum anEnum) {
+        OperationLog operationLog = systemLogService.record("公共代码","修改", "代码："+ anEnum.getName());
+
         String userId = SecurityUtils.getSubject().getPrincipal().toString();
         anEnum.setOptUser(userId);
         anEnum.setOptDate(DateUtils.format(new Date()));
-        return enumService.updateEnum(anEnum);
+        boolean result = enumService.updateEnum(anEnum);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
 
     @RequiresPermissions({"enum-add"})
@@ -311,7 +321,26 @@ public class EnumController {
     public
     @ResponseBody
     boolean setElementMapping(@RequestBody EnumElementMap elementMap) {
+        OperationLog operationLog = systemLogService.record("公共代码","保存主从关系", "");
+        String logParams = "";
+        if(elementMap != null){
+            if(StringUtils.isNotEmpty(elementMap.getMasterElementId())){
+                SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
+                if(master != null){
+                    logParams += "主代码:" + master.getName();
+                }
+            }
+            if(StringUtils.isNotEmpty(elementMap.getSlaveElementId())){
+                SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
+                if(slave != null){
+                    logParams += "　从代码:" + slave.getName();
+                }
+            }
+        }
         enumService.addEnumElementMap(elementMap);
+
+        operationLog.setParams(logParams);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -320,8 +349,9 @@ public class EnumController {
     public
     @ResponseBody
     boolean saveElementMapping(@RequestBody List list) {
-        OperationLog operationLog = systemLogService.record("公共代码","批量保存","主代码ID列表");
-        String logParams = "";
+        OperationLog operationLog = systemLogService.record("公共代码","批量保存主从关系","");
+        String logParams1 = "";
+        String logParams2 = "";
 
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
@@ -338,10 +368,18 @@ public class EnumController {
                 enumService.deleteElementsMappingByPK(map.get("MASTERID"), map.get("SLAVEID"));
             }
             enumService.addEnumElementMap(elementMap);
-            logParams += elementMap.getMasterElementId() +", ";
+
+            SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
+            if(master != null){
+                logParams1 += "," + master.getName() ;
+            }
+            SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
+            if(slave != null){
+                logParams2 += "," + slave.getName();
+            }
         }
 
-        operationLog.setParams("主代码ID列表" + logParams);
+        operationLog.setParams("主代码：" + logParams1.substring(1, logParams1.length() -1) + " 从代码:" +  logParams2.substring(1, logParams2.length() -1));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -351,6 +389,10 @@ public class EnumController {
     public
     @ResponseBody
     boolean saveElementMappingSToM(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("公共代码","批量保存主从关系","");
+        String logParams1 = "";
+        String logParams2 = "";
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
@@ -366,7 +408,19 @@ public class EnumController {
                 enumService.deleteElementsMappingByPK(map.get("MASTERID"), map.get("SLAVEID"));
             }
             enumService.addEnumElementMap(elementMap);
+
+            SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
+            if(master != null){
+                logParams1 += "," + master.getName() ;
+            }
+            SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
+            if(slave != null){
+                logParams2 += "," + slave.getName();
+            }
         }
+
+        operationLog.setParams("主代码：" + logParams1.substring(1, logParams1.length() -1) + " 从代码:" +  logParams2.substring(1, logParams2.length() -1));
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -375,9 +429,14 @@ public class EnumController {
     public
     @ResponseBody
     boolean addElement(@RequestBody EnumElements elements) {
+        OperationLog operationLog = systemLogService.record("公共代码","枚举映射保存","名称：" + elements.getElementName());
+
         elements.setOptDate(DateUtils.format(new Date()));
         elements.setOptUser(SecurityUtils.getSubject().getPrincipal().toString());
-        return enumService.addElement(elements);
+        boolean result = enumService.addElement(elements);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
 
     @RequiresPermissions({"enum-delete"})
@@ -385,12 +444,21 @@ public class EnumController {
     public
     @ResponseBody
     boolean deleteEnumElements(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("公共代码","枚举映射批量删除","");
+        String logParams = "";
+
         List<String> ids = new ArrayList<String>();
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             ids.add(map.get("elementId"));
+            List<EnumElements> entitys = enumService.getElementsByEnumId(map.get("elementId"));
+            if(entitys != null && entitys.size() > 0){
+                logParams += "," + entitys.get(0).getElementName();
+            }
         }
         enumService.deleteEnumElementsByIds(ids);
+
+        operationLog.setParams("名称：" + logParams.substring(1, logParams.length()-1));
         return true;
     }
 
@@ -399,6 +467,10 @@ public class EnumController {
     public
     @ResponseBody
     boolean deleteElementsMapping(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("公共代码","主从关系批量删除","");
+        String logParams1 = "";
+        String logParams2 = "";
+
         List<String> ids = new ArrayList<String>();
         List<EnumElementMap> mappingList = new ArrayList<EnumElementMap>();
         for (int i = 0; i < list.size(); i++) {
@@ -407,8 +479,21 @@ public class EnumController {
             elementMap.setMasterElementId(map.get("MASTERID"));
             elementMap.setSlaveElementId(map.get("SLAVEID"));
             mappingList.add(elementMap);
+
+
+            SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
+            if(master != null){
+                logParams1 += "," + master.getName() ;
+            }
+            SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
+            if(slave != null){
+                logParams2 += "," + slave.getName();
+            }
         }
         enumService.deleteElementsMapping(mappingList);
+
+        operationLog.setParams("主代码：" + logParams1.substring(1, logParams1.length() -1) + " 从代码:" +  logParams2.substring(1, logParams2.length() -1));
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

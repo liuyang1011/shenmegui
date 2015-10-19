@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.omg.IOP.ENCODING_CDR_ENCAPS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -57,15 +58,17 @@ public class SDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/saveSDA", headers = "Accept=application/json")
 	@ResponseBody
 	public boolean saveSDA(@RequestBody SDA[] sdas){
-		OperationLog operationLog = systemLogService.record("SDA","批量保存","数量：" + sdas.length);
+		OperationLog operationLog = systemLogService.record("SDA","批量保存","");
 		//判断场景状态是否为服务定义或修订
 		boolean canModifyOperation = serviceImpl.judgeCanModifyOperation(sdas[0].getServiceId(), sdas[0].getOperationId());
 		if(!canModifyOperation){
 			return false;
 		}
+		String logParam = serviceImpl.save(sdas);
 
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
-		return serviceImpl.save(sdas);
+		return true;
 	}
 
 	@RequiresPermissions({"service-update"})
@@ -75,18 +78,22 @@ public class SDAController {
 	public boolean deleteSDA(@RequestBody String[] delIds){
 		OperationLog operationLog = systemLogService.record("SDA","批量删除","数量：" + delIds.length);
 
-		boolean result = serviceImpl.delete(delIds);
+		String logParam = serviceImpl.delete(delIds);
 
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
-		return result;
+		return true;
 	}
 
 	@RequiresPermissions({"service-update"})
 	@RequestMapping("/moveUp")
 	@ResponseBody
 	public boolean moveUp(String sdaId){
-		OperationLog operationLog = systemLogService.record("SDA","元素上移","元素ID:" + sdaId);
-
+		OperationLog operationLog = systemLogService.record("SDA","元素上移","");
+		SDA entity = serviceImpl.findUniqueBy("sdaId", sdaId);
+		if(entity != null){
+			operationLog.setParams("SDA:" + entity.getStructName());
+		}
 		boolean result = serviceImpl.moveUp(sdaId);
 
 		systemLogService.updateResult(operationLog);
@@ -98,6 +105,10 @@ public class SDAController {
 	@ResponseBody
 	public boolean moveDown(String sdaId){
 		OperationLog operationLog = systemLogService.record("SDA","元素上移","元素ID:" + sdaId);
+		SDA entity = serviceImpl.findUniqueBy("sdaId", sdaId);
+		if(entity != null){
+			operationLog.setParams("SDA:" + entity.getStructName());
+		}
 
 		boolean result = serviceImpl.moveDown(sdaId);
 
