@@ -147,7 +147,7 @@
 		</shiro:hasRole>
 		<shiro:hasPermission name="password-update">
 		{
-			text : '重置密码',
+			text : '修改密码',
 			iconCls : 'icon-qxfp',
 			handler : function() {
 			var row = $('#tt').edatagrid('getSelected');
@@ -156,15 +156,37 @@
  			uiinit.win({
  					w : 370,
  					iconCls : 'icon-qxfp',
- 					title : "重置密码",
+ 					title : "修改密码",
 					url : "/user/getByPW/"+row.id
  				})
 		}else {
-                alert("请选中要重置密码的用户！");
+                alert("请选中要修改密码的用户！");
              }
 		   }
-		}
+		},
 		</shiro:hasPermission>
+		<shiro:hasRole name="admin">
+		{
+			text : '初始化密码',
+			iconCls : 'icon-qxfp',
+			handler : function() {
+				var row = $('#tt').edatagrid('getSelected');
+				var checkedItems = $('#tt').edatagrid('getChecked');
+				if (checkedItems != null && checkedItems.length > 0) {
+					if (!confirm("确定要初始化密码吗？初始化后密码变为：123456")) {
+						return;
+					}
+					userManager.initPassWord(row.id,'123456',function(result){
+						if(result){
+							alert("初始化成功，密码变为：123456")
+						}
+					})
+				}else {
+					alert("请选中要初始化密码的用户！");
+				}
+			}
+		}
+		</shiro:hasRole>
 		
 	 ];
 	$(function() {

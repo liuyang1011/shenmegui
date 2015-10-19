@@ -84,8 +84,7 @@
                         <th>
                             <NOBR>节点类型</NOBR>
                         </th>
-                        <td><select name="nodeType" id="nodeType" panelHeight="auto" style="width:180px" editable="false"
-                                   value="${node.nodeType}"/></td>
+                        <td><select name="nodeType" id="nodeType" panelHeight="auto" style="width:180px" editable="false"/></td>
                     </tr>
                     <tr>
                         <th>
@@ -390,7 +389,7 @@
             var nodeType = {
                 "invokeId": nodeId,
                 "propertyName": "nodeType",
-                "propertyValue": $("#nodeType").val()
+                "propertyValue": $('#nodeType').combobox('getValue')
             };
             var location = {
                 "invokeId": nodeId,
