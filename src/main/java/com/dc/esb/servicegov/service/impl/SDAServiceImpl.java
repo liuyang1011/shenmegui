@@ -382,8 +382,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         }
     }
 
-    public boolean save(SDA[] sdas) {
-
+    public String save(SDA[] sdas) {
+        String logParam = "SDA:";
         if (sdas != null && sdas.length > 0) {
             for (SDA sda : sdas) {
                 //TODO TZB类型和长度合并了
@@ -401,24 +401,29 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 sda.setLength(metadata.getLength());
                 sda.setStructAlias(metadata.getChineseName());
                 sdaDAO.save(sda);
+                logParam += "[服务ID:" + sda.getServiceId() + ", 场景ID:" + sda.getOperationId() + ", SDA名称:" + sda.getStructName() + "],";
             }
             operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());
-            return true;
         }
 
-        return false;
+        return logParam.substring(0, logParam.length() -2 );
     }
 
-    public boolean delete(String[] delIds) {
+    public String delete(String[] delIds) {
+        String logParam = "SDA:";
         if (delIds != null && delIds.length > 0) {
             SDA sda = sdaDAO.findUniqueBy("sdaId", delIds[0]);
             operationService.editReleate(sda.getServiceId(), sda.getOperationId());
             for (String id : delIds) {
+                SDA entity = sdaDAO.findUniqueBy("sdaId", id);
+                if(entity != null){
+                    logParam += "[服务ID：" + entity.getServiceId() +", 场景ID:" + entity.getOperationId() + ", SDA:" + entity.getStructName() + "],";
+                }
                 sdaDAO.delete(id);
+
             }
-            return true;
         }
-        return false;
+        return logParam.substring(0, logParam.length() - 2);
     }
     /**
      * 将一个节点上移

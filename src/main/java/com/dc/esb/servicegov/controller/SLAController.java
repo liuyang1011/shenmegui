@@ -42,7 +42,8 @@ public class SLAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/addList", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody List list) {
-		OperationLog operationLog = systemLogService.record("SLA","添加","元素数量："  + list.size());
+		OperationLog operationLog = systemLogService.record("SLA","添加","");
+		String logParam = "元素：";
 		for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
@@ -54,7 +55,9 @@ public class SLAController {
             sla.setSlaDesc(map.get("slaDesc"));
             sla.setSlaRemark(map.get("slaRemark"));
             slaServiceImpl.save(sla);
-   	 }
+			logParam += sla.getSlaName() + ",";
+   		 }
+		operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
 		systemLogService.updateResult(operationLog);
 		return true;
 	}
@@ -104,14 +107,18 @@ public class SLAController {
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
 		OperationLog operationLog = systemLogService.record("SLA","删除元素","数量：" + list.size());
-
+		String logParam = "元素：";
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
             String id = map.get("slaId");
+			SLA sla = slaServiceImpl.findUniqueBy("slaId", id);
+			if(sla != null){
+				logParam += sla.getSlaName() + ",";
+			}
             slaServiceImpl.deleteById(id);
         }
-
+		operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
 		systemLogService.updateResult(operationLog);
         return true;
  

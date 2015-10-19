@@ -336,17 +336,19 @@ public class OperationController {
     @ResponseBody
     public boolean deletes(@RequestBody OperationPK[] operationPks) {
         OperationLog operationLog = systemLogService.record("服务场景","批量删除","数量：" + operationPks.length);
-
+        String logParam = "";
         //上线和发布的场景不能删除
         for (int i = 0; i < operationPks.length; i++) {
             Operation operation = operationServiceImpl.getById(operationPks[i]);
             if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
                 return false;
             }
+            logParam += ", [服务ID：" + operation.getServiceId() + ", 场景ID：" + operation.getOperationId() + ", 场景名称:" + operation.getOperationName() + "]";
         }
 
         operationServiceImpl.deleteOperations(operationPks);
 
+        operationLog.setParams(logParam.substring(1, logParam.length() -1 ));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -409,12 +411,13 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.POST, value = "/auditSave", headers = "Accept=application/json")
     @ResponseBody
     public boolean auditSave(String state , String auditRemark, @RequestBody String[] operationIds) throws  Throwable{
-        OperationLog operationLog = systemLogService.record("服务场景","审核","场景数量：" + operationIds.length + "； 审核结果:" + Constants.Operation.getStateName(state) + "; 审核备注：" + auditRemark);
+        OperationLog operationLog = systemLogService.record("服务场景","审核","");
 
-        boolean result = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
+        String logParam = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
 
+        operationLog.setParams("审核结果:" + Constants.Operation.getStateName(state) + "; 审核备注：" + auditRemark + ";场景：" + logParam );
         systemLogService.updateResult(operationLog);
-        return result;
+        return true;
     }
 
     @RequiresPermissions({"version-check"})
@@ -425,7 +428,7 @@ public class OperationController {
 
         String optUser = SecurityUtils.getSubject().getPrincipal().toString();
         String optDate = DateUtils.format(new Date());
-        boolean result = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
+        String logParam = operationServiceImpl.auditOperation(state, auditRemark, operationIds);
         for(String serviceOperationIdPair : operationIds){
             String[] per = serviceOperationIdPair.split(",");
             String operationId = per[0];
@@ -442,7 +445,10 @@ public class OperationController {
             processContextService.save(processContext);
         }
         systemLogService.updateResult(operationLog);
-        return result;
+
+        operationLog.setParams("审核结果:" + Constants.Operation.getStateName(state) + "; 审核备注：" + auditRemark + ";场景：" + logParam );
+        systemLogService.updateResult(operationLog);
+        return true;
     }
 
 
@@ -533,8 +539,8 @@ public class OperationController {
     public
     @ResponseBody
     boolean submitToAudit(@RequestBody List list) throws  Throwable{
-        OperationLog operationLog = systemLogService.record("服务场景","提交审核","数量：" + list.size());
-
+        OperationLog operationLog = systemLogService.record("服务场景","提交审核","");
+        String logParam = "";
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
             String serviceId = map.get("serviceId").toString();
@@ -547,8 +553,11 @@ public class OperationController {
                 operation.setState(Constants.Operation.OPT_STATE_REQUIRE_UNAUDIT);
                 operationServiceImpl.save(operation);
             }
+
+            logParam += ", [服务ID：" + operation.getServiceId() + ", 场景ID：" + operation.getOperationId() + ", 场景名称:" + operation.getOperationName() + "]";
         }
 
+        operationLog.setParams(logParam.substring(1, logParam.length() -1 ));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -565,7 +574,8 @@ public class OperationController {
     public
     @ResponseBody
     boolean revise(@RequestBody List list) {
-        OperationLog operationLog = systemLogService.record("服务场景","","修订数量：" + list.size());
+        OperationLog operationLog = systemLogService.record("服务场景","修订","");
+        String logParam = "场景：";
 
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
@@ -582,8 +592,11 @@ public class OperationController {
             }else {
                 return false;
             }
+
+            logParam += "[服务ID:" + serviceId + ", 场景ID:" + operationId + "],";
         }
 
+        operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
         systemLogService.updateResult(operationLog);
         return true;
     }

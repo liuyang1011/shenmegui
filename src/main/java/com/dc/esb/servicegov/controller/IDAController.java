@@ -214,7 +214,8 @@ public class IDAController {
 	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
-		OperationLog operationLog = systemLogService.record("IDA","批量更新（置空元数据）","数量:" + list.size());
+		OperationLog operationLog = systemLogService.record("IDA","批量更新（置空元数据）","");
+		String logParam = "ida:";
 
 		for (int i = 0; i < list.size(); i++) {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
@@ -222,8 +223,10 @@ public class IDAController {
 			Ida ida = idaService.getById(idaId);
 			ida.setMetadataId(null);
 			idaService.save(ida);
+			logParam += ida.getStructName() + ",";
 		}
 
+		operationLog.setParams(logParam.substring(0, logParam.length() - 2 ));
 		systemLogService.updateResult(operationLog);
 		return true;
 	}
@@ -232,10 +235,16 @@ public class IDAController {
 	@RequestMapping("/moveUp")
 	@ResponseBody
 	public boolean moveUp(String id){
-		OperationLog operationLog = systemLogService.record("IDA","位置上移","ID:"+id);
+		OperationLog operationLog = systemLogService.record("IDA","位置上移","");
+		String logParam = "名称:";
+		Ida entity = idaService.findUniqueBy("id", id);
+		if(entity != null){
+			logParam += entity.getStructName();
+		}
 
 		boolean result = idaService.moveUp(id);
 
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
 		return result;
 	}
@@ -244,10 +253,16 @@ public class IDAController {
 	@RequestMapping("/moveDown")
 	@ResponseBody
 	public boolean moveDown(String id){
-		OperationLog operationLog = systemLogService.record("IDA","位置下移","ID:"+id);
+		OperationLog operationLog = systemLogService.record("IDA","位置下移","");
+		String logParam = "名称:";
+		Ida entity = idaService.findUniqueBy("id", id);
+		if(entity != null){
+			logParam += entity.getStructName();
+		}
 
 		boolean result = idaService.moveDown(id);
 
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
 		return result;
 	}

@@ -349,7 +349,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
     }
 
-    public boolean auditOperation(String state, String auditRemark, String[] operationIds) throws  Throwable{
+    public String auditOperation(String state, String auditRemark, String[] operationIds) throws  Throwable{
+        String logParam = "  ";
         if (operationIds != null && operationIds.length > 0) {
             for (int i = 0; i < operationIds.length; i++) {
                 String[] per = operationIds[i].split(",");
@@ -367,11 +368,10 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 }
                 version.setRemark(auditRemark);
                 versionServiceImpl.save(version);
-
+                logParam += "[服务ID:" + serviceId + ", 场景ID:" + operationId + "],";
             }
-            return true;
         }
-        return false;
+        return logParam.substring(0, logParam.length()-2);
     }
     
     public List<Operation> getReleased(Page page,String serviceId,String serviceName,String operationId,String operationName){

@@ -171,7 +171,7 @@ public class InterfaceController {
     @ResponseBody
     boolean save(@RequestBody
                  Interface inter, HttpServletRequest request) {
-        OperationLog operationLog = systemLogService.record("接口","添加","接口名称：" + inter.getInterfaceName());
+        OperationLog operationLog = systemLogService.record("接口","保存","接口名称：" + inter.getInterfaceName());
 
         //新增操作
         boolean add = "add".equals(request.getParameter("type"));

@@ -78,7 +78,7 @@ var sysManager = {
     },
 
     edit: function () {
-        var node = $('.mxsysadmintree').tree("getSelected");
+        var node = $('.msinterfacetree').tree("getSelected");
         uiinit.win({
             w: 500,
             iconCls: 'icon-add',
@@ -228,6 +228,17 @@ var sysManager = {
                     //window.location.href = "/jsp/403.jsp";
                 }
             }
+        });
+    },
+    editProtocol: function (data, callBack) {
+        var node = $('.msinterfacetree').tree("getSelected");
+        uiinit.win({
+            w:500,
+            //top:"20px",
+            //left:"150px",
+            iconCls:'icon-add',
+            title:"编辑协议",
+            url : "/protocol/edit/"+node.id
         });
     },
     "deleteProtocol": function () {

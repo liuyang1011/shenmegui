@@ -276,7 +276,7 @@ public class MetadataController {
     @RequestMapping("/deletes")
     @ResponseBody
     public boolean deletes(String metadataIds) {
-        OperationLog operationLog = systemLogService.record("元数据","批量删除","元数据ID" + metadataIds);
+        OperationLog operationLog = systemLogService.record("元数据","批量删除","元数据ID：" + metadataIds);
 
         boolean result = metadataService.deleteMetadatas(metadataIds);
         systemLogService.updateResult(operationLog);

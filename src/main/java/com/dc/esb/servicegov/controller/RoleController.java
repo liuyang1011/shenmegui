@@ -40,7 +40,7 @@ public class RoleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody Role role) {
-        OperationLog operationLog = systemLogService.record("角色","添加","名称：" + role.getName());
+        OperationLog operationLog = systemLogService.record("角色","保存","名称：" + role.getName());
 		roleServiceImpl.save(role);
         systemLogService.updateResult(operationLog);
 		return true;
