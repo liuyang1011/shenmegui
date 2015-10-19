@@ -2333,6 +2333,7 @@ split = split || function (undef) {
                 var b = g[a.sourceId], c = g[a.targetId], d = k(a), f = l(a);
                 a.edge = e.addEdge({source: b, target: c, data: {id: d, type: f}}, null, !0)
             };
+            //if (c.nodeSelector)for (var p = d.getContainer().querySelectorAll(c.nodeSelector), q = 0; q < p.length; q++) {
             if (c.nodeSelector)for (var p = d.getContainer().querySelectorAll(c.nodeSelector), q = 0; q < p.length; q++) {
                 var r = d.getId(p[q]);
                 n(p[q], r), d.manage(r, p[q])

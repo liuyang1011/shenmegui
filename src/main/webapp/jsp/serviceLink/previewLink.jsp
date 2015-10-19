@@ -21,21 +21,21 @@
 
 <div id="userId" style="display: none"><shiro:principal/></div>
 <div>
-    <div class="form-group">
-        <table>
-            <tr>
-                <td style="padding:0.5em"><label>选择接口</label></td>
-                <td style="padding:0.5em"><select class="form-control select2" style="width:50em" multiple="multiple"
-                                                  data-placeholder="选择接口"></select></td>
-                <td style="padding:0.5em">
-                    <button id="add" class="btn btn-block btn-primary">添加</button>
-                </td>
-                <td style="padding:0.5em">
-                    <button id="save" class="btn btn-block btn-primary">保存</button>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <%--<div class="form-group">--%>
+        <%--<table>--%>
+            <%--<tr>--%>
+                <%--<td style="padding:0.5em"><label>选择接口</label></td>--%>
+                <%--<td style="padding:0.5em"><select class="form-control select2" style="width:50em" multiple="multiple"--%>
+                                                  <%--data-placeholder="选择接口"></select></td>--%>
+                <%--<td style="padding:0.5em">--%>
+                    <%--<button id="add" class="btn btn-block btn-primary">添加</button>--%>
+                <%--</td>--%>
+                <%--<td style="padding:0.5em">--%>
+                    <%--<button id="save" class="btn btn-block btn-primary">保存</button>--%>
+                <%--</td>--%>
+            <%--</tr>--%>
+        <%--</table>--%>
+    <%--</div>--%>
     <!-- demo -->
     <div class="demo statemachine-demo" id="statemachine-demo" style="background-color: aliceblue;">
 
@@ -86,6 +86,9 @@
 <script src="/plugin/jsPlumb/src/dom.jsPlumb.js"></script>
 <!-- /JS -->
 
+<link rel="stylesheet" href="/assets/serviceLink2.0/app.css">
+<link href="/plugin/font-awesome.css" rel="stylesheet">
+
 <!--  demo code -->
 <!--<script src="demo.js"></script>-->
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
@@ -94,185 +97,41 @@
 <script src="/assets/serviceLink/serviceLinkManager.js" type="text/javascript"></script>
 <script type="text/javascript">
     var userId = $("#userId").text();
-    var containBlock = function containBlock(blocks, obj) {
-        var i = blocks.length;
-        while (i--) {
-            if (blocks[i].blockId == obj.blockId) {
-                return true;
-            }
-        }
-        return false;
-
-    };
-
-    var getBlock = function getBlock(blocks, id) {
-        var i = blocks.length;
-        while (i--) {
-            if (blocks[i].blockId == id) {
-                return blocks[i];
-            }
-            return false;
-        }
-    };
-
     var sourceId = "<%=request.getParameter("sourceId")%>";
-    var data = {};
     var context = "";
-    var connections = [];
-    var connectionsToDel = [];
-    var blocks = [];
-    var initPosX = 100;
-    var initPosY = 100;
-    var instance;
-    var addedBLocks = [];
-
     $(function () {
-        /**
-         * 初始化接口下拉框的方法
-         * @param row
-         */
-        var initComboBox = function (result) {
-            for (var i = 0; i < result.length; i++) {
-                data[result[i].invokeId] = result[i];
-                var interfaceLabel = '';
-                var serviceLabel = '';
-                if (null != result[i].interfaceId) {
-                    interfaceLabel = "接口:" + result[i].interfaceId;
-                }
-                if (null != result[i].serviceId && null != result[i].operationId) {
-                    serviceLabel = '服务:' + result[i].serviceId + '场景:' + result[i].operationId;
-                }
-                if (null != result[i].systemName) {
-                    systemLabel = '系统:' + result[i].systemName;
-                }
-                $(".select2").append('<option value="' + result[i].invokeId + '" >' + interfaceLabel + serviceLabel + systemLabel + '</option>');
-            }
-            $(".select2").select2();
-            //在初始化完成数据框之后初始化图标表
-            initDiagram();
-        };
-        serviceLinkManager.getAll(initComboBox);
+
 
         /**
          * 初始化图表
          * @param row
          */
         var initDiagram = function initDiagram() {
-            serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
+            serviceLinkManager.getGraphData(sourceId, initConnections);
         };
 
-        /**
-         * 添加块的方法
-         * @param row
-         */
-        var constructBlock = function constructBlock(row) {
-            var interfaceId = row.interfaceId;
-            var interfaceName = row.interfaceName;
-            var serviceId = row.serviceId;
-            var systemId = row.systemName;
-            var invokeId = row.invokeId;
-            var operationId = row.operationId;
-            var type = row.type;
-            if (type == "0") {
-                type = "提供方";
-            } else if (type == "1") {
-                type = "消费方";
-            }
-
-            var backgroundColor = "white";
-
-            if (null != interfaceId) {
-                var contextName = interfaceId + interfaceName;
-            } else {
-                var contextName = serviceId + operationId;
-                backgroundColor = "antiquewhite";
-            }
-
-            var serviceOperation = "";
-            if (serviceId != null && operationId != null) {
-                serviceOperation = serviceId + operationId;
-            }
-            context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
-            + '<div class="ep"></div>'
-            + '<div>'
-            + '系统ID: ' + systemId + '<br />'
-            + '服务场景: ' + serviceOperation + '<br />'
-            + '节点类型:' + type
-            + '</div>'
-            + '</div>';
-        };
 
         /**
          * 初始化块链接数据
          * @param result
          */
         var initConnections = function initConnections(result) {
-            if (result.length == 0) {
-                var sourceId = "<%=request.getParameter("sourceId")%>";
-                var sourceBlock = {
-                    blockId: sourceId,
-                    positionX: initPosX,
-                    positionY: initPosY
-                };
-                var sourceRow = data[sourceId];
-                constructBlock(sourceRow, sourceBlock);
-            }
-            if(addedBLocks.length != 0){
-                for(var i = 0; i < addedBLocks.length; i ++){
-                    var sourceId = addedBLocks[i];
-                    var sourceBlock = {
-                        blockId: sourceId,
-                        positionX: initPosX,
-                        positionY: initPosY
-                    };
-                    var sourceRow = data[sourceId];
-                    constructBlock(sourceRow, sourceBlock);
+
+            var nodes = result.nodes;
+            var edges = result.edges;
+            if(nodes){
+                for(var i = 0; i< nodes.length; i++){
+                    constructBlock(nodes[i]);
                 }
-                addedBLocks = [];
             }
 
-            for (var i = 0; i < result.length; i++) {
-                connections.push({
-                    connectionId: result[i].sourceId + "-" + result[i].targetId,
-                    sourceId: result[i].sourceId,
-                    targetId: result[i].targetId
-                });
-                var sourceId = result[i].sourceId;
-                var sourceBlock = {
-                    blockId: sourceId,
-                    positionX: initPosX,
-                    positionY: initPosY
-                };
-                if (!containBlock(blocks, sourceBlock)) {
-                    var sourceRow = data[sourceId];
-                    constructBlock(sourceRow, sourceBlock);
-                    blocks.push(sourceBlock);
-                    initPosY = 100;
-                }
-                var targetId = result[i].targetId;
-                var sourceBlock = getBlock(blocks, sourceId);
-                var targetBlock = {
-                    blockId: targetId,
-                    positionX: sourceBlock.positionX + 300,
-                    positionY: initPosY
-                };
-                if (!containBlock(blocks, targetBlock)) {
-                    var targetRow = data[targetId];
-                    constructBlock(targetRow, targetBlock);
-                    blocks.push(targetBlock);
-                    initPosY += 100;
-                }
-            }
             document.getElementById("statemachine-demo").innerHTML = context;
-            for (var i = 0; i < blocks.length; i++) {
-                $("#" + blocks[i].blockId).css("left", blocks[i].positionX);
-                $("#" + blocks[i].blockId).css("top", blocks[i].positionY);
-            }
+
             jsPlumb.ready(function () {
                 // setup some defaults for jsPlumb.
                 instance = jsPlumb.getInstance({
                     Endpoint: ["Dot", {radius: 2}],
-                    HoverPaintStyle: {strokeStyle: "#1e8141", lineWidth: 2},
+                    HoverPaintStyle: {strokeStyle: "#5c96bc", lineWidth: 2},
                     ConnectionOverlays: [
                         ["Arrow", {
                             location: 1,
@@ -285,17 +144,9 @@
                     Container: "statemachine-demo"
                 });
                 window.jsp = instance;
-                var windows = jsPlumb.getSelector(".statemachine-demo .w");
+                var windows = jsPlumb.getSelector(".statemachine-demo .table");
                 instance.draggable(windows);
-                instance.bind("click", function (c) {
-                    connectionsToDel.push({
-                        sourceId: c.sourceId,
-                        sourceType: "",
-                        targetId: c.targetId,
-                        targetType: ""
-                    });
-                    instance.detach(c);
-                });
+
                 instance.bind("connection", function (info) {
 //                    info.connection.getOverlay("label").setLabel("");
                 });
@@ -303,14 +154,13 @@
                     instance.makeSource(windows, {
                         filter: ".ep",
                         anchor: "Continuous",
-                        connector: ["StateMachine", {curviness: 20}],
+                        connector: ["Flowchart", {cornerRadius: 2}],
                         connectorStyle: {
-                            strokeStyle: "#5c96bc",
+                            strokeStyle: "#f76258",
                             lineWidth: 2,
                             outlineColor: "transparent",
                             outlineWidth: 4
                         },
-                        maxConnections: 5,
                         onMaxConnections: function (info, e) {
                             alert("Maximum connections (" + info.maxConnections + ") reached");
                         }
@@ -320,162 +170,57 @@
                         anchor: "Continuous",
                         allowLoopback: true
                     });
-                    for (var i = 0; i < connections.length; i++) {
-                        instance.connect({source: connections[i].sourceId, target: connections[i].targetId});
+                    for (var i = 0; i < edges.length; i++) {
+                        instance.connect({source: edges[i].source, target: edges[i].target});
                     }
-                    connections = [];
                 });
                 jsPlumb.fire("jsPlumbDemoLoaded", instance);
             });
         };
 
         /**
-         * 添加按钮的事件
+         * 添加块的方法
+         * @param row
          */
-        $("#add").click(function () {
-            blocks = [];
-            context = "";
-            var addInterfaceIds = $(".select2").val();
-            for(var i = 0; i < addInterfaceIds.length; i ++){
-                addedBLocks.push(addInterfaceIds[i]);
-            }
-            serviceLinkManager.getConnectionsBySourceId(sourceId, initConnections);
-//            if (null == addInterfaceIds) {
-//                return;
-//            }
-//            if (instance) {
-//                $.each(instance.getConnections(), function (idx, connection) {
-//                    connections.push({
-//                        connectionId: connection.id,
-//                        sourceId: connection.sourceId,
-//                        targetId: connection.targetId
-//                    });
-//                });
-//                $("#statemachine-demo .w").each(function (idx, elem) {
-//                    var $elem = $(elem);
-//                    blocks.push({
-//                        blockId: $elem.attr('id'),
-//                        positionX: parseInt($elem.css("left"), 10),
-//                        positionY: parseInt($elem.css("top"), 10)
-//                    });
-//                });
-//            }
-//            for (var i = 0; i < addInterfaceIds.length; i++) {
-//                var row = data[addInterfaceIds[i]];
-//                constructBlock(row);
-//            }
-//            document.getElementById("statemachine-demo").innerHTML = context;
-//            for (var i = 0; i < blocks.length; i++) {
-//                $("#" + blocks[i].blockId).css("left", blocks[i].positionX);
-//                $("#" + blocks[i].blockId).css("top", blocks[i].positionY);
-//            }
-//            jsPlumb.ready(function () {
-//                // setup some defaults for jsPlumb.
-//                instance = jsPlumb.getInstance({
-//                    Endpoint: ["Dot", {radius: 2}],
-//                    HoverPaintStyle: {strokeStyle: "#1e8141", lineWidth: 2},
-//                    ConnectionOverlays: [
-//                        ["Arrow", {
-//                            location: 1,
-//                            id: "arrow",
-//                            length: 5,
-//                            foldback: 0.3
-//                        }],
-//                        ["Label", {label: "FOO", id: "label", cssClass: "aLabel"}]
-//                    ],
-//                    Container: "statemachine-demo"
-//                });
-//                window.jsp = instance;
-//                var windows = jsPlumb.getSelector(".statemachine-demo .w");
-//                // initialise draggable elements.
-//                instance.draggable(windows);
-//                // bind a click listener to each connection; the connection is deleted. you could of course
-//                // just do this: jsPlumb.bind("click", jsPlumb.detach), but I wanted to make it clear what was
-//                // happening.
-//                instance.bind("click", function (c) {
-//                    connectionsToDel.push({
-//                        sourceId: c.sourceId,
-//                        sourceType: "",
-//                        targetId: c.targetId,
-//                        targetType: ""
-//                    });
-//                    instance.detach(c);
-//                });
-//                // bind a connection listener. note that the parameter passed to this function contains more than
-//                // just the new connection - see the documentation for a full list of what is included in 'info'.
-//                // this listener sets the connection's internal
-//                // id as the label overlay's text.
-//                instance.bind("connection", function (info) {
-//                    info.connection.getOverlay("label").setLabel("调用");
-//                });
-//                // suspend drawing and initialise.
-//                instance.batch(function () {
-//                    instance.makeSource(windows, {
-//                        filter: ".ep",
-//                        anchor: "Continuous",
-//                        connector: ["StateMachine", {curviness: 20}],
-//                        connectorStyle: {
-//                            strokeStyle: "#5c96bc",
-//                            lineWidth: 2,
-//                            outlineColor: "transparent",
-//                            outlineWidth: 4
-//                        },
-//                        maxConnections: 5,
-//                        onMaxConnections: function (info, e) {
-//                            alert("Maximum connections (" + info.maxConnections + ") reached");
-//                        }
-//                    });
-//                    // initialise all '.w' elements as connection targets.
-//                    instance.makeTarget(windows, {
-//                        dropOptions: {hoverClass: "dragHover"},
-//                        anchor: "Continuous",
-//                        allowLoopback: true
-//                    });
-//                    for (var i = 0; i < connections.length; i++) {
-//                        instance.connect({source: connections[i].sourceId, target: connections[i].targetId});
-//                    }
-//                    connections = [];
-//                });
-//                jsPlumb.fire("jsPlumbDemoLoaded", instance);
-//            });
-        });
-        $("#save").click(function () {
-            //先删除 需要删除的连接 然后再保存
-            var connectionsToSave = [];
-            $.each(instance.getConnections(), function (idx, connection) {
-                connectionsToSave.push({
-                    sourceId: connection.sourceId,
-                    sourceType: "",
-                    targetId: connection.targetId,
-                    targetType: ""
-                });
-            });
-            var saveConnectionCallBack = function saveConnectionCallBack(result) {
-                if (result) {
-                    alert("保存成功");
-                } else {
-                    alert("不能调用自己");
+        var constructBlock = function constructBlock(row) {
+            var columns = row.columns;
+            context += '<div class=\"table node\" id="'+row.id+'" style="left:'+row.left+'px;top:'+row.top+'px;">'
+                    + '     <div class=\"name\">'
+                    + '         <span>'+row.name+'</span>'
+                    + '         <div class="ep" style="display:none"></div>'
+                    + '     </div>'
+                    + '     <ul class=\"table-columns\">';
+            for(var i = 0; i < columns.length; i ++){
+                var icons = columns[i].icons;
+                context += '<li class="table-column table-column-type-varchar">';
+                if(columns[i].id){
+                    context +=  '<div><span>'+columns[i].id+'</span></div>';
                 }
+                if(icons&&icons.length > 0){
+                    context += '<div><span>';
+                    for(var j = 0; j < icons.length; j++){
+                        context +=  '<i style="margin-left:1em;" class="fa fa-'+icons[j].icon+'"></i>';
+                    }
+                    context += '</span></div>';
+                }
+                context +=  '</li>';
             }
-            var delConnectionCallBack = function delConnectionCallBack() {
-                serviceLinkManager.saveConnections(connectionsToSave, saveConnectionCallBack);
-            }
-            serviceLinkManager.delConnections(connectionsToDel, delConnectionCallBack);
-        });
-    });
-    /**
-     * 双击block事件
-     * @param e
-     */
-    function dblEvent(e) {
-        var o = e.srcElement || e.target;
+            context    += '     </ul>'
+                + ' </div>';
 
-        var my = document.getElementById(o.id);
-        if (o != null) {
-            o.type = "1";
-            o.parentNode.removeChild(o);
-        }
-    }
+//            context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
+//            + '<div ></div>'
+//            + '<div>'
+//            + '系统ID: ' + systemId + '<br />'
+//            + '服务场景: ' + serviceOperation + '<br />'
+//            + '节点类型:' + type
+//            + '</div>'
+//            + '</div>';
+        };
+
+        initDiagram();
+    });
+
 </script>
 </body>
 </html>
