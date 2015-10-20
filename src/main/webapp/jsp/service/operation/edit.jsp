@@ -29,7 +29,9 @@
     <script type="text/javascript">
         var serviceId;
         var operationId;
+        var state;
         $(function(){
+            state = "${operation.state }";
             /**
              *  初始化接口标签
              * @param result
@@ -46,13 +48,17 @@
             tagManager.getTagForOperation(serviceId,operationId,initTags);
         })
         var toolbar = [
-            <shiro:hasPermission name="service-update">
+            <shiro:hasPermission name="invoke-add">
             {
                 text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
                     if (!$("#operationForm").form('validate')) {
                         alert("请先完善基础信息!");
+                        return false;
+                    }
+                    if( state != 0 &&  state != 7){
+                        alert("只有服务定义和修订状态的场景才能修改");
                         return false;
                     }
                     $('#interfaceDlg').dialog({
@@ -65,11 +71,17 @@
                         modal: true
                     });
                 }
-             },
-            {
+             }
+            </shiro:hasPermission>
+            <shiro:hasPermission name="invoke-delete">
+            ,{
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
+                if( state != 0 &&  state != 7){
+                    alert("只有服务定义和修订状态的场景才能修改");
+                    return false;
+                }
 //                $("#resultList").datagrid('get',{total:0,rows:[]});
                 var row = $("#resultList").datagrid('getSelected');
                 var index =  $("#resultList").datagrid('getRowIndex',row);
@@ -171,11 +183,12 @@
 
 <body>
 <form class="formui" id="operationForm">
-    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="clean()">取消</a><a href="#"
-                                                                                  onclick="save('operationForm',1)"
-                                                                                  class="easyui-linkbutton"
-                                                                                  iconCls="icon-save">保存</a></div>
+    <div class="win-bbar" style="text-align:center">
+        <shiro:hasPermission name="operation-update">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="clean()">取消</a>
+            <a href="#" onclick="save('operationForm',1)" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+        </shiro:hasPermission>
+    </div>
     <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
         <input type="hidden" name="versionId" value="${operation.versionId }" />
         <input type="hidden" name="deleted" value="${operation.deleted }" />

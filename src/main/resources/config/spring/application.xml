@@ -184,8 +184,7 @@
             </drools:jpa-persistence>
         </drools:configuration>
     </drools:ksession>
-    <!--
-    <bean id="systemLog" class="com.dc.esb.servicegov.log.OperationLogAspect" />
-    -->
+    <!--<bean id="systemLog" class="com.dc.esb.servicegov.log.OperationLogAspect" />-->
+
     <aop:aspectj-autoproxy/>
 </beans>

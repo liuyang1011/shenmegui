@@ -62,14 +62,14 @@
         <th data-options="field:'operationName'" width="15%">场景名称</th>
         <th data-options="field:'invokeType'" width="6%">调用类型</th>
 
-        <th data-options="field:'nodeType'" width="10%">节点类型</th>
-        <th data-options="field:'location'" width="10%">交易属性标识</th>
+        <th data-options="field:'nodeType'" formatter='formatter.nodeType' width="10%">节点类型</th>
+        <th data-options="field:'location'" formatter='formatter.location' width="10%">交易属性标识</th>
         <th data-options="field:'bussCategory'" width="10%">节点业务分类</th>
         <th data-options="field:'status'" width="10%">节点状态</th>
 
-        <th data-options="field:'esbAccessPattern'" width="10%">ESB调用方式</th>
+        <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern' width="10%">ESB调用方式</th>
         <th data-options="field:'condition'" width="10%">条件位</th>
-        <th data-options="field:'conditionDesc'" width="10%">条件信息</th>
+        <th data-options="field:'connectionDesc'" width="10%">条件信息</th>
     </tr>
     </thead>
 </table>
@@ -79,6 +79,41 @@
 </div>
 <script type="text/javascript">
     var invokeId;
+    var formatter = {
+        esbAccessPattern: function (value, row, index) {
+            if (value == 0) {
+                return "穿透模式，ESB不负责任何处理";
+            }
+            if (value == 1) {
+                return "代理模式，ESB负责服务适配";
+            }
+            if (value == 2) {
+                return "寻址模式，ESB提供寻址功能，仅负责寻址、监控";
+            }
+            if (value == 4) {
+                return "组合模式，ESB提供服务的组合";
+            }
+        },
+        location: function (value, row, index) {
+            if (value == 1) {
+                return "本系统发起";
+            }
+            if (value == 2) {
+                return "上游系统调用";
+            }
+        },
+        nodeType: function (value, row, index) {
+            if (value == 0) {
+                return "消费方节点";
+            }
+            if (value == 1) {
+                return "提供方节点";
+            }
+            if (value == 2) {
+                return "复合型节点";
+            }
+        }
+    };
     $(function () {
         $('#invokeLinkeTable').datagrid({
             rownumbers:true,

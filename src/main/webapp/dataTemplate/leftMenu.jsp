@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String mid = request.getParameter("mid");
 %>
@@ -17,7 +18,9 @@
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
+        <shiro:hasRole name="admin">
             <li><a href="javascript:;" class="openable" mid="5.2">角色维护</a></li>
+        </shiro:hasRole>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="1.11">日志管理</a>
@@ -35,7 +38,9 @@
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="3.2" style="display: none">英文单词及缩写管理</a></li>
+            <shiro:hasPermission name="categoryWord-get">
             <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
+            </shiro:hasPermission>
             <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>
         </ul>
@@ -43,8 +48,8 @@
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
     <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
         <ul>
-            <li><a href="javascript:;" class="openable" mid="9.2">导入</a></li>
-            <li><a href="javascript:;" class="openable" mid="9.3">导出</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.2">字段映射导入</a></li>
+            <%--<li><a href="javascript:;" class="openable" mid="9.3">服务视图导出</a></li>--%>
             <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
             <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
         </ul>
@@ -122,12 +127,14 @@
     if (mid.equals("11")) {
 %>
 <ul id="menu-tree" style="overflow:scroll;height:100%">
+    <shiro:hasPermission name="exportStatistics-get">
     <li><a href="javascript:;" mid="11.1">统计报表</a>
         <ul>
-            <li><a href="javascript:;" class="openable" mid="11.2">复用率统计</a></li>
-            <li><a href="javascript:;" class="openable" mid="11.3">发布统计</a></li>
+                <li><a href="javascript:;" class="openable" mid="11.2">复用率统计</a></li>
+                <li><a href="javascript:;" class="openable" mid="11.3">发布统计</a></li>
         </ul>
     </li>
+    </shiro:hasPermission>
 </ul>
 <%
     }
@@ -136,13 +143,19 @@
 <ul id="menu-tree" style="overflow:scroll;height:100%">
     <li><a href="javascript:;" mid="1.1">版本管理</a>
         <ul>
+            <shiro:hasPermission name="version-get">
             <li><a href="javascript:;" class="openable" mid="1.2">版本发布</a></li>
+            </shiro:hasPermission>
+            <shiro:hasPermission name="versionHis-get">
             <li><a href="javascript:;" class="openable" mid="1.3">版本历史</a></li>
+            </shiro:hasPermission>
             <!--
             <li><a href="javascript:;" class="openable" mid="1.4">版本公告</a></li>
              -->
+            <shiro:hasPermission name="baseLine-get">
             <li><a href="javascript:;" class="openable" mid="1.5">基线制作</a></li>
             <li><a href="javascript:;" class="openable" mid="1.6">基线历史</a></li>
+            </shiro:hasPermission>
         </ul>
     </li>
 </ul>

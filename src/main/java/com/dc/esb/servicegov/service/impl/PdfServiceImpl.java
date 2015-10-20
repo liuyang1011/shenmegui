@@ -272,7 +272,8 @@ public class PdfServiceImpl {
         try {
             SDAVO sda = getSDAofService(operationDO);
             if(sda!=null){
-                PdfPTable table = new PdfPTable(6);
+//                PdfPTable table = new PdfPTable(6);
+                PdfPTable table = new PdfPTable(7);
                 PdfPCell thCell = new PdfPCell();
 
                 Phrase operationPhrase = new Phrase();
@@ -281,8 +282,12 @@ public class PdfServiceImpl {
                 PdfUtils.renderTableHeader(operationPhrase, thCell);
 //                PdfUtils.renderChineseTableHeader("服务", thCell);
 
-                thCell.setColspan(6);
+//                thCell.setColspan(6);
+                thCell.setColspan(7);
                 table.addCell(thCell);
+                PdfPCell index = new PdfPCell();
+                PdfUtils.renderChineseTableHeader("序号", index);
+                table.addCell(index);
                 PdfPCell headerENcell = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("字段名称", headerENcell);
                 table.addCell(headerENcell);
@@ -291,7 +296,7 @@ public class PdfServiceImpl {
                 table.addCell(headerTypeENcell);
                 PdfPCell headerCNcell = new PdfPCell(new Phrase());
                 PdfUtils.renderChineseTableHeader("字段说明", headerCNcell);
-                table.addCell(headerENcell);
+                table.addCell(headerCNcell);
                 PdfPCell headerRequired = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("是否必输", headerRequired);
                 table.addCell(headerRequired);
@@ -317,26 +322,36 @@ public class PdfServiceImpl {
                 PdfPCell headerDirectcell = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("输入", headerDirectcell);
                 headerDirectcell.setBackgroundColor(Color.PINK);
-                headerDirectcell.setColspan(6);
+//                headerDirectcell.setColspan(6);
+                headerDirectcell.setColspan(7);
                 table.addCell(headerDirectcell);
                 if (null != reqSDA) {
                     List<SDAVO> childrenOfReq = reqSDA.getChildNode();
                     if (null != childrenOfReq) {
-                        for (SDAVO childOfReq : childrenOfReq) {
-                            renderSDANode(childOfReq, table, 0, Color.PINK);
+//                        for (SDAVO childOfReq : childrenOfReq) {
+//                            renderSDANode(childOfReq, table, 0, Color.PINK);
+//                        }
+                        for (int i = 0; i < childrenOfReq.size(); i++) {
+                            int j = i+1;
+                            renderSDANode(""+j,childrenOfReq.get(i), table, 0, Color.PINK);
                         }
                     }
                 }
                 PdfPCell headerDirectcell2 = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("输出", headerDirectcell2);
                 headerDirectcell2.setBackgroundColor(Color.CYAN);
-                headerDirectcell2.setColspan(6);
+//                headerDirectcell2.setColspan(6);
+                headerDirectcell2.setColspan(7);
                 table.addCell(headerDirectcell2);
                 if (null != rspSDA) {
                     List<SDAVO> childrenOfRsp = rspSDA.getChildNode();
                     if (null != childrenOfRsp) {
-                        for (SDAVO childSDA : childrenOfRsp) {
-                            renderSDANode(childSDA, table, 0, Color.CYAN);
+//                        for (SDAVO childSDA : childrenOfRsp) {
+//                            renderSDANode(childSDA, table, 0, Color.CYAN);
+//                        }
+                        for (int i = 0; i < childrenOfRsp.size(); i++) {
+                            int j = i+1;
+                            renderSDANode(""+j,childrenOfRsp.get(i),table,0,Color.CYAN);
                         }
                     }
                 }
@@ -353,7 +368,8 @@ public class PdfServiceImpl {
                 PdfUtils.renderTableHeader(operationPhrase, thCell);
 //                PdfUtils.renderChineseTableHeader("服务", thCell);
 
-                thCell.setColspan(6);
+//                thCell.setColspan(6);
+                thCell.setColspan(7);
                 table.addCell(thCell);
                 PdfPCell headerENcell = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("字段名称", headerENcell);
@@ -376,7 +392,8 @@ public class PdfServiceImpl {
                 PdfPCell headerDirectcell = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("无SDA", headerDirectcell);
                 headerDirectcell.setBackgroundColor(Color.PINK);
-                headerDirectcell.setColspan(6);
+//                headerDirectcell.setColspan(6);
+                headerDirectcell.setColspan(7);
                 table.addCell(headerDirectcell);
                 table.setSpacingBefore(5);
                 section.add(table);
@@ -387,7 +404,9 @@ public class PdfServiceImpl {
             throw e;
         }
     }
-    private void renderSDANode(SDAVO sda, PdfPTable table, int offset, Color indexColor) throws Exception {
+//    private void renderSDANode(SDAVO sda, PdfPTable table, int offset, Color indexColor) throws Exception {
+    //增加序号
+    private void renderSDANode(String index,SDAVO sda, PdfPTable table, int offset, Color indexColor) throws Exception {
         String sdaNodeId = sda.getValue().getStructName();
         String sdaNodeType = "";
         String sdaNodeChineseName = sda.getValue().getStructAlias();
@@ -425,8 +444,13 @@ public class PdfServiceImpl {
         PdfPCell idCell = new PdfPCell();
         PdfUtils.renderLatinTableData(sdaNodeId, idCell);
         idCell.setIndent(offset);
+
+        PdfPCell indexCell = new PdfPCell();
+        PdfUtils.renderLatinTableData(index, indexCell);
+
         if (null != indexColor) {
-            idCell.setBackgroundColor(indexColor);
+//            idCell.setBackgroundColor(indexColor);
+            indexCell.setBackgroundColor(indexColor);
         }
 
         PdfPCell typeCell = new PdfPCell();
@@ -452,6 +476,7 @@ public class PdfServiceImpl {
             PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
         }
 
+        table.addCell(indexCell);
         table.addCell(idCell);
         table.addCell(typeCell);
         table.addCell(cnCell);
@@ -461,14 +486,18 @@ public class PdfServiceImpl {
 
         if (null != childSDAs && childSDAs.size() > 0) {
             int childOffSet = offset + 10;
-            for (SDAVO childSDA : childSDAs) {
-                renderSDANode(childSDA, table, childOffSet, indexColor);
+//            for (SDAVO childSDA : childSDAs) {
+//                renderSDANode(childSDA, table, childOffSet, indexColor);
+//            }
+            for (int i = 0; i < childSDAs.size(); i++) {
+                int j = i+1;
+                renderSDANode(""+index +"."+j ,childSDAs.get(i), table, childOffSet, indexColor);
             }
             SDAVO endVO = new SDAVO();
             SDA voValue = sda.getValue();
             voValue.setRemark("end");
             endVO.setValue(voValue);
-            renderSDANode(endVO, table, offset, Color.yellow);
+            renderSDANode(""+index,endVO, table, offset, Color.yellow);
         }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
 

@@ -182,10 +182,10 @@
 							url : "/pages/SGEnum/form/enumAppandForm.jsp"
 						});
 					}
-				},
+				}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-get">
-				{
+			,{
 					text : '维护',
 					iconCls : 'icon-edit',
 					handler : function() {
@@ -214,10 +214,10 @@
 							});
 						}
 					}
-				},
+				}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-delete">
-			{
+			,{
 					text : '删除',
 					iconCls : 'icon-remove',
 					handler : function() {

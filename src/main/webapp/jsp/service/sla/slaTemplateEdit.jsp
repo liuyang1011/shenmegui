@@ -1,3 +1,4 @@
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -19,13 +20,17 @@
 <script type="text/javascript" src="/assets/sla/js/slaManager.js"></script>
 <script type="text/javascript">
 	var slaTemplatetoolbar = [
+		<shiro:hasPermission name="slaTemp-add">
 			{
 				text : '新增',
 				iconCls : 'icon-add',
 				handler : function() {
 					$('#slaTemplateTable').edatagrid('addRow');
 					}
-			},{
+			}
+		</shiro:hasPermission>
+		<shiro:hasPermission name="slaTemp-update">
+		,{
 				text : '编辑',
 				iconCls : 'icon-edit',
 				handler : function() {
@@ -35,8 +40,10 @@
 // 					alert(content);
 					parent.parent.parent.addTab('SLA模板', content);
 					}
-			},
-			{
+			}
+		</shiro:hasPermission>
+		<shiro:hasPermission name="slaTemp-delete">
+		,{
 				text : '删除',
 				iconCls : 'icon-remove',
 				handler : function() {
@@ -55,24 +62,30 @@
 						}else{alert("删除失败！");}
 					});
 				}
-			},{
-			text : ' 保存',
-			iconCls : 'icon-save',
-			handler : function() {
-			for ( var per in editedRows) {
-				$("#slaTemplateTable").datagrid('endEdit', editedRows[per]);
 			}
-			var editData = $("#slaTemplateTable").datagrid('getChanges');
-				slaTemplateManager.add(editData,function(result){
-					if(result){
-						$('#slaTemplateTable').datagrid('reload');
-					alert("保存成功！");
-					}else{alert("保存失败！");}
-				});
-				editedRows = [];
+		</shiro:hasPermission>
+		<shiro:hasPermission name="slaTemp-update">
+		,{
+				text : ' 保存',
+				iconCls : 'icon-save',
+				handler : function() {
+				for ( var per in editedRows) {
+					$("#slaTemplateTable").datagrid('endEdit', editedRows[per]);
+				}
+				var editData = $("#slaTemplateTable").datagrid('getChanges');
+					slaTemplateManager.add(editData,function(result){
+						if(result){
+							$('#slaTemplateTable').datagrid('reload');
+						alert("保存成功！");
+						}else{alert("保存失败！");}
+					});
+					editedRows = [];
 
+				}
 			}
-		}, {
+		</shiro:hasPermission>
+		<shiro:hasPermission name="sla-update">
+		,{
 				text : '选择',
 				iconCls : 'icon-qxfp',
 				handler : function() {
@@ -103,7 +116,9 @@
 						$('#w').window('close');
 					}
 				}
-			} ];
+			}
+		</shiro:hasPermission>
+	];
 			
 	var editedRows = [];
 	$(function() {

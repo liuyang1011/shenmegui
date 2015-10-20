@@ -13,15 +13,15 @@
 	<table width="99%" border="0" cellspacing="0" cellpadding="0" id="passWord">
   <tr>
     <th>旧密码</th>
-    <td><input name="oldPW" class="easyui-textbox" type="text" id="oldPW" /><font color="#FF0000">*</font></td>
+    <td><input name="oldPW" class="easyui-textbox" type="password" id="oldPW" /><font color="#FF0000">*</font></td>
   </tr>
 <tr>
     <th>新密码</th>
-    <td><input name="newPW" class="easyui-textbox" type="text" id="newPW" /><font color="#FF0000">*</font></td>
+    <td><input name="newPW" class="easyui-textbox" type="password" id="newPW" /><font color="#FF0000">*</font></td>
   </tr>
   <tr>
     <th>确认密码</th>
-    <td><input name="confirmPW" class="easyui-textbox" type="text" id="confirmPW" /><font color="#FF0000">*</font></td>
+    <td><input name="confirmPW" class="easyui-textbox" type="password" id="confirmPW" /><font color="#FF0000">*</font></td>
   </tr>
 </table>
 </fieldset>

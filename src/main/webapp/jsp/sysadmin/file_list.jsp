@@ -85,10 +85,10 @@
                             url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
                         });
                     }
-                },
+                }
                 </shiro:hasPermission>
                 <shiro:hasPermission name="file-delete">
-                {
+                ,{
                     text: '删除',
                     iconCls: 'icon-remove',
                     handler: function () {

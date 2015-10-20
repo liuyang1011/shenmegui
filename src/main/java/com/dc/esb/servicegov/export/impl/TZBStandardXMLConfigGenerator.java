@@ -107,6 +107,7 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
         String reqId = "";
         String resId = "";
         for (Ida ida : idas){
+            if(ida.getStructName() == null) continue;
             if(ida.getStructName().equals("request")){
                 reqId = ida.getId();
             }

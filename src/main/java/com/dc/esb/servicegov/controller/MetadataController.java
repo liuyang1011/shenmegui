@@ -405,7 +405,8 @@ public class MetadataController {
     }
 
 
-    @RequiresPermissions({"metadata-get"})
+//    @RequiresPermissions({"metadata-get"})
+    @RequiresPermissions({"exportXML-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/export")
     public
     @ResponseBody

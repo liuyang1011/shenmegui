@@ -173,7 +173,7 @@
     }
 
     var toolbar = [
-        <shiro:hasPermission name="service-add">
+        <shiro:hasPermission name="operation-add">
         {
             text: '新增',
             iconCls: 'icon-add',
@@ -190,10 +190,10 @@
                 parent.$('#subtab').tabs('select', '服务场景');
 
             }
-        },
+        }
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-update">
-        {
+        <shiro:hasPermission name="operation-update">
+        ,{
             text: '修改',
             iconCls: 'icon-edit',
             handler: function () {
@@ -223,10 +223,10 @@
                 }
 
             }
-        },
+        }
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-delete">
-        {
+        <shiro:hasPermission name="operation-delete">
+        ,{
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
@@ -270,9 +270,9 @@
                     alert("没有选中项！");
                 }
             }
-        },
+        }
         </shiro:hasPermission>
-            '-',
+        , '-'
         /*{
             text: '场景明细',
             iconCls: 'icon-qxfp',
@@ -291,8 +291,8 @@
                 }
             }
         },*/
-        <shiro:hasPermission name="service-get">
-        {
+        <shiro:hasPermission name="version-get">
+        ,{
             text: '历史版本',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -305,10 +305,10 @@
 
                 parent.parent.addTab('历史场景', opeHisContent);
             }
-        },
+        }
         </shiro:hasPermission>
         <shiro:hasPermission name="version-add">
-        {
+        ,{
             text: '发布版本',
             iconCls: 'icon-qxfp',
             handler: function () {
@@ -341,10 +341,10 @@
                     alert("请选中要发布的场景！");
                 }
             }
-        },
+        }
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-update">
-        {
+        <shiro:hasPermission name="operation-commit">
+        ,{
             text: '提交审核',
             iconCls: 'icon-audit',
             handler: function(){
@@ -375,10 +375,10 @@
                     }
                 });
             }
-        },
+        }
         </shiro:hasPermission>
         <shiro:hasPermission name="version-check">
-        {
+        ,{
             text: '审核',
             iconCls: 'icon-audit',
             handler: function () {
@@ -405,10 +405,10 @@
                     closable: true
                 });
             }
-        },
+        }
         </shiro:hasPermission>
-        <shiro:hasPermission name="service-update">
-        {
+        <shiro:hasPermission name="operation-revise">
+        ,{
             text: '修订',
             iconCls: 'icon-audit',
             handler: function () {
@@ -442,10 +442,10 @@
                     }
                 });
             }
-        },
+        }
         </shiro:hasPermission>
         <shiro:hasPermission name="excelExport-get">
-        {
+        ,{
             text:'导出EXCEL',
             iconCls:'icon-excel-export',
             handler: function () {
@@ -478,7 +478,7 @@
                     alert("没有选中数据！");
                 }
             }
-        },
+        }
         </shiro:hasPermission>
 //        {
 //            text: '导出配置文件',
@@ -500,7 +500,7 @@
 //            }
 //        }/*,
         <shiro:hasPermission name="exportConfig-get">
-        {
+        ,{
             text: '导出配置文件',
             iconCls: 'icon-qxfp',
             handler: function () {

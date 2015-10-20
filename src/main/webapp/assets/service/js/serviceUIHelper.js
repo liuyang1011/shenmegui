@@ -46,17 +46,23 @@ var serviceUIHelper = {
         }
     },
     "deleteServiceFormTree" : function removeService(){
-        if (!confirm("删除服务，该服务下所有场景都会被删除，确定要删除该服务吗？")) {
+        if (!confirm("确定要删除该服务吗？")) {
             return;
         }
         var node = $('.mxservicetree').tree('getSelected');
         var id = node.id;
         if(node.type=="service"){
-            $('.mxservicetree').tree('remove', node.target);
-            serviceManager.deleteById(id);
+            serviceManager.deleteById(id,function(result){
+                if(result){
+                    $('.mxservicetree').tree('remove', node.target);
+                }
+            });
         }else if(node.type=="serviceCategory"){
-            $('.mxservicetree').tree('remove', node.target);
-            serviceManager.deleteCategoryById(id);
+            serviceManager.deleteCategoryById(id,function(result){
+                if(result){
+                    $('.mxservicetree').tree('remove', node.target);
+                }
+            });
         }
     },
     "searchService" : function searchService(){

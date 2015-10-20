@@ -83,6 +83,18 @@ var categoryWordManager = {
             }
         });
     },
+    "deleteCategoryWord2": function (data, callBack) {
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/json; charset=utf-8",
+            "url": "/categoryWord/deleteCategoryWord2",
+            "dataType": "json",
+            "data": JSON.stringify(data),
+            "success": function (result) {
+                callBack(result);
+            }
+        });
+    },
     "query" : function(data,callBack){
         $.ajax({
             "type" : "POST",

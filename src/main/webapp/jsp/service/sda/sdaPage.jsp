@@ -298,10 +298,15 @@ var delIds = [];
 </head>
 <body >
 <div id="mm" class="easyui-menu" style="width:120px;">
+	<shiro:hasPermission name="sda-add">
 		<div onclick="append()" data-options="iconCls:'icon-add'">新增</div>
+	</shiro:hasPermission>
+	<shiro:hasPermission name="sda-update">
 		<div onclick="editIt()" data-options="iconCls:'icon-edit'">编辑</div>
+	</shiro:hasPermission>
+	<shiro:hasPermission name="sda-delete">
 		<div onclick="removeIt()" data-options="iconCls:'icon-remove'">删除</div>
-
+	</shiro:hasPermission>
 	</div>
 <fieldset>
  <legend>条件搜索</legend>
@@ -358,7 +363,7 @@ var delIds = [];
     	<table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td>
-		<shiro:hasPermission name="service-update">
+		<shiro:hasPermission name="sda-update">
 		<a href="javascript:void(0)" onclick="moveUp()" class="easyui-linkbutton" iconCls="icon-up" plain="true">上移</a>&nbsp;&nbsp;
     	<a href="javascript:void(0)" onclick="moveDown()" class="easyui-linkbutton" iconCls="icon-down" plain="true">下移</a>&nbsp;&nbsp;
 	    <!--
@@ -366,7 +371,7 @@ var delIds = [];
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
 		</shiro:hasPermission>
-		<shiro:hasPermission name="service-get">
+		<shiro:hasPermission name="sda-get">
 	    <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton" iconCls="icon-save" plain="true">版本对比</a>
 		</shiro:hasPermission>
     </td>

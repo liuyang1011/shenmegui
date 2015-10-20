@@ -120,7 +120,7 @@
                     sysManager.addProtocolPage();
                 }
             },*/
-                <shiro:hasPermission name="system-update">
+                <shiro:hasPermission name="protocol-update">
                 {
                     text: '修改',
                     iconCls: 'icon-edit',
@@ -137,8 +137,10 @@
                             alert("请选择要修改的行");
                         }
                     }
-                },
-                {
+                }
+                </shiro:hasPermission>
+                <shiro:hasPermission name="protocol-delete">
+                ,{
                 text: '删除',
                 iconCls: 'icon-remove',
                 handler: function () {

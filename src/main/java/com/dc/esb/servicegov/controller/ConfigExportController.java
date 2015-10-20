@@ -132,9 +132,7 @@ public class ConfigExportController {
             ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
             if (invoke != null) {
                 String protocolId = invoke.getProtocolId();
-//                if (protocolId == null || "".equals(protocolId)) {
-                //TZB接口没关联协议
-                if (false) {
+                if (protocolId == null || "".equals(protocolId)) {
                     logger.error("消费方接口未关联协议，导出失败");
 //                    return "消费方提供方接口未关联协议，导出失败";
                     logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
@@ -143,10 +141,8 @@ public class ConfigExportController {
                 } else {
 
 
-//                    Protocol protocol = protocolService.getById(protocolId);
-//                    String generatorClass = protocol.getGeneratorId();
-                    //TZB接口没关联协议
-                    String generatorClass = "com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator";
+                    Protocol protocol = protocolService.getById(protocolId);
+                    String generatorClass = protocol.getGeneratorId();
 
                     try {
                         Class c = Class.forName(generatorClass);
@@ -202,9 +198,7 @@ public class ConfigExportController {
             if (invoke != null) {
 
                 String protocolId = invoke.getProtocolId();
-//                if (protocolId == null || "".equals(protocolId)) {
-                //TZB没有接口关联协议
-                if (false) {
+                if (protocolId == null || "".equals(protocolId)) {
                     logger.error("提供方接口未关联协议，导出失败");
                     logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
 //                    return "提供方接口未关联协议，导出失败";
@@ -213,10 +207,8 @@ public class ConfigExportController {
                 } else {
 
 
-//                    Protocol protocol = protocolService.getById(protocolId);
-//                    String generatorClass = protocol.getGeneratorId();
-                    //TZB接口没关联协议
-                    String generatorClass = "com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator";
+                    Protocol protocol = protocolService.getById(protocolId);
+                    String generatorClass = protocol.getGeneratorId();
 
                     try {
                         Class c = Class.forName(generatorClass);

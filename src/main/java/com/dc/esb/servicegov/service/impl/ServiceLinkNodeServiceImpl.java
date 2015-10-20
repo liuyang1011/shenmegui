@@ -8,6 +8,8 @@ import com.dc.esb.servicegov.entity.ServiceLinkNode;
 import com.dc.esb.servicegov.entity.ServiceLinkProperty;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.vo.ServiceLinkNodeVO;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import java.util.List;
 @Service
 @Transactional
 public class ServiceLinkNodeServiceImpl extends AbstractBaseService<ServiceLinkNode, String> {
+    protected Log logger = LogFactory.getLog(getClass());
 
     @Autowired
     private ServiceLinkNodeDAOImpl serviceLinkNodeDAO;
@@ -41,7 +44,11 @@ public class ServiceLinkNodeServiceImpl extends AbstractBaseService<ServiceLinkN
             Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
             com.dc.esb.servicegov.entity.Service service = serviceService.getById(serviceInvoke.getServiceId());
             serviceLinkNodeVO.setServiceName(service.getServiceName());
-            serviceLinkNodeVO.setOperationName(operation.getOperationName());
+            if (operation != null){
+                serviceLinkNodeVO.setOperationName(operation.getOperationName());
+            }else{
+                logger.error("serviceInvoke:"+serviceInvoke.getInvokeId());
+            }
         }
         List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy("invokeId", serviceInvoke.getInvokeId());
         for(ServiceLinkProperty serviceLinkProperty : serviceLinkProperties){
@@ -65,7 +72,7 @@ public class ServiceLinkNodeServiceImpl extends AbstractBaseService<ServiceLinkN
             if("condition".equalsIgnoreCase(propertyName)){
                 serviceLinkNodeVO.setCondition(propertyValue);
             }
-            if("conditionDesc".equalsIgnoreCase(propertyName)){
+            if("connectionDesc".equalsIgnoreCase(propertyName)){
                 serviceLinkNodeVO.setConnectionDesc(propertyValue);
             }
         }

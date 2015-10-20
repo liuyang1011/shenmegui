@@ -20,7 +20,7 @@
             <td><input name="userName" class="easyui-textbox" type="text" id="userName" value="${user.name}" data-options="required:true,validType:'chineseB'"/><font
                     color="#FF0000">*</font></td>
             <th>密 码</th>
-            <td><input name="password" class="easyui-textbox" type="text" id="password" value="${user.password}"
+            <td><input name="password" class="easyui-textbox" type="password" id="password" value="${user.password}"
                        disabled='disabled'/><font color="#FF0000">*</font></td>
         </tr>
         <tr>

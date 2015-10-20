@@ -21,9 +21,7 @@
 	<body>
 	<form id="searchForm">
 		<fieldset>
-			<legend>
-				条件搜索
-			</legend>
+			<legend>条件搜索</legend>
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<th><nobr>
@@ -158,17 +156,17 @@
 		    pageList: [14,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
 	        toolbar: [
-				<shiro:hasPermission name="system-update">
+				<shiro:hasPermission name="interface-add">
 				{
 					text:'新增',
 					iconCls:'icon-add',
 					handler:function(){
 						interfaceManager.append("${param.systemId}");
 					}
-				},
+				}
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
-				{
+				<shiro:hasPermission name="interface-update">
+				,{
 					text:'修改',
 					iconCls:'icon-edit',
 					handler:function(){
@@ -179,10 +177,10 @@
 							alert("请选择要修改的行");
 						}
 					}
-				},
+				}
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
-				{
+				<shiro:hasPermission name="interface-delete">
+				,{
 					text:'删除',
 					iconCls:'icon-remove',
 					handler:function(){
@@ -193,10 +191,10 @@
 							alert("请选择要删除的行");
 						}
 					 }
-				},
+				}
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
-				{
+				<shiro:hasPermission name="interface-headRelation">
+				,{
 						text:'关联报文头',
 						iconCls:'icon-save',
 						handler:function(){
@@ -232,10 +230,10 @@
 //							}
 
 						}
-					}*/,
+					}*/
 				</shiro:hasPermission>
 				<shiro:hasPermission name="exportInterface-get">
-				{
+				,{
 						text:'导出',
 						iconCls:'icon-save',
 						handler:function(){
@@ -284,10 +282,10 @@
 							}
 
 						}
-					},
+					}
 				</shiro:hasPermission>
-				<shiro:hasPermission name="system-update">
-					{
+				<shiro:hasPermission name="interface-release">
+				,{
 						text: '发布',
 						iconCls: 'icon-save',
 						handler: function () {
