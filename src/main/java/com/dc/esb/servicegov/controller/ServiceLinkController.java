@@ -81,7 +81,7 @@ public class ServiceLinkController {
             name = serviceId + operationId;
         }
         sourceGraphNode.setName(name);
-        sourceGraphNode.setLeft(String.valueOf(initX += 250));
+        sourceGraphNode.setLeft(String.valueOf(initX));
         sourceGraphNode.setTop(String.valueOf(initY));
         sourceGraphNode.setType("table");
         return sourceGraphNode;
@@ -191,13 +191,20 @@ public class ServiceLinkController {
         List<InvokeConnection> invokeConnections = invokeConnectionService.getConnectionsStartWith(nodeId, new ArrayList<String>());
         Map<String, Collection<?>> renderObj = new HashMap<String, Collection<?>>();
         Map<String, GraphNode> nodes = new HashMap<String, GraphNode>();
+        String formerSourceId = nodeId;
         for (InvokeConnection invokeConnection : invokeConnections) {
             String sourceId = invokeConnection.getSourceId();
             String targetId = invokeConnection.getTargetId();
+            if(!formerSourceId.equals(sourceId)){
+                initX +=350;
+                initY = 100;
+            }
             if (null != sourceId && !nodes.containsKey(sourceId)) {
                 ServiceInvoke sourceServiceInvoke = serviceInvokeService.getById(invokeConnection.getSourceId());
                 GraphNode sourceGraphNode = constructGraphNode(sourceServiceInvoke);
                 List<GraphColumn> columns = constructGraphColumns(sourceServiceInvoke);
+                initX += 350;
+                formerSourceId = sourceId;
                 sourceGraphNode.setColumns(columns);
                 nodes.put(sourceId, sourceGraphNode);
             }
@@ -205,6 +212,7 @@ public class ServiceLinkController {
                 ServiceInvoke targetServiceInvoke = serviceInvokeService.getById(invokeConnection.getTargetId());
                 GraphNode targetGraphNode = constructGraphNode(targetServiceInvoke);
                 List<GraphColumn> columns = constructGraphColumns(targetServiceInvoke);
+                initY += 200;
                 targetGraphNode.setColumns(columns);
                 nodes.put(targetId, targetGraphNode);
             }
