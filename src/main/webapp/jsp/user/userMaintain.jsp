@@ -143,10 +143,10 @@
                 alert("请选中要删除的数据！");
              }
 		   }
-		},
+		}
 		</shiro:hasRole>
 		<shiro:hasPermission name="password-update">
-		{
+		,{
 			text : '修改密码',
 			iconCls : 'icon-qxfp',
 			handler : function() {

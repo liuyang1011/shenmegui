@@ -142,10 +142,10 @@
                     handler: function () {
                         sysManager.addSystemPage();
                     }
-                },
+                }
                 </shiro:hasPermission>
                 <shiro:hasPermission name="system-update">
-                {
+                ,{
                 text: '修改',
                 iconCls: 'icon-edit',
                 handler: function () {
@@ -161,10 +161,10 @@
                         alert("请选择要修改的行");
                     }
                 }
-            },
+            }
                 </shiro:hasPermission>
                 <shiro:hasPermission name="system-delete">
-                {
+                ,{
                 text: '删除',
                 iconCls: 'icon-remove',
                 handler: function () {
@@ -200,10 +200,10 @@
                         alert("请选择要删除的行");
                     }
                 }
-            },
+            }
                 </shiro:hasPermission>
                 <shiro:hasPermission name="file-get">
-                {
+                ,{
                 text: '文件管理',
                 iconCls: 'icon-save',
                 handler: function () {

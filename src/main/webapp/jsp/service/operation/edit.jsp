@@ -29,7 +29,9 @@
     <script type="text/javascript">
         var serviceId;
         var operationId;
+        var state;
         $(function(){
+            state = "${operation.state }";
             /**
              *  初始化接口标签
              * @param result
@@ -55,6 +57,10 @@
                         alert("请先完善基础信息!");
                         return false;
                     }
+                    if( state != 0 &&  state != 7){
+                        alert("只有服务定义和修订状态的场景才能修改");
+                        return false;
+                    }
                     $('#interfaceDlg').dialog({
                         title: '添加消费者-提供者关系',
                         width: 500,
@@ -65,13 +71,17 @@
                         modal: true
                     });
                 }
-             },
+             }
             </shiro:hasPermission>
             <shiro:hasPermission name="invoke-delete">
-            {
+            ,{
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
+                if( state != 0 &&  state != 7){
+                    alert("只有服务定义和修订状态的场景才能修改");
+                    return false;
+                }
 //                $("#resultList").datagrid('get',{total:0,rows:[]});
                 var row = $("#resultList").datagrid('getSelected');
                 var index =  $("#resultList").datagrid('getRowIndex',row);

@@ -57,10 +57,10 @@
 				}
 				
 			}
-		},
+		}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="ida-update">
-		{
+		,{
 			text:'保存',
 			iconCls:'icon-save',
 			handler:function(){

@@ -488,7 +488,7 @@ public class OperationController {
      * @param metadataId
      * @return
      */
-    @RequiresPermissions({"service-get"})
+//    @RequiresPermissions({"service-get"})
     @RequestMapping("/judgeByMetadataId/{metadataId}")
     @ResponseBody
     public boolean judgeByMetadataId(@PathVariable(value = "metadataId") String metadataId){

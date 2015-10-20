@@ -27,10 +27,10 @@
 				handler : function() {
 					$('#slaTemplateTable').edatagrid('addRow');
 					}
-			},
+			}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="slaTemp-update">
-			{
+		,{
 				text : '编辑',
 				iconCls : 'icon-edit',
 				handler : function() {
@@ -40,10 +40,10 @@
 // 					alert(content);
 					parent.parent.parent.addTab('SLA模板', content);
 					}
-			},
+			}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="slaTemp-delete">
-			{
+		,{
 				text : '删除',
 				iconCls : 'icon-remove',
 				handler : function() {
@@ -62,10 +62,10 @@
 						}else{alert("删除失败！");}
 					});
 				}
-			},
+			}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="slaTemp-update">
-			{
+		,{
 				text : ' 保存',
 				iconCls : 'icon-save',
 				handler : function() {
@@ -82,10 +82,10 @@
 					editedRows = [];
 
 				}
-			},
+			}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sla-update">
-			{
+		,{
 				text : '选择',
 				iconCls : 'icon-qxfp',
 				handler : function() {

@@ -35,6 +35,10 @@ var ff = {
 }
 
 function save(formId, operation) {
+    if( state != 0 &&  state != 7){
+        alert("只有服务定义和修订状态的场景才能修改");
+        return false;
+    }
     if (!$("#" + formId).form('validate')) {
         return false;
     }

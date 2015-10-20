@@ -163,10 +163,10 @@
 					handler:function(){
 						interfaceManager.append("${param.systemId}");
 					}
-				},
+				}
 				</shiro:hasPermission>
 				<shiro:hasPermission name="interface-update">
-				{
+				,{
 					text:'修改',
 					iconCls:'icon-edit',
 					handler:function(){
@@ -177,10 +177,10 @@
 							alert("请选择要修改的行");
 						}
 					}
-				},
+				}
 				</shiro:hasPermission>
 				<shiro:hasPermission name="interface-delete">
-				{
+				,{
 					text:'删除',
 					iconCls:'icon-remove',
 					handler:function(){
@@ -191,10 +191,10 @@
 							alert("请选择要删除的行");
 						}
 					 }
-				},
+				}
 				</shiro:hasPermission>
 				<shiro:hasPermission name="interface-headRelation">
-				{
+				,{
 						text:'关联报文头',
 						iconCls:'icon-save',
 						handler:function(){
@@ -230,10 +230,10 @@
 //							}
 
 						}
-					}*/,
+					}*/
 				</shiro:hasPermission>
 				<shiro:hasPermission name="exportInterface-get">
-				{
+				,{
 						text:'导出',
 						iconCls:'icon-save',
 						handler:function(){
@@ -282,10 +282,10 @@
 							}
 
 						}
-					},
+					}
 				</shiro:hasPermission>
 				<shiro:hasPermission name="interface-release">
-					{
+				,{
 						text: '发布',
 						iconCls: 'icon-save',
 						handler: function () {

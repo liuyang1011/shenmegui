@@ -135,10 +135,10 @@
                 url: "/assets/metadata/add.jsp"
             });
         }
-    },
+    }
         </shiro:hasPermission>
         <shiro:hasPermission name="metadata-update">
-        {
+        ,{
         text: '修改',
         iconCls: 'icon-edit',
         handler: function () {
@@ -165,20 +165,20 @@
                 alert("请选中要修改的数据！");
             }
         }
-    },
+    }
         </shiro:hasPermission>
         <shiro:hasPermission name="metadata-delete">
-        {
+        ,{
         text: '删除',
         iconCls: 'icon-remove',
         handler: function () {
             deleteObj();
         }
-    },
+    }
         </shiro:hasPermission>
-        '-',
+        ,'-'
         <shiro:hasPermission name="metadata-get">
-        {
+        ,{
             text: '关联服务场景',
             iconCls: 'icon-cfp',
             handler: function () {
@@ -221,11 +221,11 @@
             handler: function () {
                 alert('移出')
             }
-        }*/,
+        }*/
         </shiro:hasPermission>
-        '-',
+        ,'-'
         <shiro:hasPermission name="metadata-update">
-        {
+        ,{
             text: '导入',
             iconCls: 'icon-cfp',
             handler: function () {
@@ -236,10 +236,10 @@
                     url: "/jsp/metadata/importMetadata.jsp"
                 });
             }
-        },
+        }
         </shiro:hasPermission>
         <shiro:hasPermission name="exportXML-get">
-        {
+        ,{
             text: '导出XML',
             iconCls: 'icon-save',
             handler: function () {
@@ -248,10 +248,10 @@
                     });
                 });
             }
-        },
+        }
         </shiro:hasPermission>
         <shiro:hasPermission name=" exportMetadataExcel-get">
-        {
+        ,{
             text: '导出EXCEL',
             iconCls: 'icon-save',
             handler: function () {

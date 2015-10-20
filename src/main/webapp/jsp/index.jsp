@@ -113,9 +113,9 @@
         新增报文头
     </div>
     </shiro:hasPermission>
-  <%--  <div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">
+    <div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">
     编辑报文头
-    </div>--%>
+    </div>
     <shiro:hasPermission name="interfaceHead-delete">
     <div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">
         删除报文头
@@ -215,9 +215,9 @@
     <%--<div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">--%>
         <%--新增协议--%>
     <%--</div>--%>
-    <%--<div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">--%>
-    <%--编辑协议--%>
-    <%--</div>--%>
+    <div onclick="sysManager.editProtocol()" data-options="iconCls:'icon-edit'">
+    编辑协议
+    </div>
     <shiro:hasPermission name="protocol-delete">
     <div onclick="sysManager.deleteProtocol()" data-options="iconCls:'icon-remove'">
     删除协议

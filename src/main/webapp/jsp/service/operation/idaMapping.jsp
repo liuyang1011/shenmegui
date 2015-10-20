@@ -161,10 +161,10 @@
         });
       }
     }
-  },
+  }
       </shiro:hasPermission>
       <shiro:hasPermission name="ida-update">
-      {
+      ,{
     text : '保存映射关系',
     iconCls : 'icon-remove',
     handler : function() {

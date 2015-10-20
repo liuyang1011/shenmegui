@@ -103,7 +103,7 @@ public class InterfaceHeadController {
 	}
 
 //	@RequiresPermissions({"system-update"})
-	@RequiresPermissions({"interfaceHead-update"})
+//	@RequiresPermissions({"interfaceHead-update"})
 	@RequestMapping(method = RequestMethod.GET, value = "/edit/{headId}", headers = "Accept=application/json")
 	public ModelAndView getInterfaceHead(@PathVariable
 	String headId) {

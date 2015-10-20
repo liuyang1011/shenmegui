@@ -78,10 +78,10 @@
         handler: function () {
             $('#tt').edatagrid('addRow');
         }
-    } ,
+    }
         </shiro:hasPermission>
         <shiro:hasPermission name="categoryWord-delete">
-        {
+        ,{
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
@@ -101,10 +101,10 @@
                     }
                 })
             }
-        },
+        }
         </shiro:hasPermission>
         <shiro:hasPermission name="categoryWord-update">
-        {
+        ,{
             text: '保存',
             iconCls: 'icon-save',
             handler: function () {

@@ -5,11 +5,10 @@ import java.util.*;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.InterfaceInvoke;
+import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
-import com.dc.esb.servicegov.service.impl.InterfaceInvokeServiceImpl;
-import com.dc.esb.servicegov.service.impl.InterfaceServiceImpl;
-import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.dc.esb.servicegov.entity.ServiceInvoke;
-import com.dc.esb.servicegov.service.impl.ServiceInvokeServiceImpl;
 import com.dc.esb.servicegov.vo.ServiceInvokeViewBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +38,8 @@ public class ServiceInvokeController {
     private ServiceInvokeServiceImpl serviceInvokeService;
     @Autowired
     private InterfaceInvokeServiceImpl interfaceInvokeService;
+    @Autowired
+    private OperationServiceImpl operationService;
 
     @RequiresPermissions({"service-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
@@ -219,6 +219,7 @@ public class ServiceInvokeController {
         List consumers = (ArrayList)list.get(0);
         List providers = (ArrayList)list.get(1);
         List<ServiceInvoke> temp = new ArrayList<ServiceInvoke>();
+        Operation operation = null;
         for (int i = 0; i < providers.size(); i++) {
             for (int j = 0; j < consumers.size(); j++) {
                 LinkedHashMap<String, Object> mapConsumer = (LinkedHashMap)consumers.get(j);
@@ -234,6 +235,7 @@ public class ServiceInvokeController {
                 String isStandard = mapConsumer.get("isStandard").toString();
                 String serviceId =mapConsumer.get("serviceId").toString();
                 String operationId =mapConsumer.get("operationId").toString();
+                operation = operationService.getOperation(serviceId,operationId);
                 ServiceInvoke c;
                 ServiceInvoke c2 = serviceInvokeService.getById(invokeId);
                 if(null != c2){
@@ -320,7 +322,9 @@ public class ServiceInvokeController {
                 interfaceInvokeService.insert(interfaceInvoke);
             }
         }
-
+        if(null != operation){
+            operationService.editOperation(null,operation);
+        }
         systemLogService.updateResult(operationLog);
         return true;
     }

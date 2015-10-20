@@ -66,10 +66,10 @@
                     }
 
                 }
-            },
+            }
             </shiro:hasPermission>
             <shiro:hasPermission name="ida-update">
-            {
+            ,{
             text: '保存',
             iconCls: 'icon-save',
             handler: function () {
@@ -219,10 +219,10 @@
                     });
                 }
             }
-        },
+        }
             </shiro:hasPermission>
             <shiro:hasPermission name="interface-release">
-            {
+            ,{
                 text: '发布',
                 iconCls: 'icon-save',
                 handler: function () {

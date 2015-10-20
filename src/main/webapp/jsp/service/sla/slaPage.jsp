@@ -105,10 +105,10 @@
 			handler : function() {
 				$('#sla').edatagrid('addRow');
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="sla-delete">
-			{
+			,{
 			text : '删除',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -127,10 +127,10 @@
 						}else{alert("删除失败！");}
 					});
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="sla-update">
-			{
+			,{
 			text : ' 保存',
 			iconCls : 'icon-save',
 			handler : function() {
@@ -152,10 +152,10 @@
 				editedRows = [];
 
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="slaTemp-get">
-			{
+			,{
 			text : 'SLA模版',
 			iconCls : 'icon-qxfp',
 			handler : function() {

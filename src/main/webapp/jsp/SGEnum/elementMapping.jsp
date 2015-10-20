@@ -197,10 +197,10 @@
 					});
 				}
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-update">
-			{
+			,{
 			text : '保存映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -215,10 +215,10 @@
 				});
 				editedRows = [];
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-get">
-			{
+			,{
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
@@ -249,10 +249,10 @@
 					});
 				}
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-update">
-			{
+			,{
 			text : '保存映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -267,10 +267,10 @@
 				});
 				editedRows = [];
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-get">
-			{
+			,{
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
