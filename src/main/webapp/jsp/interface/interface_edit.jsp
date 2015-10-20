@@ -200,6 +200,9 @@
 				$('#w').window('close');
 				var selectNode = treeObj.tree("getSelected");
 				var parent = treeObj.tree("getParent", selectNode.target);
+				if(selectNode.text == '接口'){
+					parent = selectNode;
+				}
 				var urlPath = treeObj.tree('options').url;
 				treeObj.tree('options').url = "/interface/getLeftTree/subInterfaceTree/system/" + systemId;
 				treeObj.tree("reload", parent.target);
