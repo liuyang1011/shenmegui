@@ -15,16 +15,11 @@
         };
 
         // get the various dom elements
-        var mainElement = document.getElementById("jtk-demo-flowchart"),
-            canvasElement = document.getElementById("jtk-demo-canvas");
-            //miniviewElement = mainElement.querySelector(".miniview");
-            //nodePalette = mainElement.querySelector(".node-palette"),
-            //controls = mainElement.querySelector(".controls");
-        //var mainElement = document.getElementById("#jtk-demo-flowchart"),
-        //    canvasElement = document.getElementById(".jtk-demo-canvas"),
-        //    miniviewElement = document.getElementById(".miniview"),
-        //    nodePalette = document.getElementById(".node-palette"),
-        //    controls = document.getElementById(".controls");
+        var mainElement = document.querySelector("#jtk-demo-flowchart"),
+            canvasElement = mainElement.querySelector(".jtk-demo-canvas"),
+            miniviewElement = mainElement.querySelector(".miniview"),
+            nodePalette = mainElement.querySelector(".node-palette"),
+            controls = mainElement.querySelector(".controls");
 
         // Declare an instance of the Toolkit, and supply the functions we will use to get ids and types from nodes.
         var toolkit = jsPlumbToolkit.newInstance({
@@ -160,6 +155,7 @@
                         allowNodeLoopback:false, // do not allow connections from this port to any other port on the same node.
                         events: {
                             "dblclick": function () {
+                                console.log(arguments);
                             }
                         }
                     }
@@ -179,9 +175,9 @@
                     }
                 }
             },
-            //miniview: {
-            //    container: miniviewElement
-            //},
+            miniview: {
+                container: miniviewElement
+            },
             consumeRightClick: false,
             dragOptions: {
                 filter: ".jtk-draw-handle, .node-action, .node-action i"
@@ -197,22 +193,22 @@
             }
         });
 
-        //// listener for mode change on renderer.
-        //renderer.bind("modeChanged", function (mode) {
-        //    jsPlumb.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
-        //    jsPlumb.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
-        //});
-        //
-        //// pan mode/select mode
-        //jsPlumb.on(controls, "tap", "[mode]", function () {
-        //    renderer.setMode(this.getAttribute("mode"));
-        //});
-        //
-        //// on home button click, zoom content to fit.
-        //jsPlumb.on(controls, "tap", "[reset]", function () {
-        //    toolkit.clearSelection();
-        //    renderer.zoomToFit();
-        //});
+        // listener for mode change on renderer.
+        renderer.bind("modeChanged", function (mode) {
+            jsPlumb.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
+            jsPlumb.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
+        });
+
+        // pan mode/select mode
+        jsPlumb.on(controls, "tap", "[mode]", function () {
+            renderer.setMode(this.getAttribute("mode"));
+        });
+
+        // on home button click, zoom content to fit.
+        jsPlumb.on(controls, "tap", "[reset]", function () {
+            toolkit.clearSelection();
+            renderer.zoomToFit();
+        });
 
         // configure Drawing tools. This is an optional include.
         new jsPlumbToolkit.DrawingTools({
@@ -274,7 +270,7 @@
                 }) + "</pre>";
         };
 
-        var datasetContainer = document.getElementById("jtk-demo-dataset");
+        var datasetContainer = document.querySelector(".jtk-demo-dataset");
         var _updateDataset = function () {
             datasetContainer.innerHTML = _syntaxHighlight(JSON.stringify(toolkit.exportData(), null, 4));
         };
@@ -294,23 +290,23 @@
         //
         //  dataGenerator: this function takes a node type and returns some default data for that node type.
         //
-        //renderer.registerDroppableNodes({
-        //    droppables: nodePalette.querySelectorAll("li"),
-        //    dragOptions: {
-        //        zIndex: 50000,
-        //        cursor: "move",
-        //        clone: true
-        //    },
-        //    typeExtractor: function (el) {
-        //        return el.getAttribute("jtk-node-type");
-        //    },
-        //    dataGenerator: function (type) {
-        //        return {
-        //            w: 120,
-        //            h: 80
-        //        };
-        //    }
-        //});
+        renderer.registerDroppableNodes({
+            droppables: nodePalette.querySelectorAll("li"),
+            dragOptions: {
+                zIndex: 50000,
+                cursor: "move",
+                clone: true
+            },
+            typeExtractor: function (el) {
+                return el.getAttribute("jtk-node-type");
+            },
+            dataGenerator: function (type) {
+                return {
+                    w: 120,
+                    h: 80
+                };
+            }
+        });
 
 // ------------------------ / drag and drop new tables/views -----------------
 

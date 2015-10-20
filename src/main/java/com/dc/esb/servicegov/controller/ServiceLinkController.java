@@ -211,6 +211,12 @@ public class ServiceLinkController {
         }
         Collection<GraphConnection> graphConnections = constructGraphConnection(invokeConnections);
         Collection<GraphNode> nodeList = nodes.values();
+        //添加逻辑，如果没有关系，添加自身节点到返回。
+        if(nodeList.size() == 0){
+            ServiceInvoke selfServiceInvoke = serviceInvokeService.getById(nodeId);
+            GraphNode selfGraphNode = constructGraphNode(selfServiceInvoke);
+            nodeList.add(selfGraphNode);
+        }
         renderObj.put("nodes", nodeList);
         renderObj.put("edges", graphConnections);
         return renderObj;
