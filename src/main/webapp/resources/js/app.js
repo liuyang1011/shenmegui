@@ -195,7 +195,8 @@ var SYSMENU = {
                         var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
                         if (node.click == 'system') {
                             var mid = node.id;
-                            var title = node.text;
+                            //var title = node.text;
+                            var title = "系统";
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {

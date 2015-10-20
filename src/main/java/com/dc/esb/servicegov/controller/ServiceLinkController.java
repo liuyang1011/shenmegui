@@ -161,7 +161,7 @@ public class ServiceLinkController {
      * @param nodeId
      * @return
      */
-    @RequiresPermissions({"link-get"})
+    @RequiresPermissions({"link-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/nodeInfo/{nodeId}", headers = "Accept=application/json")
     public
     @ResponseBody

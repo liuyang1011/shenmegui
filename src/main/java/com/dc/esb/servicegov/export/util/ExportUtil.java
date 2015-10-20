@@ -152,6 +152,7 @@ public class ExportUtil {
                 if (root.getNamespace() != null && !"".equals(root.getNamespace().getPrefix())) {
                     prefix = root.getNamespace().getPrefix() + ":";
                 }
+                if(ida.getStructName()==null) continue;
                 if (!ida.getStructName().equals("root") && !ida.getStructName().equals("request") && !ida.getStructName().equals("response")) {
                     if(null == ida.getMetadataId()){
                         root.addComment(ida.getStructAlias());
@@ -192,6 +193,7 @@ public class ExportUtil {
                 if (root.getNamespace() != null && !"".equals(root.getNamespace().getPrefix())) {
                     prefix = root.getNamespace().getPrefix() + ":";
                 }
+                if(ida.getStructName() == null) continue;
                 if (!ida.getStructName().equals("root") && !ida.getStructName().equals("request") && !ida.getStructName().equals("response")) {
                     if(null == ida.getMetadataId()){
                         root.addComment(ida.getStructAlias());

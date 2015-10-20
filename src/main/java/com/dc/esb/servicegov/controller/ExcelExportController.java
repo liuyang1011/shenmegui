@@ -89,7 +89,8 @@ public class ExcelExportController {
     /**
      * 根据服务分类或者服务导出服务视图
      */
-    @RequiresPermissions({"excelExport-get"})
+//    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"viewExcelExport-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportServiceView", headers = "Accept=application/json")
     public
     @ResponseBody

@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.TagServiceImpl;
+import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
@@ -53,6 +54,8 @@ public class InterfaceController {
     private ProcessContextServiceImpl processContextService;
     @Autowired
     private TagServiceImpl tagService;
+    @Autowired
+    private VersionServiceImpl versionServiceImpl;
 
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{systemIds}", headers = "Accept=application/json")
@@ -164,7 +167,8 @@ public class InterfaceController {
         return interfaceService.getFileTreeChildren(system);
     }
 
-    @RequiresPermissions({"system-add"})
+//    @RequiresPermissions({"system-add"})
+    @RequiresPermissions({"interface-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -282,7 +286,8 @@ public class InterfaceController {
 
     }
 
-    @RequiresPermissions({"system-delete"})
+//    @RequiresPermissions({"system-delete"})
+    @RequiresPermissions({"interface-delete"})
     @RequestMapping(method = RequestMethod.GET, value = "/delete/{interfaceId}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -303,7 +308,8 @@ public class InterfaceController {
         return true;
     }
 
-    @RequiresPermissions({"system-delete"})
+//    @RequiresPermissions({"system-delete"})
+    @RequiresPermissions({"interface-delete"})
     @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -326,7 +332,8 @@ public class InterfaceController {
         return true;
     }
 
-    @RequiresPermissions({"system-update"})
+//    @RequiresPermissions({"system-update"})
+    @RequiresPermissions({"interface-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/edit/{interfaceId}", headers = "Accept=application/json")
     public ModelAndView getInterface(@PathVariable
                                      String interfaceId) {
@@ -595,21 +602,27 @@ public class InterfaceController {
         return resList;
     }
 
-    @RequiresPermissions({"system-get"})
+//    @RequiresPermissions({"system-get"})
+    @RequiresPermissions({"interface-headRelation"})
     @RequestMapping(method = RequestMethod.GET, value = "/headRelate/{interfaceId}/{headIds}", headers = "Accept=application/json")
     public
     @ResponseBody
     boolean headRelate(@PathVariable String interfaceId, @PathVariable String headIds) {
-        OperationLog operationLog = systemLogService.record("接口","关联报文头","接口ID：" + interfaceId + "; 报文头ID" + headIds);
+        OperationLog operationLog = systemLogService.record("接口","关联报文头","接口ID：" + interfaceId + "; 报文头ID:" + headIds);
+
+        Interface entity = interfaceService.findUniqueBy("interfaceId", interfaceId);
+        if(entity != null){
+            versionServiceImpl.editVersion(entity.getVersionId());
+        }
 
         if (headIds.equals("none")) {
             interfaceHeadRelateService.deleteRelate(interfaceId);
+            operationLog.setParams("接口ID：" + interfaceId + ", 取消报文头关联");
             return true;
         }
         if (interfaceId != null && headIds != null) {
             interfaceHeadRelateService.relateSave(interfaceId, headIds);
         }
-
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -638,7 +651,8 @@ public class InterfaceController {
         return JSONUtil.getInterface().convert(rows, Interface.simpleFields());
     }
 
-    @RequiresPermissions({"system-update"})
+//    @RequiresPermissions({"system-update"})
+    @RequiresPermissions({"interface-release"})
     @RequestMapping(method = RequestMethod.GET, value = "/release", headers = "Accept=application/json")
     public
     @ResponseBody

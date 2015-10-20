@@ -41,7 +41,7 @@
         });
         var item;
         var toolbar = [
-            <shiro:hasPermission name="service-update">
+            <shiro:hasPermission name="ida-get">
             {
                 text: '映射元数据',
                 iconCls: 'icon-qxfp',

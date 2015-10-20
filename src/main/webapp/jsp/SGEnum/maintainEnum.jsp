@@ -164,10 +164,10 @@
 							});
 				}
 			}
-		},
+		}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-add">
-			{
+			,{
 			text : '新增',
 			iconCls : 'icon-add',
 			handler : function() {

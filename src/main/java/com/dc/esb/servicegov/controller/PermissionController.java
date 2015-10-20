@@ -1,14 +1,8 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.impl.PermissionDAOImpl;
-import com.dc.esb.servicegov.entity.OperationLog;
-import com.dc.esb.servicegov.entity.Permission;
-import com.dc.esb.servicegov.entity.PermissionCategory;
-import com.dc.esb.servicegov.entity.RolePermissionRelation;
-import com.dc.esb.servicegov.service.impl.PermissionCategoryServiceImpl;
-import com.dc.esb.servicegov.service.impl.PermissionServiceImpl;
-import com.dc.esb.servicegov.service.impl.RolePermissionRelationServiceImpl;
-import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.*;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +27,13 @@ public class PermissionController {
     @Autowired
     private PermissionCategoryServiceImpl permissionCategoryService;
     @Autowired
+    private SGMenuCategoryServiceImpl sgMenuCategoryService;
+    @Autowired
+    private SGMenuServiceImpl sgMenuService;
+    @Autowired
     private RolePermissionRelationServiceImpl rolePermissionRelationService;
+    @Autowired
+    private RoleMenuRelationServiceImpl roleMenuRelationService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public
@@ -64,9 +64,28 @@ public class PermissionController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/savePermission/{roleId}", headers = "Accept=application/json")
+    /**
+     * 新版的权限
+     * @param roleId
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/getPermissionTree2/{roleId}", headers = "Accept=application/json")
     public
     @ResponseBody
+    List<SGMenuServiceImpl.PermissionTreeBean> getPermissionTree2(@PathVariable("roleId") String roleId) {
+        List<SGMenuCategory> sgMenuCategories = sgMenuCategoryService.getAll();
+        List<SGMenu> sgMenus = sgMenuService.getAll();
+        return sgMenuService.getTreeJson(sgMenuCategories, sgMenus,roleId);
+
+//        List<PermissionCategory> permissionCategoryList = permissionCategoryService.getAll();
+//        List<Permission> permissionList = permissionService.getAll();
+//        return permissionService.getTreeJson(permissionCategoryList, permissionList,roleId);
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/savePermission/{roleId}", headers = "Accept=application/json")
+     public
+     @ResponseBody
     boolean savePermission(@RequestBody ArrayList list,@PathVariable("roleId") String roleId) {
         OperationLog operationLog = systemLogService.record("权限","保存权限","角色ID：" + roleId + "； 权限数量：" + list.size());
         parsePermissionData(list,roleId);
@@ -75,6 +94,16 @@ public class PermissionController {
         return true;
 
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/savePermission2/{roleId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean savePermission2(@RequestBody ArrayList list,@PathVariable("roleId") String roleId) {
+        parsePermissionData2(list, roleId);
+        return true;
+
+    }
+
     //权限递归
     private void parsePermissionData(ArrayList list,String roleId){
         for (int i = 0; i < list.size(); i++) {
@@ -103,6 +132,39 @@ public class PermissionController {
                 ArrayList children = (ArrayList)map.get("children");
                 if(children.size()>0){
                     parsePermissionData(children,roleId);
+                }
+            }
+        }
+    }
+
+    //菜单递归
+    private void parsePermissionData2(ArrayList list,String roleId){
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String,Object> map = (LinkedHashMap<String,Object>)list.get(i);
+            if (map.get("type").equals("permission")){
+                //菜单数据
+                String sgMenuId = (String)map.get("id");//菜单id
+                String permissionState = (String) map.get("permissionState");
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("roleId",roleId);
+                params.put("sgMenuId",sgMenuId);
+                RoleMenuRelation relation = roleMenuRelationService.findUniqueBy(params);
+                if(null == relation){//添加
+                    if(permissionState.equals("1")){
+                        relation = new RoleMenuRelation();
+                        relation.setSgMenuId(sgMenuId);
+                        relation.setRoleId(roleId);
+                        roleMenuRelationService.insertRelation(relation);
+                    }
+                }else{//删除
+                    if(permissionState.equals("0")){
+                        roleMenuRelationService.deleteRelation(relation);
+                    }
+                }
+            }else{
+                ArrayList children = (ArrayList)map.get("children");
+                if(children.size()>0){
+                    parsePermissionData2(children,roleId);
                 }
             }
         }

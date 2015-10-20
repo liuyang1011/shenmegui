@@ -1,6 +1,6 @@
 var serviceManager ={
 
-	"deleteById" : function deleteById(id){
+	"deleteById" : function deleteById(id,callback){
 		$.ajax({
 			"type" : "DELETE",
 			"contentType" : "application/json;charset=utf-8",
@@ -8,11 +8,17 @@ var serviceManager ={
 			"data": JSON.stringify(id),
 			"dataType": "json",
 			"success": function(result) {
+				if(result){
+					alert("删除成功");
+				}else{
+					alert("请先删除服务下的场景");
+				}
+				callback(result);
 			}
 		});
 	},
 
-	"deleteCategoryById" : function deleteCategoryById(id){
+	"deleteCategoryById" : function deleteCategoryById(id,callback){
 		$.ajax({
 			"type" : "DELETE",
 			"contentType" : "application/json;charset=utf-8",
@@ -20,6 +26,12 @@ var serviceManager ={
 			"data": JSON.stringify(id),
 			"dataType": "json",
 			"success": function(result) {
+				if(result){
+					alert("删除成功");
+				}else{
+					alert("请先删除服务");
+				}
+				callback(result);
 			}
 		});
 	},

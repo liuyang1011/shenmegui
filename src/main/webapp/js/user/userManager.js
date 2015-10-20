@@ -116,6 +116,26 @@ var userManager = {
             }
         });
     },
+    "initPassWord": function(userI,str2,callBack){
+
+        $.ajax({
+            type: "post",
+            contentType: "application/json; charset=utf-8",
+            url: "/user/passWord/"+userI+"/"+str2,
+//            data: JSON.stringify(data),
+            dataType: "json",
+            success: function(result) {
+                callBack(result);
+            },
+            complete:function(responce){
+                var resText = responce.responseText;
+                if(resText.toString().indexOf("没有操作权限") > 0){
+                    alert("没有权限！");
+                    //window.location.href = "/jsp/403.jsp";
+                }
+            }
+        });
+    },
     "assignRoles" : function(data,callBack){
         $.ajax({
             type: "post",

@@ -1172,7 +1172,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 invokeType = "";
             }
             //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
-            String operationState = getCell(row, INDEX_OPERATION_STATE);
+            String operationState = getCell(row, INDEX_OPERATION_STATE_COL);
             if("服务定义".equals(operationState)){
                 operationState = Constants.Operation.OPT_STATE_UNAUDIT;
             }else if("审核通过".equals(operationState)){
@@ -1211,6 +1211,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
      */
     @Override
     public List parseIndexSheet(Sheet indexSheet) {
+        initIndexColnum(indexSheet);
         List<IndexDO> indexDOs = new ArrayList<IndexDO>();
         int endRow = indexSheet.getLastRowNum();
         StringBuffer msg = new StringBuffer();
@@ -1251,7 +1252,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
                 String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
                 String operationId = getCell(row, INDEX_OPERATION_ID_COL);
-                String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+                String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS_COL);
                 if ("投产".equals(interfaceStatus)){
                     interfaceStatus = Constants.INTERFACE_STATUS_TC;
                 }else if ("废弃".equals(interfaceStatus)){
@@ -1260,7 +1261,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     interfaceStatus = "";
                 }
                 //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
-                String operationState = getCell(row, INDEX_OPERATION_STATE);
+                String operationState = getCell(row, INDEX_OPERATION_STATE_COL);
                 if("服务定义".equals(operationState)){
                     operationState = Constants.Operation.OPT_STATE_UNAUDIT;
                 }else if("审核通过".equals(operationState)){
@@ -1276,7 +1277,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 }else {
                     operationState = "";
                 }
-                String isStandard = getCell(row,INDEX_ISSTANDARD);
+                String isStandard = getCell(row,INDEX_ISSTANDARD_COL);
                 if("是".equals(isStandard)){
                     isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
                 }else{

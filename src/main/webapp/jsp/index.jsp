@@ -37,15 +37,19 @@
             <ul>
                 <li><a href="javascript:;" mid="4">服务信息管理</a></li>
                 <li><a href="javascript:;" mid="12">服务发布管理</a></li>
+                <shiro:hasPermission name="operation-get">
                 <li><a href="javascript:;" mid="14">服务检索</a></li>
+                </shiro:hasPermission>
             </ul>
         </li>
         <li>
             <a href="javascript:;" mid="5">交易链路</a>
         </li>
+        <shiro:hasPermission name="exportStatistics-get">
         <li>
             <a href="javascript:;" mid="11">统计报表</a>
         </li>
+        </shiro:hasPermission>
         <li>
             <a href="javascript:;" mid="1">平台管理</a>
         </li>
@@ -90,9 +94,11 @@
 </div>
 
 <div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;display: none">
+    <shiro:hasPermission name="interfaceHead-add">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
         新增报文头
     </div>
+    </shiro:hasPermission>
     <%--<div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">--%>
         <%--编辑报文头--%>
     <%--</div>--%>
@@ -102,23 +108,37 @@
 </div>
 
 <div id="mm-syshead" class="easyui-menu" style="width: 120px;display: none">
+    <shiro:hasPermission name="interfaceHead-add">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
         新增报文头
     </div>
+    </shiro:hasPermission>
     <div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">
     编辑报文头
     </div>
+    <shiro:hasPermission name="interfaceHead-delete">
     <div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">
         删除报文头
     </div>
+    </shiro:hasPermission>
 </div>
 <!--服务管理页面，服务树的右键菜单-->
 <div id="mm-mxservicetree" class="easyui-menu" style="width: 150px;display: none">
+    <shiro:hasPermission name="service-add">
     <div id="serviceTreeAddBtn" data-options="iconCls:'icon-add'">新增</div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="service-update">
     <div id="serviceTreeEditBtn" data-options="iconCls:'icon-edit'">编辑</div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="service-delete">
     <div id="serviceTreeDeleteBtn" data-options="iconCls:'icon-remove'">删除</div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="exportPdf-get">
     <div id="servicePdf" data-options="iconCls:'icon-excel-export'">导出白皮书PDF</div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="excelExport-get">
     <div id="serviceExcel" data-options="iconCls:'icon-excel-export'">导出字段映射Excel</div>
+    </shiro:hasPermission>
     <div id="serviceView" data-options="iconCls:'icon-excel-export'">导出服务视图Excel</div>
 </div>
 
@@ -148,29 +168,41 @@
 </div>
 
 <div id="mm-mxsystemtree" class="easyui-menu" style="width: 120px;display: none">
+    <shiro:hasPermission name="system-add">
     <div onclick="sysManager.addSystemPage()" data-options="iconCls:'icon-add'">
         新增系统
     </div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="system-get">
     <div onclick="sysManager.querySystemPage()" data-options="iconCls:'icon-add'">
         查看系统
     </div>
+    </shiro:hasPermission>
 </div>
 <div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;display: none">
+    <shiro:hasPermission name="interface-add">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
         新增接口
     </div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="interface-update">
     <div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">
         编辑接口
     </div>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="interface-delete">
     <div onclick="interfaceManager.remove()" data-options="iconCls:'icon-remove'">
         删除接口
     </div>
+    </shiro:hasPermission>
 </div>
 
 <div id="mm-mxprotocols" class="easyui-menu" style="width: 120px;display: none">
+    <shiro:hasPermission name="protocol-add">
     <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
         新增协议
     </div>
+    </shiro:hasPermission>
     <%--<div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">--%>
         <%--编辑协议--%>
     <%--</div>--%>
@@ -186,9 +218,11 @@
     <div onclick="sysManager.editProtocol()" data-options="iconCls:'icon-edit'">
     编辑协议
     </div>
+    <shiro:hasPermission name="protocol-delete">
     <div onclick="sysManager.deleteProtocol()" data-options="iconCls:'icon-remove'">
     删除协议
     </div>
+    </shiro:hasPermission>
 </div>
 <div id="mm-mxfiles" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.refreshFile()" data-options="iconCls:'icon-add'">
@@ -196,9 +230,11 @@
     </div>
 </div>
 <div id="mm-mxfile" class="easyui-menu" style="width: 120px;display: none">
+    <shiro:hasPermission name="file-delete">
     <div onclick="sysManager.deleteFile()" data-options="iconCls:'icon-add'">
         删除文件
     </div>
+    </shiro:hasPermission>
 </div>
 </body>
 </html>

@@ -463,8 +463,18 @@ public class ExcelImportController {
                     // 读取每个交易sheet页
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);
+                    if(sheet == null){
+                        int i = 0;
+                        i = 1;
+                        logger.info("===========交易[" + sheetName + "],导入失败=============");
+                        logInfoService.saveLog(sheetName + "sheet页，导入失败", "导入");
+                        continue;
+                    }
                     //获取交易、服务、场景信息
                     Map<String, Object> infoMap = excelImportService.getInterfaceAndServiceInfo(sheet,indexDO);
+                    if(infoMap == null){
+                        continue;
+                    }
                     infoMap.put("operationPKs", operationPKs);
                     //获取接口、服务 输入 参数
                     Map<String, Object> inputMap = excelImportService.getInputArg(sheet);

@@ -28,16 +28,27 @@ import java.util.*;
 public class ExcelImportServiceImpl extends AbstractBaseService implements ExcelImportService {
     protected Log logger = LogFactory.getLog(getClass());
 
-    protected static final int INDEX_SHEET_NAME_COL = 0;
-    protected static final int INDEX_SERVICE_ID_COL = 2;
-    protected static final int INDEX_OPERATION_ID_COL = 3;
-    protected static final int INDEX_CONSUMER_COL = 5;
-    protected static final int INDEX_PROVIDER_COL = 6;
-    protected static final int INDEX_INTERFACE_POINT_COL = 7;
-    protected static final int INDEX_INTERFACE_HEAD_COL = 18;
-    protected static final int INDEX_INTERFACE_STATUS = 19;
-    protected static final int INDEX_OPERATION_STATE = 20;
-    protected static final int INDEX_ISSTANDARD = 21;
+    protected static final String INDEX_SHEET_NAME = "交易代码";
+    protected static final String INDEX_SERVICE_ID = "服务名称";
+    protected static final String INDEX_OPERATION_ID = "服务操作ID";
+    protected static final String INDEX_CONSUMER = "调用方";
+    protected static final String INDEX_PROVIDER = "提供方";
+    protected static final String INDEX_INTERFACE_POINT = "接口方向";
+    protected static final String INDEX_INTERFACE_HEAD = "业务报文头编号";
+    protected static final String INDEX_INTERFACE_STATUS = "交易状态";
+    protected static final String INDEX_OPERATION_STATE = "场景状态";
+    protected static final String INDEX_ISSTANDARD = "是否标准";
+
+    protected static int INDEX_SHEET_NAME_COL = 0;
+    protected static int INDEX_SERVICE_ID_COL = 2;
+    protected static int INDEX_OPERATION_ID_COL = 3;
+    protected static int INDEX_CONSUMER_COL = 5;
+    protected static int INDEX_PROVIDER_COL = 6;
+    protected static int INDEX_INTERFACE_POINT_COL = 7;
+    protected static int INDEX_INTERFACE_HEAD_COL = 18;
+    protected static int INDEX_INTERFACE_STATUS_COL = 19;
+    protected static int INDEX_OPERATION_STATE_COL = 20;
+    protected static int INDEX_ISSTANDARD_COL = 21;
 
     protected static final int INTERFACE_INDEX_SHEET_NAME_COL = 0;
     protected static final int INTERFACE_SYSTEM_NAME_COL = 1;
@@ -187,6 +198,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
      */
     @Override
     public List parseIndexSheet(Sheet indexSheet) {
+        initIndexColnum(indexSheet);
         List<IndexDO> indexDOs = new ArrayList<IndexDO>();
         int endRow = indexSheet.getLastRowNum();
         StringBuffer msg = new StringBuffer();
@@ -223,7 +235,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
             String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
             String operationId = getCell(row, INDEX_OPERATION_ID_COL);
-            String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS);
+            String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS_COL);
             if ("投产".equals(interfaceStatus)){
                 interfaceStatus = Constants.INTERFACE_STATUS_TC;
             }else if ("废弃".equals(interfaceStatus)){
@@ -232,7 +244,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
                 interfaceStatus = "";
             }
             //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
-            String operationState = getCell(row, INDEX_OPERATION_STATE);
+            String operationState = getCell(row, INDEX_OPERATION_STATE_COL);
             if("服务定义".equals(operationState)){
                 operationState = Constants.Operation.OPT_STATE_UNAUDIT;
             }else if("审核通过".equals(operationState)){
@@ -248,7 +260,7 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }else {
                 operationState = "";
             }
-            String isStandard = getCell(row,INDEX_ISSTANDARD);
+            String isStandard = getCell(row,INDEX_ISSTANDARD_COL);
             if("是".equals(isStandard)){
                 isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
             }else{
@@ -1860,5 +1872,45 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
     public void updateSDAByTempHeadId(String tempHeadId, String headId){
         String hql = " update " + SDA.class.getName() + " set headId=? where headId=?";
         sdaDAO.exeHql(hql, headId, tempHeadId);
+    }
+
+    /**
+     * 初始化index页字段序号
+     * @param sheet
+     */
+    public void initIndexColnum(Sheet sheet){
+        if(sheet != null){
+            Row row = sheet.getRow(0);
+            for(int i = 0; i < row.getLastCellNum(); i++){//遍历第1行所有单元格
+                String content = getCell(row, i);
+                if(INDEX_SHEET_NAME.equals(content)){
+                    INDEX_SHEET_NAME_COL = i;
+                }
+                if(INDEX_SERVICE_ID.equals(content)){
+                    INDEX_SERVICE_ID_COL = i;
+                }
+                if(INDEX_CONSUMER.equals(content)){
+                    INDEX_CONSUMER_COL = i;
+                }
+                if(INDEX_PROVIDER.equals(content)){
+                    INDEX_PROVIDER_COL = i;
+                }
+                if(INDEX_INTERFACE_POINT.equals(content)){
+                    INDEX_INTERFACE_POINT_COL = i;
+                }
+                if(INDEX_INTERFACE_HEAD.equals(content)){
+                    INDEX_INTERFACE_HEAD_COL = i;
+                }
+                if(INDEX_INTERFACE_STATUS.equals(content)){
+                    INDEX_INTERFACE_STATUS_COL = i;
+                }
+                if(INDEX_OPERATION_STATE.equals(content)){
+                    INDEX_OPERATION_STATE_COL = i;
+                }
+                if(INDEX_ISSTANDARD.equals(content)){
+                    INDEX_ISSTANDARD_COL = i;
+                }
+            }
+        }
     }
 }

@@ -118,7 +118,6 @@
 			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
 			if(node){
 				var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
-				console.log(systemNode);
 				systemId = systemNode.id;
 			}
 		} catch (e) {

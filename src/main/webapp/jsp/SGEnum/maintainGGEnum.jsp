@@ -156,10 +156,10 @@
 							});
 						}
 					}
-				},
+				}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-add">
-				{
+			,{
 					text : '新增从代码',
 					iconCls : 'icon-add',
 					handler : function() {
@@ -170,10 +170,10 @@
 							url : "/pages/SGEnum/form/slaveEnumAppandForm.jsp"
 						});
 					}
-				},
+				}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-get">
-				{
+			,{
 					text : '从代码维护',
 					iconCls : 'icon-edit',
 					handler : function() {
@@ -209,10 +209,10 @@
 							});
 						}
 					}
-				},
+				}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-get">
-				{
+			,{
 					text : '枚举映射',
 					iconCls : 'icon-add',
 					handler : function() {
@@ -261,10 +261,10 @@
 									});
 						}
 					}
-				},
+				}
 			</shiro:hasPermission>
 			<shiro:hasPermission name="enum-add">
-			{
+			,{
 					text : '新增',
 					iconCls : 'icon-add',
 					handler : function() {

@@ -62,7 +62,8 @@ public class SLAController {
 		return true;
 	}
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sla-add"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody
 	   boolean save(@RequestBody List list,@PathVariable(value = "serviceId") String serviceId,
@@ -87,7 +88,8 @@ public class SLAController {
        return true;
    }
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sla-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/modify", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean modify(@RequestBody SLA sla) {
@@ -99,7 +101,8 @@ public class SLAController {
 		return true;
 	}
 
-	@RequiresPermissions({"service-update"})
+//	@RequiresPermissions({"service-update"})
+	@RequiresPermissions({"sla-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
@@ -121,7 +124,8 @@ public class SLAController {
  
 	}
 
-	@RequiresPermissions({"service-get"})
+//	@RequiresPermissions({"service-get"})
+	@RequiresPermissions({"sla-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getAll/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody
 	List<SLA> getAll(@PathVariable(value = "serviceId") String serviceId,
