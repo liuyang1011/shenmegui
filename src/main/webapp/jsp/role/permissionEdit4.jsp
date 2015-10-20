@@ -57,7 +57,7 @@
       ]],
       onLoadSuccess:function(row, data){
         rows = data;
-        parsePermissionData(rows);
+//        parsePermissionData(rows);
 
       },
       onClickRow: function(row){
