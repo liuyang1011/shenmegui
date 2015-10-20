@@ -25,7 +25,16 @@
     <script type="text/javascript" src="/js/service/export.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.fileDownload.js"></script>
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
+<style type="text/css">
+    <!--
+    ul#tags li {
+        font-size: 1.4em;
+        font-weight: bold;
+    }
 
+
+    -->
+</style>
 </head>
 
 <body>

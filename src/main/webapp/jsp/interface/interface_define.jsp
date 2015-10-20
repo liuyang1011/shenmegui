@@ -12,6 +12,15 @@
     <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
     <link href="/plugin/aehlke-tag-it/css/jquery.tagit.css" rel="stylesheet" type="text/css">
     <link href="/plugin/aehlke-tag-it/css/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        <!--
+        ul#tags li {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        -->
+    </style>
+
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
     <script src="/newui/plugins/jQueryUI/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
     <script src="/plugin/aehlke-tag-it/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
