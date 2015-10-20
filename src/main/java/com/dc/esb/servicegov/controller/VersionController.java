@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.VersionHis;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -82,15 +83,15 @@ public class VersionController {
 
     /**
      * @param type 对比类型 0：当前版本VS历史版本， 1：历史版本VS历史版本
-     * @param versionId1
-     * @param versionId2
+     * @param autoId1 如果是当前版本，值为''
+     * @param autoId2
      * @return
      */
     @RequiresPermissions({"version-get"})
     @RequestMapping("/getOperationDiff")
     @ResponseBody
-    public Map<String, Object> getOperationDiff(String type, String versionId1, String versionId2){
-        Map<String, Object> result = versionService.getOperationDiff(type, versionId1, versionId2);
+    public Map<String, Object> getOperationDiff(String type,String versionId, String autoId1, String autoId2){
+        Map<String, Object> result = versionService.getOperationDiff(type, versionId, autoId1, autoId2);
         return result;
     }
 

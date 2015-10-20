@@ -58,6 +58,15 @@ public class Ida {
     @Column(name = "REMARK",length = 1024)
     private String remark;
 
+    @Column(name = "sdaId")
+    private String sdaId;
+
+    @Column(name = "state", columnDefinition="varchar(10) default '0'")
+    private String state;//状态，0：普通（可以在页面看到），1：空白（文件导出使用）
+
+    @Column(name = "xpath")
+    private String xpath;
+
 //    @Column(name = "ARG_TYPE")
     //参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
 //    private String argType;
@@ -230,5 +239,29 @@ public class Ida {
 
     public void setHeads(InterfaceHead heads) {
         this.heads = heads;
+    }
+
+    public String getSdaId() {
+        return sdaId;
+    }
+
+    public void setSdaId(String sdaId) {
+        this.sdaId = sdaId;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getXpath() {
+        return xpath;
+    }
+
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
     }
 }

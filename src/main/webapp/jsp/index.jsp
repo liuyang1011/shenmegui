@@ -82,14 +82,14 @@
 <script type="text/javascript" src="<%=basePath%>/assets/mainContent/js/mainContentUIHelper.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/mainContent/js/mainContent.js"></script>
 
-<div id="mm-mxmaintabs" class="easyui-menu" style="width: 150px;">
+<div id="mm-mxmaintabs" class="easyui-menu" style="width: 150px;display: none">
     <div id="maintabsCloseLeft" data-options="iconCls:'icon-clear'">关闭左侧</div>
     <div id="maintabsCloseRight" data-options="iconCls:'icon-clear'">关闭右侧</div>
     <div id="maintabsCloseOhters" data-options="iconCls:'icon-clear'">关闭其他</div>
     <div id="maintabsCloseAll" data-options="iconCls:'icon-clear'">关闭所有</div>
 </div>
 
-<div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
         新增报文头
     </div>
@@ -101,19 +101,19 @@
     <%--</div>--%>
 </div>
 
-<div id="mm-syshead" class="easyui-menu" style="width: 120px;">
+<div id="mm-syshead" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
         新增报文头
     </div>
-    <%--<div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">--%>
-    <%--编辑报文头--%>
-    <%--</div>--%>
+    <div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">
+    编辑报文头
+    </div>
     <div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">
         删除报文头
     </div>
 </div>
 <!--服务管理页面，服务树的右键菜单-->
-<div id="mm-mxservicetree" class="easyui-menu" style="width: 150px;">
+<div id="mm-mxservicetree" class="easyui-menu" style="width: 150px;display: none">
     <div id="serviceTreeAddBtn" data-options="iconCls:'icon-add'">新增</div>
     <div id="serviceTreeEditBtn" data-options="iconCls:'icon-edit'">编辑</div>
     <div id="serviceTreeDeleteBtn" data-options="iconCls:'icon-remove'">删除</div>
@@ -122,7 +122,7 @@
     <div id="serviceView" data-options="iconCls:'icon-excel-export'">导出服务视图Excel</div>
 </div>
 
-<div id="mm-mslinktree" class="easyui-menu" style="width: 120px;">
+<div id="mm-mslinktree" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="appendSysapi()" data-options="iconCls:'icon-add'">
         新增
     </div>
@@ -135,7 +135,7 @@
 
 </div>
 
-<div id="mm-mxsystemtree1" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxsystemtree1" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
         新增接口
     </div>
@@ -147,7 +147,7 @@
     </div>
 </div>
 
-<div id="mm-mxsystemtree" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxsystemtree" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.addSystemPage()" data-options="iconCls:'icon-add'">
         新增系统
     </div>
@@ -155,7 +155,7 @@
         查看系统
     </div>
 </div>
-<div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
         新增接口
     </div>
@@ -167,7 +167,7 @@
     </div>
 </div>
 
-<div id="mm-mxprotocols" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxprotocols" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
         新增协议
     </div>
@@ -179,23 +179,23 @@
     <%--</div>--%>
 </div>
 
-<div id="mm-mxprotocol" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxprotocol" class="easyui-menu" style="width: 120px;display: none">
     <%--<div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">--%>
         <%--新增协议--%>
     <%--</div>--%>
-    <%--<div onclick="interfaceManager.edit()" data-options="iconCls:'icon-edit'">--%>
-    <%--编辑协议--%>
-    <%--</div>--%>
+    <div onclick="sysManager.editProtocol()" data-options="iconCls:'icon-edit'">
+    编辑协议
+    </div>
     <div onclick="sysManager.deleteProtocol()" data-options="iconCls:'icon-remove'">
     删除协议
     </div>
 </div>
-<div id="mm-mxfiles" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxfiles" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.refreshFile()" data-options="iconCls:'icon-add'">
         刷新
     </div>
 </div>
-<div id="mm-mxfile" class="easyui-menu" style="width: 120px;">
+<div id="mm-mxfile" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.deleteFile()" data-options="iconCls:'icon-add'">
         删除文件
     </div>

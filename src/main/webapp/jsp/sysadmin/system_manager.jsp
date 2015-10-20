@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,7 +23,7 @@
     <legend>
         条件搜索
     </legend>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
         <tr>
             <th>
                 系统ID
@@ -76,15 +77,17 @@
                 &nbsp;
             </td>
             <td align="right">
+                <shiro:hasPermission name="system-get">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
                 <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                </shiro:hasPermission>
             </td>
         </tr>
     </table>
 
 </fieldset>
 </form>
-<table id="tg">
+<table id="tg" style="width:100%">
     <thead>
     <tr>
         <th data-options="field:'systemId',width:'10%'">
@@ -121,7 +124,7 @@
         $('#tg').datagrid({
             title: '系统基本信息维护',
             iconCls: 'icon-edit',//图标
-            width: 'auto',
+            width: '100%',
             height: '440px',
             collapsible: true,
             method: 'post',
@@ -131,13 +134,18 @@
             pageSize: 13,//每页显示的记录条数，默认为10
             pageList: [13, 15, 20],//可以设置每页记录条数的列表
             rownumbers: true,//行号
-            toolbar: [{
-                text: '新增',
-                iconCls: 'icon-add',
-                handler: function () {
-                    sysManager.addSystemPage();
-                }
-            }, {
+            toolbar: [
+                <shiro:hasPermission name="system-add">
+                {
+                    text: '新增',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        sysManager.addSystemPage();
+                    }
+                },
+                </shiro:hasPermission>
+                <shiro:hasPermission name="system-update">
+                {
                 text: '修改',
                 iconCls: 'icon-edit',
                 handler: function () {
@@ -153,7 +161,10 @@
                         alert("请选择要修改的行");
                     }
                 }
-            }, {
+            },
+                </shiro:hasPermission>
+                <shiro:hasPermission name="system-delete">
+                {
                 text: '删除',
                 iconCls: 'icon-remove',
                 handler: function () {
@@ -171,7 +182,11 @@
                             dataType: "json",
                             data: JSON.stringify(node.systemId),
                             success: function (result) {
-                                $('#tg').datagrid("reload");
+                                if(result){
+                                    $('#tg').datagrid("reload");
+                                }else{
+                                    alert("系统有下挂接口，无法删除");
+                                }
                             },
                             complete: function (responce) {
                                 var resText = responce.responseText;
@@ -185,7 +200,9 @@
                         alert("请选择要删除的行");
                     }
                 }
-            }, {
+            },
+                </shiro:hasPermission>
+                {
                 text: '文件管理',
                 iconCls: 'icon-save',
                 handler: function () {
@@ -193,9 +210,9 @@
                     if (parent.$('#sysContentTabs').tabs('exists', "文件管理")) {
                         parent.$('#sysContentTabs').tabs('select', "文件管理");
                     } else {
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="file_list.jsp" style="width:100%;height:100%;"></iframe>';
+                        var content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp" style="width:100%;height:100%;"></iframe>';
                         if (node && node["systemId"]) {
-                            content = '<iframe scrolling="auto" frameborder="0"  src="file_list.jsp?systemId=' + node.systemId + '" style="width:100%;height:100%;"></iframe>';
+                            content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp?systemId=' + node.systemId + '" style="width:100%;height:100%;"></iframe>';
                         }
                         parent.$('#sysContentTabs').tabs('add', {
                             title: "文件管理",

@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://"
@@ -24,9 +25,7 @@
 
 <div class="easyui-tabs" id="reuseRateTab" name="subtab" data-options="tools:'#tab-tools'">
     <div title="系统复用率" style="padding:0px;">
-        <iframe id="systemReuse" name="serviceInfo" scrolling="auto" frameborder="0"
-                src="/jsp/statistics/system_reuserate.jsp"
-                style="width:100%;height:100%;"></iframe>
+
     </div>
 
     <div title="服务复用率" style="padding:0px;">
@@ -34,6 +33,22 @@
     </div>
 </div>
     <script type="text/javascript">
+        //页面拖动宽度自适应
+        $('#reuseRateTab').tabs({
+            border: false,
+            border: false,
+            width: "auto",
+            height: $("body").height()
+        });
+        var tabUrl = "/jsp/statistics/system_reuserate.jsp";
+        var tabItem = $('#reuseRateTab').tabs('getTab','系统复用率');
+        $('#reuseRateTab').tabs('update', {
+            tab: tabItem,
+            options: {
+                content: ' <iframe id="serviceInfo"  scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(tabUrl)) + '"  style="width:100%;height:99%;"></iframe>',
+                fit:true
+            }
+        });
         var k = 1;
         $('#reuseRateTab').tabs({
             border: false,
@@ -47,7 +62,8 @@
                     $('#reuseRateTab').tabs('update', {
                         tab: currTab,
                         options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>'
+                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:100%;"></iframe>',
+                            fit:true
                         }
                     });
                 }

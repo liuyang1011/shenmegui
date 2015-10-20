@@ -3,8 +3,10 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.entity.Metadata;
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +31,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/metadata")
 public class MetadataController {
-
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
     private static final Log log = LogFactory.getLog(MetadataController.class);
     @Autowired
     private MetadataServiceImpl metadataService;
@@ -210,7 +213,11 @@ public class MetadataController {
     public
     @ResponseBody
     boolean add(Metadata metadata) {
+        OperationLog operationLog = systemLogService.record("元数据","新增","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
+
         metadataService.addMetadata(metadata);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -219,6 +226,8 @@ public class MetadataController {
     public
     @ResponseBody
     boolean modify(Metadata metadata,@PathVariable String oldMetadataId) {
+        OperationLog operationLog = systemLogService.record("元数据","修改","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
+
         //TZB要求元数据能修改
         if(!metadata.getMetadataId().equals(oldMetadataId)){
             Metadata newMetadata = metadataService.getById(metadata.getMetadataId());
@@ -232,6 +241,8 @@ public class MetadataController {
         metadata.setOptUser(userName);
         metadata.setOptDate(DateUtils.format(new Date()));
         metadataService.modifyMetadata(metadata);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -240,7 +251,11 @@ public class MetadataController {
     public
     @ResponseBody
     boolean modify(Metadata metadata) {
+        OperationLog operationLog = systemLogService.record("元数据","修改","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
+
         metadataService.modifyMetadata(metadata);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -249,7 +264,11 @@ public class MetadataController {
     public
     @ResponseBody
     boolean delete(@PathVariable String metadataId) {
+        OperationLog operationLog = systemLogService.record("元数据","删除","元数据ID" + metadataId);
+
         metadataService.deleteMetadata(metadataId);
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -257,7 +276,12 @@ public class MetadataController {
     @RequestMapping("/deletes")
     @ResponseBody
     public boolean deletes(String metadataIds) {
-        return metadataService.deleteMetadatas(metadataIds);
+        OperationLog operationLog = systemLogService.record("元数据","批量删除","元数据ID：" + metadataIds);
+
+        boolean result = metadataService.deleteMetadatas(metadataIds);
+        systemLogService.updateResult(operationLog);
+        return result;
+
     }
 
     @RequiresPermissions({"metadata-get"})
@@ -368,6 +392,7 @@ public class MetadataController {
     public
     @ResponseBody
     boolean auditMetadata(@PathVariable("processId") String processId) {
+        OperationLog operationLog = systemLogService.record("元数据","审核（任务）","");
         Map<String, String> params = new HashMap<String, String>();
         params.put("processId", processId);
         List<Metadata> metadatas = metadataService.findBy(params);
@@ -375,6 +400,7 @@ public class MetadataController {
             metadata.setStatus("正式");
             metadataService.save(metadata);
         }
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -384,6 +410,7 @@ public class MetadataController {
     public
     @ResponseBody
     boolean exportMetadata(HttpServletRequest request, HttpServletResponse response) {
+        OperationLog operationLog = systemLogService.record("元数据","导出XML","");
         log.info(SecurityUtils.getSubject().getPrincipal());
         //生成本地文件
         File file = metadataConfigGenerator.generate();
@@ -422,6 +449,7 @@ public class MetadataController {
         }
         //删除本地文件
         file.delete();
+        systemLogService.updateResult(operationLog);
         return true;
     }
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

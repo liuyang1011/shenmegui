@@ -121,6 +121,13 @@
 			var rowIndex = $('#tt').edatagrid('getRowIndex', row);
 			var checkedItems = $('#tt').edatagrid('getChecked');
             if (checkedItems != null && checkedItems.length > 0) {
+				if (!confirm("确定要删除该用户吗？")) {
+					return;
+				}
+				if(row.id == 'admin') {
+					alert("无法删除admin用户");
+					return;
+				}
 				userManager.deleteById(row.id,function(result) {
 								if (result) {
 									alert("删除成功");

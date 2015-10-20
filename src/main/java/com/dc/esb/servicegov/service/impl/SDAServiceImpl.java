@@ -41,7 +41,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     private MetadataServiceImpl metadataService;
     @Autowired
     private VersionServiceImpl versionService;
-    public boolean genderSDAAuto(Operation operation){
+    public List<SDA> genderSDAAuto(Operation operation){
+        List<SDA> result = new ArrayList<SDA>();
         SDA sdaRoot = new SDA();
         sdaRoot.setSdaId(UUID.randomUUID().toString());
         sdaRoot.setStructName("root");
@@ -50,6 +51,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRoot.setServiceId(operation.getServiceId());
         sdaRoot.setOperationId(operation.getOperationId());
         sdaDAO.save(sdaRoot);
+        result.add(sdaRoot);
 
         SDA sdaReq = new SDA();
         sdaReq.setSdaId(UUID.randomUUID().toString());
@@ -60,6 +62,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaReq.setOperationId(operation.getOperationId());
         sdaReq.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaReq);
+        result.add(sdaReq);
 
         SDA sdaRes = new SDA();
         sdaRes.setSdaId(UUID.randomUUID().toString());
@@ -70,7 +73,40 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRes.setOperationId(operation.getOperationId());
         sdaRes.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaRes);
-        return true;
+        result.add(sdaRes);
+        return result;
+    }
+    public Map<String, SDA> genderSDAAuto(String headId){
+        Map<String, SDA> result = new LinkedHashMap<String, SDA>();
+        SDA sdaRoot = new SDA();
+        sdaRoot.setSdaId(UUID.randomUUID().toString());
+        sdaRoot.setStructName("root");
+        sdaRoot.setStructAlias("根元素");
+        sdaRoot.setHeadId(headId);
+        sdaRoot.setSeq(0);
+        sdaDAO.save(sdaRoot);
+        result.put("root", sdaRoot);
+
+        SDA sdaReq = new SDA();
+        sdaReq.setSdaId(UUID.randomUUID().toString());
+        sdaReq.setStructName("request");
+        sdaReq.setStructAlias("请求头");
+        sdaReq.setHeadId(headId);
+        sdaReq.setSeq(1);
+        sdaReq.setParentId(sdaRoot.getSdaId());
+        sdaDAO.save(sdaReq);
+        result.put("request", sdaReq);
+
+        SDA sdaRes = new SDA();
+        sdaRes.setSdaId(UUID.randomUUID().toString());
+        sdaRes.setStructName("response");
+        sdaRes.setStructAlias("响应头");
+        sdaRes.setHeadId(headId);
+        sdaRes.setSeq(2);
+        sdaRes.setParentId(sdaRoot.getSdaId());
+        sdaDAO.save(sdaRes);
+        result.put("response", sdaRes);
+        return result;
     }
     public ModelAndView sdaPage(String operationId, String serviceId,
                                 HttpServletRequest req) {
@@ -346,8 +382,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         }
     }
 
-    public boolean save(SDA[] sdas) {
-
+    public String save(SDA[] sdas) {
+        String logParam = "SDA:";
         if (sdas != null && sdas.length > 0) {
             for (SDA sda : sdas) {
                 //TODO TZB类型和长度合并了
@@ -365,24 +401,29 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 sda.setLength(metadata.getLength());
                 sda.setStructAlias(metadata.getChineseName());
                 sdaDAO.save(sda);
+                logParam += "[服务ID:" + sda.getServiceId() + ", 场景ID:" + sda.getOperationId() + ", SDA名称:" + sda.getStructName() + "],";
             }
             operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());
-            return true;
         }
 
-        return false;
+        return logParam.substring(0, logParam.length() -2 );
     }
 
-    public boolean delete(String[] delIds) {
+    public String delete(String[] delIds) {
+        String logParam = "SDA:";
         if (delIds != null && delIds.length > 0) {
             SDA sda = sdaDAO.findUniqueBy("sdaId", delIds[0]);
             operationService.editReleate(sda.getServiceId(), sda.getOperationId());
             for (String id : delIds) {
+                SDA entity = sdaDAO.findUniqueBy("sdaId", id);
+                if(entity != null){
+                    logParam += "[服务ID：" + entity.getServiceId() +", 场景ID:" + entity.getOperationId() + ", SDA:" + entity.getStructName() + "],";
+                }
                 sdaDAO.delete(id);
+
             }
-            return true;
         }
-        return false;
+        return logParam.substring(0, logParam.length() - 2);
     }
     /**
      * 将一个节点上移

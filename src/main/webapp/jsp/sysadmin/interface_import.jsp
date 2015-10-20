@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
-
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,9 +14,11 @@
 <fieldset>
   <legend>导入原始接口Excel</legend>
   <form id="uploadimg-form"  action="/excelHelper/interfaceimport/noSystem" method="post" enctype="multipart/form-data">
+    <shiro:hasPermission name="importInterface-update">
     <input type="file" title="选择文件" name="file" id="file"/><br /><br />
     <br /><br />
     <input id="fileBtn" type="submit" class="btn" value="文件上传"/><br /><br />
+    </shiro:hasPermission>
     <%--<tr style="display:none">
       <td>
         <input style="display:none" type="text" id="systemId" name="systemId">
@@ -64,13 +66,17 @@
     });
   })
 
-  var toolbar = [{
-    text: '删除',
-    iconCls: 'icon-remove',
-    handler: function () {
-      deleteObj();
+  var toolbar = [
+    <shiro:hasPermission name="importlog-delete">
+    {
+      text: '删除',
+      iconCls: 'icon-remove',
+      handler: function () {
+        deleteObj();
+      }
     }
-  }]
+    </shiro:hasPermission>
+      ]
 
   function deleteObj(){
     var checkedItems = $('#tt').datagrid('getChecked');

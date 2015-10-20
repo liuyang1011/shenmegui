@@ -621,7 +621,7 @@
 ;
 (function () {
 
-    "use strict";
+    //"use strict";
 
     var Sniff = {
         android: navigator.userAgent.toLowerCase().indexOf("android") > -1
@@ -2321,6 +2321,7 @@
             if (exports.logEnabled && typeof console != "undefined") {
                 try {
                     var msg = arguments[arguments.length - 1];
+                    //这里可以打开，日志有封装，不会报错。
                     console.log(msg);
                 }
                 catch (e) {
@@ -9865,9 +9866,9 @@
         };
 
         var dumpSegmentsToConsole = function () {
-            console.log("SEGMENTS:");
+            //console.log("SEGMENTS:");
             for (var i = 0; i < segments.length; i++) {
-                console.log(segments[i].type, segments[i].getLength(), segmentProportions[i]);
+                //console.log(segments[i].type, segments[i].getLength(), segmentProportions[i]);
             }
         };
 
@@ -12273,7 +12274,9 @@
                     var outlineWidth = style.outlineWidth || 1,
                         outlineStrokeWidth = style.lineWidth + (2 * outlineWidth),
                         outlineStyle = {
-                            strokeStyle: _ju.convertStyle(style.outlineColor),
+                            //IE8不支持convertStyle方法
+                            // strokeStyle: _ju.convertStyle(style.outlineColor),
+                            strokeStyle: style.outlineColor,
                             lineWidth: outlineStrokeWidth
                         };
                     for (var aa in vmlAttributeMap) outlineStyle[aa] = style[aa];
@@ -12498,7 +12501,9 @@
                 var p = {}, d = params.d, connector = params.component;
                 if (params.strokeStyle) {
                     p.stroked = "true";
-                    p.strokecolor = _ju.convertStyle(params.strokeStyle, true);
+                    //IE8不支持convertStyle方法
+                    // p.strokecolor = _ju.convertStyle(params.strokeStyle, true);
+                    p.strokecolor = params.strokeStyle;
                 }
                 if (params.lineWidth) p.strokeweight = params.lineWidth + "px";
                 if (params.fillStyle) {

@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -47,7 +48,7 @@
         <th field="slaId" width="100" editor="text"
             data-options="hidden:true">ID
         </th>
-        <th field="slaName" width="150" editor="{type:'validatebox',options:{required:true,validType:['chineseB']}}" align="left">SLA指标</th>
+        <th field="slaName" width="150" editor="{type:'validatebox',options:{required:true,validType:['unique','chineseB']}}" align="left">SLA指标</th>
         <th field="slaValue" width="150" align="left" editor="{type:'validatebox'}">取值范围</th>
         <th field="slaDesc" width="400" align="left" editor="{type:'validatebox'}">描
             述
@@ -71,11 +72,34 @@
 <script type="text/javascript" src="<%=basePath %>/assets/sla/js/slaPage.js"></script>
 <script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
+	$(function () {
+		$.extend($.fn.validatebox.defaults.rules, {
+			unique: {
+				validator: function (value, param) {
+					var result;
+					$.ajax({
+						type: "get",
+						async: false,
+						url: "/sla/uniqueValid",
+						dataType: "json",
+						data: {"slaName": value},
+						success: function (data) {
+							result = data;
+						}
+					});
+					return result;
+				},
+				message: '已存在相同SLA指标'
+			}
+		});
+	});
 		var serviceId = "${service.serviceId}";
 		var operationId = "${operation.operationId}";
 
 		var slaUrl = "/sla/getAll/" + serviceId + "/" + operationId;
-		var toolbar = [ {
+		var toolbar = [
+			<shiro:hasPermission name="service-update">
+			{
 			text : '新增',
 			iconCls : 'icon-add',
 			handler : function() {
@@ -133,7 +157,9 @@
 					url : "/jsp/service/sla/slaTemplateEdit.jsp?serviceId="+serviceId+"&operationId="+operationId
 				})
 			}
-		} ];
+		}
+			</shiro:hasPermission>
+				];
 		
 		var editedRows = [];
 		$(function() {

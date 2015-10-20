@@ -127,4 +127,11 @@ public class VersionHisController {
 		}
 		return new VersionHis();
 	}
+	@RequiresPermissions({"versionHis-get"})
+	@RequestMapping("/judgeVersionPre")
+	@ResponseBody
+	public VersionHis getPreVersion(String autoId){//根据一个历史版本的autoId，查询前一个版本
+		VersionHis	result = versionHisServiceImpl.getPreVersion(autoId);
+		return result;
+	}
 }

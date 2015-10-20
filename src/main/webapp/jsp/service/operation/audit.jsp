@@ -19,6 +19,7 @@
     <script type="text/javascript" src="resources/js/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
+    <script type="text/javascript" src="/js/version/versionManager.js"></script>
 </head>
 <body>
 <fieldset>
@@ -54,9 +55,10 @@
             <th data-options="field:'operationId',checkbox:true"></th>
             <th data-options="field:'operationName'" width="100">场景名称</th>
             <th data-options="field:'operationDesc'" width="460">功能描述</th>
-            <th data-options="field:'version'" formatter='ff.version' width="100">版本号</th>
+            <th data-options="field:'version'" formatter='ff.version' width="60">版本号</th>
             <th data-options="field:'optDate'" width="130">更新时间</th>
-            <th data-options="field:'optUser'" width="100">更新用户</th>
+            <th data-options="field:'optUser'" width="90">更新用户</th>
+            <th data-options="field:' ',formatter:formatConsole" width="100">操作</th>
         </tr>
         </thead>
     </table>
@@ -89,6 +91,7 @@
                 title: '审核意见-' + text,
                 width: 500,
                 height: 300,
+                left:300,
                 closed: false,
                 cache: false,
                 href: '/jsp/service/operation/audit_remark.jsp?type=' + type,
@@ -134,6 +137,44 @@
         //如果有任务在执行，则更新任务的状态
         parent.PROCESS_INFO.approved = false;
     }
+//操作按钮
+	function formatConsole(value, row, index){
+	    var versionId = "";
+	     try {
+                versionId = row.version.id;
+         } catch (exception) {
+         }
+		var s = '<a iconcls="icon-search" onclick="comparePage(\'' + versionId + '\')" style="margin-top:1px;margin-bottom:1px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="cancelbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">版本对比</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>';
+		return s;
 
+	}
+
+//弹出对比页面
+		function comparePage(versionId){
+			$.ajax({
+				type: "get",
+				async: false,
+				url: "/versionHis/judgeVersionHis?versionId="+versionId,
+				dataType: "json",
+				success: function (data) {
+					if(data.autoId != null){
+						var urlPath = "/jsp/version/sdaComparePage.jsp?versionId="+  versionId + "&autoId1=&type=0&autoId2="+data.autoId;
+						$("#dlg").dialog({
+                                title: '版本对比',
+                                left:'50px',
+                                width: 1000,
+                                height:'auto',
+                                closed: false,
+                                cache: false,
+                                href: urlPath,
+                                modal: true
+                            });
+					}else{
+						alert("没有历史版本可以对比!");
+					}
+				}
+			});
+
+		}
 </script>
 </html>

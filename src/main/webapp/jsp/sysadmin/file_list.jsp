@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String systemId = request.getParameter("systemId");
 %>
@@ -20,7 +21,7 @@
     <script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
 </head>
 <body>
-<table id="tg" style="height:370px;width: auto;" data-options="pageSize:5">
+<table id="tg" style="height:370px;width: 100%;" data-options="pageSize:5">
     <thead>
     <tr>
         <th data-options="field:'fileName',width:'15%'">
@@ -61,7 +62,7 @@
         $('#tg').datagrid({
             title: '文件管理',
             iconCls: 'icon-edit',//图标
-            width: 'auto',
+            width: '100%',
             height: '400px',
             collapsible: true,
             method: method,
@@ -71,40 +72,47 @@
             pageSize: 5,//每页显示的记录条数，默认为10
             pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
-            toolbar: [{
-                text: '新增',
-                iconCls: 'icon-add',
-                handler: function () {
-                    uiinit.win({
-                        w: 500,
-                        iconCls: 'icon-add',
-                        title: "新增文件",
-                        url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
-                    });
-                }
-            }, {
-                text: '删除',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    var node = $('#tg').datagrid("getSelected");
-                    if (node) {
-                        if (!confirm("确定要删除选中的记录吗？")) {
-                            return;
-                        }
-                        $.ajax({
-                            type: "GET",
-                            contentType: "application/json; charset=utf-8",
-                            url: "/fileManager/delete/" + node.fileId,
-                            dataType: "json",
-                            success: function (result) {
-                                $('#tg').datagrid("reload");
-                            }
+            toolbar: [
+                <shiro:hasPermission name="file-add">
+                {
+                    text: '新增',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        uiinit.win({
+                            w: 500,
+                            iconCls: 'icon-add',
+                            title: "新增文件",
+                            url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
                         });
-                    } else {
-                        alert("请选择要删除的行");
+                    }
+                },
+                </shiro:hasPermission>
+                <shiro:hasPermission name="file-delete">
+                {
+                    text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        var node = $('#tg').datagrid("getSelected");
+                        if (node) {
+                            if (!confirm("确定要删除选中的记录吗？")) {
+                                return;
+                            }
+                            $.ajax({
+                                type: "GET",
+                                contentType: "application/json; charset=utf-8",
+                                url: "/fileManager/delete/" + node.fileId,
+                                dataType: "json",
+                                success: function (result) {
+                                    $('#tg').datagrid("reload");
+                                }
+                            });
+                        } else {
+                            alert("请选择要删除的行");
+                        }
                     }
                 }
-            }],
+                </shiro:hasPermission>
+            ],
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().indexOf("没有操作权限") > 0){

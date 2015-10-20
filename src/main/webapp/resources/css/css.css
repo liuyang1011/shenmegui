@@ -64,11 +64,11 @@
 }
 #logo{
 	height: 56px;
-	background-image: url(../img/logo.png);
+	background-image: url(../img/logo_taizhou.png);
 	background-repeat: no-repeat;
 	background-position: left center;
 	display: block;
-	width: 230px;
+	width: 250px;
 	position:absolute;
 	left:20px;
 	top:0px;
@@ -262,6 +262,13 @@ ul,li{
 	background-attachment: scroll;
 	background-color: rgba(0, 0, 0, 0);
 	background-image: url(../themes/icons/261.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.icon-dc {
+	background-attachment: scroll;
+	background-color: rgba(0, 0, 0, 0);
+	background-image: url(../themes/icons/318.gif);
 	background-repeat: no-repeat;
 	background-position: center center;
 }

@@ -1,3 +1,4 @@
+<!DOCTYPE>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
@@ -8,7 +9,6 @@
 <script type="text/javascript">
     var sourceId = "<%=sourceId%>";
 </script>
-<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -41,24 +41,8 @@
             <div class="clearfix"></div>
 
             <div id="jtk-demo-flowchart" class="jtk-demo-main" style="width:100%;margin-top:-4px;">
-                <!-- the node palette
-                <div class="sidebar node-palette">
-                    <ul>
-                        <li jtk-node-type="question" title="Drag to add new">
-                            <i class="icon-tablet"></i>Question
-                        </li>
-                        <li jtk-node-type="action" title="Drag to add new">
-                            <i class="icon-eye-open"></i>Action
-                        </li>
-                        <li jtk-node-type="output" title="Drag to add new">
-                            <i class="icon-eye-open"></i>Output
-                        </li>
-                    </ul>
-                </div>
-                -->
-
                 <!-- this is the main drawing area -->
-                <div class="jtk-demo-canvas">
+                <div class="jtk-demo-canvas" id="jtk-demo-canvas">
                     <!-- controls -->
                     <div class="controls">
                         <i class="fa fa-arrows selected-mode" mode="pan" title="Pan Mode"></i>
@@ -68,9 +52,8 @@
                     <!-- miniview -->
                     <div class="miniview"></div>
                 </div>
-
                 <!-- the current dataset -->
-                <div class="jtk-demo-dataset"></div>
+                <div class="jtk-demo-dataset" id="jtk-demo-dataset"></div>
             </div>
         </div>
     </div>

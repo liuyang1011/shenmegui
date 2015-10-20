@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -32,38 +33,41 @@
         var editArray = new Array();
         var parentIdAry = new Array();
         var versionCode="";
-        var toolbar = [{
-            text: '刪除',
-            iconCls: 'icon-remove',
-            handler: function () {
-                if (!confirm("确定要删除选中的记录吗？")) {
-                    return;
-                }
-                var nodes = $('#tg').treegrid('getSelections');
-                if (nodes) {
-                    var delAry = new Array();
-                    for (var i = 0; i < nodes.length; i++) {
-                        if (nodes[i].structName != 'request' && nodes[i].structName != 'response') {
-                            delAry.push(nodes[i].id);
-                        }
+        var toolbar = [
+            <shiro:hasPermission name="system-update">
+            {
+                text: '刪除',
+                iconCls: 'icon-remove',
+                handler: function () {
+                    if (!confirm("确定要删除选中的记录吗？")) {
+                        return;
                     }
-                    sysManager.removeIDA(delAry, function (result) {
-                        if (result) {
-                            //array.
-                            //$('#tg').treegrid('reload');
-                            for (var j = 0; j < delAry.length; j++) {
-                                $('#tg').treegrid('remove', delAry[j]);
+                    var nodes = $('#tg').treegrid('getSelections');
+                    if (nodes) {
+                        var delAry = new Array();
+                        for (var i = 0; i < nodes.length; i++) {
+                            if (nodes[i].structName != 'request' && nodes[i].structName != 'response') {
+                                delAry.push(nodes[i].id);
                             }
-                            $("#interfacetg").datagrid("reload");
-                        } else {
-                            alert("删除失败");
                         }
+                        sysManager.removeIDA(delAry, function (result) {
+                            if (result) {
+                                //array.
+                                //$('#tg').treegrid('reload');
+                                for (var j = 0; j < delAry.length; j++) {
+                                    $('#tg').treegrid('remove', delAry[j]);
+                                }
+                                $("#interfacetg").datagrid("reload");
+                            } else {
+                                alert("删除失败");
+                            }
 
-                    });
+                        });
+                    }
+
                 }
-
-            }
-        }, {
+            },
+            {
             text: '保存',
             iconCls: 'icon-save',
             handler: function () {
@@ -102,6 +106,7 @@
                         data.headId = "${param.headId}";
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
+                        data.state = "0";
                         reqAry.push(data);
                     }
                 }
@@ -134,6 +139,7 @@
                         data.interfaceId = "${param.interfaceId}";
                         data.seq = seq;
                         data.id = row.id;
+                        data.state = "0";
                         reqAry.push(data);
                     }
                 }
@@ -233,7 +239,9 @@
                     });
 
                 }
-            }       /*,{
+            }
+            </shiro:hasPermission>
+                   /*,{
             text: '提交任务',
             iconCls: 'icon-ok',
             handler: function () {
@@ -390,9 +398,10 @@
             * @param result
              */
             var initTags = function initTags(result){
-                result.forEach(function(tag){
+                for(var i = 0; i < result.length; i++){
+                    var tag = result[i];
                     $("#tags").append("<li>" + tag.tagName + "</li>");
-                });
+                }
                 $("#tags").tagit();
 
             };
@@ -402,11 +411,12 @@
             $("#saveTagBtn").click(function () {
                 var tagNames = $("#tags").tagit("assignedTags");
                 var tags = [];
-                tagNames.forEach(function (tagName){
-                    var tagToAdd = {};
-                    tagToAdd.tagName = tagName;
-                    tags.push(tagToAdd);
-                });
+                for(var i = 0; i < tagNames.length; i++){
+                     var tagName = tagNames[i];
+                     var tagToAdd = {};
+                     tagToAdd.tagName = tagName;
+                     tags.push(tagToAdd);
+                }
                 tagManager.addTagForInterface(interfaceId, tags, function (){
                     alert("标签保存成功");
                 });
@@ -441,17 +451,21 @@
                 </ul>
             </td>
             <td>
+                <shiro:hasPermission name="system-update">
                 <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
+                </shiro:hasPermission>
             </td>
             <td>
+                <shiro:hasPermission name="system-get">
                 <a href="#" id="historyBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">发布历史</a>
+                </shiro:hasPermission>
             </td>
         </tr>
     </table>
 
 
 </div>
-<table id="interfacetg" style="height: 370px; width: auto;">
+<table id="interfacetg" style="height: 370px; width: 100%;">
     <thead>
     <tr>
         <th data-options="field:'ecode',width:'10%'">
@@ -501,7 +515,7 @@
     </div>
 </div>
 <table title="接口定义信息" id="tg"
-       style="height: 440px; width: auto;"
+       style="height: 440px; width: 100%;"
        data-options="
 				iconCls:'icon-edit',
 				rownumbers: false,
@@ -530,7 +544,7 @@
         <th data-options="field:'type',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['englishB']}}">
             类型
         </th>
-        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox',options:{required:true,validType:['intOrFloat']}}">
+        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['intOrFloat']}}">
             长度
         </th>
         <%--<th data-options="field:'metadataId',width:100,editor:'text'">

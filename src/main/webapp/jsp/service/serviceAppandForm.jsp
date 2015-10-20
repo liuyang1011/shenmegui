@@ -9,15 +9,19 @@
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
     <th>服务码</th>
-    <td><input class="easyui-textbox" data-options="required:true, validType:['intOrFloat']" type="text" id="serviceId" ></td>
+    <td><input class="easyui-textbox" data-options="required:true, validType:['unique','intOrFloat']" type="text" id="serviceId" ></td>
   </tr>
   <tr>
     <th>服务名称</th>
     <td><input class="easyui-textbox" data-options="required:true, validType:['chineseB']" type="text" id="serviceName" ></td>
   </tr>
   <tr>
-    <th>描述</th>
+    <th>服务功能描述</th>
     <td><input class="easyui-textbox" type="text" data-options="validType:['chineseB']" id="discription" ></td>
+  </tr>
+  <tr>
+    <th>服务备注</th>
+    <td><input class="easyui-textbox" type="text" data-options="validType:['chineseB']" id="remark" ></td>
   </tr>
   <tr style="display:none">
     <th>服务分类</th>
@@ -42,3 +46,26 @@
 </form>
 <script type="text/javascript" src="/assets/service/js/serviceAppendForm.js"></script>
 <script type="text/javascript" src="/plugin/validate.js"></script>
+<script type="text/javascript">
+  $(function () {
+    $.extend($.fn.validatebox.defaults.rules, {
+      unique: {
+        validator: function (value, param) {
+          var result;
+          $.ajax({
+            type: "get",
+            async: false,
+            url: "/service/uniqueValid",
+            dataType: "json",
+            data: {"serviceId": value},
+            success: function (data) {
+              result = data;
+            }
+          });
+          return result;
+        },
+        message: '已存在相同服务码'
+      }
+    });
+  })
+</script>

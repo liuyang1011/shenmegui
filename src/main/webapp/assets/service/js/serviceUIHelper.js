@@ -46,6 +46,9 @@ var serviceUIHelper = {
         }
     },
     "deleteServiceFormTree" : function removeService(){
+        if (!confirm("删除服务，该服务下所有场景都会被删除，确定要删除该服务吗？")) {
+            return;
+        }
         var node = $('.mxservicetree').tree('getSelected');
         var id = node.id;
         if(node.type=="service"){
@@ -157,19 +160,16 @@ var serviceUIHelper = {
                 alert("该服务分类下没有服务数据！");
                 return false;
             }
-            else if(node.serviceCategory.parentId == null){
+            else if(node.serviceCategory.parentId == null || node.serviceCategory.parentId == ""){
                 type = "serviceCategory1";
             }
             else{
-                type = "serviceCategory1";
-                var parent = t.tree('getParent', node.target);
-                id =  parent.id;
+                type = "serviceCategory2";
             }
         }
         if(node.type == "service"){
-            type = "serviceCategory1";
-            var parent = t.tree('getParent', node.target);
-            id =  t.tree('getParent', parent.target).id;
+            alert("请选择分类导出！");
+            return false;
         }
         var form=$("<form>");//定义一个form表单
         form.attr("style","display:none");

@@ -35,6 +35,9 @@ public class ServiceLinkController {
     private static final Log log = LogFactory.getLog(ServiceLinkController.class);
 
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     private ServiceInvokeServiceImpl serviceInvokeService;
     @Autowired
     private InvokeConnectionServiceImpl invokeConnectionService;
@@ -208,6 +211,12 @@ public class ServiceLinkController {
         }
         Collection<GraphConnection> graphConnections = constructGraphConnection(invokeConnections);
         Collection<GraphNode> nodeList = nodes.values();
+        //添加逻辑，如果没有关系，添加自身节点到返回。
+        if(nodeList.size() == 0){
+            ServiceInvoke selfServiceInvoke = serviceInvokeService.getById(nodeId);
+            GraphNode selfGraphNode = constructGraphNode(selfServiceInvoke);
+            nodeList.add(selfGraphNode);
+        }
         renderObj.put("nodes", nodeList);
         renderObj.put("edges", graphConnections);
         return renderObj;
@@ -378,20 +387,7 @@ public class ServiceLinkController {
         List<ServiceLinkNode> serviceLinkNodes = serviceLinkNodeService.getAll();
 
         for (ServiceInvoke serviceInvoke : serviceInvokes) {
-            ServiceLinkNodeVO serviceLinkNodeVO = new ServiceLinkNodeVO(serviceInvoke);
-            if (serviceInvoke.getOperationId() != null && serviceInvoke.getServiceId() != null) {
-                Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
-                Service service = serviceService.getById(serviceInvoke.getServiceId());
-                serviceLinkNodeVO.setServiceName(service.getServiceName());
-                serviceLinkNodeVO.setOperationName(operation.getOperationName());
-            }
-            for (ServiceLinkNode serviceLinkNode : serviceLinkNodes) {
-                if (serviceInvoke.getInvokeId().equalsIgnoreCase(serviceLinkNode.getServiceInvokeId())) {
-                    serviceLinkNodeVO.setCondition(serviceLinkNode.getCondition());
-                    serviceLinkNodeVO.setEsbAccessPattern(serviceLinkNode.getEsbAccessPattern());
-                }
-            }
-
+            ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
             serviceLinkNodeVOs.add(serviceLinkNodeVO);
         }
 
@@ -519,6 +515,8 @@ public class ServiceLinkController {
     public
     @ResponseBody
     boolean save(@RequestBody InvokeConnection[] connections) {
+        OperationLog operationLog = systemLogService.record("交易链路","添加","数量" + connections.length);
+
         for (InvokeConnection connection : connections) {
             String sourceId = connection.getSourceId();
             String targetId = connection.getTargetId();
@@ -533,6 +531,8 @@ public class ServiceLinkController {
                 invokeConnectionService.save(connection);
             }
         }
+
+        systemLogService.updateResult(operationLog);
         return true;
     }
 

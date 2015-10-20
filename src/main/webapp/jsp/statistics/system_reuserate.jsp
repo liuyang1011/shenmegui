@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
   String path = request.getContextPath();
   String basePath = request.getScheme() + "://"
@@ -80,8 +81,10 @@
         </th>
         <td></td>
         <th style="width:200px">
-            <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
-            <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+            <shiro:hasPermission name="exportStatistics-get">
+                <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+            </shiro:hasPermission>
         </th>
         <td></td>
 
@@ -100,7 +103,7 @@
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				pageSize:20"
-         style="height:370px; width:auto;">
+         style="height:370px; width:100%;">
     <thead>
     <tr>
       <th data-options="field:'',checkbox:true,width:50"></th>
@@ -142,6 +145,7 @@
     }
   };
   var toolbar = [
+    <shiro:hasPermission name="exportStatistics-get">
     {
       text:'导出EXCEL',
       iconCls:'icon-excel-export',
@@ -173,6 +177,7 @@
         }
       }
     }
+      </shiro:hasPermission>
   ];
   function query(){
     var params = {

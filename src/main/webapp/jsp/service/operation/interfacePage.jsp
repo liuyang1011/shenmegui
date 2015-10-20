@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://"
@@ -40,12 +41,12 @@
         });
         var item;
         var toolbar = [
+            <shiro:hasPermission name="service-update">
             {
                 text: '映射元数据',
                 iconCls: 'icon-qxfp',
                 handler: function () {
                     //标准的没有映射功能
-                    console.log(item);
                     if (item.isStandard == 0) {
                         alert("标准接口没有映射");
                         return false;
@@ -77,6 +78,7 @@
                     }
                 }
             }
+            </shiro:hasPermission>
         ];
         //根据已选中的接口关系在“接口映射”区域更新接口信息
         function relateInterface() {
@@ -282,9 +284,7 @@
                                 <th data-options="field:'required',width:'10%',editor:'text'">
                                     是否必须
                                 </th>
-
                             </tr>
-
                             </thead>
                         </table>
                     </div>
@@ -292,6 +292,5 @@
             </tr>
         </table>
 </fieldset>
-
 </body>
 </html>

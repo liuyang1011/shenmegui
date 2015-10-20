@@ -78,7 +78,7 @@ var sysManager = {
     },
 
     edit: function () {
-        var node = $('.mxsysadmintree').tree("getSelected");
+        var node = $('.msinterfacetree').tree("getSelected");
         uiinit.win({
             w: 500,
             iconCls: 'icon-add',
@@ -89,7 +89,7 @@ var sysManager = {
     },
 
     remove: function () {
-        if (!confirm("确定要删除该报文头吗？")) {
+        if (!confirm("删除报文头会删除接口和报文头的关联关系，确定要删除该报文头吗？")) {
             return;
         }
         var node = $('.msinterfacetree').tree("getSelected");
@@ -129,7 +129,8 @@ var sysManager = {
             $('#mainContentTabs').tabs('add', {
                 title: "系统",
                 content: content,
-                closable: true
+                closable: true,
+                fit:true
             });
         }
     },
@@ -227,6 +228,17 @@ var sysManager = {
                     //window.location.href = "/jsp/403.jsp";
                 }
             }
+        });
+    },
+    editProtocol: function (data, callBack) {
+        var node = $('.msinterfacetree').tree("getSelected");
+        uiinit.win({
+            w:500,
+            //top:"20px",
+            //left:"150px",
+            iconCls:'icon-add',
+            title:"编辑协议",
+            url : "/protocol/edit/"+node.id
         });
     },
     "deleteProtocol": function () {

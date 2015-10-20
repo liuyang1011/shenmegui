@@ -53,21 +53,43 @@
 			alert("请先完善基础信息!");
 			return false;
 		}
+		var systemId ="";
+		var treeObj =$('.msinterfacetree') ;
+		try {
+			var selectNode = $('.msinterfacetree').tree("getSelected");
+			systemId = selectNode.id;
+			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
+			if(node){
+				var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
+				systemId = systemNode.id;
+			}
+		} catch (e) {
+			systemId = "${param.systemId}";
+			treeObj = parent.$('.msinterfacetree');
+		}
+
 		var headId = $("#headId").val();
 		var headName = $("#headName").val();
 		var headRemark = $("#headRemark").val();
 		var headDesc = $("#headDesc").val();
-		
+
 		var data = {};
 		data.headId = headId;
 		data.headName = headName;
 		data.headRemark = headRemark;
 		data.headDesc = headDesc;
-	
+		data.systemId = systemId;
+
 		sysManager.add(data,function(result){
 			if(result){
 				$('#w').window('close');
-				$('.mxsysadmintree').tree("reload");
+				var selectNode = treeObj.tree("getSelected");
+				var parent = treeObj.tree("getParent", selectNode.target);
+				var urlPath = treeObj.tree('options').url;
+				treeObj.tree('options').url = "/interface/getLeftTree/subHeadTree/system/" + systemId;
+				treeObj.tree("reload", parent.target);
+				treeObj.tree('options').url = urlPath;
+				$('#tg').datagrid("reload");
 			}else{
 				alert("保存失败");
 			}

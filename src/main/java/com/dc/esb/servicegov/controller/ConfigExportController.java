@@ -10,6 +10,8 @@ import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -37,6 +39,9 @@ public class ConfigExportController {
 
     protected Log logger = LogFactory.getLog(getClass());
     @Autowired
+    private SystemLogServiceImpl systemLogService;
+
+    @Autowired
     SystemService systemService;
 
     @Autowired
@@ -44,6 +49,9 @@ public class ConfigExportController {
 
     @Autowired
     SDAService sdaService;
+
+    @Autowired
+    OperationServiceImpl operationService;
 
     @Autowired
     IdaService idaService;
@@ -69,6 +77,8 @@ public class ConfigExportController {
     @ResponseBody
     List<String> export(@PathVariable String serviceId, @PathVariable String operationId, @PathVariable String providerSystemId, @PathVariable String providerInterfaceId, @PathVariable boolean providerIsStandard,
                          @PathVariable String consumerInterfaceId, @PathVariable String consumerSystemId, @PathVariable boolean consumerIsStandard, @PathVariable String providerStandardType, @PathVariable String consumerStandardType, HttpServletResponse response) {
+        OperationLog operationLog = systemLogService.record("服务","配置导出","服务ID:"+serviceId+";操作ID："+operationId+";提供者ID" +providerSystemId+";消费者ID:"+consumerSystemId+", 提供者接口ID"+providerInterfaceId+", consumerSystemId 消费者接口ID:");
+
         File in_file = null;
         ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId, providerIsStandard, consumerSystemId, consumerInterfaceId, consumerIsStandard);
         Map<String, String> sdaMap = new HashMap<String, String>();
@@ -122,7 +132,9 @@ public class ConfigExportController {
             ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
             if (invoke != null) {
                 String protocolId = invoke.getProtocolId();
-                if (protocolId == null || "".equals(protocolId)) {
+//                if (protocolId == null || "".equals(protocolId)) {
+                //TZB接口没关联协议
+                if (false) {
                     logger.error("消费方接口未关联协议，导出失败");
 //                    return "消费方提供方接口未关联协议，导出失败";
                     logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
@@ -131,8 +143,10 @@ public class ConfigExportController {
                 } else {
 
 
-                    Protocol protocol = protocolService.getById(protocolId);
-                    String generatorClass = protocol.getGeneratorId();
+//                    Protocol protocol = protocolService.getById(protocolId);
+//                    String generatorClass = protocol.getGeneratorId();
+                    //TZB接口没关联协议
+                    String generatorClass = "com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator";
 
                     try {
                         Class c = Class.forName(generatorClass);
@@ -188,7 +202,9 @@ public class ConfigExportController {
             if (invoke != null) {
 
                 String protocolId = invoke.getProtocolId();
-                if (protocolId == null || "".equals(protocolId)) {
+//                if (protocolId == null || "".equals(protocolId)) {
+                //TZB没有接口关联协议
+                if (false) {
                     logger.error("提供方接口未关联协议，导出失败");
                     logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
 //                    return "提供方接口未关联协议，导出失败";
@@ -197,8 +213,10 @@ public class ConfigExportController {
                 } else {
 
 
-                    Protocol protocol = protocolService.getById(protocolId);
-                    String generatorClass = protocol.getGeneratorId();
+//                    Protocol protocol = protocolService.getById(protocolId);
+//                    String generatorClass = protocol.getGeneratorId();
+                    //TZB接口没关联协议
+                    String generatorClass = "com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator";
 
                     try {
                         Class c = Class.forName(generatorClass);
@@ -207,6 +225,7 @@ public class ConfigExportController {
                             generator.setSystemService(systemService);
                             generator.setInterfaceService(interfaceService);
                             generator.setSdaService(sdaService);
+                            generator.setOperationService(operationService);
                             generator.generatorOut(provideridas, sdas, export);
                         } catch (InstantiationException e) {
                             logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
@@ -259,6 +278,7 @@ public class ConfigExportController {
             }
             out.flush();
 
+            systemLogService.updateResult(operationLog);
 
         } catch (Exception e) {
 

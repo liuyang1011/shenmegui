@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script> 
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/jsp/version/version.js"></script>
+	<script type="text/javascript" src="/js/version/versionManager.js"></script>
 <script type="text/javascript">
 	$(function (){
 		$("#operationList").datagrid({
@@ -56,8 +57,11 @@
 		}
 		
 		//操作按钮
-		function formatConsole(value){
-				var s = '<a iconcls="icon-search" onclick="detailPage(\'' + value + '\')" style="margin-top:1px;margin-bottom:1px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="cancelbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">数据详情</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>';
+		function formatConsole(value, row, index){
+				var s = '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" id="cancelbtn'+value+'">' +
+						'<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">数据详情</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>&nbsp;&nbsp;'+
+						'<a onclick="comparePage(\'' + row.autoId + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)"  id="comparebtn'+value+'">' +
+						'<span class="l-btn-text">版本对比</span>&nbsp;</span></span></a>';
 		    	return s;
 	    	
 		}
@@ -74,7 +78,33 @@
 			modal : true
 		});
 	}
+	//弹出对比页面
+	function comparePage(autoId){
+		$.ajax({
+			type: "get",
+			async: false,
+			url: "/versionHis/judgeVersionPre?autoId="+autoId,
+			dataType: "json",
+			success: function (data) {
+				if(data.autoId != null){
+					var urlPath = "/jsp/version/sdaComparePage.jsp?autoId1="+autoId+"&type=1&autoId2="+data.autoId+"&versionId="+ data.id;
+					$("#versionDlg").dialog({
+						title: '版本对比',
+						left:'50px',
+						width: 1000,
+						height:'auto',
+						closed: false,
+						cache: false,
+						href: urlPath,
+						modal: true
+					});
+				}else{
+					alert("该版本为初始版本!");
+				}
+			}
+		});
 
+	}
 		
 	</script> 
 </head>
@@ -110,7 +140,7 @@
       <th data-options="field:'versionDesc'">发布说明 </th>
       <th data-options="field:'optDate'">发布时间 </th>
       <th data-options="field:'optUser'">发布人 </th>
-      <th data-options="field:'targetId',width:120,formatter:formatConsole">操作</th>
+      <th data-options="field:'targetId',width:180,formatter:formatConsole">操作</th>
     </tr>
   </thead>
 </table>

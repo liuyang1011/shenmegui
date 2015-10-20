@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -42,7 +43,7 @@
 
 
 </fieldset>
-<table title="交易节点" id="invokeLinkeTable" style="height:440px; width:auto;">
+<table title="交易节点" id="invokeLinkeTable" style="height:440px; width:100%;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
@@ -53,22 +54,22 @@
     </tr>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
-        <th data-options="field:'interfaceId'">交易码</th>
-        <th data-options="field:'interfaceName'">交易名称</th>
-        <th data-options="field:'serviceId'">服务码</th>
-        <th data-options="field:'serviceName'">服务名称</th>
-        <th data-options="field:'operationId'">场景码</th>
-        <th data-options="field:'operationName'">场景名称</th>
-        <th data-options="field:'invokeType'">调用类型</th>
+        <th data-options="field:'interfaceId'" width="15%">交易码</th>
+        <th data-options="field:'interfaceName'" width="15%">交易名称</th>
+        <th data-options="field:'serviceId'" width="10%">服务码</th>
+        <th data-options="field:'serviceName'" width="15%">服务名称</th>
+        <th data-options="field:'operationId'" width="5%">场景码</th>
+        <th data-options="field:'operationName'" width="15%">场景名称</th>
+        <th data-options="field:'invokeType'" width="6%">调用类型</th>
 
-        <th data-options="field:'nodeType'">节点类型</th>
-        <th data-options="field:'location'">交易属性标识</th>
-        <th data-options="field:'bussCategory'">节点业务分类</th>
-        <th data-options="field:'status'">节点状态</th>
+        <th data-options="field:'nodeType'" width="10%">节点类型</th>
+        <th data-options="field:'location'" width="10%">交易属性标识</th>
+        <th data-options="field:'bussCategory'" width="10%">节点业务分类</th>
+        <th data-options="field:'status'" width="10%">节点状态</th>
 
-        <th data-options="field:'esbAccessPattern'">ESB调用方式</th>
-        <th data-options="field:'condition'">条件位</th>
-        <th data-options="field:'conditionDesc'">条件信息</th>
+        <th data-options="field:'esbAccessPattern'" width="10%">ESB调用方式</th>
+        <th data-options="field:'condition'" width="10%">条件位</th>
+        <th data-options="field:'conditionDesc'" width="10%">条件信息</th>
     </tr>
     </thead>
 </table>
@@ -139,6 +140,7 @@
         }
     }
     var toolbar = [
+        <shiro:hasPermission name="link-get">
         {
             text: '预览',
             iconCls: 'icon-qxfp',
@@ -152,8 +154,14 @@
                     }
                     else {
                         checkedItem = checkedItems[0];
+                        var oldIE;
+                        var ieVersion = "undefined" != typeof navigator && /MSIE\s([\d.]+)/.test(navigator.userAgent) ? new Number(RegExp.$1) : -1, oldIE = ieVersion > -1 && 9 > ieVersion;
                         var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
-//                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        if(oldIE){
+                            content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                        }
+//                        //测试
+//                        content= '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                         selectTab('预览', content);
                         selectTab('预览', content);
                     }
@@ -210,6 +218,7 @@
                 }
             }
         }
+        </shiro:hasPermission>
 //        ,{
 //            text: '编辑节点',
 //            iconCls: 'icon-qxfp',

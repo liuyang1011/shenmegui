@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -23,7 +25,8 @@ import com.dc.esb.servicegov.util.TreeNode;
 @Controller
 @RequestMapping("/interfaceHead")
 public class InterfaceHeadController {
-
+	@Autowired
+	private SystemLogServiceImpl systemLogService;
 	@Autowired
 	private InterfaceHeadService interfaceHeadService;
 	
@@ -57,7 +60,8 @@ public class InterfaceHeadController {
 	public @ResponseBody
 	boolean save(@RequestBody
 	InterfaceHead head) {
-		
+		OperationLog operationLog = systemLogService.record("报文头","保存","名称：" + head.getHeadName());
+
 		boolean add = false;
 		if(head.getHeadId()==null || "".equals(head.getHeadId())){
 			add = true;
@@ -92,6 +96,8 @@ public class InterfaceHeadController {
 			ida.setSeq(1);
 			idaService.save(ida);
 		}
+
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 
@@ -112,7 +118,11 @@ public class InterfaceHeadController {
 	public @ResponseBody
 	boolean delete(@PathVariable
 			String headId) {
+		OperationLog operationLog = systemLogService.record("报文头","删除","报文头ID:" + headId);
+
 		interfaceHeadService.deleteById(headId);
+
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 	/**

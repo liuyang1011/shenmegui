@@ -1,7 +1,9 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.ExcelExportInterfaceImpl;
 import com.dc.esb.servicegov.service.impl.ExcelExportServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.OperationPKVO;
 import com.dc.esb.servicegov.vo.ReleaseListVO;
@@ -29,6 +31,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/excelExporter")
 public class ExcelExportController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
 
     private static Log log = LogFactory.getLog(ExcelExportController.class);
     @InitBinder
@@ -55,9 +59,14 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportService(HttpServletRequest request, HttpServletResponse response,
                           String id, String type) {
+        OperationLog operationLog = systemLogService.record("字段映射文档","导出EXCEL","根据分类或者服务导出，具体参数：id"+id+", 类型:"+type);
+
         String fileName = type+"_"+id + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderExcel(id, type);
-        return export(request, response,fileName, workbook);
+        boolean result = export(request, response, fileName, workbook);
+
+        systemLogService.updateResult(operationLog);
+        return result;
     }
     /*根据场景列表导出字段映射*/
     @RequiresPermissions({"excelExport-get"})
@@ -65,9 +74,15 @@ public class ExcelExportController {
     public
     @ResponseBody
     boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
+        OperationLog operationLog = systemLogService.record("字段映射文档","导出EXCEL","根据服务场景列表导出");
+
         String fileName = "operation_" + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderExcelByOperation(pkvo);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
     }
 
 
@@ -80,9 +95,15 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportServiceView(HttpServletRequest request, HttpServletResponse response,
             String type, String categoryId) {
+        OperationLog operationLog = systemLogService.record("服务视图","导出EXCEL","分类ID:"+categoryId);
+
         String fileName = "serviceview_"+categoryId + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderServiceView(type, categoryId);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
     }
 
     @RequiresPermissions({"exportInterface-get"})
@@ -91,24 +112,36 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportInterface(HttpServletRequest request, HttpServletResponse response,
                           String ids, String type,String systemId) {
+        OperationLog operationLog = systemLogService.record("接口","导出EXCEL","ID列表："+ ids + "; 系统ID:" + systemId +"; 类型:" + type);
+
         String fileName = type + new Date().getTime();
         String[] interfaceIds = ids.split(",");
         HSSFWorkbook workbook = excelExportInterfaceImpl.genderExcel(interfaceIds, type, systemId);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
     }
 
     /**
      * 导出复用率统计execl
      * */
-    @RequiresPermissions({"excelExport-get"})
+    @RequiresPermissions({"exportStatistics-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportSystemReuserate", headers = "Accept=application/json")
     public
     @ResponseBody
     boolean exportSystemReuserate(HttpServletRequest request, HttpServletResponse response,
                             ReuseRateListVO listVO) {
+        OperationLog operationLog = systemLogService.record("系统复用率统计","导出EXCEL","导出条数：" + listVO.getList().size());
+
         String fileName = "reuse_rate_" + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderSystemRuserate(listVO);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
     }
     /**
      * 导出服务复用率统计execl
@@ -119,9 +152,15 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportServiceReuserate(HttpServletRequest request, HttpServletResponse response,
                             TreeNode root) {
+        OperationLog operationLog = systemLogService.record("服务复用率统计","导出EXCEL","");
+
         String fileName ="reuse_rate_" + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderServiceRuserate(root);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
     }
     /**
      * 导出发布状况统计
@@ -132,9 +171,15 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportReleaseSate(HttpServletRequest request, HttpServletResponse response,
                           ReleaseListVO listVO) {
+        OperationLog operationLog = systemLogService.record("发布情况统计","导出EXCEL","");
+
         String fileName ="release_" + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderReleaseState(listVO);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
 
     }
     /**
@@ -146,9 +191,15 @@ public class ExcelExportController {
     @ResponseBody
     boolean exportReleaseCount(HttpServletRequest request, HttpServletResponse response,
                             ReleaseListVO listVO) {
+        OperationLog operationLog = systemLogService.record("发布次数统计","导出EXCEL","");
+
         String fileName ="release_" + new Date().getTime();
         HSSFWorkbook workbook = excelExportServiceImpl.genderReleaseCount(listVO);
-        return export(request, response,fileName, workbook);
+
+        boolean result = export(request, response, fileName, workbook);
+        systemLogService.updateResult(operationLog);
+
+        return result;
 
     }
 

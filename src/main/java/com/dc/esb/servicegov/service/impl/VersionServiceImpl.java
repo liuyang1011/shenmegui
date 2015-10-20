@@ -108,12 +108,13 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 		return nv.getAutoId();
 	}
 
-	// 发布时调用方法，每次中间一位+1
-	public String releaseVersionCode(String versionCode) {
+	// 发布时调用方法，每次中间一位+1,最后一位置零
+	public String releaseVersionCode(String versionCode) {//格式:1.0.0
 		if (StringUtils.isNotEmpty(versionCode)) {
 			String[] s = versionCode.split("\\.");
 			int s1 = Integer.parseInt(s[1]);
 			s[1] = String.valueOf(s1 + 1);
+			s[2] = "0";
 			return s[0] + "." + s[1] + "." + s[2];
 		}
 		return initalVersion;
@@ -122,14 +123,14 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 	/**
 	 * 获取场景对比数据
 	 */
-	public Map<String, Object> getOperationDiff(String type, String versionId1, String versionId2){
+	public Map<String, Object> getOperationDiff(String type,String versionId, String autoId1, String autoId2){
 		Map<String, Object> result = new HashMap<String, Object>();
 		OperationHis operationHis1 = null;
 		OperationHis operationHis2 = null;
 		List<SDAHis> sdaHisList1 = null;
 		List<SDAHis> sdaHisList2 = null;
 		if(Constants.Version.COMPARE_TYPE0.equals(type)){//当前版本与历史版本对比
-			Operation operation = operationDao.findUniqueBy("versionId", versionId1);
+			Operation operation = operationDao.findUniqueBy("versionId", versionId);
 			operationHis1 =  new OperationHis(operation);
 			String sdaHql = " from " + SDA.class.getName() + " where serviceId=? and operationId=?";
 			List<SDA> sdaList = sdaDao.find(sdaHql, operation.getServiceId(), operation.getOperationId());
@@ -137,25 +138,25 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 			for(int i = 0; i < sdaList.size(); i++){
 				sdaHisList1.add(new SDAHis(sdaList.get(i), operationHis1.getAutoId()));
 			}
-			VersionHis version2 = versionHisServiceImpl.findUniqueBy("autoId", versionId2);;
+			VersionHis version2 = versionHisServiceImpl.findUniqueBy("autoId", autoId2);;
 			if(version2 != null){
 				operationHis2 = operationHisDao.findUniqueBy("versionHisId", version2.getAutoId());
 				sdaHisList2 = sdaHisDao.findBy("operationHisId", operationHis2.getAutoId());
 			}
 		}
 		else if(Constants.Version.COMPARE_TYPE1.equals(type)){//历史版本对比
-			operationHis1 = operationHisDao.findUniqueBy("versionHisId", versionId1);
+			operationHis1 = operationHisDao.findUniqueBy("versionHisId", autoId1);
 			sdaHisList1 = sdaHisDao.findBy("operationHisId", operationHis1.getAutoId());
-			operationHis2 = operationHisDao.findUniqueBy("versionHisId", versionId2);
+			operationHis2 = operationHisDao.findUniqueBy("versionHisId", autoId2);
 			sdaHisList2 = sdaHisDao.findBy("operationHisId", operationHis2.getAutoId());
 		}
 		else if(Constants.Version.COMPARE_TYPE2.equals(type)){//历史版本与当前版本对比
-			VersionHis version1 = versionHisServiceImpl.findUniqueBy("autoId", versionId1);;
+			VersionHis version1 = versionHisServiceImpl.findUniqueBy("autoId", autoId1);;
 			if(version1 != null){
 				operationHis1 = operationHisDao.findUniqueBy("versionHisId", version1.getAutoId());
 				sdaHisList1 = sdaHisDao.findBy("operationHisId", operationHis1.getAutoId());
 			}
-			Operation operation = operationDao.findUniqueBy("versionId", versionId2);
+			Operation operation = operationDao.findUniqueBy("versionId", versionId);
 			operationHis2 =  new OperationHis(operation);
 			String sdaHql = " from " + SDA.class.getName() + " where serviceId=? and operationId=?";
 			List<SDA> sdaList = sdaDao.find(sdaHql, operation.getServiceId(), operation.getOperationId());

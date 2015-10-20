@@ -30,6 +30,7 @@ $(function(){
         service.serviceId = $('#serviceId').val();
         service.serviceName = $('#serviceName').val();
         service.desc = $('#discription').val();
+        service.remark = $('#remark').val();
         service.categoryId = parentId;
         service.version = $('#version').val();
         service.state = $('#state').val();

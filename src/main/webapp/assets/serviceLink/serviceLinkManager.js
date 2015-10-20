@@ -13,6 +13,17 @@ var serviceLinkManager = {
             }
         });
     },
+    "getGraphData" : function getGraphData(sourceId, callBack){
+        $.ajax({
+            "type": "GET",
+            "contentType": "application/json; charset=utf-8",
+            "url": "/serviceLink/getServiceLink/start/node/" + sourceId + "?_t=" + new Date().getTime() ,
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            }
+        });
+    },
     "getConnectionsBySourceId" : function getConnectionsBySourceId (sourceId, callBack){
         $.ajax({
             "type": "GET",

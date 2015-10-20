@@ -1,8 +1,94 @@
 /**
  * Created by vincentfxz on 15/9/21.
  */
+
 (function () {
     "use strict";
+    var split;
+//IE8的split支持不全
+// Avoid running twice; that would break the `nativeSplit` reference
+split = split || function (undef) {
+
+    var nativeSplit = String.prototype.split,
+        compliantExecNpcg = /()??/.exec("")[1] === undef, // NPCG: nonparticipating capturing group
+        self;
+
+    self = function (str, separator, limit) {
+        // If `separator` is not a regex, use `nativeSplit`
+        if (Object.prototype.toString.call(separator) !== "[object RegExp]") {
+            return nativeSplit.call(str, separator, limit);
+        }
+        var output = [],
+            flags = (separator.ignoreCase ? "i" : "") +
+                    (separator.multiline  ? "m" : "") +
+                    (separator.extended   ? "x" : "") + // Proposed for ES6
+                    (separator.sticky     ? "y" : ""), // Firefox 3+
+            lastLastIndex = 0,
+            // Make `global` and avoid `lastIndex` issues by working with a copy
+            separator = new RegExp(separator.source, flags + "g"),
+            separator2, match, lastIndex, lastLength;
+        str += ""; // Type-convert
+        if (!compliantExecNpcg) {
+            // Doesn't need flags gy, but they don't hurt
+            separator2 = new RegExp("^" + separator.source + "$(?!\\s)", flags);
+        }
+        /* Values for `limit`, per the spec:
+         * If undefined: 4294967295 // Math.pow(2, 32) - 1
+         * If 0, Infinity, or NaN: 0
+         * If positive number: limit = Math.floor(limit); if (limit > 4294967295) limit -= 4294967296;
+         * If negative number: 4294967296 - Math.floor(Math.abs(limit))
+         * If other: Type-convert, then use the above rules
+         */
+        limit = limit === undef ?
+            -1 >>> 0 : // Math.pow(2, 32) - 1
+            limit >>> 0; // ToUint32(limit)
+        while (match = separator.exec(str)) {
+            // `separator.lastIndex` is not reliable cross-browser
+            lastIndex = match.index + match[0].length;
+            if (lastIndex > lastLastIndex) {
+                output.push(str.slice(lastLastIndex, match.index));
+                // Fix browsers whose `exec` methods don't consistently return `undefined` for
+                // nonparticipating capturing groups
+                if (!compliantExecNpcg && match.length > 1) {
+                    match[0].replace(separator2, function () {
+                        for (var i = 1; i < arguments.length - 2; i++) {
+                            if (arguments[i] === undef) {
+                                match[i] = undef;
+                            }
+                        }
+                    });
+                }
+                if (match.length > 1 && match.index < str.length) {
+                    Array.prototype.push.apply(output, match.slice(1));
+                }
+                lastLength = match[0].length;
+                lastLastIndex = lastIndex;
+                if (output.length >= limit) {
+                    break;
+                }
+            }
+            if (separator.lastIndex === match.index) {
+                separator.lastIndex++; // Avoid an infinite loop
+            }
+        }
+        if (lastLastIndex === str.length) {
+            if (lastLength || !separator.test("")) {
+                output.push("");
+            }
+        } else {
+            output.push(str.slice(lastLastIndex));
+        }
+        return output.length > limit ? output.slice(0, limit) : output;
+    };
+
+    // For convenience
+    String.prototype.split = function (separator, limit) {
+        return self(this, separator, limit);
+    };
+
+    return self;
+
+}();
     var a, b = this;
     a = "undefined" != typeof exports ? exports : b.Farahey = {};
     var d = function (a, b, c) {
@@ -310,7 +396,19 @@
     }, _wrapCache = function (a, b, c) {
         return function (d) {
             var e = c ? null : a.cache[d];
-            return null == e && (e = b(d)), null == e && (e = a.defaultTemplate), null != e && (a.cache[d] = e), e
+            var oldIE;
+            var ieVersion = "undefined" != typeof navigator && /MSIE\s([\d.]+)/.test(navigator.userAgent) ? new Number(RegExp.$1) : -1, oldIE = ieVersion > -1 && 9 > ieVersion;
+            //IE8无法处理模版标签，所以这里直接返回三种模版类型
+            if("tmplTable" == d) {
+                return "\n    <div class=\"table node\">\n        <div class=\"name\">\n            <div class=\"delete\" title=\"Click to delete\">\n                <i class=\"fa fa-times\"/>\n            </div>\n            <span>${name}</span>\n            <div class=\"new-column add\" title=\"Click to add a new column\">\n                <i class=\"fa fa-plus\"/>\n            </div>\n        </div>\n        <ul class=\"table-columns\">\n            <r-each in=\"columns\">\n                <r-tmpl id=\"tmplColumn\"/>\n            </r-each>\n        </ul>\n        <jtk-source port-type=\"source\" filter=\".outer\"/>\n        <jtk-target port-type=\"target\"/>\n    </div>\n\n";
+            }
+            if("tmplColumn" == d ){
+                return "\n    <li class=\"table-column table-column-type-${datatype}\" primary-key=\"${primaryKey}\" data-port-id=\"${id}\">\n    <!--\n        <div class=\"table-column-edit\">\n            <i class=\"fa fa-puzzle-piece\"></i>\n            <i class=\"fa fa-pencil table-column-edit-icon\"/>\n        </div>\n        <div class=\"table-column-delete\">\n            <i class=\"fa fa-times table-column-delete-icon\"/>\n        </div>\n        -->\n        <div><span>${id}</span></div>\n        <div><span>\n            <r-each in=\"icons\">\n                <r-tmpl id=\"tmplIcon\"/>\n            </r-each>\n        </span></div>\n        <!--\n            configure the li as an edge source, with a type of column, a scope derived from\n            the columns datatype, and a filter that prevents dragging new edges from the delete button or from the label.\n        -->\n        <jtk-source port-id=\"${id}\" port-type=\"column\" scope=\"${datatype}\" filter=\".table-column-delete, .table-column-delete-icon, span, .table-column-edit, .table-column-edit-icon\" filter-exclude=\"true\"/>\n        <!--\n            configure the li as an edge target, with a type of column, and a scope derived from the\n            column's datatype.\n        -->\n        <jtk-target port-id=\"${id}\" port-type=\"column\" scope=\"${datatype}\"/>\n    </li>\n\n";
+            }
+            if("tmplIcon" == d ){
+                return "<i style=\"margin-left:1em;\" class=\"fa fa-${icon}\"/>";
+            }
+        return null == e && (e = b(d)), null == e && (e = a.defaultTemplate), null != e && (a.cache[d] = e), e
         }
     }, RotorsInstance = function (a) {
         a = a || {}, this.cache = {}, this.templateCache = {}, null != a.defaultTemplate && this.setDefaultTemplate(a.defaultTemplate)
@@ -383,7 +481,8 @@
             return "undefined" != typeof document
         }(),
         isOldIE: function () {
-            return oldIE
+            return oldIE;
+            //return false;
         },
         createFragment: function () {
             return this.isBrowser ? this.isOldIE() ? document.createElement("div") : document.createDocumentFragment() : new Fakement
@@ -450,12 +549,13 @@
         registerTag: function (a, b) {
             this.customTags[a] = new CustomTag(this, a, b)
         },
-        debugEnabled: !1,
+        //日志开关
+        debugEnabled: false,
         debug: function () {
-            this.debugEnabled && console.log.apply(console, arguments)
+            this.debugEnabled && console.log(arguments)
         },
         maybeDebug: function () {
-            this.debugEnabled && arguments[0] && console.log.apply(console, arguments)
+            this.debugEnabled && arguments[0] && console.log(arguments)
         },
         parse: function (a, b) {
             b = _wrapCache(this, b || _getDefaultTemplateResolver(this), null);
@@ -549,8 +649,9 @@
             this.executions[a].current = this.executions[a][b]
         },
         getExecutionContent: function (a, b, c, d, e) {
+            //在获取执行脚步是，对TextNode做过滤，IE8的TextNode Dom 节点不支持设置属性
             var f = null != d ? this.namespaceHandlers[d](a) : c ? "e=_rotors.createTextNode(" + a + ");" : "e=_rotors.createElement('" + a + "');";
-            return f + "_els.peek().appendChild(e);" + (c ? "" : "_els.push(e);") + "e._rotors=_rotors.entries['" + b + "'];e._rotorsEid=_eid;if(typeof _rotorsLoopId !== 'undefined') {e._rotorsLoopId=_rotorsLoopId;e._rotorsLoopIndex=_rotorsLoopIndex;e._rotorsLoopContext=_rotorsLoopContext;}_rotors.traceExecution(e, _eid, '" + b + "', typeof _rotorsLoopIndex != 'undefined' ? _rotorsLoopIndex : null);"
+            return f + "_els.peek().appendChild(e);" + (c ? "" : "_els.push(e);") + "if(e.nodeName != \"#text\"){e._rotors=_rotors.entries['" + b + "'];e._rotorsEid=_eid;if(typeof _rotorsLoopId !== 'undefined') {e._rotorsLoopId=_rotorsLoopId;e._rotorsLoopIndex=_rotorsLoopIndex;e._rotorsLoopContext=_rotorsLoopContext;}}_rotors.traceExecution(e, _eid, '" + b + "', typeof _rotorsLoopIndex != 'undefined' ? _rotorsLoopIndex : null);"
         },
         updaters: {},
         onUpdate: function (a, b) {
@@ -581,12 +682,16 @@
         },
         template: function (a, b, c, d) {
             var e, f = d ? null : this.templateCache[a];
-            if (null != f)return e = f(b), this.isOldIE() ? e.childNodes[0] : e;
+            //if (null != f)return e = f(b), this.isOldIE() ? e.childNodes[0] : e;
+            //为什么OldIE要返回第一个子节点，子节点为空。
+            if (null != f)return e = f(b);
             c = _wrapCache(this, c || _getDefaultTemplateResolver(this), d);
             var g = c(a);
             if (null != g) {
                 var h = this.parse(g, c), i = this.compile(h);
-                return this.templateCache[a] = i, e = i(b), this.isOldIE() ? e.childNodes[0] : e
+                // return this.templateCache[a] = i, e = i(b), this.isOldIE() ? e.childNodes[0] : e
+                //为什么OldIE要返回第一个子节点，子节点为空
+                return this.templateCache[a] = i, e = i(b);
             }
             return this.createFragment()
         },
@@ -2228,6 +2333,7 @@
                 var b = g[a.sourceId], c = g[a.targetId], d = k(a), f = l(a);
                 a.edge = e.addEdge({source: b, target: c, data: {id: d, type: f}}, null, !0)
             };
+            //if (c.nodeSelector)for (var p = d.getContainer().querySelectorAll(c.nodeSelector), q = 0; q < p.length; q++) {
             if (c.nodeSelector)for (var p = d.getContainer().querySelectorAll(c.nodeSelector), q = 0; q < p.length; q++) {
                 var r = d.getId(p[q]);
                 n(p[q], r), d.manage(r, p[q])
@@ -2741,6 +2847,7 @@
         rotors: {
             render: function (a, b) {
                 return o.template(a, b).childNodes[0]
+                //return o.template(a, b);
             }
         }
     }, n = "rotors", o = Rotors.newInstance({defaultTemplate: l}), p = b.DOMElementAdapter = function (a) {
@@ -2916,12 +3023,16 @@
                     var b = aa(a);
                     b.doNotFireConnectionEvent = !0, l.isDebugEnabled() && console.log("Renderer", "adding edge with params", b);
                     var c = C.connect(b);
-                    c.edge = a, Q[a.getId()] = c, U(b.type, a, c), i.fire(j.edgeAdded, {
-                        source: a.source,
-                        target: a.target,
-                        connection: c,
-                        edge: a
-                    }), i.refresh(!0)
+                    //c为空的时候不能报错
+                    if(c){
+                        c.edge = a, Q[a.getId()] = c, U(b.type, a, c), i.fire(j.edgeAdded, {
+                            source: a.source,
+                            target: a.target,
+                            connection: c,
+                            edge: a
+                        }), i.refresh(!0)
+                    }
+                    
                 }
             };
             l.bind(j.edgeAdded, function (a) {
@@ -3041,7 +3152,8 @@
                 if (q) {
                     var u = q.template || "jtk-template-" + p;
                     o = q.templateRenderer ? q.templateRenderer(u, s, l) : z.render(u, s, l)
-                } else o = e(s, n);
+                } else
+                    o = e(s, n);
                 o = C.getElement(o), o.setAttribute(h, n), jsPlumb.addClass(o, g), o.jtk = o.jtk || {}, o.jtk[a] = i, o.jtk.node = k, f && r && ja.makeDraggable && ja.makeDraggable(o, q.dragOptions);
                 var v = function (a) {
                     C.on(o, a, function (b) {

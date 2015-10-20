@@ -304,38 +304,46 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     params.put("operationId", si.getOperationId());
                     Operation operation = operationDAO.findUniqureBy(params);
                     setCellValue(row1.createCell(8), commonStyle, operation.getOperationName()+"("+ operation.getOperationId() +")");//服务操作名称
-                    setCellValue(row2.createCell(8), commonStyle, operation.getOperationDesc());//服务操作描述
+                    setCellValue(row3.createCell(8), commonStyle, operation.getOperationDesc());//服务操作描述
                 }
             }
 
-            //获取request元数据
+            Counter counter = new Counter(6);
             List<Ida> reqListIda = getIdaByParentName(si.getInterfaceId(), "request");
             List<Ida> resListIda = getIdaByParentName(si.getInterfaceId(), "response");
             if(Constants.INVOKE_TYPE_STANDARD_Y.equals(si.getIsStandard())){//如果是标准接口，不输出ida
                 reqListIda = new ArrayList<Ida>();
                 resListIda = new ArrayList<Ida>();
             }
-            List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
-            List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
-            Counter counter = new Counter(6);
-            for (int i = 0; i < reqListSDA.size(); i++) {
-                fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
-            }
-        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
             for(int i = 0; i < reqListIda.size(); i++){
-                fillIdaNewRow(sheet, counter, reqListIda.get(i));
+                fillMappRow(sheet, counter, reqListIda.get(i), si.getServiceId(), si.getOperationId());
             }
-        }
-            // sheet.createRow(8+reqListSDA.size());
-            counter.increment();
-            for (int i = 0; i < resListSDA.size(); i++) {
-                fillMappRow(sheet, counter, resListSDA.get(i), resListIda);
+            counter.increment();//分隔行
+            for(int i = 0; i < resListIda.size(); i++){
+                fillMappRow(sheet, counter, resListIda.get(i), si.getServiceId(), si.getOperationId());
             }
-            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
-                for(int i = 0; i < resListIda.size(); i++){
-                    fillIdaNewRow(sheet, counter, resListIda.get(i));
-                }
-            }
+//
+//            List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
+//            List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
+//
+//            for (int i = 0; i < reqListSDA.size(); i++) {
+//                fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
+//            }
+//        if(reqListIda.size() > 0){//处理没有对应的ida，可能没有
+//            for(int i = 0; i < reqListIda.size(); i++){
+//                fillIdaNewRow(sheet, counter, reqListIda.get(i));
+//            }
+//        }
+//            // sheet.createRow(8+reqListSDA.size());
+//            counter.increment();
+//            for (int i = 0; i < resListSDA.size(); i++) {
+//                fillMappRow(sheet, counter, resListSDA.get(i), resListIda);
+//            }
+//            if(resListIda.size() > 0){//处理没有对应的ida，可能没有
+//                for(int i = 0; i < resListIda.size(); i++){
+//                    fillIdaNewRow(sheet, counter, resListIda.get(i));
+//                }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");
@@ -382,35 +390,62 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             fillSDA(sheet, counter.getCount(), sda, commonStyle);
         }
     }
+    public void fillMappRow(HSSFSheet sheet, Counter counter, Ida ida, String serviceId, String operationId) {
+        if(ida != null){
+            sheet.createRow(sheet.getLastRowNum() + 1);
+            counter.increment();
+            sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+
+            fillIda(sheet, counter.getCount(), ida);
+
+            String xpath = ida.getXpath();
+            SDA sda = new SDA();
+            if(StringUtils.isNotEmpty(xpath)){
+                if(xpath.endsWith("/")){
+                    sda = sdaDao.findUniqueBy("sdaId", ida.getSdaId());
+                }else{
+                    String hql = " from SDA where serviceId = ? and operationId = ? and xpath =?";
+                    List<SDA> sdas = sdaDao.find(hql, serviceId, operationId, ida.getXpath());
+                    if(sdas.size() > 0){
+                        sda = sdas.get(0);
+                    }
+                }
+
+            }
+            fillSDA(sheet, counter.getCount(), sda, commonStyle);
+        }
+
+
+    }
+
     public void fillSDA(HSSFSheet sheet, int index, SDA sda, HSSFCellStyle commonStyle) {
+        if(sda == null){
+            sda = new SDA();
+        }
         HSSFRow row = sheet.getRow(index);
+        //TZB数据类型和长度合并
+        String typeLength = (StringUtils.isEmpty(sda.getType()) ? "" : sda.getType()) + "(" + (StringUtils.isEmpty(sda.getLength()) ? "" : sda.getLength()) + ")";
+        if(StringUtils.isEmpty(sda.getType()) && StringUtils.isEmpty(sda.getLength())){
+            typeLength = "";
+        }
+        if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+            typeLength = sda.getType();
+            commonStyle = arrayStyle;
+        }
         setCellValue(row.createCell(7), commonStyle, sda.getStructName()); //英文名称
         setCellValue(row.createCell(8), commonStyle,sda.getStructAlias());//中文名称
-        //TZB数据类型和长度合并
-        setCellValue(row.createCell(9), commonStyle, sda.getType() + "("+sda.getLength()+")");//数据类型/长度
+
+        setCellValue(row.createCell(9), commonStyle, typeLength);//数据类型/长度
 //        setCellValue(row.createCell(10), commonStyle, sda.getLength()); //长度
         setCellValue(row.createCell(10), commonStyle, sda.getConstraint());//约束条件
         setCellValue(row.createCell(11), commonStyle, sda.getRequired());//是否必输
         setCellValue(row.createCell(12), commonStyle, sda.getRemark());//备注
-//        row.createCell(7).setCellValue(sda.getStructName()); //英文名称
-//        row.createCell(8).setCellValue(sda.getStructAlias()); //中文名称
-//        row.createCell(9).setCellValue(sda.getType()); //数据类型
-//        row.createCell(10).setCellValue(sda.getLength()); //长度
-//        row.createCell(11).setCellValue("");//约束条件
-//        row.createCell(12).setCellValue(sda.getRequired());//是否必输
-//        row.createCell(13).setCellValue(sda.getRemark());//备注
     }
 
     public void fillIda(HSSFSheet sheet,int index, Ida ida) {
         HSSFRow row = sheet.getRow(index);
         String[]  values = {ida.getStructName(), ida.getStructAlias(), ida.getType(), ida.getLength(), ida.getRequired(), ida.getRemark()};
         setRowValue(row, commonStyle, values);
-//        row.createCell(0).setCellValue(ida.getStructName());//英文名称
-//        row.createCell(1).setCellValue(ida.getStructAlias());//中文名称
-//        row.createCell(2).setCellValue(ida.getType());//类型
-//        row.createCell(3).setCellValue(ida.getLength());//长度
-//        row.createCell(4).setCellValue(ida.getRequired());//是否必输
-//        row.createCell(5).setCellValue(ida.getRemark());//备注
     }
     public void fillIdaNewRow(HSSFSheet sheet, Counter counter, Ida ida){
         sheet.createRow(sheet.getLastRowNum() + 1);
@@ -441,6 +476,15 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         }
         return null;
     }
+    public SDA judgeMetadataId(String metadataId, List<SDA> sdaList) {
+        for (int i = 0; i < sdaList.size(); i++) {
+            SDA sda = sdaList.get(i);
+            if (!StringUtils.isEmpty(sda.getMetadataId()) && !StringUtils.isEmpty(metadataId) && sda.getMetadataId().equals(metadataId)) {
+                return sda;
+            }
+        }
+        return null;
+    }
 
     public List<SDA> getSDAChildren(String sdaId) {
         String hql = " from " + SDA.class.getName() + " where parentId=?";
@@ -456,7 +500,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public List<Ida> getIdaByParentName(String interfaceId, String parentName) {
         String hql = " from " + Ida.class.getName() + " as i where i._parentId in(" +
                 " select i2.id from " + Ida.class.getName() + " as i2 where i2.interfaceId = ? and structName = ?" +
-                ")";
+                ") order by i.seq asc";
         List<Ida> list = idaDao.find(hql, interfaceId, parentName);
         return list;
     }
@@ -516,26 +560,75 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * 填充head页
      */
     public void fillHead(HSSFSheet sheet, InterfaceHead head) {
-        //根据head获取
-//        HSSFRow row1 = sheet.getRow(1);
-//        row1.getCell(0).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceId());//交易码
-//        row1.getCell(1).setCellValue(ihv.getInterfaceHeadRelate().getRelateInters().getInterfaceName());//交易名称
-//        Operation operation = operationDAO.getBySO(ihv.getServiceInvoke().getServiceId(), ihv.getServiceInvoke().getOperationId());
-//        if (operation != null) {
-//            row1.getCell(6).setCellValue(operation.getService().getServiceName());//服务名称
-//            row1.getCell(8).setCellValue(operation.getOperationName());//场景名称
-//        }
-//        Counter counter = new Counter(5);
-//        List<Ida> reqListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "request");
-//        List<Ida> resListIda = getIdaByParentName(ihv.getServiceInvoke().getInterfaceId(), "response");
-//        //输入
-//        for (int i = 0; i < reqListIda.size(); i++) {
-//            counter.increment();
-//        }
-
-
+        //根据head获取ida,sda数据
+        String hql = " from "+ Ida.class.getName() + " where headId = ? and structName=?";
+        Ida reqIda = idaDao.findUnique(hql, head.getHeadId(), "request");
+        Ida resIda = idaDao.findUnique(hql, head.getHeadId(), "response");
+        String hql2 = " from " + SDA.class.getName() +" where headId = ? and structName=?";
+        SDA reqSda = sdaDao.findUnique(hql2, head.getHeadId(), "request");
+        SDA resSda = sdaDao.findUnique(hql2, head.getHeadId(), "response");
+        Counter counter = new Counter(4);
+        fillHeadRow(sheet, counter, reqIda, reqSda);//填充请求数据
+        counter.increment();//中间行
+        fillHeadRow(sheet, counter, resIda, resSda);//填充输出数据
     }
+    public void fillHeadRow(HSSFSheet sheet, Counter counter, Ida ida, SDA sda){
+        if(ida == null && sda == null){
+            return;
+        }
+        //如果是请求或响应头，不插入行
+        if((ida != null && !"request".equalsIgnoreCase(ida.getStructName()) && !"response".equalsIgnoreCase(ida.getStructName()))
+                || (sda != null && !"request".equalsIgnoreCase(ida.getStructName()) && !"response".equalsIgnoreCase(ida.getStructName()))){
+            sheet.createRow(sheet.getLastRowNum() + 1);
+            counter.increment();
+            sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        }
 
+
+        List<String> subSdaIds = new ArrayList<String>();//sda子节点
+
+        if(ida != null){
+            if(!"request".equalsIgnoreCase(ida.getStructName()) && !"response".equalsIgnoreCase(ida.getStructName())){
+                fillIda(sheet, counter.getCount(), ida);
+            }
+        }
+
+        if(sda != null){
+            if(!"request".equalsIgnoreCase(sda.getStructName()) && !"response".equalsIgnoreCase(sda.getStructName())){
+                fillSDA(sheet, counter.getCount(), sda, commonStyle);
+            }
+        }
+        //处理子节点关系
+        if(ida != null){
+            String hql = " from " + Ida.class.getName() +" where _parentId = ? order by seq asc";
+            List<Ida> idaChildren = idaDao.find(hql, ida.getId());
+
+            if(idaChildren != null && idaChildren.size() > 0){ //处理ida子节点
+                for(Ida idaChild : idaChildren){
+                    SDA sdaChild = sdaDao.findUniqueBy("sdaId", idaChild.getSdaId());//子节点对应的sda
+                    fillHeadRow(sheet, counter, idaChild, sdaChild);
+                    if(sdaChild != null){
+                        subSdaIds.add(sdaChild.getSdaId());
+                    }
+                }
+            }
+        }
+
+        if(sda != null){
+            //处理sda剩余子节点
+            String subHql = subSdaIds.size() > 0 ? " and s.sdaId not in (:subSdaIds) " : "";
+            String hql2 = " from " + SDA.class.getName() + " as s where s.parentId = :parentId" +subHql + " order by s.seq asc";
+            Map<String, Object> param = new HashMap<String, Object>();
+            param.put("parentId", sda.getSdaId());
+            param.put("subSdaIds", subSdaIds);
+            List<SDA> sdaChildren = sdaDao.find(hql2, param);
+            if(sdaChildren != null && sdaChildren.size() > 0){
+                for(SDA sdaChild : sdaChildren){
+                    fillHeadRow(sheet, counter, null, sdaChild);
+                }
+            }
+        }
+    }
     /**
      * @param serviceId
      * @param operationId
@@ -545,7 +638,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public List<SDA> getSDAByParentName(String serviceId, String operationId, String parentName) {
         String hql = " from " + SDA.class.getName() + " as s where s.parentId in( " +
                 "select s2.sdaId from " + SDA.class.getName() + " as s2 where s2.serviceId=? and s2.operationId=? and s2.structName=? " +
-                ")";
+                ") order by s.seq asc";
         List<SDA> list = sdaDao.find(hql, serviceId, operationId, parentName);
         return list;
     }
@@ -559,17 +652,17 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         try {
             HSSFWorkbook wb = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE_VIEW);
             HSSFCellStyle cellStyle = CellStyleSupport.commonStyle(wb);
-            if (type.equals(serviceCategoryType0)) {
+            if (type.equals(serviceCategoryType0)) {//根节点
                 String hql = " from " + ServiceCategory.class.getName() + " where parentId is null";
                 List<ServiceCategory> list = serviceCategoryDao.find(hql);
                 if (list.size() > 0) {
                     for (ServiceCategory sc : list) {
-                        fillView(wb, sc.getCategoryId(), cellStyle);
+                        fillView(wb, sc.getCategoryId(), cellStyle, serviceCategoryType1);
                     }
                 }
-            } else if (type.equals(serviceCategoryType1)) {
+            } else {
                 //填充view
-                fillView(wb, categoryId, cellStyle);
+                fillView(wb, categoryId, cellStyle, type);
             }
             //填充system页
             fillSystem(wb.getSheet("APP-ID"), cellStyle);
@@ -582,122 +675,111 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         return null;
     }
 
-    public void fillView(HSSFWorkbook wb, String categoryId, HSSFCellStyle cellStyle) {
+    public void fillView(HSSFWorkbook wb, String categoryId, HSSFCellStyle cellStyle, String type) {
         //根据categoryId查询
         ServiceCategory sc = serviceCategoryDao.findUniqueBy("categoryId", categoryId);
 
         HSSFSheet view = wb.getSheet("VIEW");
         HSSFSheet sheet = wb.cloneSheet(wb.getSheetIndex(view)); //复制index页
         wb.setSheetName(wb.getSheetIndex(sheet), sc.getCategoryName());
-        int counter = 1;
-        //查询子分类
-        List<ServiceCategory> scList = serviceCategoryDao.findBy("parentId", categoryId);
-        String[] values0 = {sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
-        if (scList.size() == 0) {
-            HSSFRow row = sheet.createRow(counter);
-            setRowValue(row, cellStyle, values0);
-            return;
-        }
-        for (ServiceCategory child : scList) {
-            int start = counter;
-            String[] values1 = {sc.getCategoryName(), child.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
-            String hql = " from " + Service.class.getName() + " where categoryId = ? order by serviceId asc";
-            List<Service> services = serviceDao.find(hql, child.getCategoryId());//查询服务
-            if (services.size() == 0) {
-                HSSFRow row = sheet.createRow(counter);
-                counter++;
-                setRowValue(row, cellStyle, values1);
-                continue;
+        Counter counter = new Counter(1);
+        if(type.equals(serviceCategoryType1)){//大类
+            //查询子分类
+            List<ServiceCategory> scList = serviceCategoryDao.findBy("parentId", categoryId);
+            String[] values0 = {sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
+            if (scList.size() == 0) {
+                HSSFRow row = sheet.createRow(counter.getCount());
+                setRowValue(row, cellStyle, values0);
+                return;
             }
-            for (Service service : services) {
-                int serviceStart = counter;
-                String[] values2 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
-                String operationHql = " from " + Operation.class.getName() + " where serviceId=? order by operationId asc";
-                List<Operation> operations = operationDAO.find(operationHql, service.getServiceId());//查询场景
-                if (operations.size() == 0) {
-                    HSSFRow row = sheet.createRow(counter);
-                    counter++;
-                    setRowValue(row, cellStyle, values2);
-                    continue;
-                }
-                for (Operation operation : operations) {
-                    int operationStart = counter;
-                    String[] values3 = {sc.getCategoryName(), child.getCategoryName(), service.getServiceId(), service.getServiceName(),
-                            operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
-                    //处理标准数据
-                    List<InterfaceInvokeVO> standardVOs = getStandardVOList(operation.getServiceId(), operation.getOperationId());
-                    //处理非标准数据
-                    List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
-                    interfaceInvokeVOs.addAll(standardVOs);
-                    if (interfaceInvokeVOs.size() == 0) {
-                        HSSFRow row = sheet.createRow(counter);
-                        counter++;
-                        setRowValue(row, cellStyle, values3);
-                        continue;
-                    }
-                    for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
-                        if(interfaceInvokeVO == null) continue;
-                        HSSFRow row = sheet.createRow(counter);
-                        counter++;
-                        values3[6] = interfaceInvokeVO.getConsumers();
-                        values3[7] = interfaceInvokeVO.getEcode();
-                        values3[8] = interfaceInvokeVO.getInterfaceName();
-                        values3[9] = interfaceInvokeVO.getProviders();
-                        setRowValue(row, cellStyle, values3);
-                    }
-//
-//                    List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.getBySO(operation.getServiceId(), operation.getOperationId());
-//                    if (interfaceInvokes.size() == 0) {
-//                        HSSFRow row = sheet.createRow(counter);
-//                        counter++;
-//                        setRowValue(row, cellStyle, values3);
-//                        continue;
-//                    }
-//                    for (InterfaceInvoke interfaceInvoke : interfaceInvokes) {
-//                        HSSFRow row = sheet.createRow(counter);
-//                        counter++;
-//                        if (interfaceInvoke.getConsumer() != null && interfaceInvoke.getConsumer().getSystem() != null) {
-//                            values3[6] = interfaceInvoke.getConsumer().getSystem().getSystemChineseName();//服务消费者
-//                        }
-//                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getInter() != null) {
-//                            values3[7] = interfaceInvoke.getProvider().getInter().getEcode();//交易码
-//                            values3[8] = interfaceInvoke.getProvider().getInter().getInterfaceName();//交易名称
-//                        }
-//                        if (interfaceInvoke.getProvider() != null && interfaceInvoke.getProvider().getSystem() != null) {
-//                            values3[9] = interfaceInvoke.getProvider().getSystem().getSystemChineseName();//服务消费者
-//                        }
-//                        setRowValue(row, cellStyle, values3);
-//                    }
-                    CellRangeAddress region4 = new CellRangeAddress(operationStart, counter - 1, (short) 4, (short) 4);
-                    CellRangeAddress region5 = new CellRangeAddress(operationStart, counter - 1, (short) 5, (short) 5);
-                    sheet.addMergedRegion(region4);//合并单元格：操作号
-                    sheet.addMergedRegion(region5);//合并单元格：操作名称
-                }
-                CellRangeAddress region2 = new CellRangeAddress(serviceStart, counter - 1, (short) 2, (short) 2);
-                CellRangeAddress region3 = new CellRangeAddress(serviceStart, counter - 1, (short) 3, (short) 3);
-                sheet.addMergedRegion(region2);//合并单元格：服务号
-                sheet.addMergedRegion(region3);//合并单元格：服务名称
-                HSSFRow R = sheet.getRow( serviceStart);//居中
-                HSSFCell C = R.getCell(2);
-                C.setCellStyle(cellStyle);
-                sheet.getRow(serviceStart).getCell(3).setCellStyle(cellStyle);//居中
+            for (ServiceCategory child : scList) {
+                fillView(sheet, child.getCategoryId(), cellStyle, counter);
             }
-            CellRangeAddress region1 = new CellRangeAddress(start, counter - 1, (short) 1, (short) 1);
-            sheet.addMergedRegion(region1);//合并单元格：子类
-            sheet.getRow(start).getCell(1).setCellStyle(cellStyle);//居中
 
         }
-        CellRangeAddress region0 = new CellRangeAddress(1, counter - 1, (short) 0, (short) 0);
+        else if(type.equals(serviceCategoryType2)){
+            fillView(sheet, categoryId, cellStyle, counter);
+        }
+        CellRangeAddress region0 = new CellRangeAddress(1, counter.getCount() - 1, (short) 0, (short) 0);
         sheet.addMergedRegion(region0);
         sheet.getRow(1).getCell(0).setCellStyle(cellStyle);//居中
 
     }
 
     /**
+     * @param categoryId 子分类
+     */
+    public void fillView( HSSFSheet sheet,  String categoryId, HSSFCellStyle cellStyle, Counter counter){
+        ServiceCategory sc = serviceCategoryDao.findUniqueBy("categoryId",categoryId);
+        ServiceCategory parent = serviceCategoryDao.findUniqueBy("categoryId",sc.getParentId());
+
+        int start = counter.getCount();
+        String[] values1 = {parent.getCategoryName(), sc.getCategoryName(), " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
+        String hql = " from " + Service.class.getName() + " where categoryId = ? order by serviceId asc";
+        List<Service> services = serviceDao.find(hql, sc.getCategoryId());//查询服务
+        if (services.size() == 0) {
+            HSSFRow row = sheet.createRow(counter.getCount());
+            counter.increment();
+            setRowValue(row, cellStyle, values1);
+            return;
+        }
+        for (Service service : services) {
+            int serviceStart = counter.getCount();
+            String[] values2 = {parent.getCategoryName(), sc.getCategoryName(), service.getServiceId(), service.getServiceName(), " ", " ", " ", " ", " ", " ", " ", " "};
+            String operationHql = " from " + Operation.class.getName() + " where serviceId=? order by operationId asc";
+            List<Operation> operations = operationDAO.find(operationHql, service.getServiceId());//查询场景
+            if (operations.size() == 0) {
+                HSSFRow row = sheet.createRow(counter.getCount());
+                counter.increment();
+                setRowValue(row, cellStyle, values2);
+                continue;
+            }
+            for (Operation operation : operations) {
+                int operationStart = counter.getCount();
+                String[] values3 = {parent.getCategoryName(), sc.getCategoryName(), service.getServiceId(), service.getServiceName(),
+                        operation.getOperationId(), operation.getOperationName(), " ", " ", " ", " ", Constants.Operation.getStateName(operation.getState()), operation.getOperationRemark()};
+                //处理标准数据
+                List<InterfaceInvokeVO> standardVOs = getStandardVOList(operation.getServiceId(), operation.getOperationId());
+                //处理非标准数据
+                List<InterfaceInvokeVO> interfaceInvokeVOs = getVOList(operation.getServiceId(), operation.getOperationId());
+                interfaceInvokeVOs.addAll(standardVOs);
+                if (interfaceInvokeVOs.size() == 0) {
+                    HSSFRow row = sheet.createRow(counter.getCount());
+                    counter.increment();
+                    setRowValue(row, cellStyle, values3);
+                    continue;
+                }
+                for (InterfaceInvokeVO interfaceInvokeVO : interfaceInvokeVOs) {
+                    if(interfaceInvokeVO == null) continue;
+                    HSSFRow row = sheet.createRow(counter.getCount());
+                    counter.increment();
+                    values3[6] = interfaceInvokeVO.getConsumers();
+                    values3[7] = interfaceInvokeVO.getEcode();
+                    values3[8] = interfaceInvokeVO.getInterfaceName();
+                    values3[9] = interfaceInvokeVO.getProviders();
+                    setRowValue(row, cellStyle, values3);
+                }
+
+                CellRangeAddress region4 = new CellRangeAddress(operationStart, counter.getCount() - 1, (short) 4, (short) 4);
+                CellRangeAddress region5 = new CellRangeAddress(operationStart, counter.getCount() - 1, (short) 5, (short) 5);
+                sheet.addMergedRegion(region4);//合并单元格：操作号
+                sheet.addMergedRegion(region5);//合并单元格：操作名称
+            }
+            CellRangeAddress region2 = new CellRangeAddress(serviceStart, counter.getCount() - 1, (short) 2, (short) 2);
+            CellRangeAddress region3 = new CellRangeAddress(serviceStart, counter.getCount() - 1, (short) 3, (short) 3);
+            sheet.addMergedRegion(region2);//合并单元格：服务号
+            sheet.addMergedRegion(region3);//合并单元格：服务名称
+            HSSFRow R = sheet.getRow( serviceStart);//居中
+            HSSFCell C = R.getCell(2);
+            C.setCellStyle(cellStyle);
+            sheet.getRow(serviceStart).getCell(3).setCellStyle(cellStyle);//居中
+        }
+        CellRangeAddress region1 = new CellRangeAddress(start, counter.getCount() - 1, (short) 1, (short) 1);
+        sheet.addMergedRegion(region1);//合并单元格：子类
+        sheet.getRow(start).getCell(1).setCellStyle(cellStyle);//居中
+    }
+    /**
      * 填充系统页
-     *
-     * @param sheet
-     * @param cellStyle
      */
     public void fillSystem(HSSFSheet sheet, HSSFCellStyle cellStyle) {
         List<System> systemList = systemDAOImpl.getAll();

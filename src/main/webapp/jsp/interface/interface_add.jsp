@@ -48,9 +48,10 @@
 				调用关系
 			</th>
 			<td>
-				<select id="type" class="easyui-combobox"  panelHeight="auto" name="type" style="width: 155px"  data-options="editable:false">
+				<select id="type" class="easyui-combobox"  panelHeight="auto" name="type" style="width: 155px"  data-options="editable:false" disabled>
 					<option value="0">提供方</option>
-					<option value="1">消费方</option>
+					<%--台州只有提供方--%>
+					<%--<option value="1">消费方</option>--%>
 				</select>
 			</td>
 		</tr>
