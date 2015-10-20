@@ -6,6 +6,7 @@ import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -74,7 +75,16 @@ public class IDAController {
 	public @ResponseBody
 	boolean save(@RequestBody
 	Ida [] idas) {
+		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
+		String logParam = "IDA:";
+		for(int i=0; i < idas.length; i++){
+			logParam += idas[i].getStructName() + ",";
+		}
+
 		idaService.saveOrUpdate(idas);
+
+		operationLog.setParams(logParam.substring(0, logParam.length()-2));
+		systemLogService.updateResult(operationLog);
 		return true;
 	}
 

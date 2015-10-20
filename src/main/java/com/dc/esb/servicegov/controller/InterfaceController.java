@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.TagServiceImpl;
+import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
@@ -53,6 +54,8 @@ public class InterfaceController {
     private ProcessContextServiceImpl processContextService;
     @Autowired
     private TagServiceImpl tagService;
+    @Autowired
+    private VersionServiceImpl versionServiceImpl;
 
     @RequiresPermissions({"system-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getLeftTree/{systemIds}", headers = "Accept=application/json")
@@ -605,16 +608,21 @@ public class InterfaceController {
     public
     @ResponseBody
     boolean headRelate(@PathVariable String interfaceId, @PathVariable String headIds) {
-        OperationLog operationLog = systemLogService.record("接口","关联报文头","接口ID：" + interfaceId + "; 报文头ID" + headIds);
+        OperationLog operationLog = systemLogService.record("接口","关联报文头","接口ID：" + interfaceId + "; 报文头ID:" + headIds);
+
+        Interface entity = interfaceService.findUniqueBy("interfaceId", interfaceId);
+        if(entity != null){
+            versionServiceImpl.editVersion(entity.getVersionId());
+        }
 
         if (headIds.equals("none")) {
             interfaceHeadRelateService.deleteRelate(interfaceId);
+            operationLog.setParams("接口ID：" + interfaceId + ", 取消报文头关联");
             return true;
         }
         if (interfaceId != null && headIds != null) {
             interfaceHeadRelateService.relateSave(interfaceId, headIds);
         }
-
         systemLogService.updateResult(operationLog);
         return true;
     }

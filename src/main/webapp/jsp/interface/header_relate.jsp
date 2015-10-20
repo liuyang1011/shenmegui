@@ -54,14 +54,8 @@
 							url: "/interface/getChecked/${param.interfaceId}",
 							dataType: "json",
 							success: function(result) {
-								if(""==result){
-									$('#headerRelate').combobox("setValues","不关联");
-								}else{
-									$('#headerRelate').combobox("setValues",result);
-								}
-
+								 $('#headerRelate').combobox("setValues",result);
 								tempHeadId = $("#headerRelate").combobox('getValues');
-
 							}
 						});
 

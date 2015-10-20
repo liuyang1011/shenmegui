@@ -293,6 +293,7 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean deleteCategoryWord2(@RequestBody CategoryWord categoryWord) throws Exception {
+        OperationLog operationLog = systemLogService.record("类别词","删除","名称：" + categoryWord.getChineseWord());
         String id = categoryWord.getId();
         //与元数据关联的不能删除
         String esglisgAb = categoryWord.getEsglisgAb();
@@ -301,6 +302,7 @@ public class CategoryWordController {
             return false;
         }
         categoryWordService.delete(categoryWord);
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
