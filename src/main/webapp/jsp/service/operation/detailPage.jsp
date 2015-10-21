@@ -73,16 +73,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 
 </fieldset>
-	<%--<fieldset>
+	<fieldset>
      <legend>SDA列表</legend>
-         <table title="sda" class="easyui-treegrid" style=" width:auto;"
+         <table class="easyui-treegrid" style=" width:auto;"
                 data-options="
                     iconCls: 'icon-ok',
                     rownumbers: true,
                     animate: true,
                     collapsible: true,
-                    collapsed:true,
-                    fitColumns: true,
+                    collapsed:false,
+                    fitColumns: false,
                     url: '/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }',
                     method: 'get',
                     idField: 'id',
@@ -99,6 +99,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </thead>
         </table>
     </fieldset>
+    <%--
     <fieldset>
      <legend>SLA列表</legend>
          <table id="sla" style="width:auto;" title="SLA" class="easyui-datagrid"

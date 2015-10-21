@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -190,6 +191,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 Interface inter = interfaceDAO.findUniqueBy("interfaceId", vo.getInterfaceId());
 
                 setCellValue(row.createCell(0), commonStyle, vo.getInterfaceId());//交易码
+
+                Hyperlink hyperlink = new HSSFHyperlink(Hyperlink.LINK_DOCUMENT);
+                // "#"表示本文档    "明细页面"表示sheet页名称  "A10"表示第几列第几行
+                hyperlink.setAddress("#" + vo.getInterfaceId() + "!A1");
+                row.getCell(0).setHyperlink(hyperlink);
+
                 setCellValue(row.createCell(1), commonStyle, vo.getInterfaceName());//交易名称
 
                 setCellValue(row.createCell(2), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
