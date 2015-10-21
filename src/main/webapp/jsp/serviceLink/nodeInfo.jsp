@@ -177,7 +177,7 @@
     </tr>
 </table>
 
-<table title="相邻节点" id="invokeLinkeTable" style="height:370px; width:auto;">
+<table title="相邻节点" id="invokeLinkeTable" style="height:370px; width:99%;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
@@ -188,22 +188,22 @@
     </tr>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
-        <th data-options="field:'interfaceId'">交易码</th>
-        <th data-options="field:'interfaceName'">交易名称</th>
-        <th data-options="field:'serviceId'">服务码</th>
-        <th data-options="field:'serviceName'">服务名称</th>
-        <th data-options="field:'operationId'">场景码</th>
-        <th data-options="field:'operationName'">场景名称</th>
-        <th data-options="field:'invokeType'">调用类型</th>
+        <th data-options="field:'interfaceId'" width="15%">交易码</th>
+        <th data-options="field:'interfaceName'" width="15%">交易名称</th>
+        <th data-options="field:'serviceId'" width="10%">服务码</th>
+        <th data-options="field:'serviceName'" width="15%">服务名称</th>
+        <th data-options="field:'operationId'"width="5%">场景码</th>
+        <th data-options="field:'operationName'" width="15%">场景名称</th>
+        <th data-options="field:'invokeType'" width="6%">调用类型</th>
 
-        <th data-options="field:'nodeType'" formatter='formatter.nodeType'>节点类型</th>
-        <th data-options="field:'location'" formatter='formatter.location'>交易属性标识</th>
-        <th data-options="field:'bussCategory'">节点业务分类</th>
-        <th data-options="field:'status'">节点状态</th>
+        <th data-options="field:'nodeType'" formatter='formatter.nodeType' width="10%">节点类型</th>
+        <th data-options="field:'location'" formatter='formatter.location' width="10%">交易属性标识</th>
+        <th data-options="field:'bussCategory'" width="10%">节点业务分类</th>
+        <th data-options="field:'status'" width="10%">节点状态</th>
 
-        <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern'>ESB调用方式</th>
-        <th data-options="field:'condition'">条件位</th>
-        <th data-options="field:'conditionDesc'">条件信息</th>
+        <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern' width="10%">ESB调用方式</th>
+        <th data-options="field:'condition'" width="10%">条件位</th>
+        <th data-options="field:'connectionDesc'" width="10%">条件信息</th>
     </tr>
     </thead>
 </table>
