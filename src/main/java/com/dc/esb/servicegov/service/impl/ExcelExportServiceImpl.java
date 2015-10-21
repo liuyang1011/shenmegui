@@ -562,6 +562,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 }
             }
         }
+        if(interfaceIds.size() == 0){
+            return new ArrayList<InterfaceHead>();
+        }
         List<InterfaceHead> heads = interfaceHeadService.getByInterfaceIds(interfaceIds);
         return heads;
     }
