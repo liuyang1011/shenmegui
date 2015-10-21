@@ -47,34 +47,36 @@
             operationId = $("#operationId").textbox("getValue");
             tagManager.getTagForOperation(serviceId,operationId,initTags);
         })
-        var toolbar = [
-            <shiro:hasPermission name="invoke-add">
-            {
-                text: '新增',
-                iconCls: 'icon-add',
-                handler: function () {
-                    if (!$("#operationForm").form('validate')) {
-                        alert("请先完善基础信息!");
-                        return false;
-                    }
-                    if( state != 0 &&  state != 7){
-                        alert("只有服务定义和修订状态的场景才能修改");
-                        return false;
-                    }
-                    $('#interfaceDlg').dialog({
-                        title: '添加消费者-提供者关系',
-                        width: 500,
-                        height: 500,
-                        closed: false,
-                        cache: false,
-                        href: '/jsp/service/operation/consumer_provider_add.jsp',
-                        modal: true
-                    });
+        var toolbar = [];
+        <shiro:hasPermission name="invoke-add">
+        toolbar.push({
+            text: '新增',
+            iconCls: 'icon-add',
+            handler: function () {
+                if (!$("#operationForm").form('validate')) {
+                    alert("请先完善基础信息!");
+                    return false;
                 }
-             }
-            </shiro:hasPermission>
-            <shiro:hasPermission name="invoke-delete">
-            ,{
+                if( state != 0 &&  state != 7){
+                    alert("只有服务定义和修订状态的场景才能修改");
+                    return false;
+                }
+                $('#interfaceDlg').dialog({
+                    title: '添加消费者-提供者关系',
+                    width: 500,
+                    height: 500,
+                    closed: false,
+                    cache: false,
+                    href: '/jsp/service/operation/consumer_provider_add.jsp',
+                    modal: true
+                });
+            }
+        });
+
+        </shiro:hasPermission>
+
+        <shiro:hasPermission name="invoke-delete">
+        toolbar.push({
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
@@ -98,9 +100,9 @@
                     }
                 });
 //                invokeList = new Array();
-            }}
-            </shiro:hasPermission>
-        ];
+            }
+        });
+        </shiro:hasPermission>
         var systemList = ${systemList};
         var consumerList = new Array();
         var providerList = new Array();

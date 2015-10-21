@@ -167,73 +167,79 @@
 				}
 			}
 		};
-		var toolbar = [
-			<shiro:hasPermission name="enum-add">
-				{
-					text : '新增代码',
+
+		var toolbar = [];
+		<shiro:hasPermission name="enum-add">
+		toolbar.push({
+			text : '新增代码',
+			iconCls : 'icon-add',
+			handler : function() {
+				uiinit.win({
+					w : 500,
+					top:"20px",
+					left:"150px",
 					iconCls : 'icon-add',
-					handler : function() {
-						uiinit.win({
-							w : 500,
-							top:"20px",
-							left:"150px",
-							iconCls : 'icon-add',
-							title : "新增代码",
-							url : "/pages/SGEnum/form/enumAppandForm.jsp"
-						});
-					}
+					title : "新增代码",
+					url : "/pages/SGEnum/form/enumAppandForm.jsp"
+				});
+			}
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-get">
+		toolbar.push({
+			text : '维护',
+			iconCls : 'icon-edit',
+			handler : function() {
+				var checkedItems = $('#dg').datagrid('getChecked');
+				var selectData = checkedItems[0];
+				if (selectData == null || checkedItems.length > 1) {
+					alert("请先选择一条记录");
+					return;
 				}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-get">
-			,{
-					text : '维护',
-					iconCls : 'icon-edit',
-					handler : function() {
-						var checkedItems = $('#dg').datagrid('getChecked');
-						var selectData = checkedItems[0];
-						if (selectData == null || checkedItems.length > 1) {
-							alert("请先选择一条记录");
-							return;
-						}
-						//主代码
-						var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getByEnumId/'
-								+ selectData.id+ '/'+selectData.isMaster+'/1" style="width:100%;height:100%;"></iframe>';
-						var title = "公共代码维护";
-						if (parent.$('#subtab').tabs('exists', title)) {
-							parent.$('#subtab').tabs('close', title);
-							parent.$('#subtab').tabs('add', {
-								"title" : title,
-								"content" : content,
-								"closable" : true
-							});
-						} else {
-							parent.$('#subtab').tabs('add', {
-								"title" : title,
-								"content" : content,
-								"closable" : true
-							});
-						}
-					}
+				//主代码
+				var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getByEnumId/'
+						+ selectData.id+ '/'+selectData.isMaster+'/1" style="width:100%;height:100%;"></iframe>';
+				var title = "公共代码维护";
+				if (parent.$('#subtab').tabs('exists', title)) {
+					parent.$('#subtab').tabs('close', title);
+					parent.$('#subtab').tabs('add', {
+						"title" : title,
+						"content" : content,
+						"closable" : true
+					});
+				} else {
+					parent.$('#subtab').tabs('add', {
+						"title" : title,
+						"content" : content,
+						"closable" : true
+					});
 				}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-delete">
-			,{
-					text : '删除',
-					iconCls : 'icon-remove',
-					handler : function() {
-						var selectData = $('#dg').datagrid('getSelected');
+			}
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-delete">
+		toolbar.push({
+			text : '删除',
+			iconCls : 'icon-remove',
+			handler : function() {
+				var selectData = $('#dg').datagrid('getSelected');
 //						var selectData = $('#dg').datagrid('getChecked');
-						if (selectData == null) {
-							alert("请先选择一条记录");
-							return;
-						}
-						if(confirm('确定删除吗 ？')){
-							enumManager.deleteEnum(selectData.id);
-						}
-					}
+				if (selectData == null) {
+					alert("请先选择一条记录");
+					return;
 				}
-			</shiro:hasPermission>
-				/*, {
+				if(confirm('确定删除吗 ？')){
+					enumManager.deleteEnum(selectData.id);
+				}
+			}
+		});
+		</shiro:hasPermission>
+
+		/*var toolbar = [
+
+
+
+				*//*, {
 					text: '提交任务',
 					iconCls: 'icon-qxfp',
 					handler: function () {
@@ -244,7 +250,7 @@
 							url: "/jsp/task/completeTask.jsp"
 						});
 					}
-				} */];
+				} *//*];*/
 	</script>
 </body>
 </html>

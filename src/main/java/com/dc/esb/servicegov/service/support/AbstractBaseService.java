@@ -125,6 +125,11 @@ public abstract class AbstractBaseService<T, PK extends Serializable> {
     public List<T> findBy(String hql, Page page, List<SearchCondition> searchConds) {
         return getDAO().findBy(hql, page, searchConds);
     }
+
+    public List<T> findBy(String hql) {
+        return getDAO().findBy(hql);
+    }
+
     public List<T> findBy(String hql, Page page) {
         return getDAO().findBy(hql, page);
     }

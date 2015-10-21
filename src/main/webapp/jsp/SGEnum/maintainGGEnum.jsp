@@ -135,149 +135,149 @@
 				}
 			}
 		};
-		var toolbar = [
-				<shiro:hasPermission name="enum-delete">
-				{
-					text : '删除',
-					iconCls : 'icon-remove',
-					handler : function() {
-						var selectData = $('#slavedatagrid').datagrid(
-								'getSelected');
-						if (selectData == null) {
-							alert("请先选择一条记录");
-							return;
-						}
-						if (confirm('确定删除吗 ？')) {
-							enumManager.deleteEnum(selectData.id, function(
-									result) {
-								if (result) {
-									$('#slavedatagrid').datagrid('reload');
-								}
-							});
-						}
-					}
+		var toolbar = [];
+		<shiro:hasPermission name="enum-delete">
+		toolbar.push({
+			text : '删除',
+			iconCls : 'icon-remove',
+			handler : function() {
+				var selectData = $('#slavedatagrid').datagrid(
+						'getSelected');
+				if (selectData == null) {
+					alert("请先选择一条记录");
+					return;
 				}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-add">
-			,{
-					text : '新增从代码',
+				if (confirm('确定删除吗 ？')) {
+					enumManager.deleteEnum(selectData.id, function(
+							result) {
+						if (result) {
+							$('#slavedatagrid').datagrid('reload');
+						}
+					});
+				}
+			}
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-add">
+		toolbar.push({
+			text : '新增从代码',
+			iconCls : 'icon-add',
+			handler : function() {
+				uiinit.win({
+					w : 500,
 					iconCls : 'icon-add',
-					handler : function() {
-						uiinit.win({
-							w : 500,
-							iconCls : 'icon-add',
-							title : "新增从代码",
-							url : "/pages/SGEnum/form/slaveEnumAppandForm.jsp"
-						});
-					}
+					title : "新增从代码",
+					url : "/pages/SGEnum/form/slaveEnumAppandForm.jsp"
+				});
+			}
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-get">
+		toolbar.push({
+			text : '从代码维护',
+			iconCls : 'icon-edit',
+			handler : function() {
+				var selectData = $('#slavedatagrid').datagrid(
+						'getSelected');
+				if (selectData == null) {
+					alert("请先选择一条记录");
+					return;
 				}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-get">
-			,{
-					text : '从代码维护',
-					iconCls : 'icon-edit',
-					handler : function() {
-						var selectData = $('#slavedatagrid').datagrid(
-								'getSelected');
-						if (selectData == null) {
-							alert("请先选择一条记录");
-							return;
-						}
-						var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getByEnumId/'
-								+ selectData.id
-								+ '/'
-								+ selectData.isMaster
-								+ '/0" style="width:100%;height:100%;"></iframe>';
-						var title = "从代码维护";
+				var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getByEnumId/'
+						+ selectData.id
+						+ '/'
+						+ selectData.isMaster
+						+ '/0" style="width:100%;height:100%;"></iframe>';
+				var title = "从代码维护";
 
-						if (parent.$('#subtab').tabs('exists', title)) {
-							parent.$('#subtab').tabs('select', title);
-							var tab = parent.$('#subtab').tabs('getSelected');
-							parent.$('#subtab').tabs('update', {
-								tab : tab,
-								options : {
-									"title" : title,
-									"content" : content,
-									"closable" : true
+				if (parent.$('#subtab').tabs('exists', title)) {
+					parent.$('#subtab').tabs('select', title);
+					var tab = parent.$('#subtab').tabs('getSelected');
+					parent.$('#subtab').tabs('update', {
+						tab : tab,
+						options : {
+							"title" : title,
+							"content" : content,
+							"closable" : true
+						}
+					});
+				} else {
+					parent.$('#subtab').tabs('add', {
+						"title" : title,
+						"content" : content,
+						"closable" : true
+					});
+				}
+			}
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-get">
+		toolbar.push({
+			text : '枚举映射',
+			iconCls : 'icon-add',
+			handler : function() {
+				var selectData = $('#slavedatagrid').datagrid(
+						'getSelected');
+				if (selectData == null) {
+					alert("请先选择一条记录");
+					return;
+				}
+				var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getMappingBySlaveId/'
+						+ selectData.id
+						+ '" style="width:100%;height:100%;"></iframe>';
+				var title = "代码枚举映射";
+				if (parent.$('#subtab').tabs('exists', title)) {
+					parent.$('#subtab').tabs('select', title);
+				} else {
+					parent.$('#subtab').tabs('add', {
+						"title" : title,
+						"content" : content,
+						"closable" : true
+					});
+				}
+			}
+		});
+		</shiro:hasPermission>
+
+		var toolbar2 = [];
+		<shiro:hasPermission name="enum-delete">
+		toolbar2.push({
+			text : '删除',
+			iconCls : 'icon-remove',
+			handler : function() {
+				var selectData = $('#elementdatagrid').datagrid(
+						'getSelections');
+				if (selectData.length == 0) {
+					alert("请先选择一条记录");
+					return;
+				}
+				if (confirm('确定删除吗 ？')) {
+					enumManager.deleteEnumElements(selectData,
+							function(result) {
+								if (result) {
+									$('#elementdatagrid').datagrid(
+											'reload');
 								}
 							});
-						} else {
-							parent.$('#subtab').tabs('add', {
-								"title" : title,
-								"content" : content,
-								"closable" : true
-							});
-						}
-					}
 				}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-get">
-			,{
-					text : '枚举映射',
+			}
+		});
+
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-add">
+		toolbar2.push({
+			text : '新增',
+			iconCls : 'icon-add',
+			handler : function() {
+				uiinit.win({
+					w : 500,
 					iconCls : 'icon-add',
-					handler : function() {
-						var selectData = $('#slavedatagrid').datagrid(
-								'getSelected');
-						if (selectData == null) {
-							alert("请先选择一条记录");
-							return;
-						}
-						var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getMappingBySlaveId/'
-								+ selectData.id
-								+ '" style="width:100%;height:100%;"></iframe>';
-						var title = "代码枚举映射";
-						if (parent.$('#subtab').tabs('exists', title)) {
-							parent.$('#subtab').tabs('select', title);
-						} else {
-							parent.$('#subtab').tabs('add', {
-								"title" : title,
-								"content" : content,
-								"closable" : true
-							});
-						}
-					}
-				}
-			</shiro:hasPermission>
-		];
-		var toolbar2 = [
-			<shiro:hasPermission name="enum-delete">
-				{
-					text : '删除',
-					iconCls : 'icon-remove',
-					handler : function() {
-						var selectData = $('#elementdatagrid').datagrid(
-								'getSelections');
-						if (selectData.length == 0) {
-							alert("请先选择一条记录");
-							return;
-						}
-						if (confirm('确定删除吗 ？')) {
-							enumManager.deleteEnumElements(selectData,
-									function(result) {
-										if (result) {
-											$('#elementdatagrid').datagrid(
-													'reload');
-										}
-									});
-						}
-					}
-				}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-add">
-			,{
-					text : '新增',
-					iconCls : 'icon-add',
-					handler : function() {
-						uiinit.win({
-							w : 500,
-							iconCls : 'icon-add',
-							title : "新增枚举",
-							url : "/pages/SGEnum/form/elementAppandForm.jsp"
-						});
-					}
-				}
-			</shiro:hasPermission>
-		];
+					title : "新增枚举",
+					url : "/pages/SGEnum/form/elementAppandForm.jsp"
+				});
+			}
+		});
+		</shiro:hasPermission>
 		function showZdm() {
 			var content = '<iframe scrolling="auto" frameborder="0"  src="/enum/getByEnumId/'
 					+ "${master.id}"

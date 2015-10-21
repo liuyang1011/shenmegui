@@ -58,6 +58,48 @@
         url = "/fileManager/get/systemId/" + systemId;
         method = "post";
     }
+
+    var toolbar = [];
+    <shiro:hasPermission name="file-add">
+    toolbar.push({
+        text: '新增',
+        iconCls: 'icon-add',
+        handler: function () {
+            uiinit.win({
+                w: 500,
+                iconCls: 'icon-add',
+                title: "新增文件",
+                url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
+            });
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="file-delete">
+    toolbar.push({
+        text: '删除',
+        iconCls: 'icon-remove',
+        handler: function () {
+            var node = $('#tg').datagrid("getSelected");
+            if (node) {
+                if (!confirm("确定要删除选中的记录吗？")) {
+                    return;
+                }
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/fileManager/delete/" + node.fileId,
+                    dataType: "json",
+                    success: function (result) {
+                        $('#tg').datagrid("reload");
+                    }
+                });
+            } else {
+                alert("请选择要删除的行");
+            }
+        }
+    });
+    </shiro:hasPermission>
+
     $(document).ready(function () {
         $('#tg').datagrid({
             title: '文件管理',
@@ -72,47 +114,7 @@
             pageSize: 5,//每页显示的记录条数，默认为10
             pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
-            toolbar: [
-                <shiro:hasPermission name="file-add">
-                {
-                    text: '新增',
-                    iconCls: 'icon-add',
-                    handler: function () {
-                        uiinit.win({
-                            w: 500,
-                            iconCls: 'icon-add',
-                            title: "新增文件",
-                            url: "/jsp/sysadmin/file_add.jsp?systemId=" + systemId
-                        });
-                    }
-                }
-                </shiro:hasPermission>
-                <shiro:hasPermission name="file-delete">
-                ,{
-                    text: '删除',
-                    iconCls: 'icon-remove',
-                    handler: function () {
-                        var node = $('#tg').datagrid("getSelected");
-                        if (node) {
-                            if (!confirm("确定要删除选中的记录吗？")) {
-                                return;
-                            }
-                            $.ajax({
-                                type: "GET",
-                                contentType: "application/json; charset=utf-8",
-                                url: "/fileManager/delete/" + node.fileId,
-                                dataType: "json",
-                                success: function (result) {
-                                    $('#tg').datagrid("reload");
-                                }
-                            });
-                        } else {
-                            alert("请选择要删除的行");
-                        }
-                    }
-                }
-                </shiro:hasPermission>
-            ],
+            toolbar: toolbar,
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().indexOf("没有操作权限") > 0){

@@ -91,6 +91,67 @@
 
 </div>
 <script type="text/javascript">
+    var toolbar = [];
+    /*{
+     text: '新增',
+     iconCls: 'icon-add',
+     handler: function () {
+     sysManager.addProtocolPage();
+     }
+     },*/
+    <shiro:hasPermission name="protocol-update">
+    toolbar.push({
+        text: '修改',
+        iconCls: 'icon-edit',
+        handler: function () {
+            var node = $('#tg').datagrid("getSelected");
+            if (node) {
+                uiinit.win({
+                    w: 500,
+                    iconCls: 'icon-add',
+                    title: "编辑协议",
+                    url: "/protocol/edit/" + node.protocolId
+                });
+            } else {
+                alert("请选择要修改的行");
+            }
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="protocol-delete">
+    toolbar.push({
+        text: '删除',
+        iconCls: 'icon-remove',
+        handler: function () {
+            var node = $('#tg').datagrid("getSelected");
+            if (node) {
+                if (!confirm("确定要删除选中的记录吗？")) {
+                    return;
+                }
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/protocol/delete/" + node.protocolId,
+                    dataType: "json",
+                    success: function (result) {
+                        $('#tg').datagrid("reload");
+                    },
+                    complete: function (responce) {
+                        var resText = responce.responseText;
+                        if(resText.toString().indexOf("没有操作权限") > 0){
+                            alert("没有权限！");
+                            //window.location.href = "/jsp/403.jsp";
+                        }
+                    }
+                });
+            } else {
+                alert("请选择要删除的行");
+            }
+        }
+
+    });
+    </shiro:hasPermission>
+
     $(document).ready(function () {
         var href = window.location.href;
         var params = href.split("&");
@@ -113,66 +174,7 @@
 //            pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
 
-            toolbar: [/*{
-                text: '新增',
-                iconCls: 'icon-add',
-                handler: function () {
-                    sysManager.addProtocolPage();
-                }
-            },*/
-                <shiro:hasPermission name="protocol-update">
-                {
-                    text: '修改',
-                    iconCls: 'icon-edit',
-                    handler: function () {
-                        var node = $('#tg').datagrid("getSelected");
-                        if (node) {
-                            uiinit.win({
-                                w: 500,
-                                iconCls: 'icon-add',
-                                title: "编辑协议",
-                                url: "/protocol/edit/" + node.protocolId
-                            });
-                        } else {
-                            alert("请选择要修改的行");
-                        }
-                    }
-                }
-                </shiro:hasPermission>
-                <shiro:hasPermission name="protocol-delete">
-                ,{
-                text: '删除',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    var node = $('#tg').datagrid("getSelected");
-                    if (node) {
-                        if (!confirm("确定要删除选中的记录吗？")) {
-                            return;
-                        }
-                        $.ajax({
-                            type: "GET",
-                            contentType: "application/json; charset=utf-8",
-                            url: "/protocol/delete/" + node.protocolId,
-                            dataType: "json",
-                            success: function (result) {
-                                $('#tg').datagrid("reload");
-                            },
-                            complete: function (responce) {
-                                var resText = responce.responseText;
-                                if(resText.toString().indexOf("没有操作权限") > 0){
-                                    alert("没有权限！");
-                                    //window.location.href = "/jsp/403.jsp";
-                                }
-                            }
-                        });
-                    } else {
-                        alert("请选择要删除的行");
-                    }
-                }
-
-            }
-                </shiro:hasPermission>
-            ],
+            toolbar: toolbar,
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().indexOf("没有操作权限") > 0){

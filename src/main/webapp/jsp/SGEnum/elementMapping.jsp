@@ -178,9 +178,9 @@
 				textField : 'elementName'
 			});
 		});
-		var toolbar = [
-			<shiro:hasPermission name="enum-delete">
-			{
+		var toolbar = [];
+		<shiro:hasPermission name="enum-delete">
+		toolbar.push({
 			text : '删除映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -197,10 +197,10 @@
 					});
 				}
 			}
-		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-update">
-			,{
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-update">
+		toolbar.push({
 			text : '保存映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -215,10 +215,10 @@
 				});
 				editedRows = [];
 			}
-		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-get">
-			,{
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-get">
+		toolbar.push({
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
@@ -226,13 +226,12 @@
 				document.getElementById('div2').style.display="block";
 				$('#mappingdatagrid2').datagrid([]);
 			}
-		}
-			</shiro:hasPermission>
-		];
+		});
+		</shiro:hasPermission>
 
-		var toolbar2 = [
-			<shiro:hasPermission name="enum-delete">
-			{
+		var toolbar2 = [];
+		<shiro:hasPermission name="enum-delete">
+		toolbar2.push({
 			text : '删除映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -249,10 +248,10 @@
 					});
 				}
 			}
-		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-update">
-			,{
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-update">
+		toolbar2.push({
 			text : '保存映射关系',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -267,10 +266,10 @@
 				});
 				editedRows = [];
 			}
-		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-get">
-			,{
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-get">
+		toolbar2.push({
 			text:'改变映射方向',
 			iconCls : 'icon-qxfp',
 			handler:function(){
@@ -278,9 +277,8 @@
 				$('#mappingdatagrid').datagrid([]);
 				document.getElementById('div2').style.display="none";
 			}
-		}
-			</shiro:hasPermission>
-		];
+		});
+		</shiro:hasPermission>
 	</script>
 </body>
 </html>

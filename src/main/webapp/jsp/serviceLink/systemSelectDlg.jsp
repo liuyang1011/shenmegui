@@ -4,8 +4,10 @@
             style="width:155px" panelHeight="200px"
             data-options="editable:false">
     </select>
+    <label style="margin-right: 1em;">服务码:</label>
+    <input class="easyui-textbox" id="serviceIdSearch"/>
     <a href="#" id="selectSysBtn" class="easyui-linkbutton" iconCls="icon-save"
-       style="margin-left:1em">选择系统</a>
+       style="margin-left:1em">查询</a>
     <a href="#" id="selectNodeBtn" class="easyui-linkbutton" iconCls="icon-save"
        style="margin-left:1em">选择节点</a>
 </div>
@@ -23,16 +25,16 @@
     </tr>
     </thead>
 </table>
-<a href="#" id="saveNodeInfoBtn" class="easyui-linkbutton" iconCls="icon-save"
-   style="margin-left:1em">保存</a>
+<%--<a href="#" id="saveNodeInfoBtn" class="easyui-linkbutton" iconCls="icon-save"
+   style="margin-left:1em">保存</a>--%>
 <script type="text/javascript">
     $(function () {
 
-        var constructNodeTable = function constructNodeTable(systemId) {
+        var constructNodeTable = function constructNodeTable(systemId,serviceId) {
             $('#nodeTable').datagrid({
                 rownumbers: true,
                 singleSelect: true,
-                url: "/serviceLink/getServiceLinkNode/system/" + systemId,
+                url: "/serviceLink/getServiceLinkNode/system/" + systemId + "?serviceId=" + serviceId,
                 method: 'get',
                 pagination: true,
                 pageSize: 10,
@@ -63,7 +65,7 @@
             textField: 'text'
         });
         $("#selectSysBtn").click(function () {
-            constructNodeTable($("#systemId").combobox("getValue"));
+            constructNodeTable($("#systemId").combobox("getValue"),$("#serviceIdSearch").textbox("getValue"));
         });
         $("#selectNodeBtn").click(function () {
             var connections = [];

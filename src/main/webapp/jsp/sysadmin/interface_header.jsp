@@ -25,297 +25,296 @@
 	var editArray = new Array();
 	var parentIdAry = new Array();
 	var headId;
-	var toolbar = [
-		<shiro:hasPermission name="ida-delete">
-		{
-			text:'刪除',
-			iconCls:'icon-remove',
-			handler:function(){
-				if(!confirm("确定要删除选中的记录吗？")){
+	var toolbar = [];
+	<shiro:hasPermission name="ida-delete">
+	toolbar.push({
+		text:'刪除',
+		iconCls:'icon-remove',
+		handler:function(){
+			if(!confirm("确定要删除选中的记录吗？")){
+				return;
+			}
+			var nodes = $('#tg').treegrid('getSelections');
+			if (nodes){
+				var delAry = new Array();
+				for(var i=0;i<nodes.length;i++){
+					if(nodes[i].structName!='request' && nodes[i].structName!='response'){
+						delAry.push(nodes[i].id);
+					}
+				}
+				sysManager.removeIDA(delAry,function(result){
+					if(result){
+						//array.
+						//$('#tg').treegrid('reload');
+						for(var j=0;j<delAry.length;j++){
+							$('#tg').treegrid('remove', delAry[j]);
+						}
+					}else{
+						alert("删除失败");
+					}
+
+				});
+			}
+
+		}
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="ida-update">
+	toolbar.push({
+		text:'保存',
+		iconCls:'icon-save',
+		handler:function(){
+			if (!confirm("确定保存吗？")) {
+				return;
+			}
+			if (!$("#headForm").form('validate')) {
+				return false;
+			}
+			$('#tg').treegrid('endEdit', editingId);
+			var row = $('#tg').treegrid('find',editingId);
+
+			var reqAry = [];
+			for(var i=0;i<addArray.length;i++){
+
+				$('#tg').treegrid('endEdit', addArray[i]);
+				var row = $('#tg').treegrid('find',addArray[i]);
+				if(row){
+					var structName = row.structName;
+					var structAlias = row.structAlias;
+					var type = row.type;
+					var length = row.length;
+//		                var metadataId = row.metadataId;
+					var scale = row.scale;
+					var required = row.required;
+					var seq = row.seq;
+					var remark = row.remark;
+					var data = {};
+					data.structName = structName;
+					data.structAlias = structAlias;
+					data.type = type;
+					data.length = length;
+//						data.metadataId = metadataId;
+					data.scale = scale;
+					data._parentId = parentIdAry[i];
+					data.required = required;
+					data.headId = "${param.headId}";
+					data.seq = seq;
+					data.remark = remark;
+					reqAry.push(data);
+				}
+			}
+
+			for(var i=0;i<editArray.length;i++){
+
+				$('#tg').treegrid('endEdit', editArray[i]);
+				var row = $('#tg').treegrid('find',editArray[i]);
+				if(row){
+					var structName = row.structName;
+					var structAlias = row.structAlias;
+					var type = row.type;
+					var length = row.length;
+//		                var metadataId = row.metadataId;
+					var scale = row.scale;
+					var required = row.required;
+					var seq = row.seq;
+					var remark = row.remark;
+					var data = {};
+					data.structName = structName;
+					data.structAlias = structAlias;
+					data.type = type;
+					data.length = length;
+//						data.metadataId = metadataId;
+					data.scale = scale;
+					data.required = required;
+					data.headId = "${param.headId}";
+					data.seq = seq;
+					data.id = row.id;
+					data.remark = remark;
+					reqAry.push(data);
+				}
+			}
+
+			sysManager.addIDA(reqAry,function(result){
+				if(result){
+//							$('#tg').treegrid('reload');
+					$('#tg').treegrid({
+						url:'/ida/getHeads/'+headId+'?t='+ (new Date()).valueOf(),
+					});
+					alert("保存成功");
+				}else{
+					alert("保存失败");
+				}
+
+			});
+		}
+	},{
+		text:'上移',
+		iconCls:'icon-up',
+		handler:function(){
+			var row = $('#tg').treegrid("getSelected");
+			if(!row){
+				alert("请选择要移动的行");
+			}
+
+			if(row.structName == 'root' || row.structName == 'response' || row.structName == 'request'){
+				return;
+			}
+
+			var ischild = $('#tg').treegrid("getChildren",row.id).length>0;
+			if(ischild){
+				return;
+			}
+
+			//获取选中行的父节点
+			var parent = $('#tg').treegrid("getParent",row.id);
+			//再获取父节点下的子节点，然后循环，查找出选中行的上一行
+			var childs = $('#tg').treegrid("getChildren",parent.id);
+
+			if(childs){
+				if(childs.length==1){
 					return;
 				}
-				var nodes = $('#tg').treegrid('getSelections');
-				if (nodes){
-					var delAry = new Array();
-					for(var i=0;i<nodes.length;i++){
-						if(nodes[i].structName!='request' && nodes[i].structName!='response'){
-							delAry.push(nodes[i].id);
+				var prevRowId = 0;
+				for(var i=0;i<childs.length;i++){
+
+					if(childs[i].id == row.id){
+						if(i==0){
+							return
 						}
+						prevRowId = childs[i-1].id;
+						break;
 					}
-					sysManager.removeIDA(delAry,function(result){
-						if(result){
-							//array.
-							//$('#tg').treegrid('reload');	
-							for(var j=0;j<delAry.length;j++){
-								$('#tg').treegrid('remove', delAry[j]);
-							}
-						}else{
-							alert("删除失败");
-						}
-		
-		             });
 				}
-				
+
+				var prevrow = $('#tg').treegrid("find",prevRowId);
+				$('#tg').treegrid('remove',row.id);
+
+				$('#tg').treegrid('insert', {
+					before: prevRowId,
+					data: {
+						structName:row.structName,
+						structAlias:row.structAlias,
+						type:row.type,
+						length:row.length,
+						metadataId:row.metadataId,
+						scale:row.scale,
+						required:row.required,
+						seq:prevrow.seq,
+						id:row.id
+					}
+				});
+
+				$('#tg').treegrid('remove',prevRowId);
+				$('#tg').treegrid('insert', {
+					after: row.id,
+					data: {
+						structName:prevrow.structName,
+						structAlias:prevrow.structAlias,
+						type:prevrow.type,
+						length:prevrow.length,
+//							metadataId:prevrow.metadataId,
+						scale:prevrow.scale,
+						required:prevrow.required,
+						seq:row.seq,
+						id:prevrow.id
+					}
+				});
+
+				if(jQuery.inArray(row.id, editArray)==-1){
+					editArray.push(row.id);
+				}
+				if(jQuery.inArray(prevRowId, editArray)==-1){
+					editArray.push(prevRowId);
+				}
+
 			}
 		}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="ida-update">
-		,{
-			text:'保存',
-			iconCls:'icon-save',
-			handler:function(){
-				if (!confirm("确定保存吗？")) {
-					return;
-				}
-				if (!$("#headForm").form('validate')) {
-					return false;
-				}
-				 $('#tg').treegrid('endEdit', editingId);
-				 var row = $('#tg').treegrid('find',editingId);
-				 
-				 var reqAry = [];
-				 for(var i=0;i<addArray.length;i++){
-				 	
-				 	$('#tg').treegrid('endEdit', addArray[i]);
-				 	var row = $('#tg').treegrid('find',addArray[i]);
-				 	if(row){
-				 		var structName = row.structName;
-		             	var structAlias = row.structAlias;
-		                var type = row.type;
-		                var length = row.length;
-//		                var metadataId = row.metadataId;
-		                var scale = row.scale;
-		                var required = row.required;
-		                var seq = row.seq;
-						var remark = row.remark;
-		                var data = {};
-						data.structName = structName;
-						data.structAlias = structAlias;
-						data.type = type;
-						data.length = length;
-//						data.metadataId = metadataId;
-						data.scale = scale;
-						data._parentId = parentIdAry[i];
-						data.required = required;
-						data.headId = "${param.headId}";
-						data.seq = seq;
-						data.remark = remark;
-						reqAry.push(data);
-				 	}
-				 }
-				 
-				 for(var i=0;i<editArray.length;i++){
-				 	
-				 	$('#tg').treegrid('endEdit', editArray[i]);
-				 	var row = $('#tg').treegrid('find',editArray[i]);
-				 	if(row){
-				 		var structName = row.structName;
-		             	var structAlias = row.structAlias;
-		                var type = row.type;
-		                var length = row.length;
-//		                var metadataId = row.metadataId;
-		                var scale = row.scale;
-		                var required = row.required;
-		                var seq = row.seq;
-						var remark = row.remark;
-		                var data = {};
-						data.structName = structName;
-						data.structAlias = structAlias;
-						data.type = type;
-						data.length = length;
-//						data.metadataId = metadataId;
-						data.scale = scale;
-						data.required = required;
-						data.headId = "${param.headId}";
-						data.seq = seq;
-						data.id = row.id;
-						data.remark = remark;
-						reqAry.push(data);
-				 	}
-				 }
-				 
-				 sysManager.addIDA(reqAry,function(result){
-						if(result){
-//							$('#tg').treegrid('reload');
-							$('#tg').treegrid({
-								url:'/ida/getHeads/'+headId+'?t='+ (new Date()).valueOf(),
-							});
-							alert("保存成功");
-						}else{
-							alert("保存失败");
-						}
 
-                 });
-			}
-		},{
-			text:'上移',
-			iconCls:'icon-up',
-			handler:function(){
-				var row = $('#tg').treegrid("getSelected");
-				if(!row){
-					alert("请选择要移动的行");
-				}
-
-				if(row.structName == 'root' || row.structName == 'response' || row.structName == 'request'){
-					return;
-				}
-
-				var ischild = $('#tg').treegrid("getChildren",row.id).length>0;
-				if(ischild){
-					return;
-				}
-
-				//获取选中行的父节点
-				var parent = $('#tg').treegrid("getParent",row.id);
-				//再获取父节点下的子节点，然后循环，查找出选中行的上一行
-				var childs = $('#tg').treegrid("getChildren",parent.id);
-
-				if(childs){
-					if(childs.length==1){
-						return;
-					}
-					var prevRowId = 0;
-					for(var i=0;i<childs.length;i++){
-
-						if(childs[i].id == row.id){
-							if(i==0){
-								return
-							}
-							prevRowId = childs[i-1].id;
-							break;
-						}
-					}
-
-					var prevrow = $('#tg').treegrid("find",prevRowId);
-					$('#tg').treegrid('remove',row.id);
-
-					$('#tg').treegrid('insert', {
-						before: prevRowId,
-						data: {
-							structName:row.structName,
-							structAlias:row.structAlias,
-							type:row.type,
-							length:row.length,
-							metadataId:row.metadataId,
-							scale:row.scale,
-							required:row.required,
-							seq:prevrow.seq,
-							id:row.id
-						}
-					});
-
-					$('#tg').treegrid('remove',prevRowId);
-					$('#tg').treegrid('insert', {
-						after: row.id,
-						data: {
-							structName:prevrow.structName,
-							structAlias:prevrow.structAlias,
-							type:prevrow.type,
-							length:prevrow.length,
-//							metadataId:prevrow.metadataId,
-							scale:prevrow.scale,
-							required:prevrow.required,
-							seq:row.seq,
-							id:prevrow.id
-						}
-					});
-
-					if(jQuery.inArray(row.id, editArray)==-1){
-						editArray.push(row.id);
-					}
-					if(jQuery.inArray(prevRowId, editArray)==-1){
-						editArray.push(prevRowId);
-					}
-
-				}
+	},{
+		text:'下移',
+		iconCls:'icon-down',
+		handler:function(){
+			var row = $('#tg').treegrid("getSelected");
+			if(!row){
+				alert("请选择要移动的行");
 			}
 
-	 },{
-			text:'下移',
-			iconCls:'icon-down',
-			handler:function(){
-				var row = $('#tg').treegrid("getSelected");
-				if(!row){
-					alert("请选择要移动的行");
-				}
+			if(row.structName == 'root' || row.structName == 'response' || row.structName == 'request'){
+				return;
+			}
 
-				if(row.structName == 'root' || row.structName == 'response' || row.structName == 'request'){
+			var ischild = $('#tg').treegrid("getChildren",row.id).length>0;
+			if(ischild){
+				return;
+			}
+
+			//获取选中行的父节点
+			var parent = $('#tg').treegrid("getParent",row.id);
+			//再获取父节点下的子节点，然后循环，查找出选中行的上一行
+			var childs = $('#tg').treegrid("getChildren",parent.id);
+
+			if(childs){
+				if(childs.length==1){
 					return;
 				}
-
-				var ischild = $('#tg').treegrid("getChildren",row.id).length>0;
-				if(ischild){
-					return;
-				}
-
-				//获取选中行的父节点
-				var parent = $('#tg').treegrid("getParent",row.id);
-				//再获取父节点下的子节点，然后循环，查找出选中行的上一行
-				var childs = $('#tg').treegrid("getChildren",parent.id);
-
-				if(childs){
-					if(childs.length==1){
-						return;
-					}
-					var nextRowId = 0;
-					for(var i=0;i<childs.length;i++){
-						if(childs[i].id == row.id){
-							if(childs.length == i+1){
-								return;
-							}
-							nextRowId = childs[i+1].id;
-							break;
+				var nextRowId = 0;
+				for(var i=0;i<childs.length;i++){
+					if(childs[i].id == row.id){
+						if(childs.length == i+1){
+							return;
 						}
+						nextRowId = childs[i+1].id;
+						break;
 					}
+				}
 
-					var nextrow = $('#tg').treegrid("find",nextRowId);
-					$('#tg').treegrid('remove',row.id);
+				var nextrow = $('#tg').treegrid("find",nextRowId);
+				$('#tg').treegrid('remove',row.id);
 
-					$('#tg').treegrid('insert', {
-						after: nextRowId,
-						data: {
-							structName:row.structName,
-							structAlias:row.structAlias,
-							type:row.type,
-							length:row.length,
+				$('#tg').treegrid('insert', {
+					after: nextRowId,
+					data: {
+						structName:row.structName,
+						structAlias:row.structAlias,
+						type:row.type,
+						length:row.length,
 //							metadataId:row.metadataId,
-							scale:row.scale,
-							required:row.required,
-							seq:nextrow.seq,
-							id:row.id
-						}
-					});
+						scale:row.scale,
+						required:row.required,
+						seq:nextrow.seq,
+						id:row.id
+					}
+				});
 
-					$('#tg').treegrid('remove',nextRowId);
-					$('#tg').treegrid('insert', {
-						before: row.id,
-						data: {
-							structName:nextrow.structName,
-							structAlias:nextrow.structAlias,
-							type:nextrow.type,
-							length:nextrow.length,
+				$('#tg').treegrid('remove',nextRowId);
+				$('#tg').treegrid('insert', {
+					before: row.id,
+					data: {
+						structName:nextrow.structName,
+						structAlias:nextrow.structAlias,
+						type:nextrow.type,
+						length:nextrow.length,
 //							metadataId:nextrow.metadataId,
-							scale:nextrow.scale,
-							required:nextrow.required,
-							seq:row.seq,
-							id:nextrow.id
-						}
-					});
-
-					if(jQuery.inArray(row.id, editArray)==-1){
-						editArray.push(row.id);
+						scale:nextrow.scale,
+						required:nextrow.required,
+						seq:row.seq,
+						id:nextrow.id
 					}
-					if(jQuery.inArray(nextRowId, editArray)==-1){
-						editArray.push(nextRowId);
-					}
+				});
 
+				if(jQuery.inArray(row.id, editArray)==-1){
+					editArray.push(row.id);
 				}
+				if(jQuery.inArray(nextRowId, editArray)==-1){
+					editArray.push(nextRowId);
+				}
+
 			}
+		}
 
-	  }
-		</shiro:hasPermission>
+	});
+	</shiro:hasPermission>
 
-		]
 		function onContextMenu(e,row){
 		
 			e.preventDefault();

@@ -737,6 +737,14 @@ public class HibernateDAO<T, PK extends Serializable> {
         return list;
     }
 
+    public List findBy(String hql) {
+
+        // 创建查询
+        Query query = getSession().createQuery(hql);
+        List list = query.list();
+        return list;
+    }
+
     public List findBy(String hql, Page page) {
 
         // 创建查询

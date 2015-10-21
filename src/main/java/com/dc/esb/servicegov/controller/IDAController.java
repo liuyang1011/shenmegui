@@ -60,7 +60,12 @@ public class IDAController {
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceId", interfaceId);
 		reqMap.put("state", Constants.IDA_STATE_COMMON);
-		List<Ida> idas = idaService.findBy(reqMap, "seq");
+//		List<Ida> idas = idaService.findBy(reqMap, "seq");
+		//TODO 空和0都要显示
+		String hql = "from Ida t where t.interfaceId = '"+interfaceId+"'";
+		hql += " and (t.state = '"+Constants.IDA_STATE_COMMON+"' or t.state is null) order by seq";
+
+		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){
 			ida.setHeads(null);
 		}

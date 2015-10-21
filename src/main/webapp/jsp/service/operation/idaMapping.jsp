@@ -142,46 +142,47 @@
     }
 
   }
-  var toolbar = [
-      <shiro:hasPermission name="ida-delete">
-      {
-    text : '删除映射关系',
-    iconCls : 'icon-remove',
-    handler : function() {
-      var selectData = $('#mappingdatagrid').treegrid('getSelections');
-      if (selectData.length == 0) {
-        alert("请先选择一条记录");
-        return;
-      }
-      if(confirm('确定删除映射关系吗 ？')){
-        idaManager.deleteIdaMapping(selectData, function(result){
-          if(result){
-            $('#mappingdatagrid').treegrid('reload');
+
+  var toolbar = [];
+  <shiro:hasPermission name="ida-delete">
+  toolbar.push({
+      text : '删除映射关系',
+      iconCls : 'icon-remove',
+      handler : function() {
+          var selectData = $('#mappingdatagrid').treegrid('getSelections');
+          if (selectData.length == 0) {
+              alert("请先选择一条记录");
+              return;
           }
-        });
+          if(confirm('确定删除映射关系吗 ？')){
+              idaManager.deleteIdaMapping(selectData, function(result){
+                  if(result){
+                      $('#mappingdatagrid').treegrid('reload');
+                  }
+              });
+          }
       }
-    }
-  }
-      </shiro:hasPermission>
-      <shiro:hasPermission name="ida-update">
-      ,{
-    text : '保存映射关系',
-    iconCls : 'icon-remove',
-    handler : function() {
-      for ( var per in editedRows) {
-        $("#mappingdatagrid").treegrid('endEdit', editedRows[per].id);
+  });
+  </shiro:hasPermission>
+  <shiro:hasPermission name="ida-update">
+  toolbar.push({
+      text : '保存映射关系',
+      iconCls : 'icon-remove',
+      handler : function() {
+          for ( var per in editedRows) {
+              $("#mappingdatagrid").treegrid('endEdit', editedRows[per].id);
+          }
+          var editData = $("#mappingdatagrid").treegrid('getChanges');
+          idaManager.saveIdaMapping(editData,function(result){
+              if(result){
+                  $('#mappingdatagrid').treegrid('reload');
+              }
+          });
+          editedRows = [];
       }
-      var editData = $("#mappingdatagrid").treegrid('getChanges');
-      idaManager.saveIdaMapping(editData,function(result){
-        if(result){
-          $('#mappingdatagrid').treegrid('reload');
-        }
-      });
-      editedRows = [];
-    }
-  }
-      </shiro:hasPermission>
-  ];
+  });
+  </shiro:hasPermission>
+
 </script>
 </body>
 </html>
