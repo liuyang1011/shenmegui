@@ -470,7 +470,7 @@
             </td>
             <td>
                 <shiro:hasPermission name="system-get">
-                <a href="#" id="historyBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">发布历史</a>
+                <a href="#" id="historyBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">版本历史</a>
                 </shiro:hasPermission>
             </td>
         </tr>

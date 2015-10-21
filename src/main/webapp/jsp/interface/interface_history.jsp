@@ -16,6 +16,7 @@
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/js/version/versionManager.js"></script>
     <script type="text/javascript">
         var formatter = {
             interfaceState: function (value, row, index) {
@@ -39,26 +40,52 @@
                 }
             }
         };
-        function operation(){
-            var s = '<a iconcls="icon-save"  onclick="idaHis()" style="margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" ><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">idaHis</span><span class="l-btn-icon icon-save">&nbsp;</span></span></a>';
+        function operation(value, row, index){
+            var s = '<a onclick="idaHis(\'' + row.autoId + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" id="cancelbtn'+value+'">' +
+                    '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">idaHis</span></span></a>&nbsp;&nbsp;'+
+                    '<a onclick="comparePage(\'' + row.versionHisId + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)"  id="comparebtn'+value+'">' +
+                    '<span class="l-btn-text">版本对比</span>&nbsp;</span></span></a>';
             return s;
         }
-        function idaHis(){
-            var row = $("#interfaceHisList").datagrid("getSelected");
-            //获取行数据中的targetType和targetId
-            if(row) {
-                $('#historyDlg').dialog({
-                    title: '接口定义信息',
-                    width: 600,
-                    height: 400,
-                    left:'150px',
-                    top:'50px',
-                    closed: false,
-                    cache: false,
-                    href: '/jsp/interface/interface_idaHis.jsp?interfaceHisId=' + row.autoId,
-                    modal: true
-                });
-            }
+        function idaHis(value){
+            $('#historyDlg').dialog({
+                title: '接口定义信息',
+                width: 600,
+                height: 400,
+                left:'150px',
+                top:'50px',
+                closed: false,
+                cache: false,
+                href: '/jsp/interface/interface_idaHis.jsp?interfaceHisId=' + value,
+                modal: true
+            });
+        }
+        //弹出对比页面
+        function comparePage(autoId){
+            $.ajax({
+                type: "get",
+                async: false,
+                url: "/versionHis/judgeVersionPre?autoId="+autoId,
+                dataType: "json",
+                success: function (data) {
+                    if(data.autoId != null){
+                        var urlPath = "/jsp/version/idaComparePage.jsp?autoId1="+autoId+"&type=1&autoId2="+data.autoId+"&versionId="+ data.id;
+                        $("#historyDlg").dialog({
+                            title: '版本对比',
+                            left:'50px',
+                            width: 1000,
+                            height:'auto',
+                            closed: false,
+                            cache: false,
+                            href: urlPath,
+                            modal: true
+                        });
+                    }else{
+                        alert("该版本为初始版本!");
+                    }
+                }
+            });
+
         }
     </script>
     </head>
@@ -76,16 +103,16 @@
     <thead>
     <tr>
         <th data-options="field:'autoId',checkbox:true"> </th>
-        <th data-options="field:'ecode',width:'15%'">
+        <th data-options="field:'ecode',width:'10%'">
             交易码
         </th>
         <th data-options="field:'interfaceName',width:'15%'">
             交易名称
         </th>
-        <th data-options="field:'versionId',width:'15%'" formatter='formatter.versionHis'>
+        <th data-options="field:'versionId',width:'10%'" formatter='formatter.versionHis'>
             版本号
         </th>
-        <th data-options="field:'desc',width:'15%'" formatter='formatter.versionHisDesc'>
+        <th data-options="field:'desc',width:'10%'" formatter='formatter.versionHisDesc'>
             版本说明
         </th>
         <th data-options="field:'optDate',width:'15%',align:'center'">
@@ -94,7 +121,7 @@
         <th data-options="field:'optUser',width:'10%'">
             更新用户
         </th>
-        <th data-options="field:' ',width:'15%', formatter:operation">
+        <th data-options="field:' ',width:'20%', formatter:operation">
             操作
         </th>
 

@@ -284,6 +284,28 @@
 						}
 					}
 				</shiro:hasPermission>
+				<shiro:hasPermission name="version-get">
+				,{
+					text: '历史版本',
+					iconCls: 'icon-qxfp',
+					handler: function () {
+						var row = $("#tg").datagrid("getSelected");
+						if(row){
+							var urlPath =  '/jsp/interface/interface_history.jsp?interfaceId='+row.interfaceId;
+							var hisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+
+							parent.$('#mainContentTabs').tabs('add', {
+								title: '接口发布历史',
+								content: hisContent,
+								closable: true
+							});
+						}else{
+							alert("请先选一个接口");
+						}
+
+					}
+				}
+				</shiro:hasPermission>
 				<shiro:hasPermission name="interface-release">
 				,{
 						text: '发布',

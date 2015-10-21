@@ -300,7 +300,7 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
         String hql = " from " + Ida.class.getName() + " where interfaceId = ?";
         List<Ida> idas = idaDAO.find(hql, inter.getInterfaceId());
         for (int i = 0; i < idas.size(); i++) {//生成ida历史
-            IdaHIS idaHIS = new IdaHIS(idas.get(i));
+            IdaHIS idaHIS = new IdaHIS(idas.get(i), interfaceHis.getAutoId());
             idaHIS.setInterfaceHisId(interfaceHis.getAutoId());
             idaHISDAO.save(idaHIS);
         }

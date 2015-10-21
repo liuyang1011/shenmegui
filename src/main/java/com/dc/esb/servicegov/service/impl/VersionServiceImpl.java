@@ -2,12 +2,14 @@ package com.dc.esb.servicegov.service.impl;
 
 import java.util.*;
 
+import com.dc.esb.servicegov.dao.IdaDAO;
 import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
+import com.dc.esb.servicegov.vo.IdaCompareVO;
 import com.dc.esb.servicegov.vo.OperationCompareVO;
 import com.dc.esb.servicegov.vo.SDACompareVO;
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +35,14 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 	SDADAOImpl sdaDao;
 	@Autowired
 	SDAHisDAOImpl sdaHisDao;
+	@Autowired
+	InterfaceDAOImpl interfaceDAO;
+	@Autowired
+	InterfaceHISDAOImpl interfaceHISDAO;
+	@Autowired
+	IdaDAOImpl idaDAO;
+	@Autowired
+	IdaHISDAOImpl idaHISDAO;
 
 	
 	private final String initalVersion = "1.0.0";
@@ -175,12 +185,6 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 		result.put("rows", sdaHisList);
 		return result;
 	}
-	public void fillVersionData(String versionId, OperationHis operationHis, List<SDAHis> sdaHisList){
-
-	}
-	public void fillVersionHisData(String versionHisId, OperationHis operationHis, List<SDAHis> sdaHisList){
-
-	}
 	//构造场景对比数据，以功能描述，备注，状态改变为标准
 	public List<OperationCompareVO> genderOperationData(OperationHis oper1, OperationHis oper2){
 		List<OperationCompareVO> list = new ArrayList<OperationCompareVO>();
@@ -262,5 +266,102 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 		hisList.addAll(hisList2);
 		return hisList;
 	}
-	
+
+	/**
+	 * 获取接口对比数据
+	 */
+	public Map<String, Object> getInterfaceDiff(String type,String versionId, String autoId1, String autoId2){
+		Map<String, Object> result = new HashMap<String, Object>();
+		InterfaceHIS interHis1 = null;
+		InterfaceHIS interHis2 = null;
+		List<IdaHIS> idaHisList1 = null;
+		List<IdaHIS> idaHisList2 = null;
+		if(Constants.Version.COMPARE_TYPE0.equals(type)){//当前版本与历史版本对比
+			Interface inter = interfaceDAO.findUniqueBy("versionId", versionId);
+			interHis1 =  new InterfaceHIS(inter);
+			String idaHql = " from " + Ida.class.getName() + " where interfaceId = ?";
+			List<Ida> idaList = idaDAO.find(idaHql, inter.getInterfaceId());
+			idaHisList1 = new ArrayList<IdaHIS>();
+			for(int i = 0; i < idaList.size(); i++){
+				idaHisList1.add(new IdaHIS(idaList.get(i),interHis1.getAutoId()));
+			}
+			VersionHis version2 = versionHisServiceImpl.findUniqueBy("autoId", autoId2);;
+			if(version2 != null){
+				interHis2 = interfaceHISDAO.findUniqueBy("versionHisId", version2.getAutoId());
+				idaHisList2 = idaHISDAO.findBy("interfaceHisId", interHis2.getAutoId());
+			}
+		}
+		else if(Constants.Version.COMPARE_TYPE1.equals(type)){//历史版本对比
+			interHis1 = interfaceHISDAO.findUniqueBy("versionHisId", autoId1);
+			idaHisList1 = idaHISDAO.findBy("interfaceHisId", interHis1.getAutoId());
+			interHis2 = interfaceHISDAO.findUniqueBy("versionHisId", autoId2);
+			idaHisList2 = idaHISDAO.findBy("interfaceHisId", interHis2.getAutoId());
+		}
+		else if(Constants.Version.COMPARE_TYPE2.equals(type)){//历史版本与当前版本对比
+			VersionHis version1 = versionHisServiceImpl.findUniqueBy("autoId", autoId1);;
+			if(version1 != null){
+				interHis1 = interfaceHISDAO.findUniqueBy("versionHisId", version1.getAutoId());
+				idaHisList1 = idaHISDAO.findBy("interfaceHisId", interHis1.getAutoId());
+			}
+			Interface inter = interfaceDAO.findUniqueBy("versionId", versionId);
+			interHis2 =  new InterfaceHIS(inter);
+			String idaHql = " from " + Ida.class.getName() + " where interfaceId=?";
+			List<Ida> idaList = idaDAO.find(idaHql, inter.getInterfaceId());
+			idaHisList2 = new ArrayList<IdaHIS>();
+			for(int i = 0; i < idaList.size(); i++){
+				idaHisList2.add(new IdaHIS(idaList.get(i), interHis1.getAutoId()));
+			}
+		}
+		List<IdaCompareVO> idaHisList = genderIdaData(idaHisList1, idaHisList2);
+//		result.put( "operationHisList", operationHisList);
+//		result.put("sdaHisList", sdaHisList);
+		result.put("total", idaHisList.size());
+		result.put("rows", idaHisList);
+		return result;
+	}
+
+	// 构建sda对比数据
+	public List<IdaCompareVO> genderIdaData(List<IdaHIS> hisList1, List<IdaHIS> hisList2){
+		//匹配两个数组中相同id的sdaHIS
+		List<IdaCompareVO> list = new ArrayList<IdaCompareVO>();
+		if(hisList1 != null){
+			for(int i = 0; i < hisList1.size(); i++){
+				IdaHIS s1 = hisList1.get(i);
+				if(s1 != null){
+					for(int j = 0; j < hisList2.size(); j ++){
+						IdaHIS s2 = hisList2.get(j);
+						if(s2 != null){
+							if(s2.getId().equals(s1.getId())){
+								IdaCompareVO vo = new IdaCompareVO(s1, s2);
+								list.add(vo);
+								hisList1.set(i, null);
+								hisList2.set(j, null);
+							}
+						}
+
+					}
+				}
+			}
+			//处理未匹配数据
+			for(int j = 0; j < hisList2.size(); j++) {
+				IdaHIS s2 = hisList2.get(j);
+				if (s2 != null) {
+					IdaCompareVO vo = new IdaCompareVO(null, s2);
+					list.add(vo);
+					hisList2.set(j, null);
+				}
+			}
+		}
+		//处理未匹配数据
+		for(int i = 0; i < hisList1.size(); i++) {
+			IdaHIS s1 = hisList1.get(i);
+			if (s1 != null) {
+				IdaCompareVO vo = new IdaCompareVO(s1, null);
+				list.add(vo);
+				hisList1.set(i, null);
+			}
+		}
+
+		return  list;
+	}
 }
