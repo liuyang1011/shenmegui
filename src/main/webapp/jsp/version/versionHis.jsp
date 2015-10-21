@@ -59,7 +59,7 @@
 		//操作按钮
 		function formatConsole(value, row, index){
 				var s = '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" id="cancelbtn'+value+'">' +
-						'<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">数据详情</span><span class="l-btn-icon icon-search">&nbsp;</span></span></a>&nbsp;&nbsp;'+
+						'<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">数据详情</span></span></a>&nbsp;&nbsp;'+
 						'<a onclick="comparePage(\'' + row.autoId + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)"  id="comparebtn'+value+'">' +
 						'<span class="l-btn-text">版本对比</span>&nbsp;</span></span></a>';
 		    	return s;
@@ -124,22 +124,22 @@
 </table>
 
 </fieldset>
-<table id="operationList" title="版本历史" style="height:525px; width:auto;">
+<table id="operationList" title="版本历史" style="height:525px; width:100%;">
   <thead>
     <tr>
-        <th data-options="field:'autoId',checkbox:true"> </th>
-		<th data-options="field:'serviceId'">服务代码 </th>
-	    <th data-options="field:'serviceName'">服务名称 </th>
-		<th data-options="field:'operationId'">服务场景 </th>
-		<th data-options="field:'operationName'">场景名称 </th>
+        <th data-options="field:'autoId',checkbox:true, width:10"> </th>
+		<th data-options="field:'serviceId',width:100">服务代码 </th>
+	    <th data-options="field:'serviceName', width:120">服务名称 </th>
+		<th data-options="field:'operationId', width:50">场景 </th>
+		<th data-options="field:'operationName',width:170">场景名称 </th>
 		<%--<th data-options="field:'operationDesc'">场景描述 </th>--%>
-      <th data-options="field:'code'">版本号 </th>
+      <th data-options="field:'code', width:60">版本号 </th>
       <%--<th data-options="field:'type'" formatter="versionHis.type">是否基线版本 </th>--%>
-      <th data-options="field:'baseLineNum'">基线版本号 </th>
-      <th data-options="field:'optType'" formatter="versionHis.optType0">修订类型 </th>
-      <th data-options="field:'versionDesc'">发布说明 </th>
-      <th data-options="field:'optDate'">发布时间 </th>
-      <th data-options="field:'optUser'">发布人 </th>
+      <th data-options="field:'baseLineNum',width:50">基线版本号 </th>
+      <th data-options="field:'optType', width:50" formatter="versionHis.optType0">修订类型 </th>
+      <th data-options="field:'versionDesc', width:80">发布说明 </th>
+      <th data-options="field:'optDate', width:100">发布时间 </th>
+      <th data-options="field:'optUser', width:60">发布人 </th>
       <th data-options="field:'targetId',width:180,formatter:formatConsole">操作</th>
     </tr>
   </thead>

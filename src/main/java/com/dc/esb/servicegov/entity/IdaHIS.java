@@ -70,7 +70,7 @@ public class IdaHIS {
 	public IdaHIS(){
 
 	}
-	public IdaHIS(Ida ida) {
+	public IdaHIS(Ida ida, String interfaceHisId) {
 		this.autoId = UUID.randomUUID().toString();
 		this.id = ida.getId();
 		this.structName = ida.getStructName();
@@ -92,6 +92,7 @@ public class IdaHIS {
 		this.heads = ida.getHeads();
 		this.sdaId = ida.getSdaId();
 		this.state = ida.getState();
+		this.interfaceHisId = interfaceHisId;
 	}
 
 	//    @Column(name = "ARG_TYPE")

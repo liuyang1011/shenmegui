@@ -95,6 +95,14 @@ public class VersionController {
         return result;
     }
 
+    @RequiresPermissions({"version-get"})
+    @RequestMapping("/getInterfaceDiff")
+    @ResponseBody
+    public Map<String, Object> getInterfaceDiff(String type,String versionId, String autoId1, String autoId2){
+        Map<String, Object> result = versionService.getInterfaceDiff(type, versionId, autoId1, autoId2);
+        return result;
+    }
+
     /**
      * 根据传入的版本号查询相关版本历史
      * @param versionId 版本id
