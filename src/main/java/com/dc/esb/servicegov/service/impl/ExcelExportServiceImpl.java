@@ -314,6 +314,15 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             if(Constants.INVOKE_TYPE_STANDARD_Y.equals(si.getIsStandard())){//如果是标准接口，不输出ida
                 reqListIda = new ArrayList<Ida>();
                 resListIda = new ArrayList<Ida>();
+                List<SDA> reqListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "request");
+                for (int i = 0; i < reqListSDA.size(); i++) {
+                    fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
+                }
+                List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
+                for (int i = 0; i < resListSDA.size(); i++) {
+                    fillMappRow(sheet, counter, resListSDA.get(i), resListIda);
+                }
+
             }
             for(int i = 0; i < reqListIda.size(); i++){
                 fillMappRow(sheet, counter, reqListIda.get(i), si.getServiceId(), si.getOperationId());
@@ -552,6 +561,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     }
                 }
             }
+        }
+        if(interfaceIds.size() == 0){
+            return new ArrayList<InterfaceHead>();
         }
         List<InterfaceHead> heads = interfaceHeadService.getByInterfaceIds(interfaceIds);
         return heads;
