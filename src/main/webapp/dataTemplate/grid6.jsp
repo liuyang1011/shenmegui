@@ -76,7 +76,16 @@
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
-        $('#tt').edatagrid('addRow');
+            //TODO 还在改
+//        $('#tt').edatagrid('addRow');
+            uiinit.win({
+                top:"20px",
+                left:"150px",
+                w: 500,
+                iconCls: 'icon-add',
+                title: "新增类别词",
+                url: "/jsp/categoryWord/add.jsp"
+            });
         }
     });
     </shiro:hasPermission>

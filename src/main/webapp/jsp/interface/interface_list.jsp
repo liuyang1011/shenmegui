@@ -141,6 +141,194 @@
 		</div>
 		<div id="releaseDlg" class="easyui-dialog" closed="true" resizable="true"></div>
 		<script type="text/javascript">
+			var toolbar = [];
+			<shiro:hasPermission name="interface-add">
+			toolbar.push({
+				text:'新增',
+				iconCls:'icon-add',
+				handler:function(){
+					interfaceManager.append("${param.systemId}");
+				}
+			});
+			</shiro:hasPermission>
+			<shiro:hasPermission name="interface-update">
+			toolbar.push({
+				text:'修改',
+				iconCls:'icon-edit',
+				handler:function(){
+					var row = $("#tg").treegrid("getSelected");
+					if(row){
+						interfaceManager.edit(row.interfaceId,"${param.systemId}");
+					}else{
+						alert("请选择要修改的行");
+					}
+				}
+			});
+			</shiro:hasPermission>
+			<shiro:hasPermission name="interface-delete">
+			toolbar.push({
+				text:'删除',
+				iconCls:'icon-remove',
+				handler:function(){
+					if(!confirm("删除接口后，该接口与服务的调用关系也被删除，是否确定删除？")){
+						return false;
+					}
+					var row = $("#tg").treegrid("getSelected");
+					if(row){
+						remove(row.interfaceId,row.interfaceName);
+					}else{
+						alert("请选择要删除的行");
+					}
+				}
+			});
+			</shiro:hasPermission>
+			<shiro:hasPermission name="interface-headRelation">
+			toolbar.push({
+				text:'关联报文头',
+				iconCls:'icon-save',
+				handler:function(){
+					var row = $("#tg").treegrid("getSelected");
+					if(row){
+						var interfaceId = row.interfaceId;
+						uiinit.win({
+							w:500,
+							iconCls:'icon-add',
+							title:"关联报文头",
+							url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
+						});
+					}else{
+						alert("请选择要关联的行");
+					}
+
+				}
+			});
+			/*,{
+			 text:'导入',
+			 iconCls:'icon-save',
+			 handler:function(){
+			 //							var row = $("#tg").treegrid("getSelected");
+			 //							if(row){
+			 //								var interfaceId = row.interfaceId;
+			 uiinit.win({
+			 w:500,
+			 iconCls:'icon-add',
+			 title:"导入接口",
+			 url : "/jsp/interface/interface_import.jsp?systemId=${param.systemId }"
+			 });
+			 //							}else{
+			 //								alert("请选择要关联的行");
+			 //							}
+
+			 }
+			 }*/
+			</shiro:hasPermission>
+			<shiro:hasPermission name="exportInterface-get">
+			toolbar.push({
+				text:'导出',
+				iconCls:'icon-save',
+				handler:function(){
+					var row = $("#tg").treegrid("getSelected");
+					var rows = $("#tg").datagrid("getSelections");
+					var interfaceIds = "";
+					for(var per in rows){
+						if(per == rows.length-1){
+							interfaceIds += rows[per].interfaceId;
+						}else{
+							interfaceIds += rows[per].interfaceId + ",";
+						}
+
+					}
+
+					var systemId = ${param.systemId };
+					if(row){
+						var form=$("<form>");//定义一个form表单
+						form.attr("style","display:none");
+						form.attr("target","");
+						form.attr("method","post");
+						form.attr("action","/excelExporter/exportInterface");
+						var input1=$("<input>");
+						input1.attr("type","hidden");
+						input1.attr("name","ids");
+						input1.attr("value",interfaceIds);
+						var input2=$("<input>");
+						input2.attr("type","hidden");
+						input2.attr("name","type");
+						input2.attr("value","interface");
+						var input3=$("<input>");
+						input3.attr("type","hidden");
+						input3.attr("name","systemId");
+						input3.attr("value",systemId);
+
+
+						$("body").append(form);//将表单放置在web中
+						form.append(input1);
+						form.append(input2);
+						form.append(input3);
+
+						form.submit();//表单提交
+
+					}else{
+						alert("请选择要关联的行");
+					}
+
+				}
+			});
+			</shiro:hasPermission>
+			<shiro:hasPermission name="version-get">
+			toolbar.push({
+				text: '历史版本',
+				iconCls: 'icon-qxfp',
+				handler: function () {
+					var row = $("#tg").datagrid("getSelected");
+					if(row){
+						var urlPath =  '/jsp/interface/interface_history.jsp?interfaceId='+row.interfaceId;
+						var hisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+
+						parent.$('#mainContentTabs').tabs('add', {
+							title: '接口发布历史',
+							content: hisContent,
+							closable: true
+						});
+					}else{
+						alert("请先选一个接口");
+					}
+
+				}
+			});
+			</shiro:hasPermission>
+			<shiro:hasPermission name="interface-release">
+			toolbar.push({
+				text: '发布',
+				iconCls: 'icon-save',
+				handler: function () {
+					var row = $("#tg").datagrid("getSelected");
+					if(row){
+						var versionCode="";
+						if(row.version != null){
+							versionCode=row.version.code;
+						}
+						var urlPath = "/jsp/interface/interface_release.jsp?interfaceId="+row.interfaceId+"&interfaceName="+encodeURI(encodeURI(row.interfaceName))+
+								"&versionCode="+versionCode;
+						$('#releaseDlg').dialog({
+							title: '版本发布',
+							width: 500,
+							left:150,
+							top:50,
+							closed: false,
+							cache: false,
+							href: urlPath,
+							modal: true
+						});
+					}else{
+						alert("请先选一个接口");
+					}
+
+					//interfaceManager.release();
+				}
+			});
+			</shiro:hasPermission>
+
+
 		 $(document).ready(function(){ 
 			  $('#tg').datagrid({ 
 	        title:'基本信息维护',
@@ -155,189 +343,7 @@
 	        pageSize: 14,//每页显示的记录条数，默认为10
 		    pageList: [14,15,20],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
-	        toolbar: [
-				<shiro:hasPermission name="interface-add">
-				{
-					text:'新增',
-					iconCls:'icon-add',
-					handler:function(){
-						interfaceManager.append("${param.systemId}");
-					}
-				}
-				</shiro:hasPermission>
-				<shiro:hasPermission name="interface-update">
-				,{
-					text:'修改',
-					iconCls:'icon-edit',
-					handler:function(){
-						var row = $("#tg").treegrid("getSelected");
-						if(row){
-							interfaceManager.edit(row.interfaceId,"${param.systemId}");
-						}else{
-							alert("请选择要修改的行");
-						}
-					}
-				}
-				</shiro:hasPermission>
-				<shiro:hasPermission name="interface-delete">
-				,{
-					text:'删除',
-					iconCls:'icon-remove',
-					handler:function(){
-						var row = $("#tg").treegrid("getSelected");
-						if(row){
-							remove(row.interfaceId,row.interfaceName);
-						}else{
-							alert("请选择要删除的行");
-						}
-					 }
-				}
-				</shiro:hasPermission>
-				<shiro:hasPermission name="interface-headRelation">
-				,{
-						text:'关联报文头',
-						iconCls:'icon-save',
-						handler:function(){
-							var row = $("#tg").treegrid("getSelected");
-							if(row){
-								var interfaceId = row.interfaceId;
-								uiinit.win({
-										w:500,
-										iconCls:'icon-add',
-										title:"关联报文头",
-										url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
-									});
-							}else{
-								alert("请选择要关联的行");
-							}
-
-					 	}
-					 }/*,{
-						text:'导入',
-						iconCls:'icon-save',
-						handler:function(){
-//							var row = $("#tg").treegrid("getSelected");
-//							if(row){
-//								var interfaceId = row.interfaceId;
-								uiinit.win({
-									w:500,
-									iconCls:'icon-add',
-									title:"导入接口",
-									url : "/jsp/interface/interface_import.jsp?systemId=${param.systemId }"
-								});
-//							}else{
-//								alert("请选择要关联的行");
-//							}
-
-						}
-					}*/
-				</shiro:hasPermission>
-				<shiro:hasPermission name="exportInterface-get">
-				,{
-						text:'导出',
-						iconCls:'icon-save',
-						handler:function(){
-							var row = $("#tg").treegrid("getSelected");
-							var rows = $("#tg").datagrid("getSelections");
-							var interfaceIds = "";
-							for(var per in rows){
-								if(per == rows.length-1){
-									interfaceIds += rows[per].interfaceId;
-								}else{
-									interfaceIds += rows[per].interfaceId + ",";
-								}
-
-							}
-
-							var systemId = ${param.systemId };
-							if(row){
-								var form=$("<form>");//定义一个form表单
-								form.attr("style","display:none");
-								form.attr("target","");
-								form.attr("method","post");
-								form.attr("action","/excelExporter/exportInterface");
-								var input1=$("<input>");
-								input1.attr("type","hidden");
-								input1.attr("name","ids");
-								input1.attr("value",interfaceIds);
-								var input2=$("<input>");
-								input2.attr("type","hidden");
-								input2.attr("name","type");
-								input2.attr("value","interface");
-								var input3=$("<input>");
-								input3.attr("type","hidden");
-								input3.attr("name","systemId");
-								input3.attr("value",systemId);
-
-
-								$("body").append(form);//将表单放置在web中
-								form.append(input1);
-								form.append(input2);
-								form.append(input3);
-
-								form.submit();//表单提交
-
-							}else{
-								alert("请选择要关联的行");
-							}
-
-						}
-					}
-				</shiro:hasPermission>
-				<shiro:hasPermission name="version-get">
-				,{
-					text: '历史版本',
-					iconCls: 'icon-qxfp',
-					handler: function () {
-						var row = $("#tg").datagrid("getSelected");
-						if(row){
-							var urlPath =  '/jsp/interface/interface_history.jsp?interfaceId='+row.interfaceId;
-							var hisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
-
-							parent.$('#mainContentTabs').tabs('add', {
-								title: '接口发布历史',
-								content: hisContent,
-								closable: true
-							});
-						}else{
-							alert("请先选一个接口");
-						}
-
-					}
-				}
-				</shiro:hasPermission>
-				<shiro:hasPermission name="interface-release">
-				,{
-						text: '发布',
-						iconCls: 'icon-save',
-						handler: function () {
-							var row = $("#tg").datagrid("getSelected");
-							if(row){
-								var versionCode="";
-								if(row.version != null){
-									versionCode=row.version.code;
-								}
-								var urlPath = "/jsp/interface/interface_release.jsp?interfaceId="+row.interfaceId+"&interfaceName="+encodeURI(encodeURI(row.interfaceName))+
-												"&versionCode="+versionCode;
-								$('#releaseDlg').dialog({
-									title: '版本发布',
-									width: 500,
-									left:150,
-									top:50,
-									closed: false,
-									cache: false,
-									href: urlPath,
-									modal: true
-								});
-							}else{
-								alert("请先选一个接口");
-							}
-
-							//interfaceManager.release();
-						}
-					}
-				</shiro:hasPermission>
-				],
+	        toolbar: toolbar,
 			onDblClickRow : dbClick
 	   		});  
 
@@ -420,7 +426,7 @@
 		 };
 
 		 function remove(interfaceId,title){
-                 if (!confirm("确定要删除该接口吗？")) {
+                 if (!confirm("删除接口后，该接口与服务的调用关系也被删除，是否确定删除？")) {
                      return;
                  }
 

@@ -187,4 +187,10 @@ public abstract class AbstractBaseService<T, PK extends Serializable> {
     public void deleteAll(){
         getDAO().deleteAll();
     }
+
+    //判断唯一性
+    public boolean uniqueValid(Map<String, String> params){
+        List<T> list = getDAO().findBy(params);
+        return (list.size()==0);
+    }
 }

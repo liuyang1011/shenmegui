@@ -17,7 +17,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>枚举备注</th>
+			<th>中文名称</th>
 			<td><input class="easyui-textbox" type="text" id="_remark">
 			</td>
 		</tr>

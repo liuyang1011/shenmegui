@@ -103,7 +103,7 @@ var interfaceManager = {
     },
     
     remove:function(interfaceId,title){
-        if (!confirm("确定要删除该接口吗？")) {
+        if (!confirm("删除接口后，该接口与服务的调用关系也被删除，是否确定删除？")) {
             return;
         }
     	
