@@ -634,9 +634,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     }
 
     public boolean judgeCanRevise(Operation operation){
-        //审核通过，已上线，已发布 可以变为修订状态
+        //审核通过，审核不通过，已上线，已发布 可以变为修订状态
         String state = operation.getState();
-        if(state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+        if(state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.OPT_STATE_UNPASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
             return true;
         }
         return false;

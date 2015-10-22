@@ -120,6 +120,97 @@
 
 </div>
 <script type="text/javascript">
+    var toolbar = [];
+    <shiro:hasPermission name="system-add">
+    toolbar.push({
+        text: '新增',
+        iconCls: 'icon-add',
+        handler: function () {
+            sysManager.addSystemPage();
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="system-update">
+    toolbar.push({
+        text: '修改',
+        iconCls: 'icon-edit',
+        handler: function () {
+            var node = $('#tg').datagrid("getSelected");
+            if (node) {
+                uiinit.win({
+                    w: 500,
+                    iconCls: 'icon-add',
+                    title: "编辑系统",
+                    url: "/system/edit/" + node.systemId
+                });
+            } else {
+                alert("请选择要修改的行");
+            }
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="system-delete">
+    toolbar.push({
+        text: '删除',
+        iconCls: 'icon-remove',
+        handler: function () {
+            var node = $('#tg').datagrid("getSelected");
+            if (node) {
+                if (!confirm("确定要删除选中的记录吗？")) {
+                    return;
+                }
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    //如果systemId包含#等特殊符号就会有问题
+//                            url: "/system/delete/" + node.systemId,
+                    url: "/system/delete2",
+                    dataType: "json",
+                    data: JSON.stringify(node.systemId),
+                    success: function (result) {
+                        if(result){
+                            $('#tg').datagrid("reload");
+                        }else{
+                            alert("系统有下挂接口，无法删除");
+                        }
+                    },
+                    complete: function (responce) {
+                        var resText = responce.responseText;
+                        if(resText.toString().indexOf("没有操作权限") > 0){
+                            alert("没有权限！");
+                            //window.location.href = "/jsp/403.jsp";
+                        }
+                    }
+                });
+            } else {
+                alert("请选择要删除的行");
+            }
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="file-get">
+    toolbar.push({
+        text: '文件管理',
+        iconCls: 'icon-save',
+        handler: function () {
+            var node = $('#tg').datagrid("getSelected");
+            if (parent.$('#sysContentTabs').tabs('exists', "文件管理")) {
+                parent.$('#sysContentTabs').tabs('select', "文件管理");
+            } else {
+                var content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp" style="width:100%;height:100%;"></iframe>';
+                if (node && node["systemId"]) {
+                    content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp?systemId=' + node.systemId + '" style="width:100%;height:100%;"></iframe>';
+                }
+                parent.$('#sysContentTabs').tabs('add', {
+                    title: "文件管理",
+                    content: content,
+                    closable: true
+                });
+            }
+        }
+    });
+    </shiro:hasPermission>
+
     $(document).ready(function () {
         $('#tg').datagrid({
             title: '系统基本信息维护',
@@ -134,97 +225,7 @@
             pageSize: 13,//每页显示的记录条数，默认为10
             pageList: [13, 15, 20],//可以设置每页记录条数的列表
             rownumbers: true,//行号
-            toolbar: [
-                <shiro:hasPermission name="system-add">
-                {
-                    text: '新增',
-                    iconCls: 'icon-add',
-                    handler: function () {
-                        sysManager.addSystemPage();
-                    }
-                }
-                </shiro:hasPermission>
-                <shiro:hasPermission name="system-update">
-                ,{
-                text: '修改',
-                iconCls: 'icon-edit',
-                handler: function () {
-                    var node = $('#tg').datagrid("getSelected");
-                    if (node) {
-                        uiinit.win({
-                            w: 500,
-                            iconCls: 'icon-add',
-                            title: "编辑系统",
-                            url: "/system/edit/" + node.systemId
-                        });
-                    } else {
-                        alert("请选择要修改的行");
-                    }
-                }
-            }
-                </shiro:hasPermission>
-                <shiro:hasPermission name="system-delete">
-                ,{
-                text: '删除',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    var node = $('#tg').datagrid("getSelected");
-                    if (node) {
-                        if (!confirm("确定要删除选中的记录吗？")) {
-                            return;
-                        }
-                        $.ajax({
-                            type: "POST",
-                            contentType: "application/json; charset=utf-8",
-                            //如果systemId包含#等特殊符号就会有问题
-//                            url: "/system/delete/" + node.systemId,
-                            url: "/system/delete2",
-                            dataType: "json",
-                            data: JSON.stringify(node.systemId),
-                            success: function (result) {
-                                if(result){
-                                    $('#tg').datagrid("reload");
-                                }else{
-                                    alert("系统有下挂接口，无法删除");
-                                }
-                            },
-                            complete: function (responce) {
-                                var resText = responce.responseText;
-                                if(resText.toString().indexOf("没有操作权限") > 0){
-                                    alert("没有权限！");
-                                    //window.location.href = "/jsp/403.jsp";
-                                }
-                            }
-                        });
-                    } else {
-                        alert("请选择要删除的行");
-                    }
-                }
-            }
-                </shiro:hasPermission>
-                <shiro:hasPermission name="file-get">
-                ,{
-                text: '文件管理',
-                iconCls: 'icon-save',
-                handler: function () {
-                    var node = $('#tg').datagrid("getSelected");
-                    if (parent.$('#sysContentTabs').tabs('exists', "文件管理")) {
-                        parent.$('#sysContentTabs').tabs('select', "文件管理");
-                    } else {
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp" style="width:100%;height:100%;"></iframe>';
-                        if (node && node["systemId"]) {
-                            content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp?systemId=' + node.systemId + '" style="width:100%;height:100%;"></iframe>';
-                        }
-                        parent.$('#sysContentTabs').tabs('add', {
-                            title: "文件管理",
-                            content: content,
-                            closable: true
-                        });
-                    }
-                }
-            }
-                </shiro:hasPermission>
-            ],
+            toolbar: toolbar,
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().indexOf("没有操作权限") > 0){

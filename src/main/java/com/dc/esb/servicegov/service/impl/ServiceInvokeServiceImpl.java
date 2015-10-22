@@ -141,7 +141,10 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 				ServiceInvoke si = list.get(i);
 				ServiceInvokeJson svo = new ServiceInvokeJson(list.get(i));
 				//将标准接口放在第一位
-				if(null == si.getIsStandard()) continue;
+				if(null == si.getIsStandard()){
+					voList.add(svo);
+					continue;
+				}
 //				if(si.getInterfaceId() == null){
 				if(si.getIsStandard().equals("0")){
 					svo.setRemark("标准接口");

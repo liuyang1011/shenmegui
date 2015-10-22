@@ -19,107 +19,106 @@
 <script type="text/javascript" src="/assets/slaTemplate/js/slaTemplateManager.js"></script>
 <script type="text/javascript" src="/assets/sla/js/slaManager.js"></script>
 <script type="text/javascript">
-	var slaTemplatetoolbar = [
-		<shiro:hasPermission name="slaTemp-add">
-			{
-				text : '新增',
-				iconCls : 'icon-add',
-				handler : function() {
-					$('#slaTemplateTable').edatagrid('addRow');
-					}
-			}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="slaTemp-update">
-		,{
-				text : '编辑',
-				iconCls : 'icon-edit',
-				handler : function() {
-				
-				var row = $('#slaTemplateTable').edatagrid("getSelected");
-					var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/sla/slaTemplate.jsp?slaTemplateId='+row.slaTemplateId+'&templateName='+row.templateName+'&serviceId='+serviceId+'&operationId='+operationId+'" style="width:100%;height:100%;"></iframe>';
+	var slaTemplatetoolbar = [];
+	<shiro:hasPermission name="slaTemp-add">
+	slaTemplatetoolbar.push({
+		text : '新增',
+		iconCls : 'icon-add',
+		handler : function() {
+			$('#slaTemplateTable').edatagrid('addRow');
+		}
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="slaTemp-update">
+	slaTemplatetoolbar.push({
+		text : '编辑',
+		iconCls : 'icon-edit',
+		handler : function() {
+
+			var row = $('#slaTemplateTable').edatagrid("getSelected");
+			var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/sla/slaTemplate.jsp?slaTemplateId='+row.slaTemplateId+'&templateName='+row.templateName+'&serviceId='+serviceId+'&operationId='+operationId+'" style="width:100%;height:100%;"></iframe>';
 // 					alert(content);
-					parent.parent.parent.addTab('SLA模板', content);
-					}
+			parent.parent.parent.addTab('SLA模板', content);
+		}
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="slaTemp-delete">
+	slaTemplatetoolbar.push({
+		text : '删除',
+		iconCls : 'icon-remove',
+		handler : function() {
+			var row = $('#slaTemplateTable').edatagrid('getSelected');
+			if(row==""||row==null){
+				alert("请选择一条信息！");
+				return false;
 			}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="slaTemp-delete">
-		,{
-				text : '删除',
-				iconCls : 'icon-remove',
-				handler : function() {
-					var row = $('#slaTemplateTable').edatagrid('getSelected');
-					if(row==""||row==null){
-					alert("请选择一条信息！");
-					return false;
-					}	
-					var rowIndex = $('#slaTemplateTable').datagrid('getRowIndex', row);
-					var deleteData = $("#slaTemplateTable").datagrid('getChanges','deleted');	
-					$('#slaTemplateTable').edatagrid('deleteRow', rowIndex);
-					slaTemplateManager.deleteByEntity(deleteData,function(result){
-						if(result){
-							$('#slaTemplateTable').datagrid('reload');
-						alert("删除成功！");
-						}else{alert("删除失败！");}
-					});
-				}
+			var rowIndex = $('#slaTemplateTable').datagrid('getRowIndex', row);
+			var deleteData = $("#slaTemplateTable").datagrid('getChanges','deleted');
+			$('#slaTemplateTable').edatagrid('deleteRow', rowIndex);
+			slaTemplateManager.deleteByEntity(deleteData,function(result){
+				if(result){
+					$('#slaTemplateTable').datagrid('reload');
+					alert("删除成功！");
+				}else{alert("删除失败！");}
+			});
+		}
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="slaTemp-update">
+	slaTemplatetoolbar.push({
+		text : ' 保存',
+		iconCls : 'icon-save',
+		handler : function() {
+			for ( var per in editedRows) {
+				$("#slaTemplateTable").datagrid('endEdit', editedRows[per]);
 			}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="slaTemp-update">
-		,{
-				text : ' 保存',
-				iconCls : 'icon-save',
-				handler : function() {
-				for ( var per in editedRows) {
-					$("#slaTemplateTable").datagrid('endEdit', editedRows[per]);
-				}
-				var editData = $("#slaTemplateTable").datagrid('getChanges');
-					slaTemplateManager.add(editData,function(result){
-						if(result){
-							$('#slaTemplateTable').datagrid('reload');
-						alert("保存成功！");
-						}else{alert("保存失败！");}
-					});
-					editedRows = [];
+			var editData = $("#slaTemplateTable").datagrid('getChanges');
+			slaTemplateManager.add(editData,function(result){
+				if(result){
+					$('#slaTemplateTable').datagrid('reload');
+					alert("保存成功！");
+				}else{alert("保存失败！");}
+			});
+			editedRows = [];
 
-				}
+		}
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="sla-update">
+	slaTemplatetoolbar.push({
+		text : '选择',
+		iconCls : 'icon-qxfp',
+		handler : function() {
+			var serviceId = "${param.serviceId}";
+			var operationId = "${param.operationId}";
+			var info = $('#slaTemplateTable').edatagrid('getSelected');
+			if(info==""||info==null){
+				alert("请选择一条信息！");
+				return false;
 			}
-		</shiro:hasPermission>
-		<shiro:hasPermission name="sla-update">
-		,{
-				text : '选择',
-				iconCls : 'icon-qxfp',
-				handler : function() {
-					var serviceId = "${param.serviceId}";
-					var operationId = "${param.operationId}";
-					var info = $('#slaTemplateTable').edatagrid('getSelected');
-					if(info==""||info==null){
-					alert("请选择一条信息！");
-					return false;
+			if(info.slaTemplateId){
+				slaManager.setTemplateData(serviceId,operationId,info.slaTemplateId,function(result){
+					if(result){
+						$('#sla').edatagrid("reload");
 					}
-					if(info.slaTemplateId){
-						slaManager.setTemplateData(serviceId,operationId,info.slaTemplateId,function(result){
-							if(result){
-								$('#sla').edatagrid("reload");
-							}
-						});
+				});
 
-						/*slaManager.getByParams(info.slaTemplateId,function(result){
-							$('#sla').edatagrid('loadData',result);
-							slaManager.deleteByAll(serviceId,operationId, function(result1){
-							if(result1){
-							slaManager.addList(result,function(result2){
-								if(result2){alert("导入成功");}else{alert("导入失败");}
-							   });
-							  }
-						   });
-						});*/
-						$('#w').window('close');
-					}
-				}
+				/*slaManager.getByParams(info.slaTemplateId,function(result){
+				 $('#sla').edatagrid('loadData',result);
+				 slaManager.deleteByAll(serviceId,operationId, function(result1){
+				 if(result1){
+				 slaManager.addList(result,function(result2){
+				 if(result2){alert("导入成功");}else{alert("导入失败");}
+				 });
+				 }
+				 });
+				 });*/
+				$('#w').window('close');
 			}
-		</shiro:hasPermission>
-	];
-			
+		}
+	});
+	</shiro:hasPermission>
+
 	var editedRows = [];
 	$(function() {
 

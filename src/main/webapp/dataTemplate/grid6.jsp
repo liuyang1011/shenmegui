@@ -70,85 +70,84 @@
 <script type="text/javascript" src="/assets/categoryWord/js/categoryWordManager.js"></script>
 <script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
-    var toolbar = [
-        <shiro:hasPermission name="categoryWord-add">
-        {
+    var toolbar = [];
+    <shiro:hasPermission name="categoryWord-add">
+    toolbar.push({
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
-            $('#tt').edatagrid('addRow');
+        $('#tt').edatagrid('addRow');
         }
-    }
-        </shiro:hasPermission>
-        <shiro:hasPermission name="categoryWord-delete">
-        ,{
-            text: '删除',
-            iconCls: 'icon-remove',
-            handler: function () {
-                /*var row = $('#tt').edatagrid('getSelected');
-                var rowIndex = $('#tt').edatagrid('getRowIndex', row);
-                $('#tt').edatagrid('deleteRow', rowIndex);*/
-                if (!confirm("确定要删除该类别词吗？")) {
-                    return;
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="categoryWord-delete">
+    toolbar.push({
+        text: '删除',
+        iconCls: 'icon-remove',
+        handler: function () {
+            /*var row = $('#tt').edatagrid('getSelected');
+             var rowIndex = $('#tt').edatagrid('getRowIndex', row);
+             $('#tt').edatagrid('deleteRow', rowIndex);*/
+            if (!confirm("确定要删除该类别词吗？")) {
+                return;
+            }
+            var row = $('#tt').edatagrid('getSelected');
+            categoryWordManager.deleteCategoryWord2(row,function(result){
+                if(result){
+                    alert("删除成功");
+                    $("#tt").datagrid('reload');
+                }else{
+                    alert("不能删除，有元数据关联");
                 }
-                var row = $('#tt').edatagrid('getSelected');
-                categoryWordManager.deleteCategoryWord2(row,function(result){
-                    if(result){
-                        alert("删除成功");
-                        $("#tt").datagrid('reload');
+            })
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="categoryWord-update">
+    toolbar.push({
+        text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+            for (var per in editedRows) {
+                $("#tt").datagrid('endEdit', editedRows[per]);
+                if(!$("#tt").datagrid('validateRow',editedRows[per])){
+                    alert("请输入必输项");
+                    return false;
+                }
+            }
+
+            var editData1 = $("#tt").datagrid('getChanges','inserted');
+            var editData2 = $("#tt").datagrid('getChanges','updated');
+            var deleteData = $("#tt").datagrid('getChanges', 'deleted');
+            categoryWordManager.saveCategoryWord(editData1,'1', function (result) {
+                if (result) {
+                    $('#tt').datagrid('reload');
+                }else{
+                    alert("英文名称或中文名称不能重复");
+                    $('#tt').datagrid('reload');
+                }
+            });
+            categoryWordManager.saveCategoryWord(editData2,'2', function (result) {
+                if (result) {
+                    $('#tt').datagrid('reload');
+                }else{
+                    alert("英文名称或中文名称不能重复");
+                    $('#tt').datagrid('reload');
+                }
+            });
+            if (deleteData.length > 0) {
+                categoryWordManager.deleteCategoryWord(deleteData, function (result) {
+                    if (result) {
+                        $('#tt').datagrid('reload');
                     }else{
                         alert("不能删除，有元数据关联");
                     }
                 })
             }
+            editedRows = [];
         }
-        </shiro:hasPermission>
-        <shiro:hasPermission name="categoryWord-update">
-        ,{
-            text: '保存',
-            iconCls: 'icon-save',
-            handler: function () {
-                for (var per in editedRows) {
-                    $("#tt").datagrid('endEdit', editedRows[per]);
-                    if(!$("#tt").datagrid('validateRow',editedRows[per])){
-                        alert("请输入必输项");
-                        return false;
-                    }
-                }
-
-                var editData1 = $("#tt").datagrid('getChanges','inserted');
-                var editData2 = $("#tt").datagrid('getChanges','updated');
-                var deleteData = $("#tt").datagrid('getChanges', 'deleted');
-                categoryWordManager.saveCategoryWord(editData1,'1', function (result) {
-                    if (result) {
-                        $('#tt').datagrid('reload');
-                    }else{
-                        alert("英文名称或中文名称不能重复");
-                        $('#tt').datagrid('reload');
-                    }
-                });
-                categoryWordManager.saveCategoryWord(editData2,'2', function (result) {
-                    if (result) {
-                        $('#tt').datagrid('reload');
-                    }else{
-                        alert("英文名称或中文名称不能重复");
-                        $('#tt').datagrid('reload');
-                    }
-                });
-                if (deleteData.length > 0) {
-                    categoryWordManager.deleteCategoryWord(deleteData, function (result) {
-                        if (result) {
-                            $('#tt').datagrid('reload');
-                        }else{
-                            alert("不能删除，有元数据关联");
-                        }
-                    })
-                }
-                editedRows = [];
-            }
-        }
-        </shiro:hasPermission>
-    ];
+    });
+    </shiro:hasPermission>
     var editedRows = [];
     $(function () {
         $.extend($.fn.validatebox.defaults.rules, {

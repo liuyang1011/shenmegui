@@ -136,9 +136,9 @@
 			});
 		});
 
-		var toolbar2 =[
-			<shiro:hasPermission name="enum-delete">
-			{
+		var toolbar2=[];
+		<shiro:hasPermission name="enum-delete">
+		toolbar2.push({
 			text : '删除',
 			iconCls : 'icon-remove',
 			handler : function() {
@@ -158,10 +158,10 @@
 							});
 				}
 			}
-		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="enum-add">
-			,{
+		});
+		</shiro:hasPermission>
+		<shiro:hasPermission name="enum-add">
+		toolbar2.push({
 			text : '新增',
 			iconCls : 'icon-add',
 			handler : function() {
@@ -172,9 +172,8 @@
 					url : "/pages/SGEnum/form/elementAppandForm.jsp"
 				});
 			}
-		}
-			</shiro:hasPermission>
-		];
+		});
+		</shiro:hasPermission>
 		function showZdm() {
 			var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/masterEnum.jsp" style="width:100%;height:100%;"></iframe>';
 

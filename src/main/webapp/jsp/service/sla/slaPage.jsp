@@ -93,47 +93,47 @@
 			}
 		});
 	});
-		var serviceId = "${service.serviceId}";
-		var operationId = "${operation.operationId}";
+	var serviceId = "${service.serviceId}";
+	var operationId = "${operation.operationId}";
 
-		var slaUrl = "/sla/getAll/" + serviceId + "/" + operationId;
-		var toolbar = [
-			<shiro:hasPermission name="sla-add">
-			{
-			text : '新增',
-			iconCls : 'icon-add',
-			handler : function() {
-				$('#sla').edatagrid('addRow');
-			}
+	var slaUrl = "/sla/getAll/" + serviceId + "/" + operationId;
+	var toolbar = [];
+	<shiro:hasPermission name="sla-add">
+	toolbar.push({
+		text : '新增',
+		iconCls : 'icon-add',
+		handler : function() {
+			$('#sla').edatagrid('addRow');
 		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="sla-delete">
-			,{
-			text : '删除',
-			iconCls : 'icon-remove',
-			handler : function() {
-				var row = $('#sla').edatagrid('getSelected');
-				if(row==""||row==null){
+	})
+	</shiro:hasPermission>
+	<shiro:hasPermission name="sla-delete">
+	toolbar.push({
+		text : '删除',
+		iconCls : 'icon-remove',
+		handler : function() {
+			var row = $('#sla').edatagrid('getSelected');
+			if(row==""||row==null){
 				alert("请选择一条信息！");
 				return false;
-				}
-				var rowIndex = $('#sla').edatagrid('getRowIndex', row);
-				var deleteData = $("#sla").datagrid('getChanges','deleted');
-				$('#sla').edatagrid('deleteRow', rowIndex);
-					slaManager.deleteByEntity(deleteData,function(result){
-						if(result){
-							$('#sla').datagrid('reload');
-							alert("删除成功！");
-						}else{alert("删除失败！");}
-					});
 			}
+			var rowIndex = $('#sla').edatagrid('getRowIndex', row);
+			var deleteData = $("#sla").datagrid('getChanges','deleted');
+			$('#sla').edatagrid('deleteRow', rowIndex);
+			slaManager.deleteByEntity(deleteData,function(result){
+				if(result){
+					$('#sla').datagrid('reload');
+					alert("删除成功！");
+				}else{alert("删除失败！");}
+			});
 		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="sla-update">
-			,{
-			text : ' 保存',
-			iconCls : 'icon-save',
-			handler : function() {
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="sla-update">
+	toolbar.push({
+		text : ' 保存',
+		iconCls : 'icon-save',
+		handler : function() {
 			for ( var per in editedRows) {
 				$("#sla").datagrid('endEdit', editedRows[per]);
 				if(!$("#sla").datagrid('validateRow',editedRows[per])){
@@ -142,34 +142,33 @@
 				}
 			}
 			var editData = $("#sla").datagrid('getChanges');
-				slaManager.add(editData,serviceId,operationId,function(result){
-					if(result){
-						$('#sla').datagrid('reload');
-						alert("保存成功！");
-					}else{alert("保存失败！");}
-				});
-				
-				editedRows = [];
+			slaManager.add(editData,serviceId,operationId,function(result){
+				if(result){
+					$('#sla').datagrid('reload');
+					alert("保存成功！");
+				}else{alert("保存失败！");}
+			});
 
-			}
+			editedRows = [];
+
 		}
-			</shiro:hasPermission>
-			<shiro:hasPermission name="slaTemp-get">
-			,{
-			text : 'SLA模版',
-			iconCls : 'icon-qxfp',
-			handler : function() {
-				uiinit.win({
-					w : 900,
-					iconCls : 'icon-add',
-					title : "SLA模块",
-					url : "/jsp/service/sla/slaTemplateEdit.jsp?serviceId="+serviceId+"&operationId="+operationId
-				})
-			}
+	});
+	</shiro:hasPermission>
+	<shiro:hasPermission name="slaTemp-get">
+	toolbar.push({
+		text : 'SLA模版',
+		iconCls : 'icon-qxfp',
+		handler : function() {
+			uiinit.win({
+				w : 900,
+				iconCls : 'icon-add',
+				title : "SLA模块",
+				url : "/jsp/service/sla/slaTemplateEdit.jsp?serviceId="+serviceId+"&operationId="+operationId
+			})
 		}
-			</shiro:hasPermission>
-				];
-		
+	});
+	</shiro:hasPermission>
+
 		var editedRows = [];
 		$(function() {
 			$('#sla').edatagrid({

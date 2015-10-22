@@ -120,9 +120,9 @@
             }
         });
     });
-    var toolbar = [
-         <shiro:hasPermission name="metadata-add">
-        {
+    var toolbar = [];
+    <shiro:hasPermission name="metadata-add">
+    toolbar.push({
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
@@ -135,10 +135,10 @@
                 url: "/assets/metadata/add.jsp"
             });
         }
-    }
-        </shiro:hasPermission>
-        <shiro:hasPermission name="metadata-update">
-        ,{
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="metadata-update">
+    toolbar.push({
         text: '修改',
         iconCls: 'icon-edit',
         handler: function () {
@@ -165,117 +165,95 @@
                 alert("请选中要修改的数据！");
             }
         }
-    }
-        </shiro:hasPermission>
-        <shiro:hasPermission name="metadata-delete">
-        ,{
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="metadata-delete">
+    toolbar.push({
         text: '删除',
         iconCls: 'icon-remove',
         handler: function () {
             deleteObj();
         }
-    }
-        </shiro:hasPermission>
-        ,'-'
-        <shiro:hasPermission name="metadata-get">
-        ,{
-            text: '关联服务场景',
-            iconCls: 'icon-cfp',
-            handler: function () {
-                var checkedItems = $('#metadataList').datagrid('getChecked');
-                 if (checkedItems != null && checkedItems.length > 0) {
-                       if (checkedItems.length > 1) {
-                            alert("请只选中一行要修改的数据！");
-                            return false;
-                       }
-                       else{
-                              $.ajax({
-                                  type: "get",
-                                  async: false,
-                                  url: "/operation/judgeByMetadataId/"+checkedItems[0].metadataId,
-                                  dataType: "json",
-                                  success: function (data) {
-                                      if(data){
-                                        uiinit.win({
-                                            w: 600,
-                                            iconCls: 'icon-cfp',
-                                            title: "关联服务场景",
-                                            url: "/jsp/service/operation/list.jsp?metadataId="+checkedItems[0].metadataId
-                                        });
-                                      }
-                                      else{
-                                        alert("元数据["+checkedItems[0].chineseName+"]没有关联任何服务场景");
-                                      }
-                                  }
-                              });
-                       }
-                  }
-                  else {
-                                  alert("请先选中一个元数据！");
-                       }
-            }
-        }/*,
-        {
-            text: '公共代码',
-            iconCls: 'icon-cfp',
-            handler: function () {
-                alert('移出')
-            }
-        }*/
-        </shiro:hasPermission>
-        ,'-'
-        <shiro:hasPermission name="metadata-update">
-        ,{
-            text: '导入',
-            iconCls: 'icon-cfp',
-            handler: function () {
-                uiinit.win({
-                    w: 500,
-                    iconCls: 'icon-cfp',
-                    title: "关联服务场景",
-                    url: "/jsp/metadata/importMetadata.jsp"
-                });
-            }
-        }
-        </shiro:hasPermission>
-        <shiro:hasPermission name="exportXML-get">
-        ,{
-            text: '导出XML',
-            iconCls: 'icon-save',
-            handler: function () {
-                $(function() {
-                    $.fileDownload("/metadata/export", {
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="metadata-get">
+    toolbar.push({
+        text: '关联服务场景',
+        iconCls: 'icon-cfp',
+        handler: function () {
+            var checkedItems = $('#metadataList').datagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+                if (checkedItems.length > 1) {
+                    alert("请只选中一行要修改的数据！");
+                    return false;
+                }
+                else{
+                    $.ajax({
+                        type: "get",
+                        async: false,
+                        url: "/operation/judgeByMetadataId/"+checkedItems[0].metadataId,
+                        dataType: "json",
+                        success: function (data) {
+                            if(data){
+                                uiinit.win({
+                                    w: 600,
+                                    iconCls: 'icon-cfp',
+                                    title: "关联服务场景",
+                                    url: "/jsp/service/operation/list.jsp?metadataId="+checkedItems[0].metadataId
+                                });
+                            }
+                            else{
+                                alert("元数据["+checkedItems[0].chineseName+"]没有关联任何服务场景");
+                            }
+                        }
                     });
-                });
+                }
+            }
+            else {
+                alert("请先选中一个元数据！");
             }
         }
-        </shiro:hasPermission>
-        <shiro:hasPermission name=" exportMetadataExcel-get">
-        ,{
-            text: '导出EXCEL',
-            iconCls: 'icon-save',
-            handler: function () {
-                $(function() {
-                    $.fileDownload("/resourceExporter/export", {
-                    });
-                });
-            }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="importMetadata-update">
+    toolbar.push({
+        text: '导入',
+        iconCls: 'icon-cfp',
+        handler: function () {
+            uiinit.win({
+                w: 500,
+                iconCls: 'icon-cfp',
+                title: "导入元数据",
+                url: "/jsp/metadata/importMetadata.jsp"
+            });
         }
-        </shiro:hasPermission>
-//        {
-//            text: '检出',
-//            iconCls: 'icon-qxfp',
-//            handler: function () {
-//
-//            }
-//        },
-       /* {
-            text: '提交任务',
-            iconCls: 'icon-qxfp',
-            handler: function () {
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="exportXML-get">
+    toolbar.push({
+        text: '导出XML',
+        iconCls: 'icon-save',
+        handler: function () {
+            $(function() {
+                $.fileDownload("/metadata/export", {
+                });
+            });
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name=" exportMetadataExcel-get">
+    toolbar.push({
+        text: '导出EXCEL',
+        iconCls: 'icon-save',
+        handler: function () {
+            $(function() {
+                $.fileDownload("/resourceExporter/export", {
+                });
+            });
+        }
+    });
+    </shiro:hasPermission>
 
-            }
-        }*/];
 </script>
 
 

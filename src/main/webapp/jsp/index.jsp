@@ -93,12 +93,11 @@
     <div id="maintabsCloseAll" data-options="iconCls:'icon-clear'">关闭所有</div>
 </div>
 
+<shiro:hasPermission name="interfaceHead-add">
 <div id="mm-mxsysadmintree" class="easyui-menu" style="width: 120px;display: none">
-    <shiro:hasPermission name="interfaceHead-add">
     <div onclick="sysManager.append()" data-options="iconCls:'icon-add'">
         新增报文头
     </div>
-    </shiro:hasPermission>
     <%--<div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">--%>
         <%--编辑报文头--%>
     <%--</div>--%>
@@ -106,6 +105,7 @@
         <%--删除报文头--%>
     <%--</div>--%>
 </div>
+</shiro:hasPermission>
 
 <div id="mm-syshead" class="easyui-menu" style="width: 120px;display: none">
     <shiro:hasPermission name="interfaceHead-add">
@@ -113,9 +113,11 @@
         新增报文头
     </div>
     </shiro:hasPermission>
+    <shiro:hasPermission name="interfaceHead-update">
     <div onclick="sysManager.edit()" data-options="iconCls:'icon-edit'">
     编辑报文头
     </div>
+    </shiro:hasPermission>
     <shiro:hasPermission name="interfaceHead-delete">
     <div onclick="sysManager.remove()" data-options="iconCls:'icon-remove'">
         删除报文头
@@ -139,7 +141,9 @@
     <shiro:hasPermission name="excelExport-get">
     <div id="serviceExcel" data-options="iconCls:'icon-excel-export'">导出字段映射Excel</div>
     </shiro:hasPermission>
+    <shiro:hasPermission name="viewExcelExport-get">
     <div id="serviceView" data-options="iconCls:'icon-excel-export'">导出服务视图Excel</div>
+    </shiro:hasPermission>
 </div>
 
 <div id="mm-mslinktree" class="easyui-menu" style="width: 120px;display: none">
@@ -215,9 +219,11 @@
     <%--<div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">--%>
         <%--新增协议--%>
     <%--</div>--%>
+    <shiro:hasPermission name="protocol-update">
     <div onclick="sysManager.editProtocol()" data-options="iconCls:'icon-edit'">
     编辑协议
     </div>
+    </shiro:hasPermission>
     <shiro:hasPermission name="protocol-delete">
     <div onclick="sysManager.deleteProtocol()" data-options="iconCls:'icon-remove'">
     删除协议

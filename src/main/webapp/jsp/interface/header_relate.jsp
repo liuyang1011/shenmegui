@@ -82,7 +82,7 @@
 		$.ajax({
 			type: "GET",
 			contentType: "application/json; charset=utf-8",
-			url: "/interface/headRelate/${param.interfaceId}/"+headId + "?_t" + new Date().getTime(),
+			url: "/interface/headRelate/${param.interfaceId}/"+headId +"?t=" + (new Date()).valueOf(),
 			dataType: "json",
 			success: function(result) {
 				 if(true){

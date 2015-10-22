@@ -42,43 +42,44 @@
         var editArray = new Array();
         var parentIdAry = new Array();
         var versionCode="";
-        var toolbar = [
-            <shiro:hasPermission name="ida-delete">
-            {
-                text: '刪除',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    if (!confirm("确定要删除选中的记录吗？")) {
-                        return;
-                    }
-                    var nodes = $('#tg').treegrid('getSelections');
-                    if (nodes) {
-                        var delAry = new Array();
-                        for (var i = 0; i < nodes.length; i++) {
-                            if (nodes[i].structName != 'request' && nodes[i].structName != 'response') {
-                                delAry.push(nodes[i].id);
-                            }
-                        }
-                        sysManager.removeIDA(delAry, function (result) {
-                            if (result) {
-                                //array.
-                                //$('#tg').treegrid('reload');
-                                for (var j = 0; j < delAry.length; j++) {
-                                    $('#tg').treegrid('remove', delAry[j]);
-                                }
-                                $("#interfacetg").datagrid("reload");
-                            } else {
-                                alert("删除失败");
-                            }
+        var toolbar = [];
 
-                        });
-                    }
-
+        <shiro:hasPermission name="ida-delete">
+        toolbar.push({
+            text: '刪除',
+            iconCls: 'icon-remove',
+            handler: function () {
+                if (!confirm("确定要删除选中的记录吗？")) {
+                    return;
                 }
+                var nodes = $('#tg').treegrid('getSelections');
+                if (nodes) {
+                    var delAry = new Array();
+                    for (var i = 0; i < nodes.length; i++) {
+                        if (nodes[i].structName != 'request' && nodes[i].structName != 'response') {
+                            delAry.push(nodes[i].id);
+                        }
+                    }
+                    sysManager.removeIDA(delAry, function (result) {
+                        if (result) {
+                            //array.
+                            //$('#tg').treegrid('reload');
+                            for (var j = 0; j < delAry.length; j++) {
+                                $('#tg').treegrid('remove', delAry[j]);
+                            }
+                            $("#interfacetg").datagrid("reload");
+                        } else {
+                            alert("删除失败");
+                        }
+
+                    });
+                }
+
             }
-            </shiro:hasPermission>
-            <shiro:hasPermission name="ida-update">
-            ,{
+        });
+        </shiro:hasPermission>
+        <shiro:hasPermission name="ida-update">
+        toolbar.push({
             text: '保存',
             iconCls: 'icon-save',
             handler: function () {
@@ -160,14 +161,15 @@
                         alert("保存成功");
                         $('#tg').treegrid({url: '/ida/getInterfaces/${param.interfaceId}?_t=' + new Date().getTime()});
                         $("#interfacetg").datagrid({url:'/interface/getInterById/${param.interfaceId}?_t=' + new Date().getTime()});
-                       // $('#tg').treegrid('reload');
+                        // $('#tg').treegrid('reload');
                     } else {
                         alert("保存失败");
                     }
 
                 });
             }
-        }, {
+        });
+        toolbar.push({
             text: '上移',
             iconCls: 'icon-up',
             handler: function () {
@@ -198,7 +200,8 @@
                     });
                 }
             }
-        }, {
+        });
+        toolbar.push({
             text: '下移',
             iconCls: 'icon-down',
             handler: function () {
@@ -219,7 +222,7 @@
                         success: function(data){
                             if(data){
                                 if (jQuery.inArray(node.id, editArray) == -1) {
-                                     editArray.push(node.id);
+                                    editArray.push(node.id);
                                 }
                                 $('#tg').treegrid({url:'/ida/getInterfaces/${param.interfaceId}?_t='+ new Date().getTime()});
                                 $("#interfacetg").datagrid("reload");
@@ -228,45 +231,52 @@
                     });
                 }
             }
-        }
-            </shiro:hasPermission>
-            <shiro:hasPermission name="interface-release">
-            ,{
-                text: '发布',
-                iconCls: 'icon-save',
-                handler: function () {
-                    var rows = $("#interfacetg").datagrid("getRows");
-                    var interfaceName = rows[0].interfaceName;
-                    var interfaceName = rows[0].interfaceName;
-                    var urlPath = "/jsp/interface/interface_release.jsp?interfaceId=${param.interfaceId}&interfaceName="+encodeURI(encodeURI(interfaceName))+
-                            "&versionCode="+versionCode;
-                    $('#releaseDlg').dialog({
-                        title: '版本发布',
-                        width: 500,
-                        left:150,
-                        top:50,
-                        closed: false,
-                        cache: false,
-                        href: urlPath,
-                        modal: true
-                    });
-
-                }
-            }
-            </shiro:hasPermission>
-                   /*,{
-            text: '提交任务',
-            iconCls: 'icon-ok',
+        });
+        </shiro:hasPermission>
+        <shiro:hasPermission name="interface-release">
+        toolbar.push({
+            text: '发布',
+            iconCls: 'icon-save',
             handler: function () {
-                uiinit.win({
-                    w: 500,
-                    iconCls: 'icon-cfp',
-                    title: "完成任务",
-                    url: "/jsp/task/completeTask.jsp"
+                var rows = $("#interfacetg").datagrid("getRows");
+                var interfaceName = rows[0].interfaceName;
+                var interfaceName = rows[0].interfaceName;
+                var urlPath = "/jsp/interface/interface_release.jsp?interfaceId=${param.interfaceId}&interfaceName="+encodeURI(encodeURI(interfaceName))+
+                        "&versionCode="+versionCode;
+                $('#releaseDlg').dialog({
+                    title: '版本发布',
+                    width: 500,
+                    left:150,
+                    top:50,
+                    closed: false,
+                    cache: false,
+                    href: urlPath,
+                    modal: true
                 });
+
             }
-        }*/
-        ]
+        });
+        </shiro:hasPermission>
+
+
+
+
+
+
+//        var toolbar = [
+//                   /*,{
+//            text: '提交任务',
+//            iconCls: 'icon-ok',
+//            handler: function () {
+//                uiinit.win({
+//                    w: 500,
+//                    iconCls: 'icon-cfp',
+//                    title: "完成任务",
+//                    url: "/jsp/task/completeTask.jsp"
+//                });
+//            }
+//        }*/
+//        ]
 
         function onContextMenu(e, row) {
 
