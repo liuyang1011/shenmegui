@@ -170,6 +170,7 @@
                     success: function (result) {
                         if(result){
                             $('#tg').datagrid("reload");
+                            parent.parent.$('.msinterfacetree').tree('reload');
                         }else{
                             alert("系统有下挂接口，无法删除");
                         }

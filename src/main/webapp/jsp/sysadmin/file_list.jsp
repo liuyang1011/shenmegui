@@ -2,6 +2,7 @@
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String systemId = request.getParameter("systemId");
+    String isAll = request.getParameter("isAll");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -51,10 +52,11 @@
      style="width: 500px; height: 200px; padding: 10px;">
 </div>
 <script type="text/javascript">
+    var isAll = "<%=isAll%>";
     var systemId = "<%=systemId%>";
     var url = "/fileManager/getAll";
     var method = "post";
-    if(systemId != null && systemId !="null"){
+    if(systemId != null && systemId !="null" && isAll == "0"){
         url = "/fileManager/get/systemId/" + systemId;
         method = "post";
     }
