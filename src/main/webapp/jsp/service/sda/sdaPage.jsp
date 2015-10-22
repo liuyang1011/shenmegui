@@ -349,7 +349,7 @@ var delIds = [];
 				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
 				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<%--<th data-options="field:'append3',width:60,editor:'text'">长度</th>--%>
-				<th field="append4" width="80" editor="{type:'combobox', options:{required:true,method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true, editable:false, method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>

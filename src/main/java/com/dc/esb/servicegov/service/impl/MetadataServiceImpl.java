@@ -39,7 +39,8 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     private VersionServiceImpl versionService;
 
     public List<Metadata> getAllMetadata() {
-    	List<Metadata> list = metadataDAOImpl.getAll();
+        String hql = " from " + Metadata.class.getName() + " order by METADATA_ID asc";
+    	List<Metadata> list = metadataDAOImpl.find(hql);
         return list;
     }
 
