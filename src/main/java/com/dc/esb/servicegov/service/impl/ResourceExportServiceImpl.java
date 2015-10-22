@@ -88,7 +88,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     }
     /**填充数据字典页**/
     public boolean fillDataSheet(HSSFSheet sheet){
-        String hql = " from " + Metadata.class.getName() +" m where m.type != ? and m.type != ?";
+        String hql = " from " + Metadata.class.getName() +" m where (m.type != ? and m.type != ?) or m.type is null";
         List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE);
         for(int i = 0; i < list.size(); i++){
             Metadata metadata = list.get(i);
