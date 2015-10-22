@@ -232,7 +232,7 @@
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				"
-           style="height:370px; width:100%;">
+           style="height:400px; width:100%;">
         <thead>
         <tr>
             <th data-options="field:'',checkbox:true,width:50"></th>

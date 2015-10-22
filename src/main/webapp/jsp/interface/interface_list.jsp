@@ -334,14 +334,14 @@
 	        title:'基本信息维护',
 	        iconCls:'icon-edit',//图标 
 	        width: '100%',
-	        height: '485px',
+	        height: '500px',
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
 	        singleSelect:true,//是否单选
 	        pagination:true,//分页控件 
-	        pageSize: 14,//每页显示的记录条数，默认为10
-		    pageList: [14,15,20],//可以设置每页记录条数的列表
+	        pageSize: 15,//每页显示的记录条数，默认为10
+		    pageList: [15,20,30],//可以设置每页记录条数的列表
 	        rownumbers:true,//行号
 	        toolbar: toolbar,
 			onDblClickRow : dbClick

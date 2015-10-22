@@ -70,9 +70,9 @@ public class StandardXMLConfigGenerator implements IMetadataConfigGenerator {
             System system_consumer = systemService.getById(export.getConsumerSystemId());
 
 
-            FileUtil.copyFile(service_define_path,destpath+"/in_config/metadata/service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,responseText);
-            FileUtil.copyFile(channel__service_path,destpath+"/in_config/metadata/channel_"+system_consumer.getSystemAb()+"_service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,"");
-            FileUtil.copyFile(service_system__path,destpath+"/in_config/metadata/service_"+export.getServiceId()+export.getOperationId()+"_system_"+system_consumer.getSystemAb()+".xml","",responseText);
+//            FileUtil.copyFile(service_define_path,destpath+"/in_config/metadata/service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,responseText);
+//            FileUtil.copyFile(channel__service_path,destpath+"/in_config/metadata/channel_"+system_consumer.getSystemAb()+"_service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,"");
+//            FileUtil.copyFile(service_system__path,destpath+"/in_config/metadata/service_"+export.getServiceId()+export.getOperationId()+"_system_"+system_consumer.getSystemAb()+".xml","",responseText);
 
             file = new File(destpath);
 

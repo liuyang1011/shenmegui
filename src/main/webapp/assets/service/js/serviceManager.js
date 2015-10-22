@@ -29,7 +29,7 @@ var serviceManager ={
 				if(result){
 					alert("删除成功");
 				}else{
-					alert("请先删除服务");
+					alert("请先删除子节点下的服务类及服务");
 				}
 				callback(result);
 			}

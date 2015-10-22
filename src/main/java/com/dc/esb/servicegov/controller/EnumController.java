@@ -352,6 +352,7 @@ public class EnumController {
         OperationLog operationLog = systemLogService.record("公共代码","批量保存主从关系","");
         String logParams1 = "";
         String logParams2 = "";
+        String logParams3 = "";
 
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
@@ -369,17 +370,15 @@ public class EnumController {
             }
             enumService.addEnumElementMap(elementMap);
 
-            SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
-            if(master != null){
-                logParams1 += "," + master.getName() ;
-            }
-            SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
-            if(slave != null){
-                logParams2 += "," + slave.getName();
-            }
+            logParams1 += "," + map.get("REMARK");
+
+            logParams2 += "," + map.get("MASTERNAME");
+
+            logParams3 += "," + map.get("SLAVENAME");
         }
 
-        operationLog.setParams("主代码：" + logParams1.substring(1, logParams1.length() -1) + " 从代码:" +  logParams2.substring(1, logParams2.length() -1));
+        operationLog.setParams("主代码中文名称：" + logParams1.substring(1, logParams1.length()) + " 主代码枚举名称:" +  logParams2.substring(1, logParams2.length())
+                + " 从代码枚举名称：" +  logParams3.substring(1, logParams3.length()));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -392,6 +391,7 @@ public class EnumController {
         OperationLog operationLog = systemLogService.record("公共代码","批量保存主从关系","");
         String logParams1 = "";
         String logParams2 = "";
+        String logParams3 = "";
 
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
@@ -409,17 +409,14 @@ public class EnumController {
             }
             enumService.addEnumElementMap(elementMap);
 
-            SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
-            if(master != null){
-                logParams1 += "," + master.getName() ;
-            }
-            SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
-            if(slave != null){
-                logParams2 += "," + slave.getName();
-            }
-        }
+            logParams1 += "," + map.get("REMARK");
 
-        operationLog.setParams("主代码：" + logParams1.substring(1, logParams1.length() -1) + " 从代码:" +  logParams2.substring(1, logParams2.length() -1));
+            logParams2 += "," + map.get("MASTERNAME");
+
+            logParams3 += "," + map.get("SLAVENAME");
+        }
+        operationLog.setParams("主代码中文名称：" + logParams1.substring(1, logParams1.length()) + " 主代码枚举名称:" +  logParams2.substring(1, logParams2.length())
+                + " 从代码枚举名称：" +  logParams3.substring(1, logParams3.length()));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -470,6 +467,7 @@ public class EnumController {
         OperationLog operationLog = systemLogService.record("公共代码","主从关系批量删除","");
         String logParams1 = "";
         String logParams2 = "";
+        String logParams3 = "";
 
         List<String> ids = new ArrayList<String>();
         List<EnumElementMap> mappingList = new ArrayList<EnumElementMap>();
@@ -480,19 +478,17 @@ public class EnumController {
             elementMap.setSlaveElementId(map.get("SLAVEID"));
             mappingList.add(elementMap);
 
+            logParams1 += "," + map.get("REMARK");
 
-            SGEnum master = enumService.getByEnumId(elementMap.getMasterElementId());
-            if(master != null){
-                logParams1 += "," + master.getName() ;
-            }
-            SGEnum slave = enumService.getByEnumId(elementMap.getSlaveElementId());
-            if(slave != null){
-                logParams2 += "," + slave.getName();
-            }
+            logParams2 += "," + map.get("MASTERNAME");
+
+            logParams3 += "," + map.get("SLAVENAME");
+
         }
         enumService.deleteElementsMapping(mappingList);
 
-        operationLog.setParams("主代码：" + logParams1.substring(1, logParams1.length() -1) + " 从代码:" +  logParams2.substring(1, logParams2.length() -1));
+        operationLog.setParams("主代码中文名称：" + logParams1.substring(1, logParams1.length()) + " 主代码枚举名称:" +  logParams2.substring(1, logParams2.length())
+                + " 从代码枚举名称：" +  logParams3.substring(1, logParams3.length()));
         systemLogService.updateResult(operationLog);
         return true;
     }

@@ -124,6 +124,8 @@ public class ExcelImportController {
                     logger.debug("开始获取" + sheetName + "交易信息=========================");
                     Sheet sheet = workbook.getSheet(sheetName);
                     if(null == sheet){
+                        logger.error(sheetName + "导入失败，sheet页不存在");
+                        logInfoService.saveLog(sheetName + "导入失败，sheet页不存在", "原始接口导入");
                         msg.append(sheetName + "导入失败，sheet页不存在");
                         continue;
                     }

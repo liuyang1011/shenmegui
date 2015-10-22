@@ -175,7 +175,7 @@ public class CategoryWordController {
     public
     @ResponseBody
     boolean add(@RequestBody CategoryWord categoryWord) {
-        OperationLog operationLog = systemLogService.record("类别词","添加","中文名称：" + categoryWord.getChineseWord()+"; 英文名称："+ categoryWord.getEnglishWord());
+        OperationLog operationLog = systemLogService.record("类别词","添加","中文名称：" + categoryWord.getChineseWord()+"; 英文名称："+ categoryWord.getEsglisgAb());
 
         categoryWord.setOptDate(DateUtils.format(new Date()));
         String userName = (String) SecurityUtils.getSubject().getPrincipal();

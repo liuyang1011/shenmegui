@@ -68,7 +68,7 @@
   var processId = parent.processId;
   var taskId = parent.taskId;
   $(function(){
-    var url = "/ida/getIdaMapping/${interface.interfaceId}/${operation.serviceId}/${operation.operationId}";
+    var url = "/ida/getIdaMapping/${interface.interfaceId}/${operation.serviceId}/${operation.operationId}?t=" + (new Date()).valueOf();
     $('#mappingdatagrid').treegrid({
       animate: true,
       fitColumns: true,

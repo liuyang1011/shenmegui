@@ -55,7 +55,7 @@
 
 </fieldset>
 </form>
-<table id="tt" style="height:370px; width:auto;" title="所有用户"
+<table id="tt" style="height:500px; width:auto;" title="所有用户"
 	   data-options="rownumbers:true,singleSelect:true,url:'/user/getAll',method:'get',toolbar:toolbar,pagination:true,
 				pageSize:10">
 	<thead>
