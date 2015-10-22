@@ -325,6 +325,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 for (int i = 0; i < reqListSDA.size(); i++) {
                     fillMappRow(sheet, counter, reqListSDA.get(i), reqListIda);
                 }
+                counter.increment();//分隔行
                 List<SDA> resListSDA = getSDAByParentName(si.getServiceId(), si.getOperationId(), "response");
                 for (int i = 0; i < resListSDA.size(); i++) {
                     fillMappRow(sheet, counter, resListSDA.get(i), resListIda);

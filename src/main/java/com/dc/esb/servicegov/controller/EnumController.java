@@ -388,7 +388,7 @@ public class EnumController {
     public
     @ResponseBody
     boolean saveElementMappingSToM(@RequestBody List list) {
-        OperationLog operationLog = systemLogService.record("公共代码","批量保存主从关系","");
+        OperationLog operationLog = systemLogService.record("枚举映射","保存枚举关系","");
         String logParams1 = "";
         String logParams2 = "";
         String logParams3 = "";
@@ -456,6 +456,7 @@ public class EnumController {
         enumService.deleteEnumElementsByIds(ids);
 
         operationLog.setParams("名称：" + logParams.substring(1, logParams.length()-1));
+        systemLogService.updateResult(operationLog);
         return true;
     }
 
@@ -464,7 +465,7 @@ public class EnumController {
     public
     @ResponseBody
     boolean deleteElementsMapping(@RequestBody List list) {
-        OperationLog operationLog = systemLogService.record("公共代码","主从关系批量删除","");
+        OperationLog operationLog = systemLogService.record("枚举映射","删除枚举关系","");
         String logParams1 = "";
         String logParams2 = "";
         String logParams3 = "";

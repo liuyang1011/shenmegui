@@ -106,19 +106,23 @@ public class SLAController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody List list) {
-		OperationLog operationLog = systemLogService.record("SLA","删除元素","数量：" + list.size());
-		String logParam = "元素：";
+		OperationLog operationLog = systemLogService.record("SLA","删除元素","");
+		String logParam = "";
+		String serviceId = "";
+		String operaionId = "";
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             Set<String> keySet = map.keySet();
             String id = map.get("slaId");
 			SLA sla = slaServiceImpl.findUniqueBy("slaId", id);
-			if(sla != null){
-				logParam += sla.getSlaName() + ",";
-			}
+			serviceId = sla.getServiceId();
+			operaionId = sla.getOperationId();
             slaServiceImpl.deleteById(id);
         }
-		operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
+
+		logParam = "服务ID：" + serviceId + ", 场景ID:" + operaionId + ", 数量：" + list.size();
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
         return true;
  

@@ -29,10 +29,16 @@ public class CategoryWordParserImpl implements IResourceParser {
 
 	private static final String SHEET_NAME = "表3类别词";
 	private static final int START_ROW_NUM = 1;
-	private static final int CHINESE_WORD_COLUMN = 0;
-	private static final int ENGLISH_WORD_COLUMN = 1;
-	private static final int ESGLISGA_COLUMN = 2;
-	private static final int REMARK_COLUMN = 3;
+
+	private static final String CHINESE_WORD= "类别词";
+	private static final String ENGLISH_WORD = "类别词英文全称";
+	private static final String ESGLISGA = "类别词英文缩写";
+	private static final String REMARK = "备注";
+
+	private static int CHINESE_WORD_COLUMN = 0;
+	private static int ENGLISH_WORD_COLUMN = 1;
+	private static int ESGLISGA_COLUMN = 2;
+	private static int REMARK_COLUMN = 3;
 
     @Autowired
     private CategoryWordServiceImpl categoryWordService;
@@ -44,6 +50,7 @@ public class CategoryWordParserImpl implements IResourceParser {
 
 	@Transactional
 	private void parseSheet(Sheet sheet) {
+		initIndexColnum(sheet);
 //		categoryWordService.deleteAll();
 		for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
 			Row row = sheet.getRow(rowNum);
@@ -85,5 +92,31 @@ public class CategoryWordParserImpl implements IResourceParser {
 		categoryWord.setEsglisgAb(ExcelUtils.getValue(row.getCell(ESGLISGA_COLUMN)));
 		categoryWord.setRemark(ExcelUtils.getValue(row.getCell(REMARK_COLUMN)));
 		return categoryWord;
+	}
+
+	/**
+	 * 初始化字段序号
+	 * @param sheet
+	 */
+	public void initIndexColnum(Sheet sheet){
+		if(sheet != null){
+			Row row = sheet.getRow(0);
+			for(int i = 0; i < row.getLastCellNum(); i++){//遍历第1行所有单元格
+				String content = row.getCell(i).getStringCellValue();
+
+				if(CHINESE_WORD.equals(content)){
+					CHINESE_WORD_COLUMN = i;
+				}
+				if(ENGLISH_WORD.equals(content)){
+					ENGLISH_WORD_COLUMN = i;
+				}
+				if(ESGLISGA.equals(content)){
+					ESGLISGA_COLUMN = i;
+				}
+				if(REMARK.equals(content)){
+					REMARK_COLUMN = i;
+				}
+			}
+		}
 	}
 }

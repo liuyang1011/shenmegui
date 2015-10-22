@@ -288,7 +288,7 @@ var sysManager = {
             }]
         });
         var urlPath = $('.msinterfacetree').tree('options').url;
-        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id;
+        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id+"_t" + new Date().getTime();
         $('.msinterfacetree').tree("reload", node.target);
         $('.msinterfacetree').tree('options').url = urlPath;
     }

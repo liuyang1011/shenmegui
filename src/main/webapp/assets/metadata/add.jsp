@@ -71,7 +71,7 @@
         </tr>
 	       <tr>
             				<th>类型</th>
-            				<td><input class="easyui-textbox" type="text" name="type"></td>
+            				<td><input class="easyui-textbox" data-options="required:true" type="text" name="type"></td>
             </tr>
 
         <tr>

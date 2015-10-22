@@ -214,7 +214,11 @@ public class ServiceInvokeController {
     public
     @ResponseBody
     boolean addServiceLink(@RequestBody List list) {
-        OperationLog operationLog = systemLogService.record("映射关系","添加","数量：" + list.size());
+        OperationLog operationLog = systemLogService.record("映射关系","添加","");
+        String logParam = "";
+
+        String serviceId ="";
+        String operationId = "";
 
         List consumers = (ArrayList)list.get(0);
         List providers = (ArrayList)list.get(1);
@@ -233,8 +237,8 @@ public class ServiceInvokeController {
                 String interfaceName = mapConsumer.get("interfaceName").toString();
                 String type = mapConsumer.get("type").toString();
                 String isStandard = mapConsumer.get("isStandard").toString();
-                String serviceId =mapConsumer.get("serviceId").toString();
-                String operationId =mapConsumer.get("operationId").toString();
+                serviceId =mapConsumer.get("serviceId").toString();
+                operationId =mapConsumer.get("operationId").toString();
                 operation = operationService.getOperation(serviceId,operationId);
                 ServiceInvoke c;
                 ServiceInvoke c2 = serviceInvokeService.getById(invokeId);
@@ -325,6 +329,9 @@ public class ServiceInvokeController {
         if(null != operation){
             operationService.editOperation(null,operation);
         }
+
+        logParam += "服务ID：" + serviceId + ", 场景ID:" + operationId + ", 消费者提供者关系：数量:" + list.size();
+        operationLog.setParams(logParam);
         systemLogService.updateResult(operationLog);
         return true;
     }

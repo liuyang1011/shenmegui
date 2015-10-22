@@ -167,8 +167,8 @@ public class FileManagerController {
     @RequiresPermissions({"file-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addfile")
     public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileDesc") String fileDesc,
-                             @RequestParam("systemId") String systemId, HttpServletRequest request) {
-        OperationLog operationLog = systemLogService.record("文件管理","上传文件","文件名称：" + file.getName());
+                             @RequestParam("systemId") String systemId, @RequestParam("isAll") String isAll, HttpServletRequest request) {
+        OperationLog operationLog = systemLogService.record("文件管理","上传文件","文件名称：" + file.getOriginalFilename());
 
         String fileName = file.getOriginalFilename();
         long fileSize = file.getSize();

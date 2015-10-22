@@ -14,6 +14,7 @@ import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -249,6 +250,7 @@ public class InterfaceController {
             ida.set_parentId(null);
             ida.setStructName("root");
             ida.setStructAlias("根节点");
+            ida.setXpath("/");
             idaService.save(ida);
             String parentId = ida.getId();
 
@@ -258,6 +260,7 @@ public class InterfaceController {
             ida.setStructName("request");
             ida.setStructAlias("请求头");
             ida.setSeq(0);
+            ida.setXpath("/request");
             idaService.save(ida);
 
             ida = new Ida();
@@ -266,6 +269,7 @@ public class InterfaceController {
             ida.setSeq(1);
             ida.setStructName("response");
             ida.setStructAlias("响应头");
+            ida.setXpath("/response");
             idaService.save(ida);
         }
 
@@ -608,7 +612,18 @@ public class InterfaceController {
     public
     @ResponseBody
     boolean headRelate(@PathVariable String interfaceId, @PathVariable String headIds) {
-        OperationLog operationLog = systemLogService.record("接口","关联报文头","接口ID：" + interfaceId + "; 报文头ID:" + headIds);
+        OperationLog operationLog = systemLogService.record("接口","关联报文头","");
+        String logParam = "接口ID：" + interfaceId + "; 报文头:";
+        if(StringUtils.isNotEmpty(headIds)){
+            String[] hIds = headIds.split("\\,");
+            for(int i = 0; i < hIds.length; i++){
+                InterfaceHead head = interfaceHeadService.findUniqueBy("headId", hIds[i]);
+                if(head != null){
+                    logParam += head.getHeadName() + ",";
+                }
+
+            }
+        }
 
         Interface entity = interfaceService.findUniqueBy("interfaceId", interfaceId);
         if(entity != null){
@@ -623,6 +638,8 @@ public class InterfaceController {
         if (interfaceId != null && headIds != null) {
             interfaceHeadRelateService.relateSave(interfaceId, headIds);
         }
+
+        operationLog.setParams(logParam.substring(0, logParam.length() - 2));
         systemLogService.updateResult(operationLog);
         return true;
     }

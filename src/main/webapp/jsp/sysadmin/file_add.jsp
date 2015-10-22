@@ -8,7 +8,8 @@
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<form id="fileform"  action="/fileManager/addfile" method="post" enctype="multipart/form-data">
+<form id="fileform"  action="/fileManager/addfile" method="post" enctype="multipart/form-data" class="formui">
+	<input type="hidden" id="isAll" name="isAll"/>
 	<table border="0" cellspacing="0" cellpadding="0">
 
 		<tr>
@@ -16,7 +17,7 @@
 				文件<br/><br/>
 			</th>
 			<td>
-				<input type="file"  class="easyui-file" name="file" style="style="width:175px"><br/><br/>
+				<input id="file" type="file"  class="easyui-file" name="file"  style="width:175px"><br/><br/>
 			</td>
 		</tr>
 		<tr>
@@ -24,7 +25,7 @@
 				系统<br/><br/>
 			</th>
 			<td>
-				<select class="easyui-combobox" id="systemId" name="systemId" style="width:155px" panelHeight="200px" data-options="editable:false">
+				<select class="easyui-combobox" id="systemId" name="systemId"  style="width:155px" panelHeight="200px" data-options="editable:false, required:true">
 				</select>
 			</td>
 		</tr>
@@ -52,17 +53,13 @@
 
 <script type="text/javascript">
 	var systemId="<%=systemId%>";
-	if(systemId!= "" && systemId != "null"){
+	if(systemId!= "" && systemId != "null" && isAll == "0"){
+		$('#isAll').attr("value", "0");
 		$(document).ready(function(){
 			$('#systemId').combobox({
-//				url:'/system/getSystemAll',
-//				method:'get',
-//				mode:'remote',
-				data : [{
-					"id" : systemId,
-					"text" : systemId,
-					"selected" : true
-				}],
+				url:'/system/getSystemAll',
+				method:'get',
+				value:systemId,
 				valueField:'id',
 				textField:'text'
 			});
@@ -82,6 +79,14 @@
 	}
 
 	function save(){
+		if("" == $("#file").val()){
+			alert("请选择一个文件！")
+			return false;
+		}
+		if (!$("#fileform" ).form('validate')) {
+			alert("必须选择一个系统!");
+			return false;
+		}
 		var processId = parent.parent.PROCESS_INFO.processId;
 		if(processId){
 			$("#fileform").attr("action", "/fileManager/addfile/" +processId);

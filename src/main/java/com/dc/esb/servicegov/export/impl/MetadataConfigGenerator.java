@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -39,13 +40,11 @@ public class MetadataConfigGenerator implements IConfigGenerator {
 			Element info = rootElement.addElement(metadatas.get(i)
 					.getMetadataId());
 			//向根节点下面的子节点插入属性
-			info.addAttribute("type", metadatas.get(i).getType());
-			if(null == metadatas.get(i).getType()) continue;
-			if (!metadatas.get(i).getType().equals("array")) {//判断子节点是否为数组
-				info.addAttribute("length", metadatas.get(i).getLength());
-				info.addAttribute("chinese_name", metadatas.get(i)
-						.getChineseName());
-				info.addAttribute("scale", metadatas.get(i).getScale());
+			addAttribute(info, "type", metadatas.get(i).getType());
+			if (!"array".equalsIgnoreCase(metadatas.get(i).getType()) && !"struct".equalsIgnoreCase(metadatas.get(i).getType()) ) {//判断子节点是否为数组
+				addAttribute(info,"length", metadatas.get(i).getLength() );
+				addAttribute(info,"chinese_name", metadatas.get(i).getChineseName());
+				addAttribute(info, "scale", metadatas.get(i).getScale());
 			}
 		}
 		try {
@@ -59,5 +58,12 @@ public class MetadataConfigGenerator implements IConfigGenerator {
 			log.error(e, e);
 		}
 		return metadataConfigFile;
+	}
+
+	public void addAttribute(Element element, String name, String value){
+		if(StringUtils.isEmpty(value)){
+			value = "";
+		}
+		element.addAttribute(name, value);
 	}
 }
