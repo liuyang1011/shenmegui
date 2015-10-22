@@ -17,11 +17,18 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 
 	private static final String SHEET_NAME = "表2中英文名称及缩写对照表";
 	private static final int START_ROW_NUM = 2;
-	private static final int CHINESE_WORD_COLUMN = 0;
-	private static final int ENGLISH_WORD_COLUMN = 1;
-	private static final int WORDA_COLUMN = 2;
-	private static final int OPT_DATE_COLUMN = 3;
-	private static final int OPT_USER_COLUMN = 4;
+
+	private static final String CHINESE_WORD = "词汇中文名称";
+	private static final String ENGLISH_WORD = "词汇英文名称";
+	private static final String WORDA = "词汇英文缩写";
+	private static final String OPT_DATE = "修订日期";
+	private static final String OPT_USER = "修订人";
+
+	private static int CHINESE_WORD_COLUMN = 0;
+	private static int ENGLISH_WORD_COLUMN = 1;
+	private static int WORDA_COLUMN = 2;
+	private static int OPT_DATE_COLUMN = 3;
+	private static int OPT_USER_COLUMN = 4;
 	@Autowired
     private EnglishWordServiceImpl englishWordService;
 	@Override
@@ -32,6 +39,7 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 
 	@Transactional
 	private void parseSheet(Sheet sheet) {
+		initIndexColnum(sheet);
 		englishWordService.deleteAll();
 		for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
 			Row row = sheet.getRow(rowNum);
@@ -51,4 +59,33 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 		return englishWord;
 	}
 
+
+	/**
+	 * 初始化字段序号
+	 * @param sheet
+	 */
+	public void initIndexColnum(Sheet sheet){
+		if(sheet != null){
+			Row row = sheet.getRow(0);
+			for(int i = 0; i < row.getLastCellNum(); i++){//遍历第1行所有单元格
+				String content = row.getCell(i).getStringCellValue();
+
+				if(CHINESE_WORD.equals(content)){
+					CHINESE_WORD_COLUMN = i;
+				}
+				if(ENGLISH_WORD.equals(content)){
+					ENGLISH_WORD_COLUMN = i;
+				}
+				if(OPT_DATE.equals(content)){
+					OPT_DATE_COLUMN = i;
+				}
+				if(WORDA.equals(content)){
+					WORDA_COLUMN = i;
+				}
+				if(OPT_USER.equals(content)){
+					OPT_USER_COLUMN = i;
+				}
+			}
+		}
+	}
 }

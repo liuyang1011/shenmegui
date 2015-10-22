@@ -92,7 +92,13 @@ public class SLATemplateController {
 	public @ResponseBody
 	   boolean saveOla(@RequestBody List list,@PathVariable(value = "serviceId") String serviceId,
 				@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
-		OperationLog operationLog = systemLogService.record("SLA模板","新增SLA模板元素","服务ID" + serviceId + "; 场景ID:" + operationId +"; SLA模板ID:" + slaTemplateId );
+		OperationLog operationLog = systemLogService.record("SLA模板","新增SLA模板元素","" );
+		String logParam = "服务ID：" + serviceId + "， 场景ID:" + operationId  ;
+
+		SLATemplate template = slaTemplateServiceImpl.findUniqueBy("slaTemplateId", slaTemplateId);
+		if(template != null){
+			logParam += "， SLA模板:" + template.getTemplateName() + "， 数量：" + list.size();
+		}
 
    	 for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
@@ -110,7 +116,7 @@ public class SLATemplateController {
             sla.setSlaTemplateId(slaTemplateId);
             slaServiceImpl.saveTemplate(sla);
    	 }
-
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
        return true;
    }
@@ -120,11 +126,17 @@ public class SLATemplateController {
 	boolean setTemplateData(@PathVariable(value = "serviceId") String serviceId,
 					@PathVariable(value = "operationId") String operationId,@PathVariable(value = "slaTemplateId") String slaTemplateId) {
 		OperationLog operationLog = systemLogService.record("SLA模板","新增SLA模板元素","服务ID" + serviceId + "; 场景ID:" + operationId +"; SLA模板ID:" + slaTemplateId );
+		String logParam = "服务ID：" + serviceId + "， 场景ID:" + operationId  ;
 
+		SLATemplate template = slaTemplateServiceImpl.findUniqueBy("slaTemplateId", slaTemplateId);
+		if(template != null){
+			logParam += "， SLA模板:" + template.getTemplateName() ;
+		}
 		//查询模版sla数据
 		Map<String,String> map = new HashMap<String, String>();
 		map.put("slaTemplateId",slaTemplateId);
 		List<SLA> templateList = slaServiceImpl.getTemplateSLABy(map);
+		logParam += "， 数量：" + templateList.size();
 
 		//查询非模版sla数据
 		Map<String, String> params = new HashMap<String, String>();
@@ -156,7 +168,7 @@ public class SLATemplateController {
 				slaServiceImpl.insert(sla);
 			}
 		}
-
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
 		return true;
 	}

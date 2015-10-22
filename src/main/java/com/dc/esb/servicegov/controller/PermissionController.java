@@ -101,7 +101,6 @@ public class PermissionController {
     boolean savePermission2(@RequestBody ArrayList list,@PathVariable("roleId") String roleId) {
         parsePermissionData2(list, roleId);
         return true;
-
     }
 
     //权限递归
@@ -139,6 +138,9 @@ public class PermissionController {
 
     //菜单递归
     private void parsePermissionData2(ArrayList list,String roleId){
+        OperationLog operationLog = systemLogService.record("权限","权限分配","");
+        String logParam = "角色：" + roleId + "；权限:";
+
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,Object> map = (LinkedHashMap<String,Object>)list.get(i);
             if (map.get("type").equals("permission")){
@@ -155,10 +157,16 @@ public class PermissionController {
                         relation.setSgMenuId(sgMenuId);
                         relation.setRoleId(roleId);
                         roleMenuRelationService.insertRelation(relation);
+
+                        SGMenu menu = sgMenuService.findUniqueBy("id", sgMenuId);
+                        logParam += "[添加权限：" + menu.getName() + "],";
                     }
                 }else{//删除
                     if(permissionState.equals("0")){
                         roleMenuRelationService.deleteRelation(relation);
+
+                        SGMenu menu = sgMenuService.findUniqueBy("id", sgMenuId);
+                        logParam += "[删除权限：" + menu.getName() + "],";
                     }
                 }
             }else{

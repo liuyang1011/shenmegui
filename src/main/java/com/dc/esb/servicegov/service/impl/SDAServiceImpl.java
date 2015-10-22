@@ -84,6 +84,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRoot.setStructAlias("根元素");
         sdaRoot.setHeadId(headId);
         sdaRoot.setSeq(0);
+        sdaRoot.setXpath("/");
         sdaDAO.save(sdaRoot);
         result.put("root", sdaRoot);
 
@@ -94,6 +95,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaReq.setHeadId(headId);
         sdaReq.setSeq(1);
         sdaReq.setParentId(sdaRoot.getSdaId());
+        sdaReq.setXpath("/request");
         sdaDAO.save(sdaReq);
         result.put("request", sdaReq);
 
@@ -104,6 +106,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRes.setHeadId(headId);
         sdaRes.setSeq(2);
         sdaRes.setParentId(sdaRoot.getSdaId());
+        sdaReq.setXpath("/response");
         sdaDAO.save(sdaRes);
         result.put("response", sdaRes);
         return result;
@@ -153,7 +156,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         fields.put("text", "structName");
         fields.put("append1", "structAlias");
         fields.put("append2", "type");
-        fields.put("append3", "length");
+        fields.put("append3", "xpath");
         fields.put("append4", "metadataId");
         fields.put("append5", "required");
         fields.put("append6", "remark");

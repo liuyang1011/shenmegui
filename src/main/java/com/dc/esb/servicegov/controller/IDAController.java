@@ -81,14 +81,31 @@ public class IDAController {
 	boolean save(@RequestBody
 	Ida [] idas) {
 		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
-		String logParam = "IDA:";
+		String logParam = "列表:";
 		for(int i=0; i < idas.length; i++){
-			logParam += idas[i].getStructName() + ",";
+			logParam += "[接口ID:" + idas[i].getInterfaceId() + ",字段名称：" +idas[i].getStructName() + "],";
 		}
 
 		idaService.saveOrUpdate(idas);
 
-		operationLog.setParams(logParam.substring(0, logParam.length()-2));
+		operationLog.setParams(logParam.substring(0, logParam.length() - 2));
+		systemLogService.updateResult(operationLog);
+		return true;
+	}
+	@RequiresPermissions({"ida-add"})
+	@RequestMapping(method = RequestMethod.POST, value = "/headAdd", headers = "Accept=application/json")
+	public @ResponseBody
+	boolean headAdd(@RequestBody
+				 Ida [] idas) {
+		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
+		String logParam = "列表:";
+
+		idaService.saveOrUpdate(idas);
+
+		for(int i=0; i < idas.length; i++){
+			logParam += "[报文头:" + idas[i].getHeads().getHeadName() + ",字段名称：" +idas[i].getStructName() + "],";
+		}
+		operationLog.setParams(logParam.substring(0, logParam.length() - 2));
 		systemLogService.updateResult(operationLog);
 		return true;
 	}
@@ -229,7 +246,7 @@ public class IDAController {
 	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
-		OperationLog operationLog = systemLogService.record("IDA","批量更新（置空元数据）","");
+		OperationLog operationLog = systemLogService.record("IDA", "批量更新（置空元数据）", "");
 		String logParam = "ida:";
 
 		for (int i = 0; i < list.size(); i++) {
@@ -251,10 +268,10 @@ public class IDAController {
 	@ResponseBody
 	public boolean moveUp(String id){
 		OperationLog operationLog = systemLogService.record("IDA","位置上移","");
-		String logParam = "名称:";
+		String logParam = "列表:";
 		Ida entity = idaService.findUniqueBy("id", id);
 		if(entity != null){
-			logParam += entity.getStructName();
+			logParam += "[接口ID:" + entity.getInterfaceId() +", 字段名称：" +  entity.getStructName() + "],";
 		}
 
 		boolean result = idaService.moveUp(id);
@@ -269,10 +286,46 @@ public class IDAController {
 	@ResponseBody
 	public boolean moveDown(String id){
 		OperationLog operationLog = systemLogService.record("IDA","位置下移","");
-		String logParam = "名称:";
+		String logParam = "列表:";
 		Ida entity = idaService.findUniqueBy("id", id);
 		if(entity != null){
-			logParam += entity.getStructName();
+			logParam += "[接口ID:" + entity.getInterfaceId() +", 字段名称：" +  entity.getStructName() + "],";
+		}
+
+		boolean result = idaService.moveDown(id);
+
+		operationLog.setParams(logParam);
+		systemLogService.updateResult(operationLog);
+		return result;
+	}
+
+	@RequiresPermissions({"ida-update"})
+	@RequestMapping("/headMoveUp")
+	@ResponseBody
+	public boolean headMoveUp(String id){
+		OperationLog operationLog = systemLogService.record("IDA","位置上移","");
+		String logParam = "列表:";
+		Ida entity = idaService.findUniqueBy("id", id);
+		if(entity != null){
+			logParam += "[报文头:" + entity.getHeads().getHeadName() +", 字段名称：" +  entity.getStructName() + "],";
+		}
+
+		boolean result = idaService.moveUp(id);
+
+		operationLog.setParams(logParam);
+		systemLogService.updateResult(operationLog);
+		return result;
+	}
+
+	@RequiresPermissions({"ida-update"})
+	@RequestMapping("/headMoveDown")
+	@ResponseBody
+	public boolean headMoveDown(String id){
+		OperationLog operationLog = systemLogService.record("IDA","位置下移","");
+		String logParam = "列表:";
+		Ida entity = idaService.findUniqueBy("id", id);
+		if(entity != null){
+			logParam += "[报文头:" + entity.getHeads().getHeadName() +", 字段名称：" +  entity.getStructName() + "],";
 		}
 
 		boolean result = idaService.moveDown(id);
