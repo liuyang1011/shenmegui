@@ -227,6 +227,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         private String constraint;
 
+        private String xpath;
+
         public SDABean(SDA sda){
             setSdaId(sda.getSdaId());
             setStructName(sda.getStructName());
@@ -247,6 +249,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             setRequired(sda.getRequired());
             setArgType(sda.getArgType());
             setConstraint(sda.getConstraint());
+            setXpath(sda.getXpath());
+
         }
 
         public String getSdaId() {
@@ -399,6 +403,14 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         public void setConstraint(String constraint) {
             this.constraint = constraint;
+        }
+
+        public String getXpath() {
+            return xpath;
+        }
+
+        public void setXpath(String xpath) {
+            this.xpath = xpath;
         }
     }
 
@@ -555,6 +567,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         endSda.setRemark("end");
         endSda.setType(sda.getType());
         endSda.setXpath(sda.getXpath().substring(0, sda.getXpath().lastIndexOf("/")) + "/");
+        sdaDAO.save(endSda);
         return endSda;
     }
 

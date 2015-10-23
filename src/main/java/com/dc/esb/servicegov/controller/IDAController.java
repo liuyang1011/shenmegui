@@ -249,13 +249,25 @@ public class IDAController {
 				serviceId = sda.getServiceId();
 				operationId = sda.getOperationId();
 
-				if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){ //如果
+				if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){ //如果是数组，生成一个结束元素
 					Ida arrayEndIda = new Ida();
 					SDA arrayEndSda = sdaService.genderArrayEnd(sda);
+
+					Map<String, String> params = new HashMap<String, String>();
+					params.put("state", Constants.IDA_STATE_DISABLE);
+					params.put("_parentId", ida.get_parentId());
+					params.put("xpath", arrayEndSda.getXpath() + ida.getMetadataId());
+					List<Ida> endIdas = idaService.findBy(params);
+					if(endIdas != null && endIdas.size() > 0 ){
+						arrayEndIda = endIdas.get(0);
+					}
+
 					arrayEndIda.setSdaId(arrayEndSda.getSdaId());
 					arrayEndIda.setXpath(arrayEndSda.getXpath());
 					arrayEndIda.setInterfaceId(ida.getInterfaceId());
 					arrayEndIda.setState(Constants.IDA_STATE_DISABLE);
+					arrayEndIda.setSeq(ida.getSeq() + 1);
+					arrayEndIda.set_parentId(ida.get_parentId());
 					idaService.save(arrayEndIda);
 				}
 			}

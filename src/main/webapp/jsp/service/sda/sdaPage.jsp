@@ -74,7 +74,7 @@ var delIds = [];
 				data: [{
 					id: uuid,
 					parentId:node.id,
-					xpath:node.xpath  //初始路径为父路径
+					append3:node.append3  //初始路径为父路径
 				}]
 			});
 			editingId = uuid;
@@ -120,7 +120,7 @@ var delIds = [];
 					node.remark = editNode.append6;
 					node.constraint = editNode.append7;
 					node.seq = editNode.attributes;
-					node.xpath = editNode.xpath + "/" + editNode.append4;
+					node.xpath = editNode.append3;
 
 					editNodes.push(node);
 				}
@@ -293,7 +293,8 @@ var delIds = [];
 		node2.text =  record.metadataId;
 		node2.append1 = record.chineseName;
 		node2.append2 = record.formula;
-		node2.append3 = record.xpath+"/"+record.metadataId;
+		node2.append3 = node.append3+"/"+record.metadataId;
+		alert(node2.append3);
 		node2.append4 = record.metadataId;
 		$('#tg').treegrid('refreshRow',node2.id);
 	}
