@@ -169,13 +169,15 @@ public class ServiceController {
         return true;
     }
 
-    @RequiresPermissions({"service-delete"})
+    @RequiresPermissions({"serviceCategory-delete"})
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteServiceCategory/{Id}", headers = "Accept=application/json")
     public
     @ResponseBody
     boolean deleteServiceCategory(@PathVariable String Id) {
-        //大类下是否有服务
+        //大类下是否有服务,大类下是否有小类
         List<Service> list = serviceServiceImpl.findBy("categoryId", Id);
+        List<ServiceCategory> list2 = serviceCategoryServiceImpl.findBy("parentId",Id);
+        if(list2.size()>0) return false;
         if(list.size()>0) return false;
         OperationLog operationLog = systemLogService.record("服务分类", "删除", "分类ID：" + Id);
 

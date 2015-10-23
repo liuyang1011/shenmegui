@@ -33,7 +33,14 @@ public class IdaHisController {
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("interfaceHisId", interfaceHisId);
 		reqMap.put("state", Constants.IDA_STATE_COMMON);
-		List<IdaHIS> idaHISs = idaHISService.findBy(reqMap,"seq");
+
+//		List<IdaHIS> idaHISs = idaHISService.findBy(reqMap,"seq");
+		//TODO 空和0都要显示
+		String hql = "from IdaHIS t where t.interfaceHisId = '"+interfaceHisId+"'";
+		hql += " and (t.state = '"+Constants.IDA_STATE_COMMON+"' or t.state is null) order by seq";
+
+		List<IdaHIS> idaHISs = idaHISService.findBy(hql);
+
 		for(IdaHIS idaHIS:idaHISs){
 			idaHIS.setHeads(null);
 		}

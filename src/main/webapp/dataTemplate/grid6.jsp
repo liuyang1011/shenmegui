@@ -45,7 +45,7 @@
 
 </fieldset>
 </form>
-<table id="tt" style="height:500px; width:100%;"
+<table id="tt" style="height:620px; width:100%;"
        title="所有类别词">
     <thead>
     <tr>
@@ -76,7 +76,16 @@
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
-        $('#tt').edatagrid('addRow');
+            //TODO 还在改
+//        $('#tt').edatagrid('addRow');
+            uiinit.win({
+                top:"20px",
+                left:"150px",
+                w: 500,
+                iconCls: 'icon-add',
+                title: "新增类别词",
+                url: "/jsp/categoryWord/add.jsp"
+            });
         }
     });
     </shiro:hasPermission>
@@ -176,8 +185,8 @@
             method: 'get',
             toolbar: toolbar,
             pagination: true,
-            pageSize: 15,
-            pageList: [15,30,50],
+            pageSize: 20,
+            pageList: [20,30,50],
             onBeginEdit: function (index, row) {
                 editedRows.push(index);
             },

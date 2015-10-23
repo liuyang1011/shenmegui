@@ -45,7 +45,7 @@
 
 </fieldset>
 </form>
-<table id="tt" style="height:370px; width:auto;" title="所有角色">
+<table id="tt" style="height:500px; width:auto;" title="所有角色">
     <thead>
     <tr>
         <th data-options="field:'role',checkbox:true"></th>

@@ -178,7 +178,7 @@ public class IDAController {
 		return result;
 	}
 
-	@RequiresPermissions({"system-update"})
+	@RequiresPermissions({"ida-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/idaMapping/{serviceId}/{operationId}/{interfaceId}/{systemId}", headers = "Accept=application/json")
 	public @ResponseBody ModelAndView idaMapping( @PathVariable String serviceId, @PathVariable String operationId, @PathVariable String interfaceId, @PathVariable String systemId){
 		Interface inter = interfaceService.getById(interfaceId);

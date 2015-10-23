@@ -102,7 +102,7 @@
       if(item.type == "permission"){
         //把已经有的权限打勾
         if(item.permissionState == "1"){
-          $('#tg').treegrid('select',item.id);
+//          $('#tg').treegrid('select',item.id);
         }
       }else{
         //子集全打勾自身也打勾
@@ -114,7 +114,7 @@
         });
         if(flag){
           item.permissionState = "1";
-          $('#tg').treegrid('select',item.id);
+//          $('#tg').treegrid('select',item.id);
           $('#tg').treegrid("refresh",item.id);
 
         }
@@ -126,7 +126,7 @@
   var pareseChildrenSelect = function(row){
     if(row.children.length > 0){
       $.each(row.children,function (index, item){
-        $('#tg').treegrid('select',item.id);
+//        $('#tg').treegrid('select',item.id);
         item.permissionState = "1";
         selectSamePermision(item.permissionId,rows,item.permissionState);
         pareseChildrenSelect(item);
@@ -155,7 +155,7 @@
         if(permissionState == "0"){
           $('#tg').treegrid('unselect',item.id);
         }else{
-          $('#tg').treegrid('select',item.id);
+//          $('#tg').treegrid('select',item.id);
         }
         $('#tg').treegrid("refresh",item.id);
       }

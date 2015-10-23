@@ -156,7 +156,7 @@ public class CategoryWordController {
         return categoryWordService.getByPotDate(potDate);
     }
 
-    @RequiresPermissions({"categoryWord-add"})
+   /* @RequiresPermissions({"categoryWord-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -165,6 +165,22 @@ public class CategoryWordController {
 
         categoryWord.setOptDate(DateUtils.format(new Date()));
         categoryWordService.save(categoryWord);
+
+        systemLogService.updateResult(operationLog);
+        return true;
+    }*/
+
+    @RequiresPermissions({"categoryWord-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean add(@RequestBody CategoryWord categoryWord) {
+        OperationLog operationLog = systemLogService.record("类别词","添加","中文名称：" + categoryWord.getChineseWord()+"; 英文名称："+ categoryWord.getEsglisgAb());
+
+        categoryWord.setOptDate(DateUtils.format(new Date()));
+        String userName = (String) SecurityUtils.getSubject().getPrincipal();
+        categoryWord.setOptUser(userName);
+        categoryWordService.insert(categoryWord);
 
         systemLogService.updateResult(operationLog);
         return true;
@@ -317,6 +333,26 @@ public class CategoryWordController {
     @ResponseBody
     boolean uniqueValid(String esglisgAb) {
         return categoryWordService.uniqueValid(esglisgAb);
+    }
+
+    /**
+     * 类别词chineseWord唯一性验证
+     *
+     * @param chineseWord
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/uniqueValidName", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean uniqueValidName(String chineseWord) {
+        Map<String,String> map = new HashMap<String, String>();
+        try {
+            chineseWord = URLDecoder.decode(chineseWord,"UTF-8");
+        }catch (UnsupportedEncodingException e){
+
+        }
+        map.put("chineseWord",chineseWord);
+        return categoryWordService.uniqueValid(map);
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

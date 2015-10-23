@@ -183,6 +183,8 @@
     </div>
     </shiro:hasPermission>
 </div>
+
+<%--<shiro:has name="interface-add,interface-update,interface-delete">--%>
 <div id="mm-mxinterfacetree1" class="easyui-menu" style="width: 120px;display: none">
     <shiro:hasPermission name="interface-add">
     <div onclick="interfaceManager.append()" data-options="iconCls:'icon-add'">
@@ -200,7 +202,9 @@
     </div>
     </shiro:hasPermission>
 </div>
+<%--</shiro:hasPermissions>--%>
 
+<shiro:hasPermission name="protocol-add">
 <div id="mm-mxprotocols" class="easyui-menu" style="width: 120px;display: none">
     <shiro:hasPermission name="protocol-add">
     <div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">
@@ -214,7 +218,9 @@
         <%--删除协议--%>
     <%--</div>--%>
 </div>
+</shiro:hasPermission>
 
+<shiro:hasAnyRoles name="protocol-update,protocol-delete">
 <div id="mm-mxprotocol" class="easyui-menu" style="width: 120px;display: none">
     <%--<div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">--%>
         <%--新增协议--%>
@@ -230,6 +236,8 @@
     </div>
     </shiro:hasPermission>
 </div>
+</shiro:hasAnyRoles>
+
 <div id="mm-mxfiles" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.refreshFile()" data-options="iconCls:'icon-add'">
         刷新

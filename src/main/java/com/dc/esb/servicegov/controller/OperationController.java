@@ -600,4 +600,43 @@ public class OperationController {
         systemLogService.updateResult(operationLog);
         return true;
     }
+
+    /**
+     * 下线，变为下线状态  只有已上线状态的服务才能进行下线
+     * @param list
+     * @return
+     * @throws Throwable
+     */
+//    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"operation-revise"})
+    @RequestMapping(method = RequestMethod.POST, value = "/quit", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean quit(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("服务场景","下线","");
+        String logParam = "场景：";
+
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String,String> params = new HashMap<String, String>();
+            params.put("serviceId",serviceId);
+            params.put("operationId",operationId);
+            Operation operation = operationServiceImpl.findUniqueBy(params);
+            boolean canQuit = operationServiceImpl.judgeCanQuit(operation);
+            if(canQuit){
+                operation.setState(Constants.Operation.OPT_STATE_QUIT);
+                operationServiceImpl.save(operation);
+            }else {
+                return false;
+            }
+
+            logParam += "[服务ID:" + serviceId + ", 场景ID:" + operationId + "],";
+        }
+
+        operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
+        systemLogService.updateResult(operationLog);
+        return true;
+    }
 }

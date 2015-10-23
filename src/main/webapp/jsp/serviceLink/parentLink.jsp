@@ -217,52 +217,52 @@
                 constructBlock(sourceRow, sourceBlock);
             }
 
+            var prenode ="";
+
             for (var i = 0; i < result.length; i++) {
                 connections.push({
                     connectionId: result[i].sourceId + "-" + result[i].targetId,
                     sourceId: result[i].sourceId,
                     targetId: result[i].targetId
                 });
-                var sourceId = result[i].sourceId;
-
-                var sourceBlock = {
-                    blockId: sourceId,
-                    positionX: initPosX,
-                    positionY: initPosY
-                };
-                if (sourceId == startId) {
-                    sourceBlock = {
-                        blockId: sourceId,
-                        positionX: 400,
-                        positionY: 100
-                    };
-                }
-                if (!containBlock(blocks, sourceBlock)) {
-                    var sourceRow = data[sourceId];
-                    constructBlock(sourceRow, sourceBlock);
-                    blocks.push(sourceBlock);
-                    initPosY = 300;
-                    initPosX = initPosX + 300;
-                }
                 var targetId = result[i].targetId;
-                var sourceBlock = getBlock(blocks, sourceId);
                 var targetBlock = {
                     blockId: targetId,
-                    positionX: sourceBlock.positionX + 300,
+                    positionX: initPosX,
                     positionY: initPosY
                 };
                 if (targetId == startId) {
                     targetBlock = {
                         blockId: targetId,
                         positionX: 400,
-                        positionY: 100
+                        positionY: 150
                     };
                 }
                 if (!containBlock(blocks, targetBlock)) {
                     var targetRow = data[targetId];
                     constructBlock(targetRow, targetBlock);
                     blocks.push(targetBlock);
-                    initPosY += 100;
+                    initPosY += 150;
+                }
+
+                var sourceId = result[i].sourceId;
+                var targetBlock = getBlock(blocks, targetId);
+                if(targetId !=prenode ){
+                    prenode = targetId;
+                    initPosY +=150;
+                    initPosX = targetBlock.positionX ;
+                }
+
+                var sourceBlock = {
+                    blockId: sourceId,
+                    positionX: initPosX,
+                    positionY: targetBlock.positionY + 150
+                };
+                if (!containBlock(blocks, sourceBlock)) {
+                    var sourceRow = data[sourceId];
+                    constructBlock(sourceRow, sourceBlock);
+                    blocks.push(sourceBlock);
+//                    initPosX = initPosX + 300;
                 }
             }
             document.getElementById("statemachine-demo").innerHTML = context;
@@ -305,7 +305,7 @@
                     instance.makeSource(windows, {
                         filter: ".ep",
                         anchor: "Continuous",
-                        connector: ["StateMachine", {curviness: 0}],
+                        connector: ["Flowchart",  {cornerRadius: 2}],
                         connectorStyle: {
                             strokeStyle: "#5c96bc",
                             lineWidth: 1,

@@ -22,7 +22,7 @@
     <script type="text/javascript" src="/js/sysadmin/sysManager.js"></script>
 </head>
 <body>
-<table id="tg" style="height:370px;width: 100%;" data-options="pageSize:5">
+<table id="tg" style="height:670px;width: 100%;" data-options="pageSize:5">
     <thead>
     <tr>
         <th data-options="field:'fileName',width:'15%'">
@@ -107,14 +107,14 @@
             title: '文件管理',
             iconCls: 'icon-edit',//图标
             width: '100%',
-            height: '400px',
+            height: '600px',
             collapsible: true,
             method: method,
             url: url,
             singleSelect: true,//是否单选
             pagination: true,//分页控件
-            pageSize: 5,//每页显示的记录条数，默认为10
-            pageList: [5, 10, 15, 20],//可以设置每页记录条数的列表
+            pageSize: 10,//每页显示的记录条数，默认为10
+            pageList: [10, 15, 20],//可以设置每页记录条数的列表
             rownumbers: false,//行号
             toolbar: toolbar,
             onLoadError: function (responce) {

@@ -58,7 +58,7 @@
                      }*/
                     serviceId = $("#1").textbox('getValue');
                     var operationId = $("#3").textbox('getValue');
-                    var url = '/ida/idaMapping/' + serviceId + '/' + operationId + '/' + item.interfaceId + '/' + item.systemId;
+                    var url = '/ida/idaMapping/' + serviceId + '/' + operationId + '/' + item.interfaceId + '/' + item.systemId ;
                     var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '"  style="width:100%;height:100%;"></iframe>';
                     var title = "ida映射元数据";
 
