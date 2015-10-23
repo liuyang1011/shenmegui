@@ -186,7 +186,7 @@ public class ServiceLinkController {
     public
     @ResponseBody
     Map<String, Collection<?>> getServiceLinkStartWith(@PathVariable("nodeId") String nodeId) {
-        initX = 0;
+        initX = 10;
         initY = 100;
         List<InvokeConnection> invokeConnections = invokeConnectionService.getConnectionsStartWith(nodeId, new ArrayList<String>());
         Map<String, Collection<?>> renderObj = new HashMap<String, Collection<?>>();
@@ -196,14 +196,14 @@ public class ServiceLinkController {
             String sourceId = invokeConnection.getSourceId();
             String targetId = invokeConnection.getTargetId();
             if(!formerSourceId.equals(sourceId)){
-                initX +=350;
+                initX +=500;
                 initY = 100;
             }
             if (null != sourceId && !nodes.containsKey(sourceId)) {
                 ServiceInvoke sourceServiceInvoke = serviceInvokeService.getById(invokeConnection.getSourceId());
                 GraphNode sourceGraphNode = constructGraphNode(sourceServiceInvoke);
                 List<GraphColumn> columns = constructGraphColumns(sourceServiceInvoke);
-                initX += 350;
+                initX += 500;
                 formerSourceId = sourceId;
                 sourceGraphNode.setColumns(columns);
                 nodes.put(sourceId, sourceGraphNode);
