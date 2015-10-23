@@ -261,7 +261,8 @@
                 var sourceBlock = {
                     blockId: sourceId,
                     positionX: levelX[targetBlock.level +1],
-                    positionY: targetBlock.positionY + 150
+                    positionY: targetBlock.positionY + 150,
+                    level : targetBlock.level +1
                 };
                 if (!containBlock(blocks, sourceBlock)) {
                     var sourceRow = data[sourceId];
