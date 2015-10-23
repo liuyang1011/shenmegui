@@ -134,7 +134,8 @@
                     {'id':'3','text':'已发布'},
                     {'id':'4','text':'已上线'},
                     {'id':'5','text':'已下线'},
-                    {'id':'7','text':'修订'}
+                    {'id':'7','text':'修订'},
+                    {'id':'8','text':'已下线'}
 
                  ]
                  "
@@ -257,7 +258,10 @@
               return "<font color='red'>待审核</font>";
           }
           if (value == 7) {
-              return "<font color='green'>修订</font>";
+              return "<font color='red'>修订</font>";
+          }
+          if (value == 8) {
+              return "<font color='red'>已下线</font>";
           }
       },
     version: function (value, row, index) {

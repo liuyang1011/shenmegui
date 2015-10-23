@@ -642,6 +642,15 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return false;
     }
 
+    public boolean judgeCanQuit(Operation operation){
+        //已上线 可以变为下线状态
+        String state = operation.getState();
+        if(state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+            return true;
+        }
+        return false;
+    }
+
     public static class OperationBean{
         private String operationId;
 
