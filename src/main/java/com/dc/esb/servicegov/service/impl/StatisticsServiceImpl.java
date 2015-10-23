@@ -74,7 +74,9 @@ public class StatisticsServiceImpl implements StatisticsService{
      * 根据系统id，类型分组
      */
     public List<Object[]> groupBySystemIdType(Map<String, String[]> values, Page page){
-        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si where si.type != null";
+        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si, " + Operation.class.getName()
+                + " as o where si.type != null and si.serviceId = o.serviceId" +
+                " and si.operationId = o.operationId and o.state in(" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE + ")";
         if(values.get("type") != null && values.get("type").length > 0){
             if (StringUtils.isNotEmpty(values.get("type")[0])) {
                 hql += " and si.type = " + values.get("type")[0];
@@ -90,7 +92,7 @@ public class StatisticsServiceImpl implements StatisticsService{
                 hql += " and si.system.systemChineseName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
-        hql += " group by systemId, type";
+        hql += " group by si.systemId, si.type";
         List<Object[]> list = serviceInvokeDAO.findBy(hql, page, new ArrayList<SearchCondition>());
         return list;
     }
@@ -145,8 +147,10 @@ public class StatisticsServiceImpl implements StatisticsService{
      * @return
      */
     public long getOperationRelaCount(String systemId, String type){
-        String hql = "select count(*) from " + ServiceInvoke.class.getName()
-                + " as si where si.systemId = ? and si.type = ? group by serviceId, operationId";
+        String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si, " + Operation.class.getName()
+                + " as o where si.serviceId = o.serviceId and si.operationId = o.operationId" +
+                " and o.state in(" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE + ")"
+                + " and si.systemId = ? and si.type = ? group by si.serviceId, si.operationId";
         long count = serviceInvokeDAO.find(hql, systemId, type).size();
         return count;
     }
@@ -181,7 +185,9 @@ public class StatisticsServiceImpl implements StatisticsService{
     }
     //根据系统id，type计算服务场景 消费者数量大于1的场景数
     public long getOperationReuseCount(List<String> serviceIds){
-        String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM (SELECT service_id, operation_id FROM service_invoke WHERE TYPE = :providerType AND service_id in (:serviceIds) GROUP BY service_id, operation_id) a ," +
+        String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM (SELECT si.service_id, si.operation_id FROM service_invoke si, operation o WHERE TYPE = :providerType AND si.service_id in (:serviceIds)" +
+                " and si.service_id = o.service_id and si.operation_id = o.operation_id and o.state in(" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE + ")" +
+                " GROUP BY si.service_id, si.operation_id) a ," +
                 " service_invoke b WHERE a.service_id = b.service_id AND a.operation_id = b.operation_id AND TYPE=:cousumerType GROUP BY b.service_id,  b.operation_id HAVING COUNT(*) > 1) c";
         Session session = serviceInvokeDAO.getSession();
         Query query = session.createSQLQuery(sql.toString());
@@ -544,7 +550,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         long operationReuseNum = 0;
 
         if(serviceIds.size() > 0){
-            String optNumHql = "select count(*) from  "+ Operation.class.getName() + " as o where o.serviceId in (:serviceIds)";
+            String optNumHql = "select count(*) from  "+ Operation.class.getName() + " as o where o.serviceId in (:serviceIds)" + " and o.state in(" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE +")";
             Map<String, Object> p1 = new HashMap<String, Object>();
             p1.put("serviceIds", serviceIds);
             p1.put("type", Constants.INVOKE_TYPE_CONSUMER);

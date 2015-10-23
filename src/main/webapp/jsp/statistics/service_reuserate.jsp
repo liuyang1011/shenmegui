@@ -87,7 +87,9 @@
         <tr>
             <th data-options="field:'text',width:'200'">服务</th>
             <th data-options="field:'id',width:'150'">编码</th>
+            <!--
             <th data-options="field:'append2',width:'100'">关联服务数</th>
+            -->
             <th data-options="field:'append3',width:'100'">场景数</th>
 
             <th data-options="field:'append4',width:'100'">复用场景数</th>

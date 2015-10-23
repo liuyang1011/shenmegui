@@ -50,6 +50,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRoot.setSeq(0);
         sdaRoot.setServiceId(operation.getServiceId());
         sdaRoot.setOperationId(operation.getOperationId());
+        sdaRoot.setXpath("/");
         sdaDAO.save(sdaRoot);
         result.add(sdaRoot);
 
@@ -61,6 +62,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaReq.setServiceId(operation.getServiceId());
         sdaReq.setOperationId(operation.getOperationId());
         sdaReq.setParentId(sdaRoot.getSdaId());
+        sdaReq.setXpath("/request");
         sdaDAO.save(sdaReq);
         result.add(sdaReq);
 
@@ -72,6 +74,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRes.setServiceId(operation.getServiceId());
         sdaRes.setOperationId(operation.getOperationId());
         sdaRes.setParentId(sdaRoot.getSdaId());
+        sdaRes.setXpath("/response");
         sdaDAO.save(sdaRes);
         result.add(sdaRes);
         return result;
@@ -170,6 +173,20 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     }
 
+    public List<TreeNode> genderSDATree2(String serviceId, String operationId) {
+        List<SDA> list = getSDAListBySO(serviceId, operationId);
+
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("id", "sdaId");
+        fields.put("text", "structAlias");
+
+        EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
+
+        List<TreeNode> nodeList = eUtil.convertTree(list, fields);
+        return nodeList;
+
+    }
+
     public static class SDABean {
 
         private String sdaId;
@@ -210,6 +227,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         private String constraint;
 
+        private String xpath;
+
         public SDABean(SDA sda){
             setSdaId(sda.getSdaId());
             setStructName(sda.getStructName());
@@ -230,6 +249,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             setRequired(sda.getRequired());
             setArgType(sda.getArgType());
             setConstraint(sda.getConstraint());
+            setXpath(sda.getXpath());
+
         }
 
         public String getSdaId() {
@@ -383,6 +404,14 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         public void setConstraint(String constraint) {
             this.constraint = constraint;
         }
+
+        public String getXpath() {
+            return xpath;
+        }
+
+        public void setXpath(String xpath) {
+            this.xpath = xpath;
+        }
     }
 
     public String save(SDA[] sdas) {
@@ -528,4 +557,18 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         }
         return false;
     }
+
+    //数组自动生成一个结尾sda
+    public SDA genderArrayEnd(SDA sda){
+        SDA endSda = new SDA();
+        endSda.setSdaId(UUID.randomUUID().toString());
+        endSda.setStructAlias(sda.getStructAlias());
+        endSda.setStructName(sda.getStructName());
+        endSda.setRemark("end");
+        endSda.setType(sda.getType());
+        endSda.setXpath(sda.getXpath().substring(0, sda.getXpath().lastIndexOf("/")) + "/");
+        sdaDAO.save(endSda);
+        return endSda;
+    }
+
 }

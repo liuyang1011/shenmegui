@@ -430,6 +430,14 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
             }
             fillSDA(sheet, counter.getCount(), sda, commonStyle);
+            String hql = " from " + Ida.class.getName() + " where _parentId=?";
+            List<Ida> idaChildren = idaDao.find(hql, ida.getId());
+            if(idaChildren != null && idaChildren.size() > 0){
+                for(int i = 0; i < idaChildren.size(); i++){
+                    Ida idaChild = idaChildren.get(i);
+                    fillMappRow(sheet, counter, idaChild, serviceId, operationId);
+                }
+            }
         }
 
 
@@ -446,6 +454,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             typeLength = "";
         }
         if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+            if(sda.getXpath() != null && !sda.getXpath().endsWith("/")){
+                sda.setRemark("start");
+            }
+            else{
+                sda.setRemark("end");
+            }
             typeLength = sda.getType();
             commonStyle = arrayStyle;
         }

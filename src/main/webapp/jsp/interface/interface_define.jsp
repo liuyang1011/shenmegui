@@ -557,11 +557,11 @@
     <thead>
     <tr>
         <th
-                data-options="field:'structName',width:120,align:'left'" editor="{type:'textbox',options:{required:true,validType:['englishB']}}">
+                data-options="field:'structName',width:120,align:'left'" editor="{type:'textbox',options:{validType:['englishB']}}">
             字段名称
         </th>
         <th
-                data-options="field:'structAlias',width:90,align:'left'" editor="{type:'textbox',options:{required:true,validType:['chineseB']}}">
+                data-options="field:'structAlias',width:90,align:'left'" editor="{type:'textbox',options:{validType:['chineseB']}}">
             字段别名
         </th>
         <th data-options="field:'type',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['englishB']}}">

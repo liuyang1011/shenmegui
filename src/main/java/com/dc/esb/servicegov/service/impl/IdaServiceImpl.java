@@ -147,11 +147,22 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		Map<String,String> map2 = new HashMap<String, String>();
 		map2.put("serviceId",serviceId);
 		map2.put("operationId", operationId);
-		List<SDA> sda = sdadao.findBy(map2);
+//		List<SDA> sda = sdadao.findBy(map2);
 		List<IdaMappingBean> list = new ArrayList<IdaMappingBean>();
 		for (int i = 0; i < idas.size(); i++) {
 //			if(null == idas.get(i).getMetadataId()){
+			SDA sda = null;
+			String hql = " from SDA where serviceId = ? and operationId = ? and xpath =?";
+			List<SDA> sdas = sdadao.find(hql, serviceId, operationId, idas.get(i).getXpath());
+			if(sdas.size() > 0){
+				sda = sdas.get(0);
+			}
+			if(sda != null){
+				list.add(new IdaMappingBean(idas.get(i), sda));
+			}else{
 				list.add(new IdaMappingBean(idas.get(i)));
+			}
+
 //				continue;
 //			}
 			/*for (SDA per : sda){
@@ -194,12 +205,16 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		private String version;
 
 		private String remark;
+		private String xpath;
 
 		//SDA
+		private String SDAId;
+		private String SDAMetadataId;
 		private String SDAStructAlias;
 		private String SDAType;
 		private String SDARemark;
 		private String SDAConstraintAlias;
+		private String SDAXpath;
 
 		public IdaMappingBean(Ida ida,SDA sda){
 			setId(ida.getId());
@@ -225,6 +240,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setHeadId(ida.getHeadId());
 			setVersion(ida.getVersion());
 			setRemark(ida.getRemark());
+			setXpath(ida.getXpath());
 			setSDAStructAlias(sda.getStructAlias());
 			setSDAConstraintAlias(sda.getConstraint());
 			if(sda.getType() != null){
@@ -235,6 +251,9 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 				}
 			}
 			setSDARemark(sda.getRemark());
+			setSDAXpath(sda.getXpath());
+			setSDAId(sda.getSdaId());
+			setSDAMetadataId(sda.getMetadataId());
 		}
 
 		public IdaMappingBean(Ida ida){
@@ -243,6 +262,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setStructAlias(ida.getStructAlias());
 			setMetadataId(ida.getMetadataId());
 			setSeq(ida.getSeq());
+			setXpath(ida.getXpath());
 			if(ida.getType() != null){
 				if(ida.getLength() != null){
 					setType(ida.getType() + "("+ida.getLength()+")");
@@ -420,6 +440,38 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 		public void setRemark(String remark) {
 			this.remark = remark;
+		}
+
+		public String getXpath() {
+			return xpath;
+		}
+
+		public void setXpath(String xpath) {
+			this.xpath = xpath;
+		}
+
+		public String getSDAXpath() {
+			return SDAXpath;
+		}
+
+		public void setSDAXpath(String SDAXpath) {
+			this.SDAXpath = SDAXpath;
+		}
+
+		public String getSDAId() {
+			return SDAId;
+		}
+
+		public void setSDAId(String SDAId) {
+			this.SDAId = SDAId;
+		}
+
+		public String getSDAMetadataId() {
+			return SDAMetadataId;
+		}
+
+		public void setSDAMetadataId(String SDAMetadataId) {
+			this.SDAMetadataId = SDAMetadataId;
 		}
 	}
 
