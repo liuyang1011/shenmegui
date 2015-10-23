@@ -218,6 +218,8 @@
             }
 
             var prenode ="";
+            var levelX = [];
+            var level = 0;
 
             for (var i = 0; i < result.length; i++) {
                 connections.push({
@@ -234,36 +236,40 @@
                 if (targetId == startId) {
                     targetBlock = {
                         blockId: targetId,
-                        positionX: 400,
-                        positionY: 150
+                        positionX: 50,
+                        positionY: 150,
+                        level:1
                     };
                 }
                 if (!containBlock(blocks, targetBlock)) {
                     var targetRow = data[targetId];
                     constructBlock(targetRow, targetBlock);
                     blocks.push(targetBlock);
+                    levelX[1] = 50;
                     initPosY += 150;
+                    prenode = startId;
+                    level = 1;
                 }
 
                 var sourceId = result[i].sourceId;
                 var targetBlock = getBlock(blocks, targetId);
-                if(targetId !=prenode ){
-                    prenode = targetId;
-                    initPosY +=150;
-                    initPosX = targetBlock.positionX ;
+
+                if(!levelX[targetBlock.level +1]){
+                    levelX[targetBlock.level +1] = 50;
                 }
 
                 var sourceBlock = {
                     blockId: sourceId,
-                    positionX: initPosX,
+                    positionX: levelX[targetBlock.level +1],
                     positionY: targetBlock.positionY + 150
                 };
                 if (!containBlock(blocks, sourceBlock)) {
                     var sourceRow = data[sourceId];
                     constructBlock(sourceRow, sourceBlock);
                     blocks.push(sourceBlock);
-//                    initPosX = initPosX + 300;
+                    levelX[targetBlock.level +1] = levelX[targetBlock.level +1] + 300;
                 }
+
             }
             document.getElementById("statemachine-demo").innerHTML = context;
             for (var i = 0; i < blocks.length; i++) {
