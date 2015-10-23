@@ -144,6 +144,9 @@
             if (value == 7) {
                 return "<font color='red'>修订</font>";
             }
+            if (value == 8) {
+                return "<font color='red'>已下线</font>";
+            }
         },
         version: function (value, row, index) {
             try {
@@ -423,6 +426,43 @@
                 "async": false,
                 "contentType": "application/json; charset=utf-8",
                 "url": "/operation/revise",
+                "data": JSON.stringify(items),
+                "dataType": "json",
+                "success": function (result) {
+                    if(result){
+                        $('#operationList').datagrid('reload');
+                    }
+                }
+            });
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="operation-quit">
+    toolbar.push({
+        text: '下线',
+        iconCls: 'icon-audit',
+        handler: function () {
+            //已上线，已发布 可以变为下线状态
+            var url = "";
+            var items = $('#operationList').datagrid('getSelections');
+            if (items != null && items.length > 0) {
+                for(var i = 0; i < items.length; i++){
+                    if( items[i].optState == 4){
+
+                    }else{
+                        alert("已上线状态的服务才能下线");
+                        return;
+                    }
+                }
+            }
+            if (!confirm("确定要下线吗？")) {
+                return;
+            }
+            $.ajax({
+                "type": "POST",
+                "async": false,
+                "contentType": "application/json; charset=utf-8",
+                "url": "/operation/quit",
                 "data": JSON.stringify(items),
                 "dataType": "json",
                 "success": function (result) {
