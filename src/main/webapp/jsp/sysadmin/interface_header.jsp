@@ -134,7 +134,7 @@
 				}
 			}
 
-			sysManager.addIDA(reqAry,function(result){
+			sysManager.addHeadIDA(reqAry,function(result){
 				if(result){
 //							$('#tg').treegrid('reload');
 					$('#tg').treegrid({

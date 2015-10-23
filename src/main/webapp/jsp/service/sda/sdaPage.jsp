@@ -74,7 +74,7 @@ var delIds = [];
 				data: [{
 					id: uuid,
 					parentId:node.id,
-					xpath:node.xpath
+					xpath:node.xpath  //初始路径为父路径
 				}]
 			});
 			editingId = uuid;
@@ -120,7 +120,7 @@ var delIds = [];
 					node.remark = editNode.append6;
 					node.constraint = editNode.append7;
 					node.seq = editNode.attributes;
-					node.xpath = editNode.xpath;
+					node.xpath = editNode.xpath + "/" + editNode.append4;
 
 					editNodes.push(node);
 				}

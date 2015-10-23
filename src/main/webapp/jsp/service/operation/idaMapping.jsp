@@ -46,10 +46,30 @@
     <th data-options="field:'structAlias',title:'字段别名',width:'12%'"></th>
     <th data-options="field:'type',title:'类型',width:'10%'"></th>
     <th data-options="field:'remark',title:'接口备注',width:'15%'"></th>
-    <th data-options="field:'metadataId',title:'元数据ID',required : true,width:'12%',editor:{type:'combobox',
-      options:{url:'/ida/getSdaMapping/${service.serviceId}/${operation.operationId}', method : 'get',valueField : 'metadataId',textField : 'metadataId',panelHeight : '200px'}}"></th>
-    <th data-options="field:'sdastructAlias',title:'SDA字段别名',width:'13%'"></th>
+    <th data-options="field:'metadataId',title:'元数据ID',required : true,width:'12%',
+        "></th>
+    <th data-options="field:'sdastructAlias',title:'对应SDA',width:'13%',
+    editor:{type:'combotree',
+      options:{url:'/sda/sdaComboTree?serviceId=${service.serviceId}&operationId=${operation.operationId}',
+      method : 'get',
+      valueField : 'id',
+      textField : 'text',
+      panelHeight : '200px',
+      onSelect:function(node){
+          if(node.text == '根节点' || node.text == '请求头' || node.text == '响应头'){
+            alert('请选择其他节点');
+            var node2 = $('#mappingdatagrid').treegrid('getSelected');
+            $('#mappingdatagrid').treegrid('endEdit', node2.id);
+            return false;
+          }else{
+            this.value = node.id
+          }
+        }
+      }
+      }
+    "></th>
     <th data-options="field:'sdaremark',title:'服务备注',width:'21%'"></th>
+    <th data-options="field:'sdaId', hidden:true"></th>
   </tr>
   </thead>
 </table>
@@ -108,6 +128,7 @@
       onDblClickCell: function(index,field){
         $(this).treegrid('beginEdit', field.id);
           var ed = $(this).treegrid('getEditor', {id:field.id,field:field});
+          $(this).treegrid('select', field.id);
 //        $(ed.target).focus();
       },
       onBeginEdit : function(index,row){

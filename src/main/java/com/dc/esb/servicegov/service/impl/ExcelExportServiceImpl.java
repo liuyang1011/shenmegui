@@ -446,6 +446,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             typeLength = "";
         }
         if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+            if(sda.getXpath() != null && !sda.getXpath().endsWith("/")){
+                sda.setRemark("start");
+            }
+            else{
+                sda.setRemark("end");
+            }
             typeLength = sda.getType();
             commonStyle = arrayStyle;
         }

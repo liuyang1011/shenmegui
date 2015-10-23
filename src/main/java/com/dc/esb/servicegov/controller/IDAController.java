@@ -10,11 +10,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.dom4j.io.SAXEventRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.crypto.spec.OAEPParameterSpec;
 
 @Controller
 @RequestMapping("/ida")
@@ -227,17 +230,41 @@ public class IDAController {
 	@RequiresPermissions({"ida-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/saveIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean saveIdaMapping(@RequestBody List list){
-		OperationLog operationLog = systemLogService.record("IDA","批量保存","数量:" + list.size());
+		OperationLog operationLog = systemLogService.record("IDA","保存映射关系","");
+		String logParam = "; ida数量：" + list.size() ;
+		String serviceId = "";
+		String operationId = "";
 
 		for (int i = 0; i < list.size(); i++) {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
-			String metadaId = map.get("metadataId");
+			String sdaId = map.get("sdastructAlias");    //前台用sdastructAlias做field展示，选中节点后值变为sdaId
+			SDA sda = sdaService.findUniqueBy("sdaId", sdaId);
 			Ida ida = idaService.getById(idaId);
-			ida.setMetadataId(metadaId);
-			idaService.save(ida);
-		}
+			ida.setSdaId(sdaId);
+			if(sda != null){
+				ida.setMetadataId(sda.getMetadataId());
+				ida.setXpath(sda.getXpath());
 
+				serviceId = sda.getServiceId();
+				operationId = sda.getOperationId();
+
+				if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){ //如果
+					Ida arrayEndIda = new Ida();
+					SDA arrayEndSda = sdaService.genderArrayEnd(sda);
+					arrayEndIda.setSdaId(arrayEndSda.getSdaId());
+					arrayEndIda.setXpath(arrayEndSda.getXpath());
+					arrayEndIda.setInterfaceId(ida.getInterfaceId());
+					arrayEndIda.setState(Constants.IDA_STATE_DISABLE);
+					idaService.save(arrayEndIda);
+				}
+			}
+			idaService.save(ida);
+
+
+		}
+		logParam = "服务ID:" + serviceId + "; 场景ID:" + operationId + logParam;
+		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
 		return true;
 	}
@@ -246,9 +273,10 @@ public class IDAController {
 	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
-		OperationLog operationLog = systemLogService.record("IDA", "批量更新（置空元数据）", "");
-		String logParam = "ida:";
-
+		OperationLog operationLog = systemLogService.record("IDA", "删除映射关系", "");
+		String logParam = "; ida:" ;
+		String serviceId = "";
+		String operationId = "";
 		for (int i = 0; i < list.size(); i++) {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
@@ -256,8 +284,14 @@ public class IDAController {
 			ida.setMetadataId(null);
 			idaService.save(ida);
 			logParam += ida.getStructName() + ",";
+			String sdaId = map.get("sdaId");
+			SDA sda = sdaService.findUniqueBy("sdaId", sdaId);
+			if(sda != null){
+				serviceId = sda.getServiceId();
+				operationId = sda.getOperationId();
+			}
 		}
-
+		logParam = "服务ID:" + serviceId + "; 场景ID:" + operationId + logParam.substring(0, logParam.length() -2);
 		operationLog.setParams(logParam.substring(0, logParam.length() - 2 ));
 		systemLogService.updateResult(operationLog);
 		return true;

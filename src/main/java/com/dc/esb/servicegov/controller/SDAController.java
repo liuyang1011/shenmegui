@@ -45,6 +45,14 @@ public class SDAController {
 		return serviceImpl.genderSDATree(serviceId, operationId);
 	}
 
+	@RequiresPermissions({"sda-get"})
+	//根据serviceId，operationId获取sda树
+	@RequestMapping("/sdaComboTree")
+	@ResponseBody
+	public List<TreeNode> getSDATree2(String serviceId, String operationId){
+		return serviceImpl.genderSDATree2(serviceId, operationId);
+	}
+
 	@RequiresPermissions({"service-get"})
 	//生成一个sdaId
 	@RequestMapping("/genderSDAUuid")
