@@ -611,7 +611,7 @@ public class ConfigExportController {
 
         } catch (Exception e) {
             logger.error(e,e);
-            printMsg(response, "导出失败!");
+            printMsg(response, "数据错误，导出失败!");
 
         } finally {
             try {

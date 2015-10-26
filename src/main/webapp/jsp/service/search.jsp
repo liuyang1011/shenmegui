@@ -353,7 +353,7 @@
                       "data": JSON.stringify(checkedItems),
                       "dataType": "json",
                       "success": function (result) {
-                          if(result){
+                          if(result && result.length > 0){
                               configResult = result;
                               $('#opDialog').dialog({
                                   title: '导出配置',
@@ -367,6 +367,8 @@
                                       $("#choosedList").datagrid("loadData", configResult);
                                   }
                               });
+                          }else{
+                              alert("没有可导出的配置！");
                           }
                       }
                   });
