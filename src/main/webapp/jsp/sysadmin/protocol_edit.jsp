@@ -144,6 +144,7 @@
 		data.msgTemplate = msgTemplate;
 		sysManager.addProtocol(data,function(result){
 			if(result){
+				$('#tg').datagrid("reload");
 				$('#w').window('close');
 				var selectNode = treeObj.tree("getSelected");
 				var parent = treeObj.tree("getParent", selectNode.target);
@@ -154,7 +155,7 @@
 				treeObj.tree('options').url = "/interface/getLeftTree/subProtocolTree/system/" + systemId;
 				treeObj.tree("reload", parent.target);
 				treeObj.tree('options').url = urlPath;
-				$('#tg').datagrid("reload");
+
 			}else{
 				alert("保存失败");
 			}
