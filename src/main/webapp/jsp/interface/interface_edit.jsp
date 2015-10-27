@@ -117,14 +117,14 @@
 		try {
 			var selectNode = $('.msinterfacetree').tree("getSelected");
 			systemId = selectNode.id;
-
 			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
-			if(node && node.id!='root'){
-				 systemId = node.id;
+			if(node){
+				var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
+				systemId = systemNode.id;
 			}
-
 		} catch (e) {
 			systemId = "${param.systemId}";
+			treeObj = parent.$('.msinterfacetree');
 		}
         $('#protocolId').combobox({
         			url:'/system/getProtocolAll?systemId='+systemId +'&t=' +(new Date()).valueOf(),
