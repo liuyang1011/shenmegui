@@ -112,6 +112,7 @@
 				singleSelect:false,
 				url:'/operationHis/operationHisList',
 				method:'get',
+				idField:'autoId',
 				<%--toolbar:toolbar,--%>
 				pagination:true,
 				pageSize:16,
@@ -120,7 +121,7 @@
 		style="height:495px; width:auto;">
 		<thead>
 			<tr>
-				<th data-options="field:'productid',checkbox:true"></th>
+				<th data-options="field:'autoId',checkbox:true"></th>
 				<th data-options="field:'service.serviceId'" formatter='service.serviceId'>服务代码
 				</th>
 				<th data-options="field:'service.serviceName'"
