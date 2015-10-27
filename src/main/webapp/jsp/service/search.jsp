@@ -232,6 +232,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#resultList").datagrid({url:"/operation/query"});
+        var configResult;
         query();
     });
   var formatter = {
@@ -273,7 +274,7 @@
   };
   var toolbar = [
     {
-      text:'导出EXCEL',
+      text:'导出EXCEL&nbsp;&nbsp;&nbsp;',
       iconCls:'icon-excel-export',
       handler: function () {
         var checkedItems = $('#resultList').datagrid('getChecked');
@@ -306,7 +307,7 @@
       }
     },
     {
-      text:'导出PDF',
+      text:'导出PDF&nbsp;&nbsp;&nbsp;',
       iconCls:'icon-excel-export',
       handler: function () {
         var checkedItems = $('#resultList').datagrid('getChecked');
@@ -338,6 +339,47 @@
         }
       }
     },
+          //TZB隐藏
+      /*{
+          text:'导出配置&nbsp;&nbsp;&nbsp;',
+          iconCls:'icon-excel-export',
+          handler: function () {
+              var checkedItems = $('#resultList').datagrid('getSelections');
+              if (checkedItems != null && checkedItems.length > 0) {
+                  $.ajax({
+                      "type": "POST",
+                      "async": false,
+                      "contentType": "application/json; charset=utf-8",
+                      "url": "/export/getConfigVo",
+                      "data": JSON.stringify(checkedItems),
+                      "dataType": "json",
+                      "success": function (result) {
+                          if(result && result.length > 0){
+                              configResult = result;
+                              $('#opDialog').dialog({
+                                  title: '导出配置',
+                                  width: 900,
+                                  left:100,
+                                  closed: false,
+                                  cache: false,
+                                  href: "/jsp/service/export_config_list.jsp",
+                                  modal: true,
+                                  onLoad:function(){
+                                      $("#choosedList").datagrid("loadData", configResult);
+                                  }
+                              });
+                          }else{
+                              alert("没有可导出的配置！");
+                          }
+                      }
+                  });
+
+              }
+              else{
+                  alert("没有选中数据！");
+              }
+          }
+      },*/
     {
       text:'详细信息',
       iconCls:'icon-excel-export',

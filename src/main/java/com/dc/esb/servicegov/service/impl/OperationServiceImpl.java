@@ -7,11 +7,13 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.InterfaceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.TreeNode;
+import com.dc.esb.servicegov.vo.ConfigVO;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -375,7 +377,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     }
     
     public List<Operation> getReleased(Page page,String serviceId,String serviceName,String operationId,String operationName){
-    	return operationDAOImpl.getReleased(page,serviceId,serviceName,operationId,operationName);
+    	return operationDAOImpl.getReleased(page, serviceId, serviceName, operationId, operationName);
     }
     public boolean judgeByMetadataId(String metadataId){
         //查找场景列表
@@ -649,6 +651,58 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             return true;
         }
         return false;
+    }
+
+    public List<ConfigVO> getConfigVo(List list){
+        List<ConfigVO> result = new ArrayList<ConfigVO>();
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("serviceId", serviceId);
+            params.put("operationId", operationId);
+            Operation operation = operationDAOImpl.findUniqureBy(params);
+
+            if(operation != null){
+                List<InterfaceInvoke> iiList = interfaceInvokeDAO.getByOperation(operation.getServiceId(), operation.getOperationId());
+                for(InterfaceInvoke ii : iiList){
+                    ConfigVO configVO = new ConfigVO();
+                    configVO.setServiceId(operation.getServiceId());
+                    configVO.setOperationId(operation.getOperationId());
+                    configVO.setOperationName(operation.getOperationName());
+
+                    if(ii != null){
+                        ServiceInvoke siPro = ii.getProvider();
+                        if(siPro != null){
+                            if(siPro.getSystem() != null){
+                                configVO.setProviderId(siPro.getSystemId());
+                                configVO.setProviderName(siPro.getSystem().getSystemChineseName());
+                            }
+                        }
+                        ServiceInvoke siCon = ii.getConsumer();
+                        if(siCon != null){
+                            if(siCon.getSystem() != null){
+                                configVO.setCustomerId(siCon.getSystemId());
+                                configVO.setCustomerName(siCon.getSystem().getSystemChineseName());
+                            }
+                        }
+                    }
+                    configVO.setIsStandardPro("0"); //0; 标准， 1：非标
+                    configVO.setInterfaceOrProtocolPro("xml");
+                    configVO.setInterfaceIdOrProtocolIdPro("xml");
+                    configVO.setIsStandardCon("0");
+                    configVO.setInterfaceOrProtocolCon("xml");
+                    configVO.setInterfaceIdOrProtocolIdCon("xml");
+                    result.add(configVO);
+                }
+
+            }
+
+        }
+
+        return result;
+
     }
 
     public static class OperationBean{
