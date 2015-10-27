@@ -256,7 +256,8 @@ public class IDAController {
 					Map<String, String> params = new HashMap<String, String>();
 					params.put("state", Constants.IDA_STATE_DISABLE);
 					params.put("_parentId", ida.get_parentId());
-					params.put("xpath", arrayEndSda.getXpath() + ida.getMetadataId());
+//					params.put("xpath", arrayEndSda.getXpath() + ida.getMetadataId());
+					params.put("xpath", arrayEndSda.getXpath());
 					List<Ida> endIdas = idaService.findBy(params);
 					if(endIdas != null && endIdas.size() > 0 ){
 						arrayEndIda = endIdas.get(0);

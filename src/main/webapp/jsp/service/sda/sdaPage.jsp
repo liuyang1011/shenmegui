@@ -294,7 +294,6 @@ var delIds = [];
 		node2.append1 = record.chineseName;
 		node2.append2 = record.formula;
 		node2.append3 = node.append3+"/"+record.metadataId;
-		alert(node2.append3);
 		node2.append4 = record.metadataId;
 		$('#tg').treegrid('refreshRow',node2.id);
 	}

@@ -12,12 +12,17 @@ var serviceUIHelper = {
                 url: "/jsp/service/serviceAppandForm.jsp"
             });
         } else if (node.type == "root" || node.serviceCategory.parentId == null) {//根节点 或 父节点
-            uiinit.win({
-                w: 500,
-                iconCls: 'icon-add',
-                title: "新增服务类",
-                url: "/dataTemplate/formTemplate/serviceCategoryForm/serviceCategoryAppandForm.jsp"
-            });
+            if($('#serviceCategoryPermission').val() == '1'){
+                uiinit.win({
+                    w: 500,
+                    iconCls: 'icon-add',
+                    title: "新增服务类",
+                    url: "/dataTemplate/formTemplate/serviceCategoryForm/serviceCategoryAppandForm.jsp"
+                });
+            }else{
+                alert("没有权限");
+            }
+
         } else if (node.type == "serviceCategory" && node.serviceCategory.parentId != null) {//服务类子节点
             uiinit.win({
                 w: 500,
@@ -37,12 +42,16 @@ var serviceUIHelper = {
                 url: "/pages/service/form/serviceEditForm.jsp"
             });
         } else if (node.type == "serviceCategory") {
-            uiinit.win({
-                w: 500,
-                iconCls: 'icon-add',
-                title: "编辑服务类",
-                url: "/dataTemplate/formTemplate/serviceCategoryForm/serviceCategoryEditForm.jsp"
-            });
+            if($('#serviceCategoryPermissionEdit').val() == '1'){
+                uiinit.win({
+                    w: 500,
+                    iconCls: 'icon-add',
+                    title: "编辑服务类",
+                    url: "/dataTemplate/formTemplate/serviceCategoryForm/serviceCategoryEditForm.jsp"
+                });
+            }else{
+                alert("没有权限");
+            }
         }
     },
     "deleteServiceFormTree" : function removeService(){
@@ -58,11 +67,15 @@ var serviceUIHelper = {
                 }
             });
         }else if(node.type=="serviceCategory"){
-            serviceManager.deleteCategoryById(id,function(result){
-                if(result){
-                    $('.mxservicetree').tree('remove', node.target);
-                }
-            });
+            if($('#serviceCategoryPermissionDelete').val() == '1'){
+                serviceManager.deleteCategoryById(id,function(result){
+                    if(result){
+                        $('.mxservicetree').tree('remove', node.target);
+                    }
+                });
+            }else{
+                alert("没有权限");
+            }
         }
     },
     "searchService" : function searchService(){

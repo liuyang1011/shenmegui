@@ -174,86 +174,91 @@
             parent.$('#subtab').tabs('select', title);
         }
     }
-    var toolbar = [
-        <shiro:hasPermission name="link-get">
-        {
-            text: '预览',
-            iconCls: 'icon-qxfp',
-            handler: function () {
-                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-                var checkedItem;
-                if (checkedItems != null && checkedItems.length > 0) {
-                    if (checkedItems.length > 1) {
-                        alert("请选择一个节点进行预览！");
-                        return false;
-                    }
-                    else {
-                        checkedItem = checkedItems[0];
-                        var oldIE;
-                        var ieVersion = "undefined" != typeof navigator && /MSIE\s([\d.]+)/.test(navigator.userAgent) ? new Number(RegExp.$1) : -1, oldIE = ieVersion > -1 && 9 > ieVersion;
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
-                        if(oldIE){
-                            content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+
+    var toolbar = [];
+    <shiro:hasPermission name="link-get">
+    toolbar.push({
+                text: '预览',
+                iconCls: 'icon-qxfp',
+                handler: function () {
+                    var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+                    var checkedItem;
+                    if (checkedItems != null && checkedItems.length > 0) {
+                        if (checkedItems.length > 1) {
+                            alert("请选择一个节点进行预览！");
+                            return false;
                         }
+                        else {
+                            checkedItem = checkedItems[0];
+                            var oldIE;
+                            var ieVersion = "undefined" != typeof navigator && /MSIE\s([\d.]+)/.test(navigator.userAgent) ? new Number(RegExp.$1) : -1, oldIE = ieVersion > -1 && 9 > ieVersion;
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
+                            if(oldIE){
+                                content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
+                            }
 //                        //测试
 //                        content= '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
-                        selectTab('预览', content);
-                        selectTab('预览', content);
-                    }
-                }
-                else {
-                    alert("请选中要预览的节点！");
-                }
-
-
-            }
-        },
-        {
-            text: '血缘分析',
-            iconCls: 'icon-qxfp',
-            handler: function () {
-                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-                var checkedItem;
-                if (checkedItems != null && checkedItems.length > 0) {
-                    if (checkedItems.length > 1) {
-                        alert("请选择一个节点进行预览！");
-                        return false;
+                            selectTab('预览', content);
+                            selectTab('预览', content);
+                        }
                     }
                     else {
-                        checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
-                        selectTab('血缘分析', content);
-                        selectTab('血缘分析', content);
+                        alert("请选中要预览的节点！");
                     }
+
+
                 }
-                else {
-                    alert("请选中要预览的节点！");
-                }
-            }
-        }, {
-            text: '节点维护',
-            iconCls: 'icon-qxfp',
-            handler: function () {
-                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-                var checkedItem;
-                if (checkedItems != null && checkedItems.length > 0) {
-                    if (checkedItems.length > 1) {
-                        alert("请选择一个节点进行预览！");
-                        return false;
+            },
+            {
+                text: '血缘分析',
+                iconCls: 'icon-qxfp',
+                handler: function () {
+                    var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+                    var checkedItem;
+                    if (checkedItems != null && checkedItems.length > 0) {
+                        if (checkedItems.length > 1) {
+                            alert("请选择一个节点进行预览！");
+                            return false;
+                        }
+                        else {
+                            checkedItem = checkedItems[0];
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/parentLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
+                            selectTab('血缘分析', content);
+                            selectTab('血缘分析', content);
+                        }
                     }
                     else {
-                        checkedItem = checkedItems[0];
-                        var content = '<iframe scrolling="auto" frameborder="0"  src="/serviceLink/nodeInfo/' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
-                        selectTab('节点维护', content);
-                        selectTab('节点维护', content);
+                        alert("请选中要预览的节点！");
                     }
                 }
-                else {
-                    alert("请选中要预览的节点！");
+            });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="link-update">
+    toolbar.push({
+        text: '节点维护',
+        iconCls: 'icon-qxfp',
+        handler: function () {
+            var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+            var checkedItem;
+            if (checkedItems != null && checkedItems.length > 0) {
+                if (checkedItems.length > 1) {
+                    alert("请选择一个节点进行预览！");
+                    return false;
                 }
+                else {
+                    checkedItem = checkedItems[0];
+                    var content = '<iframe scrolling="auto" frameborder="0"  src="/serviceLink/nodeInfo/' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
+                    selectTab('节点维护', content);
+                    selectTab('节点维护', content);
+                }
+            }
+            else {
+                alert("请选中要预览的节点！");
             }
         }
-        </shiro:hasPermission>
+    });
+    </shiro:hasPermission>
+
 //        ,{
 //            text: '编辑节点',
 //            iconCls: 'icon-qxfp',
@@ -282,7 +287,6 @@
 //                }
 //            }
 //        }
-    ];
 </script>
 
 </body>

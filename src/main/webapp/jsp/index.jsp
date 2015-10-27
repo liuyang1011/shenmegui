@@ -57,6 +57,9 @@
     <div id="header_toolsbar">
         <a href="javascript:;" class="login_user"><shiro:principal/></a>
         <a id="taskName" href="javascript:;" style="display: none">当前任务:</a>
+        <input id="serviceCategoryPermission" <shiro:hasPermission name="serviceCategory-add"> value="1" </shiro:hasPermission> style="display: none"></input>
+        <input id="serviceCategoryPermissionEdit" <shiro:hasPermission name="serviceCategory-update"> value="1" </shiro:hasPermission> style="display: none"></input>
+        <input id="serviceCategoryPermissionDelete" <shiro:hasPermission name="serviceCategory-delete"> value="1" </shiro:hasPermission> style="display: none"></input>
         <a href="/logout/">退出</a>
         <a href="javascript:;">帮助</a>
     </div>
@@ -220,7 +223,6 @@
 </div>
 </shiro:hasPermission>
 
-<shiro:hasAnyRoles name="protocol-update,protocol-delete">
 <div id="mm-mxprotocol" class="easyui-menu" style="width: 120px;display: none">
     <%--<div onclick="sysManager.addProtocolPage()" data-options="iconCls:'icon-add'">--%>
         <%--新增协议--%>
@@ -236,7 +238,6 @@
     </div>
     </shiro:hasPermission>
 </div>
-</shiro:hasAnyRoles>
 
 <div id="mm-mxfiles" class="easyui-menu" style="width: 120px;display: none">
     <div onclick="sysManager.refreshFile()" data-options="iconCls:'icon-add'">
