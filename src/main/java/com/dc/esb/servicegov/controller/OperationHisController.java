@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,12 +63,45 @@ public class OperationHisController {
 	public Map<String, Object> operationHisList(HttpServletRequest req) {
 		int pageNo = Integer.parseInt(req.getParameter("page"));
 		int rowCount = Integer.parseInt(req.getParameter("rows"));
-		String hql = "from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
-		Page page = operationHisServiceImpl.getPageBy(hql, rowCount);
+
+		String serviceId = req.getParameter("serviceId");
+		if(null == serviceId) serviceId = "";
+		String serviceName = req.getParameter("serviceName");
+		if(null != serviceName && !"".equals(serviceName)){
+			try{
+				serviceName = URLDecoder.decode(req.getParameter("serviceName"), "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}else{
+			serviceName = "";
+		}
+		String operationId = req.getParameter("operationId");
+		if(null == operationId) operationId = "";
+		String operationName = req.getParameter("operationName");
+		if(null != operationName && !"".equals(operationName)){
+			try{
+				operationName = URLDecoder.decode(req.getParameter("operationName"), "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}else{
+			operationName = "";
+		}
+
+
+
+		String hql = "from OperationHis a where a.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
+		hql += " and a.service.serviceId like ? and a.service.serviceName like ?";
+		hql += " and a.operationId like ? and a.operationName like ?";
+		Page page = operationHisServiceImpl.getPageBy(hql, rowCount,"%"+serviceId+"%","%"+serviceName+"%","%"+operationId+"%","%"+operationName+"%");
 		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();
-		hql = "from OperationHis t where t.state = '"+Constants.Operation.OPT_STATE_PASS+"' order by t.versionHis.optDate desc";
-		List<?> rows = operationHisServiceImpl.findBy(hql,page);
+		hql = "from OperationHis a where a.state = '"+Constants.Operation.OPT_STATE_PASS+"'" +
+				" and a.service.serviceId like ? and a.service.serviceName like ?"+
+				" and a.operationId like ? and a.operationName like ?"+
+				" order by a.versionHis.optDate desc";
+		List<?> rows = operationHisServiceImpl.findBy(hql,page,"%"+serviceId+"%","%"+serviceName+"%","%"+operationId+"%","%"+operationName+"%");
 
 		result.put("total", page.getResultCount());
 		result.put("rows", rows);

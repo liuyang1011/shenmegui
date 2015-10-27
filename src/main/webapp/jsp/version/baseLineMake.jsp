@@ -49,6 +49,22 @@
 		        }
 			}
 		} ];
+		$(function(){
+			$("#search").click(function(){
+				var queryParams = $('#operationList').datagrid('options').queryParams;
+				queryParams.serviceId = $("#serviceId").textbox("getValue");
+				queryParams.serviceName = encodeURI($("#serviceName").textbox("getValue"));
+				queryParams.operationId = $("#operationId").textbox("getValue");
+				queryParams.operationName = encodeURI($("#operationName").textbox("getValue"));
+				if (queryParams.serviceId || queryParams.serviceName) {
+					$("#operationList").datagrid('options').queryParams = queryParams;//传递值
+					$("#operationList").datagrid('reload');//重新加载table
+				} else {
+					$("#operationList").datagrid('reload');
+				}
+			});
+		})
+
 		function release() {
 			if(!$("#baseForm").form('validate')){
 				return false;
@@ -100,6 +116,37 @@
 						<shiro:hasPermission name="baseLine-add">
 						<a href="javascript:void(0)" onclick="release()" class="easyui-linkbutton"
 						iconCls="icon-save">发布</a>
+						</shiro:hasPermission>
+					</td>
+				</tr>
+				<tr>
+					<th><nobr>服务代码</nobr></th>
+					<td>
+						<input class="easyui-textbox" id="serviceId"/>
+					</td>
+					<th><nobr>服务名称</nobr></th>
+					<td>
+						<input class="easyui-textbox" id="serviceName"/>
+					</td>
+					<th><nobr>场景代码</nobr></th>
+					<td>
+						<input class="easyui-textbox" id="operationId"/>
+					</td>
+				</tr>
+				<tr>
+					<th><nobr>场景名称</nobr></th>
+					<td>
+						<input class="easyui-textbox" id="operationName"/>
+					</td>
+					<th>&nbsp;</th>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>
+						<shiro:hasPermission name="service-get">
+							<nobr>
+								<a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em">查询</a>
+								<a href="#" id="clean" onclick="$('#baseForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+							</nobr>
 						</shiro:hasPermission>
 					</td>
 				</tr>
