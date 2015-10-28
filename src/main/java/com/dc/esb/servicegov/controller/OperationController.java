@@ -13,6 +13,7 @@ import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
+import com.dc.esb.servicegov.vo.InterfaceInvokeVO2;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -70,6 +71,8 @@ public class OperationController {
     private ProcessContextServiceImpl processContextService;
     @Autowired
     private VersionServiceImpl versionService;
+    @Autowired
+    private InterfaceInvokeServiceImpl interfaceInvokeService;
 
     /**
      * 获取所有的服务场景
@@ -240,7 +243,21 @@ public class OperationController {
         }
         return result;
     }
-
+    @RequiresPermissions({"service-add"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getInvokeMapping2(String serviceId, String operationId) {
+        List<InterfaceInvoke> result = interfaceInvokeService.getBySOId(serviceId, operationId);
+        if(result != null){
+            List<InterfaceInvokeVO2> voList = new ArrayList<InterfaceInvokeVO2>();
+            for(InterfaceInvoke interfaceInvoke : result){
+                voList.add(new InterfaceInvokeVO2(interfaceInvoke));
+            }
+            return  voList;
+        }
+        return null;
+    }
 
     /**
      * TODO 场景基本信息保存后，保存相关的接口映射关系。

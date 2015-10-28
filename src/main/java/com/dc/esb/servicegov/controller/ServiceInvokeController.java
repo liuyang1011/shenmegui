@@ -243,6 +243,30 @@ public class ServiceInvokeController {
         return true;
     }
 
+    @RequiresPermissions({"invoke-delete"})
+    @RequestMapping(method = RequestMethod.POST, value = "/deleteInvoke2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean deleteInvoke2(String id) {
+        OperationLog operationLog = systemLogService.record("映射关系", "删除", "");
+        String serviceId = "";
+        String operationId = "";
+
+        InterfaceInvoke interfaceInvoke = interfaceInvokeService.findUniqueBy("id", id);
+        if(interfaceInvoke != null){
+            ServiceInvoke consumer = interfaceInvoke.getConsumer();
+            ServiceInvoke provider = interfaceInvoke.getProvider();
+            interfaceInvokeService.delete(interfaceInvoke);
+            serviceInvokeService.delete(consumer);
+            serviceInvokeService.delete(provider);
+        }
+
+        operationLog.setParams("服务ID:" + serviceId + "; 场景ID:" + operationId);
+        systemLogService.updateResult(operationLog);
+
+        return true;
+    }
+
 //    @RequiresPermissions({"service-update"})
     @RequiresPermissions({"invoke-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addServiceLink", headers = "Accept=application/json")
@@ -371,6 +395,49 @@ public class ServiceInvokeController {
         return true;
     }
 
+    @RequiresPermissions({"invoke-add"})
+    @RequestMapping(method = RequestMethod.POST, value = "/addServiceLink2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean addServiceLink2(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("映射关系", "添加", "");
+        String logParam = "";
+
+        String serviceId ="";
+        String operationId = "";
+
+        List consumers = (ArrayList)list.get(0);
+        List providers = (ArrayList)list.get(1);
+        List<ServiceInvoke> temp = new ArrayList<ServiceInvoke>();
+        Operation operation = null;
+
+        for (int i = 0; i < providers.size(); i++) {
+            LinkedHashMap<String, Object> mapProvider = (LinkedHashMap) providers.get(i);
+
+            for (int j = 0; j < consumers.size(); j++) {
+                ServiceInvoke p = serviceInvokeService.genderServiceInvoke(mapProvider);
+                operation = operationService.getOperation(p.getServiceId(), p.getOperationId());
+                serviceId = p.getServiceId();
+                operationId = p.getOperationId();
+
+                LinkedHashMap<String, Object> mapConsumer = (LinkedHashMap) consumers.get(j);
+                ServiceInvoke c = serviceInvokeService.genderServiceInvoke(mapConsumer);
+
+                InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
+                interfaceInvoke.setProviderInvokeId(p.getInvokeId());
+                interfaceInvoke.setConsumerInvokeId(c.getInvokeId());
+                interfaceInvokeService.insert(interfaceInvoke);
+            }
+        }
+        if(null != operation){
+            operationService.editOperation(null,operation);
+        }
+
+        logParam += "服务ID：" + serviceId + ", 场景ID:" + operationId + ", 消费者提供者关系：数量:" + list.size();
+        operationLog.setParams(logParam);
+        systemLogService.updateResult(operationLog);
+        return true;
+    }
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";

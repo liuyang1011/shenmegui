@@ -85,7 +85,7 @@
             type: "POST",
             async: false,
             contentType: "application/json; charset=utf-8",
-            url: "/serviceLink/addServiceLink",
+            url: "/serviceLink/addServiceLink2",
             dataType: "json",
             data : JSON.stringify(params),
             success: function (data) {

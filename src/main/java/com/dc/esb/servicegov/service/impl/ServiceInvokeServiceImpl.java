@@ -245,4 +245,24 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 	public List<ServiceInvoke> getByOperationAndType(Operation operation, String type){
 		return serviceInvokeDAOImpl.getByOperationAndType(operation,type);
 	}
+
+	public ServiceInvoke genderServiceInvoke(LinkedHashMap<String, Object> map){
+		String systemId = map.get("systemId").toString();
+		String interfaceId = map.get("interfaceId").toString();
+		String type = map.get("type").toString();
+		String isStandard = map.get("isStandard").toString();
+		String serviceId = map.get("serviceId").toString();
+		String operationId = map.get("operationId").toString();
+
+
+		ServiceInvoke c = new ServiceInvoke();
+		c.setSystemId( systemId);
+		c.setInterfaceId(interfaceId);
+		c.setType(type);
+		c.setIsStandard(isStandard);
+		c.setOperationId(operationId);
+		c.setServiceId(serviceId);
+		serviceInvokeDAOImpl.save(c);
+		return c;
+	}
 }
