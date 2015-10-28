@@ -100,6 +100,9 @@
 					data.headId = "${param.headId}";
 					data.seq = seq;
 					data.remark = remark;
+					data.metadataId = row.metadataId;
+					data.xpath = row.xpath;
+					data.sdaId = row.sdaId;
 					reqAry.push(data);
 				}
 			}
@@ -130,6 +133,9 @@
 					data.seq = seq;
 					data.id = row.id;
 					data.remark = remark;
+					data.metadataId = row.metadataId;
+					data.xpath = row.xpath;
+					data.sdaId = row.sdaId;
 					reqAry.push(data);
 				}
 			}
@@ -231,7 +237,7 @@
 		}
 
 	},{
-		text:'下移',
+		text:'下移&nbsp;&nbsp;',
 		iconCls:'icon-down',
 		handler:function(){
 			var row = $('#tg').treegrid("getSelected");
@@ -312,7 +318,21 @@
 			}
 		}
 
-	});
+	},{
+		text:'映射对象&nbsp;&nbsp;',
+		iconCls:'icon-save',
+		handler:function(){
+			var urlPath = "/interfaceHead/sdaPage?headId=${param.headId}&_t" + new Date().getTime();
+			var content = '<iframe scrolling="yes" frameborder="0"  src="' + urlPath + '" style="width:100%;height:98%;"></iframe>';
+			parent.$('#mainContentTabs').tabs('add', {
+				title: '报文头映射对象',
+				content: content,
+				closable: true,
+				fit:true
+			});
+		}
+	}
+	);
 	</shiro:hasPermission>
 
 		function onContextMenu(e,row){
@@ -436,7 +456,7 @@
 				新增
 			</div>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="ida-udate">
+			<shiro:hasPermission name="ida-update">
 			<div onclick="editIt()" data-options="iconCls:'icon-edit'">
 				编辑
 			</div>
@@ -464,7 +484,7 @@
 			<thead>
 				<tr>
 					<th
-						data-options="field:'structName',width:160,align:'left',editor:{type:'validatebox',options:{required:true,validType:['unique','englishB']}}">
+						data-options="field:'structName',width:160,align:'left',editor:{type:'validatebox',options:{required:true,validType:['englishB']}}">
 						字段名称
 					</th>
 					<th
@@ -491,6 +511,33 @@
 					</th>
 					<th data-options="field:'seq',width:50">
 						排序
+					</th>
+					<th data-options="field:'sdaId', hidden:true">sdaId</th>
+					<th data-options="field:'xpath', hidden:true">xpath</th>
+					<th data-options="field:'metadataId',width:150,
+					editor:{type:'combotree',
+					  options:{url:'/sda/headSdaComboTree?headId=${param.headId}',
+					  method : 'get',
+					  valueField : 'text',
+					  textField : 'text',
+					  panelHeight : '200px',
+					  onSelect:function(node){
+						  if(node.text == '根节点' || node.text == '请求头' || node.text == '响应头'){
+							alert('请选择其他节点');
+							var node2 = $('#tg').treegrid('getSelected');
+							$('#tg').treegrid('endEdit', node2.id);
+							return false;
+						  }else{
+							this.value = node.text;
+							var node2 = $('#tg').treegrid('getSelected');
+							node2.xpath = node.append2;
+							node2.sdaId = node.id;
+						  }
+						}
+					  }
+					  }
+					">
+						映射对象
 					</th>
 				</tr>
 

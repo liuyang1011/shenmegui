@@ -24,6 +24,9 @@ public class TreeNode implements Serializable {
     String append5;
     String append6;
     String append7;
+    String append8;
+    String append9;
+    String append10;
     String click;
 
     public TreeNode() {
@@ -156,6 +159,30 @@ public class TreeNode implements Serializable {
 
     public void setAppend7(String append7) {
         this.append7 = append7;
+    }
+
+    public String getAppend8() {
+        return append8;
+    }
+
+    public void setAppend8(String append8) {
+        this.append8 = append8;
+    }
+
+    public String getAppend9() {
+        return append9;
+    }
+
+    public void setAppend9(String append9) {
+        this.append9 = append9;
+    }
+
+    public String getAppend10() {
+        return append10;
+    }
+
+    public void setAppend10(String append10) {
+        this.append10 = append10;
     }
 
     public String getClick() {

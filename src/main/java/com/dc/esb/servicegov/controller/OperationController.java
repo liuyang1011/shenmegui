@@ -68,6 +68,8 @@ public class OperationController {
     private ExcelExportServiceImpl excelExportService;
     @Autowired
     private ProcessContextServiceImpl processContextService;
+    @Autowired
+    private VersionServiceImpl versionService;
 
     /**
      * 获取所有的服务场景
@@ -589,6 +591,13 @@ public class OperationController {
             if(canRevise){
                 operation.setState(Constants.Operation.OPT_STATE_REVISE);
                 operationServiceImpl.save(operation);
+                //将版本状态改为‘修改’
+                Version version = operation.getVersion();
+                if(version != null){
+                    version.setOptType(Constants.Version.OPT_TYPE_EDIT);
+                    versionService.save(version);
+                }
+
             }else {
                 return false;
             }

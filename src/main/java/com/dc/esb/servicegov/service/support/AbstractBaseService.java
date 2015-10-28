@@ -134,6 +134,10 @@ public abstract class AbstractBaseService<T, PK extends Serializable> {
         return getDAO().findBy(hql, page);
     }
 
+    public List<T> findBy(String hql, Page page,Object ... other) {
+        return getDAO().findBy(hql, page,other);
+    }
+
     public List<T> findBy(final Map<String, String> properties, String orderByProperties) {
         return getDAO().findBy(properties, orderByProperties);
     }
