@@ -106,7 +106,7 @@ public class IDAController {
 		idaService.saveOrUpdate(idas);
 
 		for(int i=0; i < idas.length; i++){
-			logParam += "[报文头:" + idas[i].getHeads().getHeadName() + ",字段名称：" +idas[i].getStructName() + "],";
+			logParam += "[报文头ID:" + idas[i].getHeadId() + ",字段名称：" +idas[i].getStructName() + "],";
 		}
 		operationLog.setParams(logParam.substring(0, logParam.length() - 2));
 		systemLogService.updateResult(operationLog);

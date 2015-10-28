@@ -59,7 +59,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		   $("#intefaceList").datagrid({
 			   rownumbers:true,
 			   singleSelect:true,
-			   url:'/serviceLink/getInterface?systemId=${param.systemId}&type=${param.type}',
+			   url:'/serviceLink/getInterface2?systemId=${param.systemId}&type=${param.type}',
 			   method:'post',
 			   toolbar:'#tb',
 			   pagination:true,

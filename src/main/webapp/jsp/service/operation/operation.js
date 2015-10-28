@@ -337,10 +337,20 @@ function chooseInterface(oldListId, newListId, type) {
             data: {"systemId": $(this).val(),"type":type},
             success: function (data) {
                 //台州只有提供方接口
-                if(newListId == 'consumer') data = false;
+                //if(newListId == 'consumer') data = false;
                 //如果系统没有接口，直接转移
-                if (!data) {
-//		     		$("#"+oldListId+" option[value="+value+"]").remove();
+                if(data && confirm("是否使用该系统现有接口？")){
+                    $('#opDlg').dialog({
+                        title: '接口选择',
+                        width: '750px',
+                        height:'463px',
+                        closed: false,
+                        cache: false,
+                        href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId+"&type=" + type,
+                        modal: true
+                    });
+                }
+                else{
                     var exsit = $("#" + newListId + " option[value='" + value + "']");
                     if (exsit.length > 0) {
                         alert("已经被选中！");
@@ -356,18 +366,6 @@ function chooseInterface(oldListId, newListId, type) {
                             providerList.push(si);
                         }
                     }
-
-                } else {
-                    //如果有接口弹出接口选择页面
-                    $('#opDlg').dialog({
-                        title: '接口选择',
-                        width: '750px',
-                        height:'463px',
-                        closed: false,
-                        cache: false,
-                        href: '/jsp/service/operation/interfaceList.jsp?systemId=' + value + "&newListId=" + newListId+"&type=" + type,
-                        modal: true
-                    });
                 }
 
             }

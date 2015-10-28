@@ -28,6 +28,10 @@ public class ServiceInvokeJson {
 
     private String systemChineseName;
 
+    public ServiceInvokeJson(){
+
+    }
+
     public ServiceInvokeJson(String invokeId, String systemId, String isStandard, String serviceId, String operationId, String interfaceId, String type, String desc, String remark, String interfaceName, String systemChineseName) {
         this.invokeId = invokeId;
         this.systemId = systemId;

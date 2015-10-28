@@ -407,11 +407,11 @@ public class ConfigExportController {
                             String providerStandardType = configVO.getInterfaceOrProtocolPro();
                             String consumerStandardType = configVO.getInterfaceOrProtocolCon();
 
-                            if(isStandardPro == "1"){
+                            if("1".equals(isStandardPro)){
                                 providerIsStandard = false;
                                 providerInterfaceId = configVO.getInterfaceIdOrProtocolIdPro();
                             }
-                            if(isStandardCon == "1"){
+                            if("1".equals(isStandardCon)){
                                 consumerIsStandard = false;
                                 consumerInterfaceId = configVO.getInterfaceIdOrProtocolIdCon();
                             }

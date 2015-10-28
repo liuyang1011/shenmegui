@@ -44,6 +44,13 @@ public class SDAController {
 	public List<TreeNode> getSDATree(String serviceId, String operationId){
 		return serviceImpl.genderSDATree(serviceId, operationId);
 	}
+	@RequiresPermissions({"sda-get"})
+	//根据serviceId，operationId获取sda树
+	@RequestMapping("/headSdaTree")
+	@ResponseBody
+	public List<TreeNode> getSDATree3(String headId){
+		return serviceImpl.genderSDATree(headId);
+	}
 
 	@RequiresPermissions({"sda-get"})
 	//根据serviceId，operationId获取sda树
@@ -51,6 +58,14 @@ public class SDAController {
 	@ResponseBody
 	public List<TreeNode> getSDATree2(String serviceId, String operationId){
 		return serviceImpl.genderSDATree2(serviceId, operationId);
+	}
+
+	@RequiresPermissions({"sda-get"})
+	//根据serviceId，operationId获取sda树
+	@RequestMapping("/headSdaComboTree")
+	@ResponseBody
+	public List<TreeNode> getSDATree2(String headId){
+		return serviceImpl.genderSDATree2(headId);
 	}
 
 	@RequiresPermissions({"service-get"})
@@ -68,13 +83,26 @@ public class SDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/saveSDA", headers = "Accept=application/json")
 	@ResponseBody
 	public boolean saveSDA(@RequestBody SDA[] sdas){
-		OperationLog operationLog = systemLogService.record("SDA","批量保存","");
+		OperationLog operationLog = systemLogService.record("SDA", "批量保存", "");
 		//判断场景状态是否为服务定义或修订
 		boolean canModifyOperation = serviceImpl.judgeCanModifyOperation(sdas[0].getServiceId(), sdas[0].getOperationId());
 		if(!canModifyOperation){
 			return false;
 		}
 		String logParam = serviceImpl.save(sdas);
+
+		operationLog.setParams(logParam);
+		systemLogService.updateResult(operationLog);
+		return true;
+	}
+	@RequiresPermissions({"sda-update"})
+	//保存对象数组
+	@RequestMapping(method = RequestMethod.POST, value = "/saveHeadSDA", headers = "Accept=application/json")
+	@ResponseBody
+	public boolean saveHeadSDA(@RequestBody SDA[] sdas){
+		OperationLog operationLog = systemLogService.record("SDA", "报文头SDA批量保存", "数量：" + sdas.length);
+
+		String logParam = serviceImpl.saveHeadSDA(sdas);
 
 		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);

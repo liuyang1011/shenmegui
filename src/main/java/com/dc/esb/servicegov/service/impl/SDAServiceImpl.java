@@ -187,6 +187,55 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     }
 
+    public List<TreeNode> genderSDATree(String headId) {
+        String hql = " from SDA where headId = ? order by seq asc";
+        List<SDA> list = sdaDAO.find(hql, headId);
+        List<SDABean> tempList = new ArrayList<SDABean>();
+        //TODO 台行  类型和长度合并显示
+        for(SDA per : list){
+            SDABean sdaBean = new SDABean(per);
+            if(null != sdaBean.getType() && !"STRUCT".equals(sdaBean.getType()) && !"ARRAY".equals(sdaBean.getType())){
+                sdaBean.setType(sdaBean.getType() + "("+sdaBean.getLength()+")");
+            }
+            tempList.add(sdaBean);
+        }
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("id", "sdaId");
+        fields.put("text", "structName");
+        fields.put("append1", "structAlias");
+        fields.put("append2", "type");
+        fields.put("append3", "xpath");
+        fields.put("append4", "metadataId");
+        fields.put("append5", "required");
+        fields.put("append6", "remark");
+        fields.put("append7", "constraint");
+        fields.put("append8", "headId");
+        fields.put("attributes", "seq");
+
+        EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
+
+        List<TreeNode> nodeList = eUtil.convertTree(tempList, fields);
+        return nodeList;
+
+    }
+
+    public List<TreeNode> genderSDATree2(String headId) {
+        String hql = " from SDA where headId = ? order by seq asc";
+        List<SDA> list = sdaDAO.find(hql, headId);
+
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("id", "sdaId");
+        fields.put("text", "structName");
+        fields.put("append1", "structAlias");
+        fields.put("append2", "xpath");
+
+        EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
+
+        List<TreeNode> nodeList = eUtil.convertTree(list, fields);
+        return nodeList;
+
+    }
+
     public static class SDABean {
 
         private String sdaId;
@@ -436,6 +485,32 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
                 logParam += "[服务ID:" + sda.getServiceId() + ", 场景ID:" + sda.getOperationId() + ", SDA名称:" + sda.getStructName() + "],";
             }
             operationService.editReleate(sdas[0].getServiceId(), sdas[0].getOperationId());
+        }
+
+        return logParam.substring(0, logParam.length() -2 );
+    }
+
+    public String saveHeadSDA(SDA[] sdas){
+        String logParam = "SDA:";
+        if (sdas != null && sdas.length > 0) {
+            for (SDA sda : sdas) {
+                //TODO TZB类型和长度合并了
+                String type = sda.getType();
+                type.replaceAll("（","(").replaceAll("）",")");
+                if(type.indexOf("(")>=0){
+                    sda.setType(type.split("[()]+")[0]);
+                    sda.setLength(type.split("[()]+")[1]);
+                }
+                sda.setOptDate(DateUtils.format(new Date()));
+                //TODO TZB元数据修改对应sda的structName修改,长度，类型，精度
+                sda.setStructName(sda.getMetadataId());
+                Metadata metadata = metadataService.getById(sda.getMetadataId());
+                sda.setType(metadata.getType());
+                sda.setLength(metadata.getLength());
+                sda.setStructAlias(metadata.getChineseName());
+                sdaDAO.save(sda);
+                logParam += "[报文头ID:" + sda.getHeadId()+ ", SDA名称:" + sda.getStructName() + "],";
+            }
         }
 
         return logParam.substring(0, logParam.length() -2 );

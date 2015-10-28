@@ -4,9 +4,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.InterfaceInvoke;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.vo.ServiceInvokeViewBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +37,8 @@ public class ServiceInvokeController {
     private InterfaceInvokeServiceImpl interfaceInvokeService;
     @Autowired
     private OperationServiceImpl operationService;
+    @Autowired
+    private InterfaceServiceImpl interfaceService;
 
     @RequiresPermissions({"service-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/list", headers = "Accept=application/json")
@@ -72,11 +71,47 @@ public class ServiceInvokeController {
             text = URLDecoder.decode(text, "utf-8");
             hql += " and( si.interfaceId like '%" + text + "%' or si.inter.interfaceName like '%" + text + "%') ";
         }
+
         Page page = serviceInvokeService.getPageBy(hql,rowCount);
         page.setPage(pageNo);
         List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInterBy(hql, page);
 //        List<ServiceInvokeJson> rows = serviceInvokeService.getDistinctInter(systemId, type,text);
 
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("total", page.getResultCount());
+        result.put("rows", rows);
+        return result;
+    }
+
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/getInterface2")
+    @ResponseBody
+    public Map<String, Object> getInterface2(String systemId, String type, String text,HttpServletRequest req) throws  Throwable{//根据系统id查询接口
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        List<ServiceInvokeJson>  rows = new ArrayList<ServiceInvokeJson>();
+
+        String hql = "select distinct t1 from Interface t1, ServiceInvoke t2 where t1.interfaceId=t2.interfaceId and t2.systemId = ? and type = ?";
+        if(StringUtils.isNotEmpty(text)){
+            text = URLDecoder.decode(text, "utf-8");
+            hql += " and( t1.interfaceId like '%" + text + "%' or t1.interfaceName like '%" + text + "%') ";
+        }
+
+        Page page = interfaceService.getPageBy(hql,rowCount, systemId, type);
+        page.setPage(pageNo);
+        List<Interface> inters = interfaceService.find(hql, systemId, type);
+        if(inters != null && inters.size() > 0){
+            for(int i = 0; i < inters.size(); i++){
+                Interface inter = inters.get(i);
+                String hql2 = " from ServiceInvoke where interfaceId = ? and systemId = ? and type = ? ";
+                List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql2, inter.getInterfaceId(), systemId, type);
+                if(serviceInvokes != null && serviceInvokes.size() > 0){
+                    ServiceInvokeJson serviceInvokeJson = new ServiceInvokeJson(serviceInvokes.get(0));
+                    serviceInvokeJson.setInvokeId(UUID.randomUUID().toString());
+                    rows.add(serviceInvokeJson);
+                }
+            }
+        }
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
         result.put("rows", rows);

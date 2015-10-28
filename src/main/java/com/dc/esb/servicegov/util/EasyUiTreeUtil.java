@@ -55,6 +55,9 @@ public class EasyUiTreeUtil {
 			String append5 = fields.get("append5");
 			String append6 = fields.get("append6");
 			String append7 = fields.get("append7");
+			String append8 = fields.get("append8");
+			String append9 = fields.get("append9");
+			String append10 = fields.get("append10");
 
 			t.id = StringUtils.isNotEmpty(id)? getFieldValue(obj, id): getFieldValue(obj, "id");
 			t.text = StringUtils.isNotEmpty(text)? getFieldValue(obj, text): getFieldValue(obj, "text");
@@ -72,6 +75,9 @@ public class EasyUiTreeUtil {
 			t.append5 = StringUtils.isNotEmpty(append5)? getFieldValue(obj, append5): null;
 			t.append6 = StringUtils.isNotEmpty(append6)? getFieldValue(obj, append6): null;
 			t.append7 = StringUtils.isNotEmpty(append7)? getFieldValue(obj, append7): null;
+			t.append8 = StringUtils.isNotEmpty(append8)? getFieldValue(obj, append8): null;
+			t.append9 = StringUtils.isNotEmpty(append9)? getFieldValue(obj, append9): null;
+			t.append10 = StringUtils.isNotEmpty(append10)? getFieldValue(obj, append10): null;
 			return t;
 		}
 		return null;

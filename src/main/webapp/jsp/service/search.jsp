@@ -339,8 +339,7 @@
         }
       }
     },
-          //TZB隐藏
-      /*{
+      {
           text:'导出配置&nbsp;&nbsp;&nbsp;',
           iconCls:'icon-excel-export',
           handler: function () {
@@ -379,7 +378,7 @@
                   alert("没有选中数据！");
               }
           }
-      },*/
+      },
     {
       text:'详细信息',
       iconCls:'icon-excel-export',

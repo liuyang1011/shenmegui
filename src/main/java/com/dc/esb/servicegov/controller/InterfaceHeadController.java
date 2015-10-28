@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.entity.SDA;
+import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -32,6 +34,8 @@ public class InterfaceHeadController {
 	
 	@Autowired
 	private IdaService idaService;
+	@Autowired
+	private SDAServiceImpl sdaService;
 
 	@RequiresPermissions({"system-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
@@ -61,7 +65,7 @@ public class InterfaceHeadController {
 	public @ResponseBody
 	boolean save(@RequestBody
 	InterfaceHead head) {
-		OperationLog operationLog = systemLogService.record("报文头","保存","名称：" + head.getHeadName());
+		OperationLog operationLog = systemLogService.record("报文头", "保存", "名称：" + head.getHeadName());
 
 		boolean add = false;
 		if(head.getHeadId()==null || "".equals(head.getHeadId())){
@@ -71,13 +75,15 @@ public class InterfaceHeadController {
 		
 		//添加报文，自动生成固定报文头<root><request><response>
 		if(add){
+			Map<String, SDA> map = sdaService.genderSDAAuto(head.getHeadId());
 			//root
 			Ida ida = new Ida();
 			ida.setHeadId(head.getHeadId());
 			ida.set_parentId(null);
 			ida.setStructName("root");
 			ida.setStructAlias("根节点");
-
+			ida.setSdaId(map.get("root").getSdaId());
+			ida.setXpath(map.get("root").getXpath());
 			idaService.save(ida);
 			String parentId = ida.getId();
 			
@@ -87,6 +93,8 @@ public class InterfaceHeadController {
 			ida.setStructName("request");
 			ida.setStructAlias("请求头");
 			ida.setSeq(0);
+			ida.setSdaId(map.get("request").getSdaId());
+			ida.setXpath(map.get("request").getXpath());
 			idaService.save(ida);
 			
 			ida = new Ida();
@@ -94,7 +102,8 @@ public class InterfaceHeadController {
 			ida.set_parentId(parentId);
 			ida.setStructName("response");
 			ida.setStructAlias("响应头");
-			ida.setSeq(1);
+			ida.setSeq(1);ida.setSdaId(map.get("response").getSdaId());
+			ida.setXpath(map.get("response").getXpath());
 			idaService.save(ida);
 		}
 
@@ -143,5 +152,14 @@ public class InterfaceHeadController {
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {
 		return "403";
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/sdaPage", headers = "Accept=application/json")
+	public ModelAndView sdaPage(String headId) {
+		ModelAndView mv = new ModelAndView("sysadmin/interface_head_sda");
+		InterfaceHead head = interfaceHeadService.findUniqueBy("headId", headId);
+		mv.addObject("head", head);
+
+		return mv;
 	}
 }
