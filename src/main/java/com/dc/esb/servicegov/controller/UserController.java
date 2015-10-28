@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.vo.UserVO;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -73,6 +74,34 @@ public class UserController {
         Page page = userServiceImpl.getAll(rowCount);
         page.setPage(pageNo);
         List<SGUser> rows = userServiceImpl.getAll(page);
+        for(SGUser user : rows){
+            String orgId = user.getOrgId();
+            Organization org = orgService.getById(orgId);
+            if(null != org){
+                user.setOrgId(org.getOrgName());
+            }
+            userVOs.add(new UserVO(user));
+        }
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("total", page.getResultCount());
+        result.put("rows", userVOs);
+        return result;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getUserInfo", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    Map<String, Object> getUserInfo( @RequestParam("page") int pageNo, @RequestParam("rows") int rowCount) {
+        List<UserVO> userVOs = new ArrayList<UserVO>();
+        String userName = (String) SecurityUtils.getSubject().getPrincipal();
+        String hql = "from SGUser a where a.id ='"+userName+"'";
+        Page page = userServiceImpl.getPageBy(hql,rowCount);
+
+
+//        Page page = userServiceImpl.getAll(rowCount);
+        page.setPage(pageNo);
+//        List<SGUser> rows = userServiceImpl.getAll(page);
+        List<SGUser> rows = userServiceImpl.findBy(hql,page);
         for(SGUser user : rows){
             String orgId = user.getOrgId();
             Organization org = orgService.getById(orgId);

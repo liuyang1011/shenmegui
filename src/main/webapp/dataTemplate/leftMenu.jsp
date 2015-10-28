@@ -23,11 +23,14 @@
         </shiro:hasRole>
         </ul>
     </li>
+    <%--TZB系统负责人员不需要看到日志管理--%>
+    <shiro:lacksRole name="系统负责人员">
     <li><a href="javascript:;" class="openable" mid="1.11">日志管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="1.12">系统日志</a></li>
         </ul>
     </li>
+    </shiro:lacksRole>
 </ul>
 <%
     }

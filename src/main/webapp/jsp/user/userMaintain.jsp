@@ -55,6 +55,7 @@
 
 </fieldset>
 </form>
+<shiro:hasRole name="admin">
 <table id="tt" style="height:500px; width:auto;" title="所有用户"
 	   data-options="rownumbers:true,singleSelect:true,url:'/user/getAll',method:'get',toolbar:toolbar,pagination:true,
 				pageSize:10">
@@ -72,6 +73,27 @@
 	</tr>
 	</thead>
 </table>
+</shiro:hasRole>
+
+<shiro:lacksRole name="admin">
+	<table id="tt" style="height:500px; width:auto;" title="用户信息"
+		   data-options="rownumbers:true,singleSelect:true,url:'/user/getUserInfo',method:'get',toolbar:toolbar,pagination:true,
+				pageSize:10">
+		<thead>
+		<tr>
+			<th data-options="field:'user',checkbox:true"></th>
+			<th field="id" width="130px" type="text" align="center">用户代码</th>
+			<th field="name" width="130px" align="center" >用户名称</th>
+			<th field="userMobile" width="130px" align="center">手机号码</th>
+			<th field="userTel" width="130px" align="center">电话号码</th>
+			<th field="orgId" width="130px" align="center">所属机构</th>
+				<%--<th field="startdate" width="130px" align="center">生效日期</th>
+				<th field="lastdate" width="130px" align="center">失效日期</th>--%>
+			<th field="remark" width="130px" align="center">备 注</th>
+		</tr>
+		</thead>
+	</table>
+</shiro:lacksRole>
 
 <div id="w" class="easyui-window" title=""
 	 data-options="modal:true,closed:true,iconCls:'icon-add'"
