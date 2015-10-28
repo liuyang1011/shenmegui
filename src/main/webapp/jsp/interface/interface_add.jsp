@@ -114,6 +114,7 @@
 			systemId = selectNode.id;
 
 			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
+
 			if(node && node.id!='root'){
 				 systemId = node.id;
 			}

@@ -82,6 +82,77 @@ public class FileUtil {
         logger.info("复制结束...");
     }
 
+
+    public static void copyFile(String srcFile, String destFile, String requestTxt,String responseText, String reqHeadTxt, String rspHeadTxt) throws Exception
+    {
+        logger.info("复制文件开始，srcFile:" + srcFile + ",destFile:" + destFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(srcFile)),
+                "utf-8"));
+        File dFile = new File(destFile);
+        if (!dFile.isFile())
+        {
+            dFile.getParentFile().mkdirs();
+            dFile.createNewFile();
+        }
+
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(destFile)),
+                "utf-8"));
+
+        String temp = null;
+        while ((temp = reader.readLine()) != null)
+        {
+            String body = temp;
+            if (temp.indexOf("${request}$") != -1)
+            {
+                body = temp.replace("${request}$", requestTxt);
+            }else if(temp.indexOf("${response}$") != -1){
+                body = temp.replace("${response}$", responseText);
+            }else if(temp.indexOf("${reqHead}$") != -1){
+                if(null ==reqHeadTxt){
+                    reqHeadTxt = "";
+                }
+                body = temp.replace("${reqHead}$", reqHeadTxt);
+
+            }else if(temp.indexOf("${rspHead}$") != -1){
+                if(null ==rspHeadTxt){
+                    rspHeadTxt = "";
+                }
+                body = temp.replace("${rspHead}$", rspHeadTxt);
+            }
+            writer.write(body);
+            writer.newLine();
+        }
+
+        writer.close();
+        if (writer != null)
+        {
+            writer.close();
+            writer = null;
+        }
+        if (reader != null)
+        {
+            reader.close();
+            reader = null;
+        }
+
+        //格式化xml
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(destFile);
+        FileOutputStream out = new FileOutputStream(destFile, false);
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setEncoding("utf-8");
+        XMLWriter formatWriter = new XMLWriter(new OutputStreamWriter(out, "utf-8"), format);// 重新写回到原来的xml文件中
+
+        formatWriter.write(document);
+
+        formatWriter.close();
+        out.close();
+
+
+        logger.info("复制结束...");
+    }
+
     public static void copyFileTZBIdentifyOut(String srcFile, String destFile, String systemAb,String identifySystemOutText) throws Exception{
         logger.info("复制文件开始，srcFile:" + srcFile + ",destFile:" + destFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(srcFile)),

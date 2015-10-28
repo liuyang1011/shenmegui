@@ -288,6 +288,8 @@ public class ExportUtil {
         return xml.substring(xml.indexOf(body));
     }
 
+
+
     public static String generatorIdentifyInXML(String systemAb,String serviceName,String systemId, String serviceId, String operationId) {
         Document doc = DocumentHelper.createDocument();
         doc.setXMLEncoding("utf-8");
@@ -333,6 +335,48 @@ public class ExportUtil {
         return xml.substring(xml.indexOf(body));
     }
 
+    public static String generateBaseMappingXML(List<Ida> idas,String type,String systemAb,SDAService sdaService, String serviceId, String operationId){
+        Collections.sort(idas, new Comparator<Ida>() {
+            @Override
+            public int compare(Ida o1, Ida o2) {
+                return (""+o1.getSeq()).compareTo(""+o2.getSeq());
+            }
+        });
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+
+        Element element = doc.addElement("root");
+        for(Ida ida : idas){
+            Element nodeElement = element.addElement(ida.getStructName());
+            nodeElement.addAttribute("type", ida.getType());
+            nodeElement.addAttribute("length", ida.getLength());
+            nodeElement.addAttribute("metadataid", ida.getMetadataId());
+        }
+        String xml = doc.asXML();
+        return xml;
+    }
+
+    public static String generateBaseMappingXML(List<SDA> sdas){
+        Collections.sort(sdas, new Comparator<SDA>() {
+            @Override
+            public int compare(SDA o1, SDA o2) {
+                return (""+o1.getSeq()).compareTo(""+o2.getSeq());
+            }
+        });
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+
+        Element element = doc.addElement("root");
+        for(SDA sda : sdas){
+            Element nodeElement = element.addElement(sda.getStructName());
+//            nodeElement.addAttribute("type", sda.getType());
+//            nodeElement.addAttribute("length", sda.getLength());
+            nodeElement.addAttribute("metadataid", sda.getMetadataId());
+        }
+        String xml = doc.asXML();
+        return xml;
+    }
+
     public static String generatorMappingXML(List<Ida> idas,String type,String systemAb,SDAService sdaService, String serviceId, String operationId) {
         Collections.sort(idas, new Comparator<Ida>() {
             @Override
@@ -346,7 +390,7 @@ public class ExportUtil {
 
         Element element = null;
         String body = "";
-        if("request" == type){
+        if("request".equalsIgnoreCase(type)){
             //req
             element = doc.addElement("request-mapping");
             element.addAttribute("base","default");
@@ -356,7 +400,7 @@ public class ExportUtil {
             ele.addAttribute("channel", systemAb);
 
             body = "<request-mapping";
-        }else if("response" == type){
+        }else if("response".equalsIgnoreCase(type) ){
             //res
             element = doc.addElement("response-mapping");
             element.addAttribute("base","default");

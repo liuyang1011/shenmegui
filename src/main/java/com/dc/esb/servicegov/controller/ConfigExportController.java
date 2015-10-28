@@ -9,15 +9,14 @@ import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.service.impl.InterfaceHeadServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.vo.ConfigListVO;
 import com.dc.esb.servicegov.vo.ConfigVO;
-import com.dc.esb.servicegov.vo.OperationPKVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -28,8 +27,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.lang.System;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/7/14.
@@ -72,12 +73,15 @@ public class ConfigExportController {
     @Autowired
     LogInfoServiceImpl logInfoService;
 
+    @Autowired
+    private InterfaceHeadServiceImpl interfaceHeadService;
+
     @RequiresPermissions({"exportConfig-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/exportHandle/{serviceId}/{operationId}/{providerSystemId}/{providerInterfaceId}/{providerIsStandard}/{consumerSystemId}/{consumerInterfaceId}/{consumerIsStandard}/{providerStandardType}/{consumerStandardType}", headers = "Accept=application/json")
     public
     @ResponseBody
     List<String> export(@PathVariable String serviceId, @PathVariable String operationId, @PathVariable String providerSystemId, @PathVariable String providerInterfaceId, @PathVariable boolean providerIsStandard,
-                         @PathVariable String consumerInterfaceId, @PathVariable String consumerSystemId, @PathVariable boolean consumerIsStandard, @PathVariable String providerStandardType, @PathVariable String consumerStandardType, HttpServletResponse response) {
+                        @PathVariable String consumerInterfaceId, @PathVariable String consumerSystemId, @PathVariable boolean consumerIsStandard, @PathVariable String providerStandardType, @PathVariable String consumerStandardType, HttpServletResponse response) {
         OperationLog operationLog = systemLogService.record("服务", "配置导出", "服务ID:" + serviceId + ";操作ID：" + operationId + ";提供者ID" + providerSystemId + ";消费者ID:" + consumerSystemId + ", 提供者接口ID" + providerInterfaceId + ", consumerSystemId 消费者接口ID:");
 
         File in_file = null;
@@ -106,7 +110,7 @@ public class ConfigExportController {
         }
         String requestText = "";
         String responseText = "";
-        String requestSOAPText  = "";
+        String requestSOAPText = "";
         String responseSOAPText = "";
 
         //消费方是否标准接口
@@ -115,12 +119,12 @@ public class ConfigExportController {
             requestText = ExportUtil.generatorServiceDefineXML(sdas, SDARequest);
             responseText = ExportUtil.generatorServiceDefineXML(sdas, SDAResponse);
             if (consumerStandardType.equalsIgnoreCase("xml")) {
-                standardXMLConfigGenerator.init(requestText,responseText);
+                standardXMLConfigGenerator.init(requestText, responseText);
                 in_file = standardXMLConfigGenerator.generatorIn(idas, sdas, export);
             } else if (consumerStandardType.equalsIgnoreCase("soap")) {
-                requestSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas,SDARequest);
-                responseSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas,SDAResponse);
-                standardSOAPConfigGenerator.init(requestText,responseText,requestSOAPText,responseSOAPText);
+                requestSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas, SDARequest);
+                responseSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas, SDAResponse);
+                standardSOAPConfigGenerator.init(requestText, responseText, requestSOAPText, responseSOAPText);
                 in_file = standardSOAPConfigGenerator.generatorIn(idas, sdas, export);
             }
         } else {
@@ -149,24 +153,30 @@ public class ConfigExportController {
                         Class c = Class.forName(generatorClass);
                         try {
                             IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
+                            generator.setSystemService(systemService);
+                            generator.setInterfaceService(interfaceService);
+                            generator.setSdaService(sdaService);
+                            generator.setOperationService(operationService);
+                            generator.setInterfaceHeadService(interfaceHeadService);
+                            generator.setIdaService(idaService);
                             in_file = generator.generatorIn(idas, sdas, export);
                         } catch (InstantiationException e) {
                             logger.error("消费方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
 //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
-                            logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败","导出");
+                            logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败", "导出");
                             printMsg(response, "消费方接口协议报文生成类实例化失败,导出失败");
                             return null;
                         } catch (IllegalAccessException e) {
 
                             logger.error("消费方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
-                            logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败","导出");
+                            logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败", "导出");
 //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败";
                             printMsg(response, "消费方接口协议报文生成类构造方法是不可访问,导出失败");
                             return null;
                         }
                     } catch (ClassNotFoundException e) {
                         logger.error("消费方接口协议报文生成类未找到，导出失败");
-                        logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败","导出");
+                        logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败", "导出");
 //                        return "消费方接口协议报文生成类未找到，导出失败";
                         printMsg(response, "消费方接口协议报文生成类未找到，导出失败");
                         return null;
@@ -201,7 +211,7 @@ public class ConfigExportController {
                 String protocolId = invoke.getProtocolId();
                 if (protocolId == null || "".equals(protocolId)) {
                     logger.error("提供方接口未关联协议，导出失败");
-                    logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
+                    logInfoService.saveLog("提供方接口未关联协议，导出失败", "导出");
 //                    return "提供方接口未关联协议，导出失败";
                     printMsg(response, "提供方接口未关联协议，导出失败");
                     return null;
@@ -219,24 +229,26 @@ public class ConfigExportController {
                             generator.setInterfaceService(interfaceService);
                             generator.setSdaService(sdaService);
                             generator.setOperationService(operationService);
+                            generator.setInterfaceHeadService(interfaceHeadService);
+                            generator.setIdaService(idaService);
                             generator.generatorOut(provideridas, sdas, export);
                         } catch (InstantiationException e) {
                             logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
 //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
-                            logInfoService.saveLog("提供方接口协议报文生成类实例化失败,导出失败","导出");
+                            logInfoService.saveLog("提供方接口协议报文生成类实例化失败,导出失败", "导出");
                             printMsg(response, "提供方接口协议报文生成类实例化失败,导出失败");
                             return null;
                         } catch (IllegalAccessException e) {
                             logger.error("提供方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
 //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败";
-                            logInfoService.saveLog("提供方接口协议报文生成类构造方法是不可访问,导出失败","导出");
+                            logInfoService.saveLog("提供方接口协议报文生成类构造方法是不可访问,导出失败", "导出");
                             printMsg(response, "提供方接口协议报文生成类构造方法是不可访问,导出失败");
                             return null;
                         }
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                         logger.error("提供方接口协议报文生成类未找到，导出失败");
-                        logInfoService.saveLog("提供方接口协议报文生成类未找到，导出失败","导出");
+                        logInfoService.saveLog("提供方接口协议报文生成类未找到，导出失败", "导出");
 //                        return "提供方接口协议报文生成类未找到，导出失败";
                         List<String> list = new ArrayList<String>();
                         printMsg(response, "提供方接口协议报文生成类未找到，导出失败");
@@ -333,8 +345,8 @@ public class ConfigExportController {
             map.put("id", system.getInterfaceId());
             Interface inter = new Interface();
             inter = system.getInter();
-            if(null == inter) continue;
-            map.put("text",inter.getInterfaceName());
+            if (null == inter) continue;
+            map.put("text", inter.getInterfaceName());
             resList.add(map);
         }
         return resList;
@@ -352,20 +364,22 @@ public class ConfigExportController {
         }
         return false;
     }
-    public void printMsg(HttpServletResponse response, String message){
+
+    public void printMsg(HttpServletResponse response, String message) {
         PrintWriter pw = null;
         try {
             response.setContentType("text/html; charset=utf-8");
             pw = response.getWriter();
             pw.print("<script language='javascript'>alert('" + message + "')</script>");
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e, e);
-        }finally {
-            if(pw != null){
+        } finally {
+            if (pw != null) {
                 pw.close();
             }
         }
     }
+
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
@@ -385,206 +399,211 @@ public class ConfigExportController {
     @RequestMapping(method = RequestMethod.POST, value = "/exportBatch", headers = "Accept=application/json")
     public
     @ResponseBody
-    List<String> exportBatch(HttpServletRequest request, HttpServletResponse response, ConfigListVO list){
+    List<String> exportBatch(HttpServletRequest request, HttpServletResponse response, ConfigListVO list) {
         String path = "";
         InputStream in = null;
         OutputStream out = null;
         try {
-            if(list != null){
-                    List<ConfigVO> voList = list.getList();
-                    if(voList != null && voList.size() > 0){
-                        for(ConfigVO configVO : voList){
-                            String serviceId = configVO.getServiceId();
-                            String operationId = configVO.getOperationId();
-                            String providerSystemId = configVO.getProviderId();
-                            String isStandardPro = configVO.getIsStandardPro();
-                            boolean providerIsStandard = true;
-                            String providerInterfaceId = "no";
-                            String consumerInterfaceId = "no";
-                            String consumerSystemId = configVO.getCustomerId();
-                            String isStandardCon = configVO.getIsStandardCon();
-                            boolean consumerIsStandard = true;
-                            String providerStandardType = configVO.getInterfaceOrProtocolPro();
-                            String consumerStandardType = configVO.getInterfaceOrProtocolCon();
+            if (list != null) {
+                List<ConfigVO> voList = list.getList();
+                if (voList != null && voList.size() > 0) {
+                    for (ConfigVO configVO : voList) {
+                        String serviceId = configVO.getServiceId();
+                        String operationId = configVO.getOperationId();
+                        String providerSystemId = configVO.getProviderId();
+                        String isStandardPro = configVO.getIsStandardPro();
+                        boolean providerIsStandard = true;
+                        String providerInterfaceId = "no";
+                        String consumerInterfaceId = "no";
+                        String consumerSystemId = configVO.getCustomerId();
+                        String isStandardCon = configVO.getIsStandardCon();
+                        boolean consumerIsStandard = true;
+                        String providerStandardType = configVO.getInterfaceOrProtocolPro();
+                        String consumerStandardType = configVO.getInterfaceOrProtocolCon();
 
-                            if(isStandardPro == "1"){
-                                providerIsStandard = false;
-                                providerInterfaceId = configVO.getInterfaceIdOrProtocolIdPro();
+                        if ( "1".equals(isStandardPro)) {
+                            providerIsStandard = false;
+                            providerInterfaceId = configVO.getInterfaceIdOrProtocolIdPro();
+                        }
+                        if ( "1".equalsIgnoreCase(isStandardCon)) {
+                            consumerIsStandard = false;
+                            consumerInterfaceId = configVO.getInterfaceIdOrProtocolIdCon();
+                        }
+                        File in_file = null;
+                        ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId, providerIsStandard, consumerSystemId, consumerInterfaceId, consumerIsStandard);
+                        Map<String, String> sdaMap = new HashMap<String, String>();
+                        sdaMap.put("serviceId", export.getServiceId());
+                        sdaMap.put("operationId", export.getOperationId());
+                        List<SDA> sdas = sdaService.findBy(sdaMap);
+
+                        Map<String, String> idaMap = new HashMap<String, String>();
+                        sdaMap.put("interfaceId", export.getConsumerInterfaceId());
+                        List<Ida> idas = idaService.findBy(idaMap);
+                        SDA SDARequest = null;
+                        SDA SDAResponse = null;
+                        for (SDA sda : sdas) {
+                            if (sda.getStructName().equalsIgnoreCase("request")) {
+                                SDARequest = sda;
+                                continue;
                             }
-                            if(isStandardCon == "1"){
-                                consumerIsStandard = false;
-                                consumerInterfaceId = configVO.getInterfaceIdOrProtocolIdCon();
+                            if (sda.getStructName().equalsIgnoreCase("response")) {
+                                SDAResponse = sda;
                             }
-                            File in_file = null;
-                            ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId, providerIsStandard, consumerSystemId, consumerInterfaceId, consumerIsStandard);
-                            Map<String, String> sdaMap = new HashMap<String, String>();
-                            sdaMap.put("serviceId", export.getServiceId());
-                            sdaMap.put("operationId", export.getOperationId());
-                            List<SDA> sdas = sdaService.findBy(sdaMap);
-
-                            Map<String, String> idaMap = new HashMap<String, String>();
-                            sdaMap.put("interfaceId", export.getConsumerInterfaceId());
-                            List<Ida> idas = idaService.findBy(idaMap);
-                            SDA SDARequest = null;
-                            SDA SDAResponse = null;
-                            for (SDA sda : sdas) {
-                                if (sda.getStructName().equalsIgnoreCase("request")) {
-                                    SDARequest = sda;
-                                    continue;
-                                }
-                                if (sda.getStructName().equalsIgnoreCase("response")) {
-                                    SDAResponse = sda;
-                                }
-                                if (SDARequest != null && SDAResponse != null) {
-                                    break;
-                                }
+                            if (SDARequest != null && SDAResponse != null) {
+                                break;
                             }
-                            String requestText = "";
-                            String responseText = "";
-                            String requestSOAPText  = "";
-                            String responseSOAPText = "";
+                        }
+                        String requestText = "";
+                        String responseText = "";
+                        String requestSOAPText = "";
+                        String responseSOAPText = "";
 
-                            //消费方是否标准接口
-                            if (export.isConsumerIsStandard()) {
+                        //消费方是否标准接口
+                        if (export.isConsumerIsStandard()) {
 
-                                requestText = ExportUtil.generatorServiceDefineXML(sdas, SDARequest);
-                                responseText = ExportUtil.generatorServiceDefineXML(sdas, SDAResponse);
-                                if (consumerStandardType.equalsIgnoreCase("xml")) {
-                                    standardXMLConfigGenerator.init(requestText,responseText);
-                                    in_file = standardXMLConfigGenerator.generatorIn(idas, sdas, export);
-                                } else if (consumerStandardType.equalsIgnoreCase("soap")) {
-                                    requestSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas,SDARequest);
-                                    responseSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas,SDAResponse);
-                                    standardSOAPConfigGenerator.init(requestText,responseText,requestSOAPText,responseSOAPText);
-                                    in_file = standardSOAPConfigGenerator.generatorIn(idas, sdas, export);
-                                }
-                            } else {
+                            requestText = ExportUtil.generatorServiceDefineXML(sdas, SDARequest);
+                            responseText = ExportUtil.generatorServiceDefineXML(sdas, SDAResponse);
+                            if (consumerStandardType.equalsIgnoreCase("xml")) {
+                                standardXMLConfigGenerator.init(requestText, responseText);
+                                in_file = standardXMLConfigGenerator.generatorIn(idas, sdas, export);
+                            } else if (consumerStandardType.equalsIgnoreCase("soap")) {
+                                requestSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas, SDARequest);
+                                responseSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas, SDAResponse);
+                                standardSOAPConfigGenerator.init(requestText, responseText, requestSOAPText, responseSOAPText);
+                                in_file = standardSOAPConfigGenerator.generatorIn(idas, sdas, export);
+                            }
+                        } else {
+                            Map<String, String> paramMap = new HashMap<String, String>();
+                            paramMap.put("serviceId", export.getServiceId());
+                            paramMap.put("operationId", export.getOperationId());
+                            paramMap.put("interfaceId", export.getConsumerInterfaceId());
+                            paramMap.put("systemId", export.getConsumerSystemId());
+                            ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
+                            if (invoke != null) {
+                                String protocolId = invoke.getProtocolId();
+                                if (protocolId == null || "".equals(protocolId)) {
+                                    logger.error("消费方接口未关联协议，导出失败");
+                                    //                    return "消费方提供方接口未关联协议，导出失败";
+                                    logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
+                                    printMsg(response, "消费方接口未关联协议，导出失败");
+                                    return null;
+                                } else {
+                                    Protocol protocol = protocolService.getById(protocolId);
+                                    String generatorClass = protocol.getGeneratorId();
 
-                                Map<String, String> paramMap = new HashMap<String, String>();
-                                paramMap.put("serviceId", export.getServiceId());
-                                paramMap.put("operationId", export.getOperationId());
-                                paramMap.put("interfaceId", export.getConsumerInterfaceId());
-                                paramMap.put("systemId", export.getConsumerSystemId());
-                                ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
-                                if (invoke != null) {
-                                    String protocolId = invoke.getProtocolId();
-                                    if (protocolId == null || "".equals(protocolId)) {
-                                        logger.error("消费方接口未关联协议，导出失败");
-    //                    return "消费方提供方接口未关联协议，导出失败";
-                                        logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
-                                        printMsg(response, "消费方接口未关联协议，导出失败");
-                                        return null;
-                                    } else {
-
-
-                                        Protocol protocol = protocolService.getById(protocolId);
-                                        String generatorClass = protocol.getGeneratorId();
-
+                                    try {
+                                        Class c = Class.forName(generatorClass);
                                         try {
-                                            Class c = Class.forName(generatorClass);
-                                            try {
-                                                IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
-                                                in_file = generator.generatorIn(idas, sdas, export);
-                                            } catch (InstantiationException e) {
-                                                logger.error("消费方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
-    //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
-                                                logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败","导出");
-                                                printMsg(response, "消费方接口协议报文生成类实例化失败,导出失败");
-                                                return null;
-                                            } catch (IllegalAccessException e) {
+                                            IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
+                                            generator.setSystemService(systemService);
+                                            generator.setInterfaceService(interfaceService);
+                                            generator.setSdaService(sdaService);
+                                            generator.setOperationService(operationService);
+                                            generator.setInterfaceHeadService(interfaceHeadService);
+                                            generator.setIdaService(idaService);
+                                            in_file = generator.generatorIn(idas, sdas, export);
+                                        } catch (InstantiationException e) {
+                                            logger.error("消费方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
+                                            //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
+                                            logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败", "导出");
+                                            printMsg(response, "消费方接口协议报文生成类实例化失败,导出失败");
+                                            return null;
+                                        } catch (IllegalAccessException e) {
 
-                                                logger.error("消费方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
-                                                logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败","导出");
-    //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败";
-                                                printMsg(response, "消费方接口协议报文生成类构造方法是不可访问,导出失败");
-                                                return null;
-                                            }
-                                        } catch (ClassNotFoundException e) {
-                                            logger.error("消费方接口协议报文生成类未找到，导出失败");
-                                            logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败","导出");
-    //                        return "消费方接口协议报文生成类未找到，导出失败";
-                                            printMsg(response, "消费方接口协议报文生成类未找到，导出失败");
+                                            logger.error("消费方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
+                                            logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败", "导出");
+                                            //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败";
+                                            printMsg(response, "消费方接口协议报文生成类构造方法是不可访问,导出失败");
                                             return null;
                                         }
-
+                                    } catch (ClassNotFoundException e) {
+                                        logger.error("消费方接口协议报文生成类未找到，导出失败");
+                                        logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败", "导出");
+                                        //                        return "消费方接口协议报文生成类未找到，导出失败";
+                                        printMsg(response, "消费方接口协议报文生成类未找到，导出失败");
+                                        return null;
                                     }
 
                                 }
 
                             }
 
-                            Map<String, String> providerIDAMap = new HashMap<String, String>();
-                            providerIDAMap.put("interfaceId", export.getProviderInterfaceId());
-                            List<Ida> provideridas = idaService.findBy(providerIDAMap);
-                            //提供方是否标准接口
-                            if (export.isProviderIsStandard()) {
-                                if (providerStandardType.equalsIgnoreCase("xml")) {
-                                    standardXMLConfigGenerator.generatorOut(provideridas, sdas, export);
-                                } else if (providerStandardType.equalsIgnoreCase("soap")) {
-                                    standardSOAPConfigGenerator.generatorOut(idas, sdas, export);
-                                }
-
-                            } else {
-                                Map<String, String> paramMap = new HashMap<String, String>();
-                                paramMap.put("serviceId", export.getServiceId());
-                                paramMap.put("operationId", export.getOperationId());
-                                paramMap.put("interfaceId", export.getProviderInterfaceId());
-                                paramMap.put("systemId", export.getProviderSystemId());
-                                ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
-                                if (invoke != null) {
-
-                                    String protocolId = invoke.getProtocolId();
-                                    if (protocolId == null || "".equals(protocolId)) {
-                                        logger.error("提供方接口未关联协议，导出失败");
-                                        logInfoService.saveLog("提供方接口未关联协议，导出失败","导出");
-    //                    return "提供方接口未关联协议，导出失败";
-                                        printMsg(response, "提供方接口未关联协议，导出失败");
-                                        return null;
-                                    } else {
-
-
-                                        Protocol protocol = protocolService.getById(protocolId);
-                                        String generatorClass = protocol.getGeneratorId();
-
-                                        try {
-                                            Class c = Class.forName(generatorClass);
-                                            try {
-                                                IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
-                                                generator.setSystemService(systemService);
-                                                generator.setInterfaceService(interfaceService);
-                                                generator.setSdaService(sdaService);
-                                                generator.setOperationService(operationService);
-                                                generator.generatorOut(provideridas, sdas, export);
-                                            } catch (InstantiationException e) {
-                                                logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
-    //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
-                                                logInfoService.saveLog("提供方接口协议报文生成类实例化失败,导出失败","导出");
-                                                printMsg(response, "提供方接口协议报文生成类实例化失败,导出失败");
-                                                return null;
-                                            } catch (IllegalAccessException e) {
-                                                logger.error("提供方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
-    //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败";
-                                                logInfoService.saveLog("提供方接口协议报文生成类构造方法是不可访问,导出失败","导出");
-                                                printMsg(response, "提供方接口协议报文生成类构造方法是不可访问,导出失败");
-                                                return null;
-                                            }
-                                        } catch (ClassNotFoundException e) {
-                                            e.printStackTrace();
-                                            logger.error("提供方接口协议报文生成类未找到，导出失败");
-                                            logInfoService.saveLog("提供方接口协议报文生成类未找到，导出失败","导出");
-    //                        return "提供方接口协议报文生成类未找到，导出失败";
-                                            printMsg(response, "提供方接口协议报文生成类未找到，导出失败");
-                                            return null;
-                                        }
-
-                                    }
-                                }
-                            }
-                            path = in_file.getParentFile().getPath();
                         }
 
+                        Map<String, String> providerIDAMap = new HashMap<String, String>();
+                        providerIDAMap.put("interfaceId", export.getProviderInterfaceId());
+                        List<Ida> provideridas = idaService.findBy(providerIDAMap);
+                        //提供方是否标准接口
+                        if (export.isProviderIsStandard()) {
+                            if (providerStandardType.equalsIgnoreCase("xml")) {
+                                standardXMLConfigGenerator.generatorOut(provideridas, sdas, export);
+                            } else if (providerStandardType.equalsIgnoreCase("soap")) {
+                                standardSOAPConfigGenerator.generatorOut(idas, sdas, export);
+                            }
+
+                        } else {
+                            Map<String, String> paramMap = new HashMap<String, String>();
+                            paramMap.put("serviceId", export.getServiceId());
+                            paramMap.put("operationId", export.getOperationId());
+                            paramMap.put("interfaceId", export.getProviderInterfaceId());
+                            paramMap.put("systemId", export.getProviderSystemId());
+                            ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
+                            if (invoke != null) {
+
+                                String protocolId = invoke.getProtocolId();
+                                if (protocolId == null || "".equals(protocolId)) {
+                                    logger.error("提供方接口未关联协议，导出失败");
+                                    logInfoService.saveLog("提供方接口未关联协议，导出失败", "导出");
+                                    //                    return "提供方接口未关联协议，导出失败";
+                                    printMsg(response, "提供方接口未关联协议，导出失败");
+                                    return null;
+                                } else {
+
+
+                                    Protocol protocol = protocolService.getById(protocolId);
+                                    String generatorClass = protocol.getGeneratorId();
+
+                                    try {
+                                        Class c = Class.forName(generatorClass);
+                                        try {
+                                            IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
+                                            generator.setSystemService(systemService);
+                                            generator.setInterfaceService(interfaceService);
+                                            generator.setSdaService(sdaService);
+                                            generator.setOperationService(operationService);
+                                            generator.setInterfaceHeadService(interfaceHeadService);
+                                            generator.setIdaService(idaService);
+                                            generator.generatorOut(provideridas, sdas, export);
+                                        } catch (InstantiationException e) {
+                                            logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
+                                            //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
+                                            logInfoService.saveLog("提供方接口协议报文生成类实例化失败,导出失败", "导出");
+                                            printMsg(response, "提供方接口协议报文生成类实例化失败,导出失败");
+                                            return null;
+                                        } catch (IllegalAccessException e) {
+                                            logger.error("提供方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
+                                            //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败";
+                                            logInfoService.saveLog("提供方接口协议报文生成类构造方法是不可访问,导出失败", "导出");
+                                            printMsg(response, "提供方接口协议报文生成类构造方法是不可访问,导出失败");
+                                            return null;
+                                        }
+                                    } catch (ClassNotFoundException e) {
+                                        e.printStackTrace();
+                                        logger.error("提供方接口协议报文生成类未找到，导出失败");
+                                        logInfoService.saveLog("提供方接口协议报文生成类未找到，导出失败", "导出");
+                                        //                        return "提供方接口协议报文生成类未找到，导出失败";
+                                        printMsg(response, "提供方接口协议报文生成类未找到，导出失败");
+                                        return null;
+                                    }
+
+                                }
+                            }
+                        }
+                        path = in_file.getParentFile().getPath();
                     }
+
                 }
+            }
             ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
 
             File metadata = new File(path + "/metadata.zip");
@@ -610,7 +629,7 @@ public class ConfigExportController {
 //            systemLogService.updateResult(operationLog);
 
         } catch (Exception e) {
-            logger.error(e,e);
+            logger.error(e, e);
             printMsg(response, "数据错误，导出失败!");
 
         } finally {

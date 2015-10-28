@@ -77,7 +77,7 @@
 				生成类
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" disabled="disabled" id="generatorIdText" value="com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator">
+				<input class="easyui-textbox" type="text"  id="generatorIdText" value="com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator">
 			</td>
 		</tr>
 

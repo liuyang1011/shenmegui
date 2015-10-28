@@ -56,7 +56,7 @@
     </ul>
     <div id="header_toolsbar">
         <a href="javascript:;" class="login_user"><shiro:principal/></a>
-        <a id="taskName" href="javascript:;" style="display: none">当前任务:</a>
+        <a id="taskName" href="javascript:;">当前任务:</a>
         <a href="/logout/">退出</a>
         <a href="javascript:;">帮助</a>
     </div>
