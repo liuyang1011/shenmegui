@@ -50,7 +50,9 @@ public class StatisticsServiceImpl implements StatisticsService{
     private ServiceCategoryDAOImpl serviceCategoryDAO;
     @Override
     public long getReuseRateCount(Map<String, String[]> values) {
-        String hql = "select count(*) from " + ServiceInvoke.class.getName() + " si where 1=1";
+        ;
+        String hql = "select count(*) from " + ServiceInvoke.class.getName() + " as si, " + Operation.class.getName() + " as o where si.type != null and si.serviceId = o.serviceId" +
+                " and si.operationId = o.operationId and o.state in(" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE + ")" ;
         if(values.get("type") != null && values.get("type").length > 0){
             if (StringUtils.isNotEmpty(values.get("type")[0])){
                 hql += " and si.type = " + values.get("type")[0];
@@ -154,7 +156,7 @@ public class StatisticsServiceImpl implements StatisticsService{
         long count = serviceInvokeDAO.find(hql, systemId, type).size();
         return count;
     }
-//根据系统id，type计算服务场景 消费者数量大于1的场景数
+    //根据系统id，type计算服务场景 消费者数量大于1的场景数
     public long getOperationReuseCount(String systemId, String type){
         String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM (SELECT service_id, operation_id FROM service_invoke WHERE TYPE =? AND system_id=? GROUP BY service_id, operation_id) a ," +
                 " service_invoke b WHERE a.service_id = b.service_id AND a.operation_id = b.operation_id AND TYPE=? GROUP BY b.service_id, b.operation_id HAVING COUNT(*) > 1) c";
@@ -263,7 +265,9 @@ public class StatisticsServiceImpl implements StatisticsService{
 
     @Override
     public long getReleaseVOCount(Map<String, String[]> values) {
-        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si where si.type != null";
+        String hql = "select si.systemId, si.type from " + ServiceInvoke.class.getName() + " as si, " + Operation.class.getName()
+                + " as o where si.type != null and si.serviceId = o.serviceId" +
+                " and si.operationId = o.operationId and o.state in(" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE + ")";;
         if(values.get("type") != null && values.get("type").length > 0){
             if (StringUtils.isNotEmpty(values.get("type")[0])) {
                 hql += " and si.type = " + values.get("type")[0];
@@ -279,7 +283,7 @@ public class StatisticsServiceImpl implements StatisticsService{
                 hql += " and si.system.systemChineseName like '%" + URLDecoder.decode(values.get("systemName")[0]) + "%'";
             }
         }
-        hql += " group by systemId, type";
+        hql += " group by si.systemId, si.type";
         long count = serviceInvokeDAO.find(hql).size();
         return count;
     }
