@@ -56,9 +56,9 @@
 </fieldset>
 </form>
 <shiro:hasRole name="admin">
-<table id="tt" style="height:500px; width:auto;" title="所有用户"
+<table id="tt" style="height:550px; width:auto;" title="所有用户"
 	   data-options="rownumbers:true,singleSelect:true,url:'/user/getAll',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10">
+				pageSize:20">
 	<thead>
 	<tr>
 				<th data-options="field:'user',checkbox:true"></th>
@@ -76,9 +76,9 @@
 </shiro:hasRole>
 
 <shiro:lacksRole name="admin">
-	<table id="tt" style="height:500px; width:auto;" title="用户信息"
+	<table id="tt" style="height:550px; width:auto;" title="用户信息"
 		   data-options="rownumbers:true,singleSelect:true,url:'/user/getUserInfo',method:'get',toolbar:toolbar,pagination:true,
-				pageSize:10">
+				pageSize:20">
 		<thead>
 		<tr>
 			<th data-options="field:'user',checkbox:true"></th>

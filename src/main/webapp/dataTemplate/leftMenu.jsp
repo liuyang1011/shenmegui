@@ -49,6 +49,8 @@
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
+    <%--TZB系统负责人员不需要看到资源导入--%>
+    <shiro:lacksRole name="系统负责人员">
     <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.2">字段映射导入</a></li>
@@ -57,6 +59,7 @@
             <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
         </ul>
     </li>
+    </shiro:lacksRole>
 </ul>
 <%
     }

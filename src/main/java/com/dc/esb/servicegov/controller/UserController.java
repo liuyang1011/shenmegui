@@ -57,7 +57,16 @@ public class UserController {
         OperationLog operationLog = systemLogService.record("用户","添加角色关系","");
 
         for(UserRoleRelation userRoleRelation : userRoleRelations){
-            userRoleRelationService.save(userRoleRelation);
+            if(userRoleRelation.getRoleId().equals("admin")){
+                continue;
+            }
+            Map<String ,String> map = new HashMap<String, String>();
+            map.put("roleId",userRoleRelation.getRoleId());
+            map.put("userId",userRoleRelation.getUserId());
+            List<UserRoleRelation> list = userRoleRelationService.findBy(map);
+            if(list.size() == 0){
+                userRoleRelationService.save(userRoleRelation);
+            }
         }
 
         systemLogService.updateResult(operationLog);
@@ -176,8 +185,24 @@ public class UserController {
     boolean modify(@RequestBody SGUser SGUser) {
         OperationLog operationLog = systemLogService.record("用户","修改","用户名称：" + SGUser.getName());
 
-    	userRoleRelationService.deleteRelation(SGUser.getId());
-        userServiceImpl.update(SGUser);
+        List<UserRoleRelation> userRoleRelations = userRoleRelationService.findBy("userId", SGUser.getId());
+        boolean flag = true;
+        for(UserRoleRelation per : userRoleRelations){
+            if(per.getRoleId().equals("admin")){
+                flag=false;
+            }
+        }
+        //admin 不能删除权限
+        if (flag){
+            userRoleRelationService.deleteRelation(SGUser.getId());
+        }
+        SGUser user = userServiceImpl.getById(SGUser.getId());
+        user.setName(SGUser.getName());
+        user.setUserMobile(SGUser.getUserMobile());
+        user.setUserTel(SGUser.getUserTel());
+        user.setOrgId(SGUser.getOrgId());
+        user.setRemark(SGUser.getRemark());
+        userServiceImpl.update(user);
 
         systemLogService.updateResult(operationLog);
         return true;
