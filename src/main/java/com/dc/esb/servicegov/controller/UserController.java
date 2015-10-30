@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.vo.UserVO;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -145,7 +146,7 @@ public class UserController {
     public
     @ResponseBody
     boolean modify(@RequestBody SGUser SGUser) {
-        OperationLog operationLog = systemLogService.record("用户","修改","用户名称：" + SGUser.getName());
+        OperationLog operationLog = systemLogService.record("用户", "修改", "用户名称：" + SGUser.getName());
 
     	userRoleRelationService.deleteRelation(SGUser.getId());
         userServiceImpl.update(SGUser);
@@ -154,7 +155,38 @@ public class UserController {
         return true;
     }
 
-//    @RequiresRoles({"admin"})
+    @RequestMapping(method = RequestMethod.POST, value = "/modify2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean modify2(@RequestBody SGUser SGUser) {
+        OperationLog operationLog = systemLogService.record("用户", "修改", "用户名称：" + SGUser.getName());
+        SGUser user = userServiceImpl.findUniqueBy("id", SGUser.getId());
+        if(user != null){
+            user.setName(SGUser.getName());
+            user.setRemark(SGUser.getRemark());
+            user.setLastdate(SGUser.getLastdate());
+            user.setPassword(SGUser.getPassword());
+            user.setUserMobile(SGUser.getUserMobile());
+            user.setUserTel(SGUser.getUserTel());
+
+            userServiceImpl.update(user);
+        }
+
+
+        systemLogService.updateResult(operationLog);
+        return true;
+    }
+    @RequiresRoles({"admin"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getUserInfo", headers = "Accept=application/json")
+    public ModelAndView getUserInfo() {
+        String userId = SecurityUtils.getSubject().getPrincipal().toString();
+        SGUser SGUser = userServiceImpl.getById(userId);
+        ModelAndView model = new ModelAndView();
+        model.addObject("user", SGUser);
+        model.setViewName("user/userInfo");
+        return model;
+    }
+
     @RequiresPermissions({"password-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/getByPW/{id}", headers = "Accept=application/json")
     public ModelAndView getByPW(

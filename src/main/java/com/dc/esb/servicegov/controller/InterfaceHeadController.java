@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -80,30 +81,30 @@ public class InterfaceHeadController {
 			Ida ida = new Ida();
 			ida.setHeadId(head.getHeadId());
 			ida.set_parentId(null);
-			ida.setStructName("root");
-			ida.setStructAlias("根节点");
+			ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
+			ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
+			ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
 			ida.setSdaId(map.get("root").getSdaId());
-			ida.setXpath(map.get("root").getXpath());
 			idaService.save(ida);
 			String parentId = ida.getId();
 			
 			ida = new Ida();
 			ida.setHeadId(head.getHeadId());
 			ida.set_parentId(parentId);
-			ida.setStructName("request");
-			ida.setStructAlias("请求头");
+			ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
+			ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
+			ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
 			ida.setSeq(0);
 			ida.setSdaId(map.get("request").getSdaId());
-			ida.setXpath(map.get("request").getXpath());
 			idaService.save(ida);
 			
 			ida = new Ida();
 			ida.setHeadId(head.getHeadId());
 			ida.set_parentId(parentId);
-			ida.setStructName("response");
-			ida.setStructAlias("响应头");
+			ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
+			ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
+			ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
 			ida.setSeq(1);ida.setSdaId(map.get("response").getSdaId());
-			ida.setXpath(map.get("response").getXpath());
 			idaService.save(ida);
 		}
 

@@ -1487,16 +1487,18 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         ida.setInterfaceId(inter.getInterfaceId());
         ida.set_parentId(null);
-        ida.setStructName("root");
-        ida.setStructAlias("根节点");
+        ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
+        ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
+        ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
         idaDao.save(ida);
         rootId = ida.getId();
 
         ida = new Ida();
         ida.setInterfaceId(inter.getInterfaceId());
         ida.set_parentId(rootId);
-        ida.setStructName("request");
-        ida.setStructAlias("请求头");
+        ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
+        ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
+        ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
         ida.setSeq(0);
         idaDao.save(ida);
         requestId = ida.getId();
@@ -1505,8 +1507,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         ida.setInterfaceId(inter.getInterfaceId());
         ida.set_parentId(rootId);
         ida.setSeq(1);
-        ida.setStructName("response");
-        ida.setStructAlias("响应头");
+        ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
+        ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
+        ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
         idaDao.save(ida);
         responseId = ida.getId();
 

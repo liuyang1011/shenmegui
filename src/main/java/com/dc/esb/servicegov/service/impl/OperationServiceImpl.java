@@ -138,7 +138,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     public boolean editOperation(HttpServletRequest req, Operation entity) {
         try {
-            versionServiceImpl.editVersion(entity.getVersionId());
+
+
             operationDAOImpl.save(entity);
             //清空
         } catch (Exception e) {

@@ -23,6 +23,20 @@ public class Constants {
     public static final String IDA_STATE_COMMON = "0";//0:普通，1：导出使用
     public static final String IDA_STATE_DISABLE = "1";
 
+    public static class ElementAttributes{
+        public static final String ROOT_NAME = "root";
+        public static final String ROOT_ALIAS = "根节点";
+        public static final String ROOT_XPATH = "/";
+
+        public static final String REQUEST_NAME = "request";
+        public static final String REQUEST_ALIAS = "请求报文体";
+        public static final String REQUEST_XPATH = "/request";
+
+        public static final String RESPONSE_NAME = "response";
+        public static final String RESPONSE_ALIAS = "响应报文体";
+        public static final String RESPONSE_XPATH = "/response";
+    }
+
     public static final String EXCEL_TEMPLATE_SERVICE = Constants.class.getResource("/").getPath() + "/template/excel_service_template.xls";
     public static final String EXCEL_TEMPLATE_SERVICE_VIEW = Constants.class.getResource("/").getPath() + "/template/excel_service_view_template.xls";
     public static final String EXCEL_TEMPLATE_INTERFACE = Constants.class.getResource("/").getPath() + "/template/excel_interface_template.xls";

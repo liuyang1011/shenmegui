@@ -202,7 +202,7 @@ public class InterfaceController {
             ida.setInterfaceId(inter.getInterfaceId());
             ida.set_parentId(parentId);
             ida.setStructName("request");
-            ida.setStructAlias("请求头");
+            ida.setStructAlias("请求报文体");
             ida.setSeq(0);
             ida.setState(Constants.IDA_STATE_COMMON);
             idaService.save(ida);
@@ -212,7 +212,7 @@ public class InterfaceController {
             ida.set_parentId(parentId);
             ida.setSeq(1);
             ida.setStructName("response");
-            ida.setStructAlias("响应头");
+            ida.setStructAlias("响应报文体");
             ida.setState(Constants.IDA_STATE_COMMON);
             idaService.save(ida);
         }
@@ -248,28 +248,28 @@ public class InterfaceController {
             Ida ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
             ida.set_parentId(null);
-            ida.setStructName("root");
-            ida.setStructAlias("根节点");
-            ida.setXpath("/");
+            ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
+            ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
+            ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
             idaService.save(ida);
             String parentId = ida.getId();
 
             ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
             ida.set_parentId(parentId);
-            ida.setStructName("request");
-            ida.setStructAlias("请求头");
             ida.setSeq(0);
-            ida.setXpath("/request");
+            ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
+            ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
+            ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
             idaService.save(ida);
 
             ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
             ida.set_parentId(parentId);
             ida.setSeq(1);
-            ida.setStructName("response");
-            ida.setStructAlias("响应头");
-            ida.setXpath("/response");
+            ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
+            ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
+            ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
             idaService.save(ida);
         }
 

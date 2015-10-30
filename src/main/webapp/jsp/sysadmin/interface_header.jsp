@@ -522,7 +522,7 @@
 					  textField : 'text',
 					  panelHeight : '200px',
 					  onSelect:function(node){
-						  if(node.text == '根节点' || node.text == '请求头' || node.text == '响应头'){
+						  if(node.text == '根节点' || node.text == '请求报文体' || node.text == '响应'){
 							alert('请选择其他节点');
 							var node2 = $('#tg').treegrid('getSelected');
 							$('#tg').treegrid('endEdit', node2.id);

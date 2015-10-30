@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.entity.Ida;
 import com.dc.esb.servicegov.entity.InterfaceHeadRelate;
 import com.dc.esb.servicegov.service.IdaService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -53,23 +54,26 @@ public class InterfaceHeadServiceImpl extends AbstractBaseService<InterfaceHead,
 		Ida ida = new Ida();
 		ida.setHeadId(interfaceHead.getHeadId());
 		ida.set_parentId(null);
-		ida.setStructName("root");
-		ida.setStructAlias("根节点");
+		ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
+		ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
+		ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
 		idaService.save(ida);
 		String parentId = ida.getId();
 
 		ida = new Ida();
 		ida.setHeadId(interfaceHead.getHeadId());
 		ida.set_parentId(parentId);
-		ida.setStructName("request");
-		ida.setStructAlias("请求头");
+		ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
+		ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
+		ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
 		idaService.save(ida);
 
 		ida = new Ida();
 		ida.setHeadId(interfaceHead.getHeadId());
 		ida.set_parentId(parentId);
-		ida.setStructName("response");
-		ida.setStructAlias("响应头");
+		ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
+		ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
+		ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
 		idaService.save(ida);
 	}
 	public List<InterfaceHead> getByInterfaceId(String interfaceId){
