@@ -103,11 +103,19 @@ public class IDAController {
 		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
 		String logParam = "列表:";
 
+		for(int i=0; i < idas.length; i++){
+			Ida ida  = idas[i];
+			logParam += "[报文头ID:" +ida.getHeadId() + ",字段名称：" +ida.getStructName() + "],";
+			if(StringUtils.isNotEmpty(ida.getSdaId())){
+				SDA sda = sdaService.findUniqueBy("sdaId", ida.getSdaId());
+				if(sda != null){
+					ida.setMetadataId(sda.getMetadataId());
+				}
+			}
+		}
+
 		idaService.saveOrUpdate(idas);
 
-		for(int i=0; i < idas.length; i++){
-			logParam += "[报文头ID:" + idas[i].getHeadId() + ",字段名称：" +idas[i].getStructName() + "],";
-		}
 		operationLog.setParams(logParam.substring(0, logParam.length() - 2));
 		systemLogService.updateResult(operationLog);
 		return true;
