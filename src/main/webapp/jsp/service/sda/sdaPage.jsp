@@ -136,6 +136,7 @@ var delIds = [];
 			         data: JSON.stringify(editNodes),
 			         success: function(data){
 			        	 if(data){
+							 parent.flag = true;
 			        	 	newIds = [];
 			        	 	alert("保存成功");
 							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
@@ -197,6 +198,7 @@ var delIds = [];
 			        dataType: "json",
 			        data: {"sdaId": node.id},
 			        success: function(data){
+						parent.flag = true;
 			        	 if(data){
 							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
 						 }
@@ -222,6 +224,7 @@ var delIds = [];
 			        dataType: "json",
 			        data: {"sdaId": node.id},
 			        success: function(data){
+						parent.flag = true;
 			        	 if(data){
 							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
 

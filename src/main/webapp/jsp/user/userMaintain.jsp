@@ -185,10 +185,10 @@
 				alert("请选中要修改密码的用户！");
 			 }
 		   }
-		},
+		}
 		</shiro:hasPermission>
 		<shiro:hasRole name="admin">
-		{
+		,{
 			text : '初始化密码',
 			iconCls : 'icon-qxfp',
 			handler : function() {

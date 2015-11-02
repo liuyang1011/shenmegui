@@ -199,10 +199,10 @@
 			fitColumns:false,
 			method:'get',toolbar:toolbar,
 			pagination:true,
-			pageSize: 13,
-			pageList: [13,20,50]
+			pageSize: 20,
+			pageList: [20,50]
 				"
-       style="height:410px; width:100%;">
+       style="height:610px; width:100%;">
   <thead>
   <tr>
     <th data-options="field:'',checkbox:true,width:50"></th>
@@ -428,8 +428,8 @@ function changePageList(){
         total = 100;
     }
     $(p).pagination({
-        pageSize: 13,
-        pageList: [13,20,50,total]
+        pageSize: 20,
+        pageList: [20,50,total]
     });
 
 }
