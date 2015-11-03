@@ -204,7 +204,7 @@ public class OperationController {
 
         return operationServiceImpl.addInvokeMapping(serviceInvokes);
     }
-    @RequiresPermissions({"service-add"})
+//    @RequiresPermissions({"service-add"})
     @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -295,7 +295,7 @@ public class OperationController {
      * @param serviceId
      * @return
      */
-    @RequiresPermissions({"service-update"})
+//    @RequiresPermissions({"service-update"})
     @RequestMapping("/editPage")
     public ModelAndView editPage(HttpServletRequest req, String operationId, String serviceId) {
         ModelAndView mv = new ModelAndView("service/operation/edit");

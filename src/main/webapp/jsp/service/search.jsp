@@ -429,7 +429,9 @@ function changePageList(){
     }
     $(p).pagination({
         pageSize: 20,
-        pageList: [20,50,total]
+        //数据太大了，不要
+//        pageList: [20,50,total]
+        pageList: [20,50,100]
     });
 
 }

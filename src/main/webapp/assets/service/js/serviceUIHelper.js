@@ -99,6 +99,11 @@ var serviceUIHelper = {
                 var node = $('.mxservicetree').tree('getSelected');
                 var id = node.id;
                 var type = node.type;
+                //全量导出数据量太大不要
+                if(type=="root"){
+                    alert("PDF以服务大类形式导出，请选择需要导出的服务大类");
+                    return false;
+                }
                 if(node.type == "serviceCategory"){
                     if(node.children != null && node.children.length == 0){
                          alert("该服务分类下没有服务数据！");
@@ -132,6 +137,11 @@ var serviceUIHelper = {
                 var node = $('.mxservicetree').tree('getSelected');
                 var id = node.id;
                 var type = node.type;
+
+                if(type=="root"){
+                    alert("以服务大类形式导出，请选择需要导出的服务大类");
+                    return false;
+                }
                 if(node.type == "serviceCategory"){
                     if(node.children != null && node.children.length == 0){
                          alert("该服务分类下没有服务数据！");
