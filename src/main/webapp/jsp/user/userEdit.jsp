@@ -135,14 +135,14 @@
 			alert("给用户至少选择一个角色");
 			return;
 		}
-		 if(Date.parse(startdate)>Date.parse(lastdate)){
+		/* if(Date.parse(startdate)>Date.parse(lastdate)){
         alert("生效时间不能晚于失效时间！");
         return false;
-        }
-         if(Date.parse(startdate)==Date.parse(lastdate)){
+        }*/
+       /*  if(Date.parse(startdate)==Date.parse(lastdate)){
         alert("生效时间和失效时间不能是同一天！");
         return false;
-        }
+        }*/
         data.id = userI;
         data.name = name;
         data.password = pasW;

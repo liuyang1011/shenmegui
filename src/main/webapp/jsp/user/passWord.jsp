@@ -36,13 +36,13 @@ $(function() {
 			var str1 = $('#oldPW').val();
 			var str2 = $('#newPW').val();
 			var str3 = $('#confirmPW').val();
-			var parent=/^[u4E00-u9FA5]+$/;
-  			if(!parent.test(str2))
-  			{
-  				alert("密码不能使用中文");
-  				return false;
-  			}
-// 			alert(str1+"旧"+str2+"新"+str3+"确"+pw+"原")	
+//			var parent=/^[u4E00-u9FA5]+$/;
+
+			if(!(/^[A-Za-z0-9_ ]+$/i.test(str2) || /^\d+(\.\d+)?$/i.test(str2))){
+				alert("密码请输入英文字母,或数字");
+				return false;
+			}
+// 			alert(str1+"旧"+str2+"新"+str3+"确"+pw+"原")
 			if(str1!=pw){
 				alert("输入的旧密码有误！");
 				return false;

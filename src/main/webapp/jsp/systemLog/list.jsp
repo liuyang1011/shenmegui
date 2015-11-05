@@ -63,7 +63,7 @@
     <tr>
       <th data-options="field:'',checkbox:true,width:50"></th>
       <th data-options="field:'optUser',width:100">用户账号</th>
-      <th data-options="field:'optUser',width:100">用户名称</th>
+      <th data-options="field:'user_name',width:100">用户名称</th>
       <th data-options="field:'chineseName',width:150">操作对象</th>
       <th data-options="field:'optType',width:80">操作类型</th>
       <th data-options="field:'params',width:250">操作内容</th>

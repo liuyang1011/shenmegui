@@ -95,6 +95,7 @@ function save(formId, operation) {
                     serviceInvoke.type = si.type;
                     serviceInvokeList.push(serviceInvoke);
                 }
+                parent.flag = true;
                 alert("操作成功 ！");
                 //刷新场景
                 //parent.$("#operationList").datagrid("reload");

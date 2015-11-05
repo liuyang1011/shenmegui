@@ -37,15 +37,21 @@
             <a href="javascript:;">服务管理</a>
             <ul>
                 <li><a href="javascript:;" mid="4">服务信息管理</a></li>
+                <%--TZB系统负责人员不需要看到服务发布管理--%>
+                <shiro:lacksRole name="系统负责人员">
                 <li><a href="javascript:;" mid="12">服务发布管理</a></li>
+                </shiro:lacksRole>
                 <shiro:hasPermission name="operation-get">
                 <li><a href="javascript:;" mid="14">服务检索</a></li>
                 </shiro:hasPermission>
             </ul>
         </li>
+        <%--TZB系统负责人员不需要看到交易链路--%>
+        <shiro:lacksRole name="系统负责人员">
         <li>
             <a href="javascript:;" mid="5">交易链路</a>
         </li>
+        </shiro:lacksRole>
         <shiro:hasPermission name="exportStatistics-get">
         <li>
             <a href="javascript:;" mid="11">统计报表</a>

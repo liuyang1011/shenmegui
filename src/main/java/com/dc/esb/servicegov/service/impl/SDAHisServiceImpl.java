@@ -33,8 +33,10 @@ public class SDAHisServiceImpl extends AbstractBaseService<SDAHis, String> imple
 		fields.put("id", "sdaId");
 		fields.put("text", "structName");
 		fields.put("append1", "structAlias");
-		fields.put("append2", "desc");
-		fields.put("append3", "remark");
+		fields.put("append2", "type");
+		fields.put("append3", "length");
+		fields.put("append4", "required");
+		fields.put("append5", "remark");
 
 		EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
 

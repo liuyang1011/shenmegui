@@ -5,6 +5,7 @@ import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.vo.UserVO;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -56,7 +57,16 @@ public class UserController {
         OperationLog operationLog = systemLogService.record("用户","添加角色关系","");
 
         for(UserRoleRelation userRoleRelation : userRoleRelations){
-            userRoleRelationService.save(userRoleRelation);
+            if(userRoleRelation.getRoleId().equals("admin")){
+                continue;
+            }
+            Map<String ,String> map = new HashMap<String, String>();
+            map.put("roleId",userRoleRelation.getRoleId());
+            map.put("userId",userRoleRelation.getUserId());
+            List<UserRoleRelation> list = userRoleRelationService.findBy(map);
+            if(list.size() == 0){
+                userRoleRelationService.save(userRoleRelation);
+            }
         }
 
         systemLogService.updateResult(operationLog);
@@ -73,6 +83,34 @@ public class UserController {
         Page page = userServiceImpl.getAll(rowCount);
         page.setPage(pageNo);
         List<SGUser> rows = userServiceImpl.getAll(page);
+        for(SGUser user : rows){
+            String orgId = user.getOrgId();
+            Organization org = orgService.getById(orgId);
+            if(null != org){
+                user.setOrgId(org.getOrgName());
+            }
+            userVOs.add(new UserVO(user));
+        }
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("total", page.getResultCount());
+        result.put("rows", userVOs);
+        return result;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getUserInfo", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    Map<String, Object> getUserInfo( @RequestParam("page") int pageNo, @RequestParam("rows") int rowCount) {
+        List<UserVO> userVOs = new ArrayList<UserVO>();
+        String userName = (String) SecurityUtils.getSubject().getPrincipal();
+        String hql = "from SGUser a where a.id ='"+userName+"'";
+        Page page = userServiceImpl.getPageBy(hql,rowCount);
+
+
+//        Page page = userServiceImpl.getAll(rowCount);
+        page.setPage(pageNo);
+//        List<SGUser> rows = userServiceImpl.getAll(page);
+        List<SGUser> rows = userServiceImpl.findBy(hql,page);
         for(SGUser user : rows){
             String orgId = user.getOrgId();
             Organization org = orgService.getById(orgId);
@@ -147,8 +185,24 @@ public class UserController {
     boolean modify(@RequestBody SGUser SGUser) {
         OperationLog operationLog = systemLogService.record("用户","修改","用户名称：" + SGUser.getName());
 
-    	userRoleRelationService.deleteRelation(SGUser.getId());
-        userServiceImpl.update(SGUser);
+        List<UserRoleRelation> userRoleRelations = userRoleRelationService.findBy("userId", SGUser.getId());
+        boolean flag = true;
+        for(UserRoleRelation per : userRoleRelations){
+            if(per.getRoleId().equals("admin")){
+                flag=false;
+            }
+        }
+        //admin 不能删除权限
+        if (flag){
+            userRoleRelationService.deleteRelation(SGUser.getId());
+        }
+        SGUser user = userServiceImpl.getById(SGUser.getId());
+        user.setName(SGUser.getName());
+        user.setUserMobile(SGUser.getUserMobile());
+        user.setUserTel(SGUser.getUserTel());
+        user.setOrgId(SGUser.getOrgId());
+        user.setRemark(SGUser.getRemark());
+        userServiceImpl.update(user);
 
         systemLogService.updateResult(operationLog);
         return true;

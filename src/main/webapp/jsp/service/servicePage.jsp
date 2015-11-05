@@ -53,13 +53,14 @@
     var n = 1;
     var q = 1;
     var p = 1;
+    var flag = false;
     $('#subtab').tabs({
         border: false,
         border: false,
         width: "auto",
         height: $("body").height(),
         onSelect: function (title, index) {
-            if(index == 0){
+            if(index == 0 && flag){
 //                $("#serviceInfo").$("#operationList").datagrid("reload");
                 var urlPath = "/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>&_t" + new Date().getTime();
                 var currTab = $('#subtab').tabs('getSelected');
