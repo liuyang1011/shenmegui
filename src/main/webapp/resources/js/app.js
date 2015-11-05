@@ -35,13 +35,21 @@ var SYSMENU = {
                 });
                 $('#servicetreefilter').searchbox({
                     "searcher": function (value, name) {
-                        $('.mxservicetree').tree('doFilter', value);
+                        if(value && value != ''){
+                            $('.mxservicetree').tree('doFilter', value);
+                        }else{
+                            $('.mxservicetree').tree({url:'/service/getTree?_t=' + new Date().getTime()});
+                        }
                     },
                     prompt: '请输入服务名'
                 });
                 $('#mxinterfacetreefilter').searchbox({
                     searcher: function (value, name) {
-                        $('.msinterfacetree').tree('doFilter', value);
+                        if(value && value != ''){
+                            $('.msinterfacetree').tree('doFilter', value);
+                        }else{
+                            $('.msinterfacetree').tree({url:'/interface/getLeftLazyTree?_t=' + new Date().getTime()});
+                        }
                     },
                     prompt: '请输入关键词'
                 });

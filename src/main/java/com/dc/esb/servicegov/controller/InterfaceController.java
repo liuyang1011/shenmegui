@@ -433,13 +433,15 @@ public class InterfaceController {
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
 
         StringBuffer hql = new StringBuffer("SELECT distinct t1 FROM Interface t1,ServiceInvoke t2 where t1.interfaceId=t2.interfaceId ");
-        hql.append("and t2.systemId=? ");
 
         SearchCondition searchCond = new SearchCondition();
+        if(StringUtils.isNotEmpty(systemId) && !"all".equalsIgnoreCase(systemId)){
+            hql.append("and t2.systemId=? ");
+            searchCond.setField("systemId");
+            searchCond.setFieldValue(systemId);
+            searchConds.add(searchCond);
+        }
 
-        searchCond.setField("systemId");
-        searchCond.setFieldValue(systemId);
-        searchConds.add(searchCond);
         if (ecode != null && !"".equals(ecode)) {
             searchCond = new SearchCondition();
             hql.append(" and t1.ecode like ?");

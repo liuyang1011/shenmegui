@@ -26,11 +26,12 @@
         </li>
         <li>
             <a href="javascript:;" mid="6">系统管理</a>
-            <%--<ul>--%>
+            <ul>
                 <%--<li><a href="javascript:;" mid="6">接口管理</a></li>--%>
-                <%--&lt;%&ndash;<li><a href="javascript:;" mid="13">接口检索</a></li>&ndash;%&gt;--%>
+                <li><a href="javascript:;" mid="6">系统管理</a></li>
+                <li><a href="javascript:;" mid="6.1">接口检索</a></li>
                 <%--<li><a href="javascript:;" mid="3">报文头管理</a></li>--%>
-            <%--</ul>--%>
+            </ul>
         </li>
         <li>
             <a href="javascript:;">服务管理</a>

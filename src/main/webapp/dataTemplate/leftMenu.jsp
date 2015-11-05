@@ -121,7 +121,6 @@
 
 <ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:90%"
     data-options="url:'/interface/getLeftLazyTree',method:'get',animate:true" style="overflow:auto;"></ul>
-
 <%
     }
     if (mid.equals("11")) {
@@ -191,6 +190,32 @@
     }
 
 </script>
+
 <%
-        }
+    }
+    if (mid.equals("6.1")) {
+%>
+<div class="tree-filter">
+    <input class="easyui-searchbox" id="mxinterfacetreefilter" style="width:100%">
+
+</div>
+
+<ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:90%"
+    data-options="url:'/interface/getLeftLazyTree',method:'get',animate:true" style="overflow:auto;"></ul>
+<script>
+    var title = "接口检索";
+    var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="/jsp/interface/interface_search2.jsp" style="width:100%;height:98%;"></iframe>';
+    if ($('#mainContentTabs').tabs('exists',title)) {
+        $('#mainContentTabs').tabs('select',title);
+    }else{
+        $('#mainContentTabs').tabs('add', {
+            title: title,
+            content: content,
+            closable: true
+        });
+    }
+
+</script>
+<%
+    }
 %>
