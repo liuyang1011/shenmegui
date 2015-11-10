@@ -256,13 +256,24 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 
 		ServiceInvoke c = new ServiceInvoke();
-		c.setSystemId( systemId);
-		c.setInterfaceId(interfaceId);
+		c.setSystemId(systemId);
+		if(StringUtils.isNotEmpty(interfaceId)){
+			c.setInterfaceId(interfaceId);
+		}
 		c.setType(type);
 		c.setIsStandard(isStandard);
 		c.setOperationId(operationId);
 		c.setServiceId(serviceId);
 		serviceInvokeDAOImpl.save(c);
 		return c;
+	}
+
+	public boolean containOperation(String interfaceId){
+		String hql = "select count(*) from ServiceInvoke si where si.interfaceId = ? and si.operationId is not null and si.serviceId is not null";
+		long count = serviceInvokeDAOImpl.findUnique(hql, interfaceId);
+		if(count > 0){
+			return true;
+		}
+		return false;
 	}
 }

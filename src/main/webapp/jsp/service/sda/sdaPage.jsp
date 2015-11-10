@@ -10,13 +10,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
   	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <base href="<%=basePath%>">
-    
+
     <title>sda信息</title>
-    
+
 	<link rel="stylesheet" type="text/css" href="/resources/themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
 <link href="/resources/css/ui.css" rel="stylesheet" type="text/css">
-	 <script type="text/javascript" src="/resources/js/jquery.min.js"></script> 
+	 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
         <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="/resources/js/treegrid-dnd.js"></script>
 
@@ -51,17 +51,17 @@ var delIds = [];
 					alert("请选择其他节点！");
 					return false;
 				}
-				
+
 				if (row){
 					editingId = row.id
 					newIds.push(editingId);
 					$('#tg').treegrid('beginEdit', editingId);
-					
+
 					$("#cancelbtn"+editingId).show();
 					$("#okbtn"+editingId).show();
 				}
 		}
-		
+
 		function append(){
 			var uuid = "" + new Date().getTime();
 			var node = $('#tg').treegrid('getSelected');
@@ -89,6 +89,12 @@ var delIds = [];
 //			$('#tg').treegrid('endEdit', uuid);
 //			$('#tg').treegrid('reload',{id:uuid, text:'mikel'});
 //			{'name':'mikel'})
+			var ed = $('#tg').treegrid('getEditor',
+					{id:uuid,field:'append4'});
+			$(ed.target).combobox({"onSelect":function(record){
+				$('#tg').treegrid('select', uuid);
+				comboboxSelect(record);
+			}});
 
 		}
 		function saveSDA(){
@@ -108,10 +114,10 @@ var delIds = [];
 					node.sdaId = editNode.id;
 					node.structName = editNode.text;
 					node.parentId = editNode.parentId;
-					
+
 					node.serviceId = "${service.serviceId }";
 					node.operationId = "${operation.operationId }";
-					
+
 					node.structAlias = editNode.append1;
 					node.type = editNode.append2;
 					node.length = editNode.append3;
@@ -124,9 +130,9 @@ var delIds = [];
 
 					editNodes.push(node);
 				}
-				
+
 				editingId = undefined;
-				
+
 				$.ajax({
 			         type: "post",
 			         async: false,
@@ -172,12 +178,12 @@ var delIds = [];
 			}
 		}
 		function formatConsole(value){
-	    	
-		    	
+
+
 				var s = '<a iconcls="icon-close" onclick="cancel()" style="display:none;margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="cancelbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">取消</span><span class="l-btn-icon icon-cancel">&nbsp;</span></span></a>';
 				 s += '<a iconcls="icon-ok" onclick="saveSDA()" style="display:none;margin-top:5px;margin-bottom:5px;margin-left:5px;" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)" group="" id="okbtn'+value+'"><span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">保存</span><span class="l-btn-icon icon-ok">&nbsp;</span></span></a>';
 		    	return s;
-	    	
+
 		}
 		//节点上移
 		function moveUp(){
@@ -297,6 +303,18 @@ var delIds = [];
 		node2.append4 = record.metadataId;
 		$('#tg').treegrid('refreshRow',node2.id);
 	}
+	//弹出元数据选择界面
+	function appendByMetadata(){
+		var urlPath = ""
+		$('#opDialog').dialog({
+			title: '版本发布',
+			width: 500,
+			closed: false,
+			cache: false,
+			href: urlPath,
+			modal: true
+		});
+	}
 </script>
 </head>
 <body >
@@ -352,7 +370,7 @@ var delIds = [];
 				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
 				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
 				<th data-options="field:'append3',width:60,editor:'text', hidden:true">xpath</th>
-				<th field="append4" width="80" editor="{type:'combobox', options:{required:true, editable:false, method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId',onSelect:comboboxSelect}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true, method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId'}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
@@ -387,6 +405,6 @@ var delIds = [];
 <div id="dlg" class="easyui-dialog"
 	 style="width:400px;height:280px;padding:10px 20px" closed="true"
 	 resizable="true"></div>
-  
+
   </body>
 </html>

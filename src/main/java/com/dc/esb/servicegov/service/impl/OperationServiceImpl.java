@@ -416,6 +416,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             opFields.put("id", "operationId");
             opFields.put("text", "operationName");
             opFields.put("append1", "operationDesc");
+            opFields.put("append2", "serviceId");
+            opFields.put("append3", "operationId");
             TreeNode opNode = EasyUiTreeUtil.getInstance().convertTreeNode(operation, opFields);
 
             com.dc.esb.servicegov.entity.Service service = operation.getService();
@@ -423,6 +425,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             serviceFields.put("id", "serviceId");
             serviceFields.put("text", "serviceName");
             serviceFields.put("append1", "desc");
+            opFields.put("append2", "serviceId");
             TreeNode serviceNode = EasyUiTreeUtil.getInstance().convertTreeNode(service, serviceFields);
 
             Map<String, String> scFields = new HashMap<String, String>();
@@ -863,5 +866,19 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         public void setConsumerSystems(String consumerSystems) {
             this.consumerSystems = consumerSystems;
         }
+    }
+
+    /**
+     * TODO 根据metadataId查询operation树
+     * @param interfaceId
+     * @return
+     */
+    public List<TreeNode> getByInterfaceId(String interfaceId){
+        //查找场景列表
+        String hql = "select o from Operation o, ServiceInvoke si where o.serviceId = si.serviceId and o.operationId = si.operationId and si.interfaceId = ?";
+        List<Operation> opList = operationDAOImpl.find(hql, interfaceId);
+        List<TreeNode> tree = genderTree(opList);
+
+        return tree;
     }
 }

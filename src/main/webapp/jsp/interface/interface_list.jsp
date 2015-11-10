@@ -327,6 +327,45 @@
 				}
 			});
 			</shiro:hasPermission>
+			toolbar.push({
+				text: '关联的服务场景',
+				iconCls: 'icon-cfp',
+				handler: function () {
+					var row = $("#tg").datagrid("getSelected");
+					if(row){
+						//判断接口是否有服务调用
+						$.ajax({
+							type: "get",
+							async: false,
+							contentType: "application/json; charset=utf-8",
+							url: "/serviceLink/contionOperation",
+							dataType: "json",
+							data: {"interfaceId": row.interfaceId},
+							success: function (data) {
+								if(data){
+									var urlPath = "/jsp/sysadmin/relate_operation.jsp?interfaceId="+row.interfaceId;
+									$('#releaseDlg').dialog({
+										title: '关联的服务场景',
+										width: 500,
+										left:150,
+										top:50,
+										closed: false,
+										cache: false,
+										href: urlPath,
+										modal: true
+									});
+								}else{
+									alert("该接口没有被调用!");
+								}
+							}
+						});
+
+					}
+					else{
+						alert("请选中一行数据!");
+					}
+				}
+			});
 
 
 		 $(document).ready(function(){ 

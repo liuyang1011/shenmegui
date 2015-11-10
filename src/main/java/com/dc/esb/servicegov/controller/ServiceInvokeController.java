@@ -386,7 +386,7 @@ public class ServiceInvokeController {
             }
         }
         if(null != operation){
-            operationService.editOperation(null,operation);
+            operationService.editOperation(null, operation);
         }
 
         logParam += "服务ID：" + serviceId + ", 场景ID:" + operationId + ", 消费者提供者关系：数量:" + list.size();
@@ -438,6 +438,15 @@ public class ServiceInvokeController {
         systemLogService.updateResult(operationLog);
         return true;
     }
+
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/contionOperation")
+    @ResponseBody
+    public boolean contionOperation(String interfaceId) {
+        boolean result = serviceInvokeService.containOperation(interfaceId);
+        return result;
+    }
+
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";

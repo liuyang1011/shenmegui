@@ -11,7 +11,7 @@
 				报文头名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="headName" value="${head.headName}" data-options="required:true,validType:['unique','chineseB']">
+				<input class="easyui-textbox" type="text" id="headName" value="${head.headName}" data-options="required:true,validType:['chineseB']">
 			</td>
 		</tr>
 		<tr>

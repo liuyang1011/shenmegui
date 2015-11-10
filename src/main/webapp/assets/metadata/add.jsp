@@ -27,7 +27,6 @@
 
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">
     <table border="0" cellspacing="0" cellpadding="0">
-        <input type="hidden" name="status" value="待审核"/>
         <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataId"
@@ -37,12 +36,12 @@
             <th>中文名称</th>
             <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['uniqueName','chineseB']"></td>
         </tr>
-        <tr>
+        <tr  style="display:none;">
             <th>别名</th>
             <td><input class="easyui-textbox" type="text" name="metadataAlias" data-options="validType:['chineseB']"></td>
         </tr>
-        <tr style="display:none;">
-            <th>英文名称</th>
+        <tr>
+            <th>英文全称</th>
             <td><input class="easyui-textbox" type="text" name="metadataName"></td>
         </tr>
         <tr>
@@ -89,6 +88,19 @@
         <tr style="display:none;">
             <th>数据来源</th>
             <td><input class="easyui-textbox" type="text" name="dataSource"></td>
+        </tr>
+        <tr>
+            <th>状态</th>
+            <td>
+                <input
+                        name = "status"
+                        class="easyui-combobox"
+                        data-options="valueField: 'value',textField: 'label',
+						data: [{label: '正常',value: '正常'},
+						{label: '过时',value: '过时'}
+							]"
+                        />
+            </td>
         </tr>
         <tr style="display:none;">
             <th>任务id</th>

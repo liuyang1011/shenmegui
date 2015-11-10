@@ -78,9 +78,7 @@
 
     function addInterfaceInvoke(){
         //保存调用关系
-        var params = [];
-        params.push(consumerList);
-        params.push(providerList);
+        var params = [consumerList, providerList];
         $.ajax({
             type: "POST",
             async: false,

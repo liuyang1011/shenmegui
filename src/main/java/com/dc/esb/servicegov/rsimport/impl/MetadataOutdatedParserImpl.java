@@ -18,11 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MetadataArrayParserImpl implements IResourceParser {
+public class MetadataOutdatedParserImpl implements IResourceParser {
 
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
-    private static final String SHEET_NAME = "表5数组";
+    private static final String SHEET_NAME = "表7过时元数据";
     private static final int START_ROW_NUM = 2;
     private static final String DATA_CATEGORY = "数据分类";
     private static final String BUZZ_CATEGORY = "业务分类";
@@ -103,7 +103,7 @@ public class MetadataArrayParserImpl implements IResourceParser {
         metadata.setScale("");
         metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
         metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
-        metadata.setStatus(Constants.Metadata.STATUS_FORMAL);
+        metadata.setStatus(Constants.Metadata.STATUS_OUTDATED);
         return metadata;
     }
 

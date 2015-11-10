@@ -45,6 +45,7 @@ public class IDAController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("headId", headId);
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
 		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		for(Ida ida:idas){
 			ida.setHeads(null);
@@ -196,7 +197,7 @@ public class IDAController {
 		Operation operation = operationService.getOperation(serviceId,operationId);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("system", system);
-		modelAndView.addObject("interface", inter);
+		modelAndView.addObject("inter", inter);
 		modelAndView.addObject("service", service);
 		modelAndView.addObject("operation", operation);
 

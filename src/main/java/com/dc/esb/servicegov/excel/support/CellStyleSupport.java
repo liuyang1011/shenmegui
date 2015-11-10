@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 /**
  * Created by wang on 2015/8/17.
@@ -35,10 +36,12 @@ public class CellStyleSupport {
         cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框
         cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//居中
 //        cellStyle.setFillBackgroundColor(HSSFColor.YELLOW.index);
+        cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
         //生成一个字体
         HSSFFont font=wb.createFont();
         font.setFontName("宋体");
-        font.setColor(HSSFColor.DARK_YELLOW.index);//HSSFColor.VIOLET.index //字体颜色
+//        font.setColor(HSSFColor.DARK_YELLOW.index);//HSSFColor.VIOLET.index //字体颜色
         font.setFontHeightInPoints((short) 9);
 //        cellStyle.setFillBackgroundColor(HSSFColor.GREEN.index);
 //        cellStyle.setFillForegroundColor(HSSFColor.DARK_YELLOW.index);

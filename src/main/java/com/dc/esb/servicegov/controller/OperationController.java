@@ -476,7 +476,7 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.GET, value = "/judgeInterface", headers = "Accept=application/json")
     @ResponseBody
     public boolean judgeInterface(String systemId,String type) {
-        boolean result = systemService.containsInterface(systemId,type);
+        boolean result = systemService.containsInterface(systemId, type);
         return result;
     }
 
@@ -558,7 +558,7 @@ public class OperationController {
     public
     @ResponseBody
     boolean submitToAudit(@RequestBody List list) throws  Throwable{
-        OperationLog operationLog = systemLogService.record("服务场景","提交审核","");
+        OperationLog operationLog = systemLogService.record("服务场景", "提交审核", "");
         String logParam = "";
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
@@ -576,7 +576,7 @@ public class OperationController {
             logParam += ", [服务ID：" + operation.getServiceId() + ", 场景ID：" + operation.getOperationId() + ", 场景名称:" + operation.getOperationName() + "]";
         }
 
-        operationLog.setParams(logParam.substring(1, logParam.length() -1 ));
+        operationLog.setParams(logParam.substring(1, logParam.length() - 1));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -664,5 +664,17 @@ public class OperationController {
         operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
         systemLogService.updateResult(operationLog);
         return true;
+    }
+
+    /**
+     * 根据接口ID查询场景列表
+     * @param interfaceId
+     * @return
+     */
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/getByInterfaceId/{interfaceId}")
+    @ResponseBody
+    public List<TreeNode> getByInterfaceId(@PathVariable(value = "interfaceId") String interfaceId){
+        return operationServiceImpl.getByInterfaceId(interfaceId);
     }
 }

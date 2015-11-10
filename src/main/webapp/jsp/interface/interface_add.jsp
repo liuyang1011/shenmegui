@@ -28,7 +28,7 @@
 				交易码
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="ecodeText" data-options="validType:['intOrFloat']">
+				<input class="easyui-textbox" type="text" id="ecodeText" data-options="">
 			</td>
 		</tr>
 		<tr>

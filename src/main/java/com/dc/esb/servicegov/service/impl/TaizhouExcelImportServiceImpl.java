@@ -839,14 +839,17 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             SDA sda = genderSDA(sheetRow, inputArraySdas, tempHeadId, i);
             if(sda != null){
                 ida.setSdaId(sda.getSdaId());
+                ida.setXpath(sda.getXpath());
             }
 
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 ida.setStructName(isNull(cell));
+                ida.setState(Constants.IDA_STATE_COMMON);
                 if ("".equals(isNull(cell))) {
-                    continue;
+                    ida.setState(Constants.IDA_STATE_DISABLE);
+//                    continue;
                 }
             }
 
@@ -912,14 +915,17 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             SDA sda = genderSDA(sheetRow, outArraySdas, outTempHeadId, j);
             if(sda != null){
                 ida.setSdaId(sda.getSdaId());
+                ida.setXpath(sda.getXpath());
             }
 
             Cell cellObj = sheetRow.getCell(0);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 ida.setStructName(isNull(cell));
+                ida.setState(Constants.IDA_STATE_COMMON);
                 if ("".equals(isNull(cell))) {
-                    continue;
+                    ida.setState(Constants.IDA_STATE_DISABLE);
+//                    continue;
                 }
             }
 
@@ -961,7 +967,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     if (metadata == null) {
 
                         logger.error(sheet.getSheetName() + "页,元数据[" + cell + "]未配置，导入失败...");
-                        //logInfoService.saveLog(sheet.getSheetName()+"页,元数据["+cell+"]未配置，导入失败...","导入");
+                        logInfoService.saveLog(sheet.getSheetName() + "页,元数据[" + cell + "]未配置，导入失败...", "导入");
                         msg.append(cell).append(",");
                         flag = false;
                         //return null;
@@ -1186,7 +1192,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             }else if("已下线".equals(operationState)){
                 operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
             }else {
-                operationState = "";
+                operationState =  Constants.Operation.OPT_STATE_UNAUDIT;//默认为服务定义状态
             }
             IndexDO indexDO = new IndexDO();
             indexDO.setSheetName(sheetName);
@@ -1237,83 +1243,86 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 }
                 String consumerSystemId = system.getSystemId();
                 //接口提供方
-                String providerSystem = getCell(row, INDEX_PROVIDER_COL);
-                param = new HashMap<String, String>();
-                param.put("systemAb",providerSystem);
-                system = systemDao.findUniqureBy(param);
-                if (null == system) {
-                    logger.error("" + providerSystem + "系统不存在");
-                    logInfoService.saveLog("" + providerSystem + "系统不存在", "导入");
-                    msg.append("" + providerSystem + "系统不存在");
-                    continue;
+                String providerSystem[] = getCell(row, INDEX_PROVIDER_COL).replaceAll("，",",").split(",");
+                for(int k = 0; k < providerSystem.length; k++){
+                    param = new HashMap<String, String>();
+                    param.put("systemAb",providerSystem[k]);
+                    system = systemDao.findUniqureBy(param);
+                    if (null == system) {
+                        logger.error("" + providerSystem[k] + "系统不存在");
+                        logInfoService.saveLog("" + providerSystem[k] + "系统不存在", "导入");
+                        msg.append("" + providerSystem[k] + "系统不存在");
+                        continue;
+                    }
+                    String providerSystemId = system.getSystemId();
+                    //接口方向
+                    String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
+                    String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
+                    String operationId = getCell(row, INDEX_OPERATION_ID_COL);
+                    String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS_COL);
+                    if ("投产".equals(interfaceStatus)){
+                        interfaceStatus = Constants.INTERFACE_STATUS_TC;
+                    }else if ("废弃".equals(interfaceStatus)){
+                        interfaceStatus = Constants.INTERFACE_STATUS_FQ;
+                    }else{
+                        interfaceStatus = "";
+                    }
+                    //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
+                    String operationState = getCell(row, INDEX_OPERATION_STATE_COL);
+                    if("服务定义".equals(operationState)){
+                        operationState = Constants.Operation.OPT_STATE_UNAUDIT;
+                    }else if("审核通过".equals(operationState)){
+                        operationState = Constants.Operation.OPT_STATE_PASS;
+                    }else if("审核不通过".equals(operationState)){
+                        operationState = Constants.Operation.OPT_STATE_UNPASS;
+                    }else if("已发布".equals(operationState)){
+                        operationState = Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED;
+                    }else if("已上线".equals(operationState)){
+                        operationState = Constants.Operation.LIFE_CYCLE_STATE_ONLINE;
+                    }else if("已下线".equals(operationState)){
+                        operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
+                    }else {
+                        operationState = "";
+                    }
+                    String isStandard = getCell(row,INDEX_ISSTANDARD_COL);
+                    if("是".equals(isStandard)){
+                        isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
+                    }else{
+                        isStandard = Constants.INVOKE_TYPE_STANDARD_N;
+                    }
+                    String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
+                    //如果手动输错
+                    if(temp.split("[()]+").length <2){
+                        logger.error("" + temp + "，服务格式错误");
+                        logInfoService.saveLog("" + temp + "，服务格式错误", "导入");
+                        msg.append("" + temp + "，服务格式错误");
+                        continue;
+                    }
+                    String serviceId = temp.split("[()]+")[1];
+                    String systemId = consumerSystemId;
+                    String systemAb = consumerSystem[j];
+                    if ("Provider".equalsIgnoreCase(interfacePoint)) {
+                        systemId = providerSystemId;
+                        systemAb = providerSystem[k];
+                    }
+                    IndexDO indexDO = new IndexDO();
+                    indexDO.setConsumerSystem(consumerSystem[j]);
+                    indexDO.setConsumerSystemId(consumerSystemId);
+                    indexDO.setSheetName(sheetName);
+                    indexDO.setInterfaceHead(interfaceHead);
+                    indexDO.setProviderSystem(providerSystem[k]);
+                    indexDO.setProviderSystemId(providerSystemId);
+                    indexDO.setSystemId(systemId);
+                    indexDO.setInterfacePoint(interfacePoint);
+                    indexDO.setOperationId(operationId);
+                    indexDO.setServiceId(serviceId);
+                    indexDO.setSystemAb(systemAb);
+                    indexDO.setInterfaceStatus(interfaceStatus);
+                    indexDO.setOperationState(operationState);
+                    indexDO.setIsStandard(isStandard);
+                    indexDOs.add(indexDO);
                 }
-                String providerSystemId = system.getSystemId();
-                //接口方向
-                String interfacePoint = getCell(row, INDEX_INTERFACE_POINT_COL);
-                String interfaceHead = getCell(row, INDEX_INTERFACE_HEAD_COL);
-                String operationId = getCell(row, INDEX_OPERATION_ID_COL);
-                String interfaceStatus = getCell(row, INDEX_INTERFACE_STATUS_COL);
-                if ("投产".equals(interfaceStatus)){
-                    interfaceStatus = Constants.INTERFACE_STATUS_TC;
-                }else if ("废弃".equals(interfaceStatus)){
-                    interfaceStatus = Constants.INTERFACE_STATUS_FQ;
-                }else{
-                    interfaceStatus = "";
-                }
-                //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线
-                String operationState = getCell(row, INDEX_OPERATION_STATE_COL);
-                if("服务定义".equals(operationState)){
-                    operationState = Constants.Operation.OPT_STATE_UNAUDIT;
-                }else if("审核通过".equals(operationState)){
-                    operationState = Constants.Operation.OPT_STATE_PASS;
-                }else if("审核不通过".equals(operationState)){
-                    operationState = Constants.Operation.OPT_STATE_UNPASS;
-                }else if("已发布".equals(operationState)){
-                    operationState = Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED;
-                }else if("已上线".equals(operationState)){
-                    operationState = Constants.Operation.LIFE_CYCLE_STATE_ONLINE;
-                }else if("已下线".equals(operationState)){
-                    operationState = Constants.Operation.LIFE_CYCLE_STATE_DISCHARGE;
-                }else {
-                    operationState = "";
-                }
-                String isStandard = getCell(row,INDEX_ISSTANDARD_COL);
-                if("是".equals(isStandard)){
-                    isStandard = Constants.INVOKE_TYPE_STANDARD_Y;
-                }else{
-                    isStandard = Constants.INVOKE_TYPE_STANDARD_N;
-                }
-                String temp = getCell(row,INDEX_SERVICE_ID_COL).replaceAll("（","(").replaceAll("）",")");
-                //如果手动输错
-                if(temp.split("[()]+").length <2){
-                    logger.error("" + temp + "，服务格式错误");
-                    logInfoService.saveLog("" + temp + "，服务格式错误", "导入");
-                    msg.append("" + temp + "，服务格式错误");
-                    continue;
-                }
-                String serviceId = temp.split("[()]+")[1];
-                String systemId = consumerSystemId;
-                String systemAb = consumerSystem[j];
-                if ("Provider".equalsIgnoreCase(interfacePoint)) {
-                    systemId = providerSystemId;
-                    systemAb = providerSystem;
-                }
-                IndexDO indexDO = new IndexDO();
-                indexDO.setConsumerSystem(consumerSystem[j]);
-                indexDO.setConsumerSystemId(consumerSystemId);
-                indexDO.setSheetName(sheetName);
-                indexDO.setInterfaceHead(interfaceHead);
-                indexDO.setProviderSystem(providerSystem);
-                indexDO.setProviderSystemId(providerSystemId);
-                indexDO.setSystemId(systemId);
-                indexDO.setInterfacePoint(interfacePoint);
-                indexDO.setOperationId(operationId);
-                indexDO.setServiceId(serviceId);
-                indexDO.setSystemAb(systemAb);
-                indexDO.setInterfaceStatus(interfaceStatus);
-                indexDO.setOperationState(operationState);
-                indexDO.setIsStandard(isStandard);
-                indexDOs.add(indexDO);
+
             }
         }
         List list = new ArrayList();

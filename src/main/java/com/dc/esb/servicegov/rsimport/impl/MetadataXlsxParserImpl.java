@@ -25,7 +25,7 @@ public class MetadataXlsxParserImpl implements IResourceParser {
 
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
-    private static final String SHEET_NAME = "数据字典";
+    private static final String SHEET_NAME = "表4元数据";
     private static final int START_ROW_NUM = 2;
 
     private static final String DATA_CATEGORY = "数据项分类";
@@ -113,7 +113,7 @@ public class MetadataXlsxParserImpl implements IResourceParser {
         metadata.setScale(scale);
         metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
         metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
-        metadata.setStatus(Constants.Metadata.STATUS_UNAUDIT);
+        metadata.setStatus(Constants.Metadata.STATUS_FORMAL);
         return metadata;
     }
 

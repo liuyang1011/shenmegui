@@ -84,6 +84,7 @@ public class InterfaceHeadController {
 			ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
 			ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
 			ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
+			ida.setState(Constants.IDA_STATE_COMMON);
 			ida.setSdaId(map.get("root").getSdaId());
 			idaService.save(ida);
 			String parentId = ida.getId();
@@ -94,6 +95,7 @@ public class InterfaceHeadController {
 			ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
 			ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
 			ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
+			ida.setState(Constants.IDA_STATE_COMMON);
 			ida.setSeq(0);
 			ida.setSdaId(map.get("request").getSdaId());
 			idaService.save(ida);
@@ -104,6 +106,7 @@ public class InterfaceHeadController {
 			ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
 			ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
 			ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
+			ida.setState(Constants.IDA_STATE_COMMON);
 			ida.setSeq(1);ida.setSdaId(map.get("response").getSdaId());
 			idaService.save(ida);
 		}

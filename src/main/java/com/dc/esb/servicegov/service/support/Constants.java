@@ -118,6 +118,7 @@ public class Constants {
     public static class Metadata {
         public static final String STATUS_UNAUDIT = "未审核";
         public static final String STATUS_FORMAL = "正式";
+        public static final String STATUS_OUTDATED = "过时";
 
         public static final String ARRAY_TYPE = "Array";
         public static final String STRUCT_TYPE = "Struct";

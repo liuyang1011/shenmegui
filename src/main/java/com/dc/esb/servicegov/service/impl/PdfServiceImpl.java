@@ -269,20 +269,15 @@ public class PdfServiceImpl {
     }
 
     private void renderSDA(Operation operationDO, Document document, Section section) throws Exception {
-        try {
-            SDAVO sda = getSDAofService(operationDO);
-            if(sda!=null){
-//                PdfPTable table = new PdfPTable(6);
+        try{
+            if(operationDO != null){
                 PdfPTable table = new PdfPTable(7);
                 PdfPCell thCell = new PdfPCell();
 
                 Phrase operationPhrase = new Phrase();
-                operationPhrase.add(new Phrase("操作", PdfUtils.ST_SONG_SMALL_BOLD_FONT));
-                operationPhrase.add(new Phrase(":" + operationDO.getOperationId(), PdfUtils.TABLE_BOLD_FONT));
+                operationPhrase.add(new Phrase("场景", PdfUtils.ST_SONG_SMALL_BOLD_FONT));
+                operationPhrase.add(new Phrase(":" + operationDO.getOperationName(), PdfUtils.TABLE_BOLD_FONT));
                 PdfUtils.renderTableHeader(operationPhrase, thCell);
-//                PdfUtils.renderChineseTableHeader("服务", thCell);
-
-//                thCell.setColspan(6);
                 thCell.setColspan(7);
                 table.addCell(thCell);
                 PdfPCell index = new PdfPCell();
@@ -306,102 +301,250 @@ public class PdfServiceImpl {
                 PdfPCell headerRemarkcell = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("备注", headerRemarkcell);
                 table.addCell(headerRemarkcell);
-                List<SDAVO> childrenOfRoot = sda.getChildNode();
-                SDAVO reqSDA = null;
-                SDAVO rspSDA = null;
-                if (null != childrenOfRoot) {
-                    for (SDAVO node : childrenOfRoot) {
-                        if ("request".equalsIgnoreCase(node.getValue().getStructName())) {
-                            reqSDA = node;
-                        }
-                        if ("response".equalsIgnoreCase(node.getValue().getStructName())) {
-                            rspSDA = node;
-                        }
-                    }
-                }
                 PdfPCell headerDirectcell = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("输入", headerDirectcell);
                 headerDirectcell.setBackgroundColor(Color.PINK);
-//                headerDirectcell.setColspan(6);
                 headerDirectcell.setColspan(7);
                 table.addCell(headerDirectcell);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("serviceId", operationDO.getServiceId());
+                params.put("operationId", operationDO.getOperationId());
+                params.put("structName", Constants.ElementAttributes.REQUEST_NAME);
+                SDA reqSDA = sdadao.findUniqureBy(params);
                 if (null != reqSDA) {
-                    List<SDAVO> childrenOfReq = reqSDA.getChildNode();
+                    List<SDA> childrenOfReq = sdadao.findBy("parentId", reqSDA.getSdaId());
                     if (null != childrenOfReq) {
-//                        for (SDAVO childOfReq : childrenOfReq) {
-//                            renderSDANode(childOfReq, table, 0, Color.PINK);
-//                        }
                         for (int i = 0; i < childrenOfReq.size(); i++) {
                             int j = i+1;
-                            renderSDANode(""+j,childrenOfReq.get(i), table, 0, Color.PINK);
+                            renderSDA("" + j, childrenOfReq.get(i), table, 0, Color.PINK);
                         }
                     }
                 }
                 PdfPCell headerDirectcell2 = new PdfPCell();
                 PdfUtils.renderChineseTableHeader("输出", headerDirectcell2);
                 headerDirectcell2.setBackgroundColor(Color.CYAN);
-//                headerDirectcell2.setColspan(6);
                 headerDirectcell2.setColspan(7);
                 table.addCell(headerDirectcell2);
+                params.put("structName", Constants.ElementAttributes.RESPONSE_NAME);
+                SDA rspSDA = sdadao.findUniqureBy(params);
                 if (null != rspSDA) {
-                    List<SDAVO> childrenOfRsp = rspSDA.getChildNode();
+                    List<SDA> childrenOfRsp = sdadao.findBy("parentId", rspSDA.getSdaId());
                     if (null != childrenOfRsp) {
-//                        for (SDAVO childSDA : childrenOfRsp) {
-//                            renderSDANode(childSDA, table, 0, Color.CYAN);
-//                        }
                         for (int i = 0; i < childrenOfRsp.size(); i++) {
                             int j = i+1;
-                            renderSDANode(""+j,childrenOfRsp.get(i),table,0,Color.CYAN);
+                            renderSDA("" + j, childrenOfRsp.get(i), table, 0, Color.CYAN);
                         }
                     }
                 }
                 table.setSpacingBefore(5);
                 section.add(table);
                 document.add(table);
-            }else{
-                PdfPTable table = new PdfPTable(6);
-                PdfPCell thCell = new PdfPCell();
-
-                Phrase operationPhrase = new Phrase();
-                operationPhrase.add(new Phrase("操作", PdfUtils.ST_SONG_SMALL_BOLD_FONT));
-                operationPhrase.add(new Phrase(":" + operationDO.getOperationId(), PdfUtils.TABLE_BOLD_FONT));
-                PdfUtils.renderTableHeader(operationPhrase, thCell);
-//                PdfUtils.renderChineseTableHeader("服务", thCell);
-
-//                thCell.setColspan(6);
-                thCell.setColspan(7);
-                table.addCell(thCell);
-                PdfPCell headerENcell = new PdfPCell();
-                PdfUtils.renderChineseTableHeader("字段名称", headerENcell);
-                table.addCell(headerENcell);
-                PdfPCell headerTypeENcell = new PdfPCell();
-                PdfUtils.renderChineseTableHeader("字段类型", headerTypeENcell);
-                table.addCell(headerTypeENcell);
-                PdfPCell headerCNcell = new PdfPCell(new Phrase());
-                PdfUtils.renderChineseTableHeader("字段说明", headerCNcell);
-                table.addCell(headerENcell);
-                PdfPCell headerRequired = new PdfPCell();
-                PdfUtils.renderChineseTableHeader("是否必输", headerRequired);
-                table.addCell(headerRequired);
-                PdfPCell headerResist = new PdfPCell();
-                PdfUtils.renderChineseTableHeader("约束条件", headerResist);
-                table.addCell(headerResist);
-                PdfPCell headerRemarkcell = new PdfPCell();
-                PdfUtils.renderChineseTableHeader("备注", headerRemarkcell);
-                table.addCell(headerRemarkcell);
-                PdfPCell headerDirectcell = new PdfPCell();
-                PdfUtils.renderChineseTableHeader("无SDA", headerDirectcell);
-                headerDirectcell.setBackgroundColor(Color.PINK);
-//                headerDirectcell.setColspan(6);
-                headerDirectcell.setColspan(7);
-                table.addCell(headerDirectcell);
-                table.setSpacingBefore(5);
-                section.add(table);
-                document.add(table);
             }
-        } catch (Exception e) {
+        }catch (Exception e){
             log.error("渲染服务[" + operationDO.getOperationId() + "]的SDA失败！");
             throw e;
+        }
+//        try {
+//            SDAVO sda = getSDAofService(operationDO);
+//            if(sda!=null){
+////                PdfPTable table = new PdfPTable(6);
+//                PdfPTable table = new PdfPTable(7);
+//                PdfPCell thCell = new PdfPCell();
+//
+//                Phrase operationPhrase = new Phrase();
+//                operationPhrase.add(new Phrase("操作", PdfUtils.ST_SONG_SMALL_BOLD_FONT));
+//                operationPhrase.add(new Phrase(":" + operationDO.getOperationId(), PdfUtils.TABLE_BOLD_FONT));
+//                PdfUtils.renderTableHeader(operationPhrase, thCell);
+////                PdfUtils.renderChineseTableHeader("服务", thCell);
+//
+////                thCell.setColspan(6);
+//                thCell.setColspan(7);
+//                table.addCell(thCell);
+//                PdfPCell index = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("序号", index);
+//                table.addCell(index);
+//                PdfPCell headerENcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("字段名称", headerENcell);
+//                table.addCell(headerENcell);
+//                PdfPCell headerTypeENcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("字段类型", headerTypeENcell);
+//                table.addCell(headerTypeENcell);
+//                PdfPCell headerCNcell = new PdfPCell(new Phrase());
+//                PdfUtils.renderChineseTableHeader("字段说明", headerCNcell);
+//                table.addCell(headerCNcell);
+//                PdfPCell headerRequired = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("是否必输", headerRequired);
+//                table.addCell(headerRequired);
+//                PdfPCell headerResist = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("约束条件", headerResist);
+//                table.addCell(headerResist);
+//                PdfPCell headerRemarkcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("备注", headerRemarkcell);
+//                table.addCell(headerRemarkcell);
+//                List<SDAVO> childrenOfRoot = sda.getChildNode();
+//                SDAVO reqSDA = null;
+//                SDAVO rspSDA = null;
+//                if (null != childrenOfRoot) {
+//                    for (SDAVO node : childrenOfRoot) {
+//                        if ("request".equalsIgnoreCase(node.getValue().getStructName())) {
+//                            reqSDA = node;
+//                        }
+//                        if ("response".equalsIgnoreCase(node.getValue().getStructName())) {
+//                            rspSDA = node;
+//                        }
+//                    }
+//                }
+//                PdfPCell headerDirectcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("输入", headerDirectcell);
+//                headerDirectcell.setBackgroundColor(Color.PINK);
+////                headerDirectcell.setColspan(6);
+//                headerDirectcell.setColspan(7);
+//                table.addCell(headerDirectcell);
+//                if (null != reqSDA) {
+//                    List<SDAVO> childrenOfReq = reqSDA.getChildNode();
+//                    if (null != childrenOfReq) {
+////                        for (SDAVO childOfReq : childrenOfReq) {
+////                            renderSDANode(childOfReq, table, 0, Color.PINK);
+////                        }
+//                        for (int i = 0; i < childrenOfReq.size(); i++) {
+//                            int j = i+1;
+//                            renderSDANode(""+j,childrenOfReq.get(i), table, 0, Color.PINK);
+//                        }
+//                    }
+//                }
+//                PdfPCell headerDirectcell2 = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("输出", headerDirectcell2);
+//                headerDirectcell2.setBackgroundColor(Color.CYAN);
+////                headerDirectcell2.setColspan(6);
+//                headerDirectcell2.setColspan(7);
+//                table.addCell(headerDirectcell2);
+//                if (null != rspSDA) {
+//                    List<SDAVO> childrenOfRsp = rspSDA.getChildNode();
+//                    if (null != childrenOfRsp) {
+////                        for (SDAVO childSDA : childrenOfRsp) {
+////                            renderSDANode(childSDA, table, 0, Color.CYAN);
+////                        }
+//                        for (int i = 0; i < childrenOfRsp.size(); i++) {
+//                            int j = i+1;
+//                            renderSDANode(""+j,childrenOfRsp.get(i),table,0,Color.CYAN);
+//                        }
+//                    }
+//                }
+//                table.setSpacingBefore(5);
+//                section.add(table);
+//                document.add(table);
+//            }else{
+//                PdfPTable table = new PdfPTable(6);
+//                PdfPCell thCell = new PdfPCell();
+//
+//                Phrase operationPhrase = new Phrase();
+//                operationPhrase.add(new Phrase("操作", PdfUtils.ST_SONG_SMALL_BOLD_FONT));
+//                operationPhrase.add(new Phrase(":" + operationDO.getOperationId(), PdfUtils.TABLE_BOLD_FONT));
+//                PdfUtils.renderTableHeader(operationPhrase, thCell);
+////                PdfUtils.renderChineseTableHeader("服务", thCell);
+//
+////                thCell.setColspan(6);
+//                thCell.setColspan(7);
+//                table.addCell(thCell);
+//                PdfPCell headerENcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("字段名称", headerENcell);
+//                table.addCell(headerENcell);
+//                PdfPCell headerTypeENcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("字段类型", headerTypeENcell);
+//                table.addCell(headerTypeENcell);
+//                PdfPCell headerCNcell = new PdfPCell(new Phrase());
+//                PdfUtils.renderChineseTableHeader("字段说明", headerCNcell);
+//                table.addCell(headerENcell);
+//                PdfPCell headerRequired = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("是否必输", headerRequired);
+//                table.addCell(headerRequired);
+//                PdfPCell headerResist = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("约束条件", headerResist);
+//                table.addCell(headerResist);
+//                PdfPCell headerRemarkcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("备注", headerRemarkcell);
+//                table.addCell(headerRemarkcell);
+//                PdfPCell headerDirectcell = new PdfPCell();
+//                PdfUtils.renderChineseTableHeader("无SDA", headerDirectcell);
+//                headerDirectcell.setBackgroundColor(Color.PINK);
+////                headerDirectcell.setColspan(6);
+//                headerDirectcell.setColspan(7);
+//                table.addCell(headerDirectcell);
+//                table.setSpacingBefore(5);
+//                section.add(table);
+//                document.add(table);
+//            }
+//        } catch (Exception e) {
+//            log.error("渲染服务[" + operationDO.getOperationId() + "]的SDA失败！");
+//            throw e;
+//        }
+    }
+    private void renderSDA(String index,SDA sda, PdfPTable table, int offset, Color indexColor) throws Exception {
+        String sdaNodeId = sda.getStructName();
+        String sdaNodeType = "";
+        String sdaNodeChineseName = sda.getStructAlias();
+        String sdaNodeRequired = sda.getRequired();
+        String sdaNodeResist = sda.getConstraint();
+        String sdaNodeRemark = sda.getRemark();
+
+        PdfPCell idCell = new PdfPCell();
+        PdfUtils.renderLatinTableData(sdaNodeId, idCell);
+        idCell.setIndent(offset);
+
+        PdfPCell indexCell = new PdfPCell();
+        PdfUtils.renderLatinTableData(index, indexCell);
+
+        if (null != indexColor) {
+//            idCell.setBackgroundColor(indexColor);
+            indexCell.setBackgroundColor(indexColor);
+        }
+
+        PdfPCell typeCell = new PdfPCell();
+        PdfUtils.renderLatinTableData(sdaNodeType, typeCell);
+
+        PdfPCell cnCell = new PdfPCell();
+        PdfUtils.renderChineseTableData(sdaNodeChineseName, cnCell);
+
+        PdfPCell requiredCell = new PdfPCell();
+        PdfUtils.renderLatinTableData(sdaNodeRequired, requiredCell);
+
+        PdfPCell resistCell = new PdfPCell();
+        PdfUtils.renderChineseTableData(sdaNodeResist, resistCell);
+
+        PdfPCell remarkCell = new PdfPCell();
+
+        List<SDA> childSDAs = sdadao.findBy("parentId", sda.getSdaId());
+        if (null != childSDAs && childSDAs.size() > 0) {
+            idCell.setBackgroundColor(Color.yellow);
+//          o
+            PdfUtils.renderChineseTableData("start", remarkCell);
+        } else {
+            PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
+        }
+
+        table.addCell(indexCell);
+        table.addCell(idCell);
+        table.addCell(typeCell);
+        table.addCell(cnCell);
+        table.addCell(requiredCell);
+        table.addCell(resistCell);
+        table.addCell(remarkCell);
+
+        if (null != childSDAs && childSDAs.size() > 0) {
+            int childOffSet = offset + 10;
+            for (int i = 0; i < childSDAs.size(); i++) {
+                int j = i + 1;
+                renderSDA("" + index + "." + j, childSDAs.get(i), table, childOffSet, indexColor);
+            }
+            SDA endSDA = new SDA();
+            endSDA.setSdaId(UUID.randomUUID().toString());
+            endSDA.setStructName(sda.getStructName());
+            endSDA.setType(sda.getType());
+            endSDA.setConstraint(sda.getConstraint());
+            endSDA.setRequired(sda.getRequired());
+            endSDA.setSdaId(UUID.randomUUID().toString());
+            endSDA.setRemark("end");
+            renderSDA("" + index, endSDA, table, offset, Color.yellow);
         }
     }
 //    private void renderSDANode(SDAVO sda, PdfPTable table, int offset, Color indexColor) throws Exception {

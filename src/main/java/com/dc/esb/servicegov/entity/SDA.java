@@ -197,10 +197,24 @@ public class SDA implements Serializable {
 	}
 
 	public String getRemark() {
+		if(remark != null && remark.length() > 2048){
+			remark.replaceAll(" ", "");
+			remark.replaceAll("\t", "");
+			if(remark.length() > 2048){
+				remark = remark.substring(0, 2048);
+			}
+		}
 		return remark;
 	}
 
 	public void setRemark(String remark) {
+		if(remark != null && remark.length() > 2048){
+			remark.replaceAll(" ", "");
+			remark.replaceAll("\t", "");
+			if(remark.length() > 2048){
+				remark = remark.substring(0, 2048);
+			}
+		}
 		this.remark = remark;
 	}
 

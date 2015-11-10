@@ -27,7 +27,6 @@
 
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">
     <table border="0" cellspacing="0" cellpadding="0">
-        <input type="hidden" name="status" value="${entity.status }"/>
         <tr>
             <th>元数据名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataId" value="${entity.metadataId }"
@@ -38,11 +37,11 @@
             <td><input class="easyui-textbox" type="text" name="chineseName" value="${entity.chineseName }"
                        data-options="required:true, validType:['chineseB']"></td>
         </tr>
-        <tr style="display:none;">
+        <tr >
             <th>英文名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataName" value="${entity.metadataName }"></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <th>别名</th>
             <td><input class="easyui-textbox" type="text" name="metadataAlias" value="${entity.metadataAlias}"></td>
         </tr>
@@ -96,7 +95,20 @@
             <th>数据来源</th>
             <td><input class="easyui-textbox" type="text" name="dataSource" value="${entity.dataSource }"></td>
         </tr>
-
+        <tr>
+            <th>状态</th>
+            <td>
+                <input
+                        name = "status"
+                        value="${entity.status }"
+                        class="easyui-combobox"
+                        data-options="valueField: 'value',textField: 'label',
+						data: [{label: '正常',value: '正常'},
+						{label: '过时',value: '过时'}
+							]"
+                        />
+            </td>
+        </tr>
         <tr>
             <td>&nbsp;</td>
             <td class="win-bbar">

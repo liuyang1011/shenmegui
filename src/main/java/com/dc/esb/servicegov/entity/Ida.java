@@ -16,7 +16,7 @@ public class Ida {
     private String id;
     @Column(name = "STRUCTNAME")
     private String structName;
-    @Column(name = "STRUCTALIAS",length = 500)
+    @Column(name = "STRUCTALIAS")
     private String structAlias;
 
     @Column(name = "METADATA_ID")
@@ -55,7 +55,7 @@ public class Ida {
     @Column(name = "VERSION")
     private String version;
 
-    @Column(name = "REMARK",length = 1024)
+    @Column(name = "REMARK",length = 3072)
     private String remark;
 
     @Column(name = "sdaId")
@@ -218,10 +218,24 @@ public class Ida {
 
 
     public String getRemark() {
+        if(remark != null && remark.length() > 2048){
+            remark.replaceAll(" ", "");
+            remark.replaceAll("\t", "");
+            if(remark.length() > 2048){
+                remark = remark.substring(0, 2048);
+            }
+        }
         return remark;
     }
 
     public void setRemark(String remark) {
+        if(remark != null && remark.length() > 2048){
+            remark.replaceAll(" ", "");
+            remark.replaceAll("\t", "");
+            if(remark.length() > 2048){
+                remark = remark.substring(0, 2048);
+            }
+        }
         this.remark = remark;
     }
 
