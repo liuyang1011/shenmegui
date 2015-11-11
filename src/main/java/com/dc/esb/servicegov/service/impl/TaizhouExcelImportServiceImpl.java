@@ -251,13 +251,10 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 String remark = isNull(cell);
-                if("start".equalsIgnoreCase(remark)) {
-                    sda.setMetadataId("");
-                }
                 sda.setRemark(remark);
             }
 
-            if(null != sda.getMetadataId() && !"".equals(sda.getMetadataId()) && !"start".equalsIgnoreCase(sda.getRemark()) && !"end".equalsIgnoreCase(sda.getRemark())){
+            if(null != sda.getMetadataId() && !"".equals(sda.getMetadataId()) && !"end".equalsIgnoreCase(sda.getRemark())){
                 Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
                 if(metadata==null){
                     logger.error(sheet.getSheetName()+"页,元数据["+sda.getMetadataId()+"]未配置，导入失败...");
@@ -347,13 +344,10 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
                 String remark = isNull(cell);
-                if ("start".equalsIgnoreCase(cell)) {
-                    sda.setMetadataId("");
-                }
                 sda.setRemark(remark);
             }
 
-            if (sda.getMetadataId() != null && !"".equals(sda.getMetadataId()) && !"start".equalsIgnoreCase(sda.getRemark()) && !"end".equalsIgnoreCase(sda.getRemark())) {
+            if (sda.getMetadataId() != null && !"".equals(sda.getMetadataId()) && !"end".equalsIgnoreCase(sda.getRemark())) {
                 Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
                 if (metadata == null) {
                     logger.error(sheet.getSheetName() + "页,元数据[" + sda.getMetadataId() + "]未配置，导入失败...");
@@ -509,10 +503,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
 
-                if(!"start".equalsIgnoreCase(ida.getRemark())) {
-                    ida.setMetadataId(isNull(cell));
-
-                }
+                ida.setMetadataId(isNull(cell));
                 sda.setMetadataId(isNull(cell));
                 sda.setStructName(isNull(cell));
 
@@ -566,7 +557,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 sda.setRemark(remark);
             }
 
-            if(ida.getMetadataId()!=null&&!"".equals(ida.getMetadataId()) && !"start".equalsIgnoreCase(sda.getRemark()) && !"end".equalsIgnoreCase(sda.getRemark())){
+            if(ida.getMetadataId()!=null&&!"".equals(ida.getMetadataId()) && !"end".equalsIgnoreCase(sda.getRemark())){
                 Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
                 if(metadata==null){
                     logger.error(sheet.getSheetName()+"页,元数据["+ida.getMetadataId()+"]未配置，导入失败...");
@@ -712,10 +703,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             cellObj = sheetRow.getCell(7);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
-                if (!"start".equalsIgnoreCase(ida.getRemark())) {
-                    ida.setMetadataId(isNull(cell));
-
-                }
+                ida.setMetadataId(isNull(cell));
                 sda.setStructName(isNull(cell));
                 sda.setMetadataId(isNull(cell));
             }
@@ -769,7 +757,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                 sda.setRemark(remark);
             }
 
-            if (ida.getMetadataId() != null && !"".equals(ida.getMetadataId()) && !"start".equalsIgnoreCase(sda.getRemark()) && !"end".equalsIgnoreCase(sda.getRemark())) {
+            if (ida.getMetadataId() != null && !"".equals(ida.getMetadataId()) && !"end".equalsIgnoreCase(sda.getRemark())) {
                 Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
                 if (metadata == null) {
                     logger.error(sheet.getSheetName() + "页,元数据[" + ida.getMetadataId() + "]未配置，导入失败...");
@@ -1541,7 +1529,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             //ida.setArgType("input");
             idaDao.save(ida);
             //包含子节点
-            if ("start".equalsIgnoreCase(ida.getRemark())) {
+            if (ida.getRemark() != null && ida.getRemark().toLowerCase().trim().indexOf("start") == 0) {
                 parentId = ida.getId();
             }
         }
@@ -1563,7 +1551,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
             }
             idaDao.save(ida);
             //包含子节点
-            if ("start".equalsIgnoreCase(ida.getRemark())) {
+            if (ida.getRemark() != null && ida.getRemark().toLowerCase().trim().indexOf("start") == 0) {
                 parentId = ida.getId();
             }
         }

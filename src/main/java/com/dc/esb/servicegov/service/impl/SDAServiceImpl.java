@@ -522,14 +522,16 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         String logParam = "SDA:";
         if (delIds != null && delIds.length > 0) {
             SDA sda = sdaDAO.findUniqueBy("sdaId", delIds[0]);
-            operationService.editReleate(sda.getServiceId(), sda.getOperationId());
-            for (String id : delIds) {
-                SDA entity = sdaDAO.findUniqueBy("sdaId", id);
-                if(entity != null){
-                    logParam += "[服务ID：" + entity.getServiceId() +", 场景ID:" + entity.getOperationId() + ", SDA:" + entity.getStructName() + "],";
-                }
-                sdaDAO.delete(id);
+            if(sda != null){
+                operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+                for (String id : delIds) {
+                    SDA entity = sdaDAO.findUniqueBy("sdaId", id);
+                    if(entity != null){
+                        logParam += "[服务ID：" + entity.getServiceId() +", 场景ID:" + entity.getOperationId() + ", SDA:" + entity.getStructName() + "],";
+                    }
+                    sdaDAO.delete(id);
 
+                }
             }
         }
         return logParam.substring(0, logParam.length() - 2);
@@ -629,7 +631,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         map.put("operationId",OperationId);
         map.put("serviceId",serviceId);
         Operation operation = operationService.findUniqueBy(map);
-        if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT) || operation.getState().equals(Constants.Operation.OPT_STATE_REVISE)){
+        if(Constants.Operation.OPT_STATE_UNAUDIT.equals(operation.getState()) || Constants.Operation.OPT_STATE_REVISE.equals(operation.getState())){
             return true;
         }
         return false;

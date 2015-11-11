@@ -26,6 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 var editingId;
 var newIds = [];
 var delIds = [];
+var metadataJson;
 		function onContextMenu(e,row){
 			e.preventDefault();
 			$(this).treegrid('select', row.id);
@@ -36,29 +37,45 @@ var delIds = [];
 		}
 		function removeIt(){
 			var node = $('#tg').treegrid('getSelected');
-			if(node.text == "root" && node.parentId == null){
+			if(node.text == "root" || node.text == "response" || node.text == "request"){
 				alert("请选择其他节点！");
 				return false;
 			}
 			if (node){
+
 				delIds.push(node.id);
 				$('#tg').treegrid('remove', node.id);
 			}
 		}
 		function editIt(){
 				var row = $('#tg').treegrid('getSelected');
-				if(row.text == "root" && row.parentId == null){
+				if(row.text == "root" || row.text == "response" || row.text == "request"){
 					alert("请选择其他节点！");
 					return false;
 				}
 
 				if (row){
 					editingId = row.id
-					newIds.push(editingId);
+					var contains = false;//判断之前是否已经将此节点加入newIds
+					for(var i=0; i < newIds.length; i++){
+						if(editingId == newIds[i]){
+							contains = true;
+							break;
+						}
+					}
+					if(!contains){
+						newIds.push(editingId);
+					}
 					$('#tg').treegrid('beginEdit', editingId);
+					var ed = $('#tg').treegrid('getEditor',
+							{id:editingId,field:'append4'});
 
-					$("#cancelbtn"+editingId).show();
-					$("#okbtn"+editingId).show();
+					$(ed.target).combobox({"onSelect":function(record) {
+						comboboxSelect(record);
+					}});
+					$(ed.target).combobox('setValue', row.append4);
+//					$("#cancelbtn"+editingId).show();
+//					$("#okbtn"+editingId).show();
 				}
 		}
 
@@ -91,11 +108,10 @@ var delIds = [];
 //			{'name':'mikel'})
 			var ed = $('#tg').treegrid('getEditor',
 					{id:uuid,field:'append4'});
-			$(ed.target).combobox({"onSelect":function(record){
-				$('#tg').treegrid('select', uuid);
+			$(ed.target).combobox({"onSelect":function(record) {
+				$('#tg').treegrid('select',uuid);
 				comboboxSelect(record);
 			}});
-
 		}
 		function saveSDA(){
 			if (!confirm("确定保存吗？")) {
@@ -109,30 +125,32 @@ var delIds = [];
 				var editNodes = [];
 				for(var i=0; i<newIds.length; i++){
 					var editNode = t.treegrid('find', newIds[i]);
-					t.treegrid('endEdit', editNode.id);
-					var node = {};
-					node.sdaId = editNode.id;
-					node.structName = editNode.text;
-					node.parentId = editNode.parentId;
+					if(editNode != null){
+						t.treegrid('endEdit', editNode.id);
+						var node = {};
+						node.sdaId = editNode.id;
+						node.structName = editNode.text;
+						node.parentId = editNode.parentId;
 
-					node.serviceId = "${service.serviceId }";
-					node.operationId = "${operation.operationId }";
+						node.serviceId = "${service.serviceId }";
+						node.operationId = "${operation.operationId }";
 
-					node.structAlias = editNode.append1;
-					node.type = editNode.append2;
-					node.length = editNode.append3;
-					node.metadataId = editNode.append4;
-					node.required = editNode.append5;
-					node.remark = editNode.append6;
-					node.constraint = editNode.append7;
-					node.seq = editNode.attributes;
-					node.xpath = editNode.append3;
+						node.structAlias = editNode.append1;
+						node.type = editNode.append2;
+						node.length = editNode.append3;
+						node.metadataId = editNode.append4;
+						node.required = editNode.append5;
+						node.remark = editNode.append6;
+						node.constraint = editNode.append7;
+						node.seq = editNode.attributes;
+						node.xpath = editNode.append3;
 
-					editNodes.push(node);
+						editNodes.push(node);
+					}
 				}
 
 				editingId = undefined;
-
+				var result = false;
 				$.ajax({
 			         type: "post",
 			         async: false,
@@ -143,12 +161,13 @@ var delIds = [];
 			         success: function(data){
 			        	 if(data){
 			        	 	newIds = [];
-			        	 	alert("保存成功");
-							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+							 result = true;
 			        	 	//t.treegrid('reload');
 			        	 }else{
+							 result = false;
 							 alert("只有服务定义状态和修订状态能进行修改");
 							 t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+							 return false;
 						 }
 			            }
 				 });
@@ -164,11 +183,14 @@ var delIds = [];
 			         success: function(data){
 			        	 if(data){
 			        	 	delIds = [];
-			        	 	alert("保存成功");
-							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+							 result = true
 						 }
 			            }
 				 });
+			}
+			if(result){
+				alert("保存成功");
+				t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
 			}
 		}
 		function cancel(){
@@ -305,15 +327,35 @@ var delIds = [];
 	}
 	//弹出元数据选择界面
 	function appendByMetadata(){
-		var urlPath = ""
-		$('#opDialog').dialog({
-			title: '版本发布',
-			width: 500,
+		var node = $('#tg').treegrid('getSelected');
+		if(node.text == "root" && node.parentId == null){
+			alert("请选择其他节点！");
+			return false;
+		}
+		var urlPath ="/jsp/metadata/metadata_choose.jsp"
+		$('#dlg').dialog({
+			title: '元数据',
+			width: 770,
+			left:100,
 			closed: false,
-			cache: false,
 			href: urlPath,
 			modal: true
 		});
+	}
+	function getMetadataJson(){
+		if(!metadataJson){
+			$.ajax({
+				type: "get",
+				async: false,
+				contentType: "application/json; charset=utf-8",
+				url: "/metadata/getAll",
+				dataType: "json",
+				success: function(data){
+					metadataJson = data;
+				}
+			});
+		}
+		return metadataJson;
 	}
 </script>
 </head>
@@ -321,6 +363,7 @@ var delIds = [];
 <div id="mm" class="easyui-menu" style="width:120px;">
 	<shiro:hasPermission name="sda-add">
 		<div onclick="append()" data-options="iconCls:'icon-add'">新增</div>
+		<div onclick="appendByMetadata()" data-options="iconCls:'icon-add'">根据元数据新增</div>
 	</shiro:hasPermission>
 	<shiro:hasPermission name="sda-update">
 		<div onclick="editIt()" data-options="iconCls:'icon-edit'">编辑</div>
@@ -366,11 +409,11 @@ var delIds = [];
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{validType:['englishB']}}">字段名</th>
-				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox'}">字段别名</th>
-				<th data-options="field:'append2',width:50" editor="{type:'textbox'}">类型/长度</th>
+				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{editable:false, validType:['englishB']}}">字段名</th>
+				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox', options:{editable:false}}">字段别名</th>
+				<th data-options="field:'append2',width:50" editor="{type:'textbox', options:{editable:false}}">类型/长度</th>
 				<th data-options="field:'append3',width:60,editor:'text', hidden:true">xpath</th>
-				<th field="append4" width="80" editor="{type:'combobox', options:{required:true, method:'get', url:'/metadata/getAll', valueField:'metadataId',textField:'metadataId'}}">元数据</th>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true, method:'get', data: getMetadataJson(), valueField:'metadataId',textField:'metadataId'}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>

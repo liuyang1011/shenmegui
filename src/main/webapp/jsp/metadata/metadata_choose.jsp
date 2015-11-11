@@ -1,15 +1,28 @@
-<%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
-</head>
-
+    <link rel="stylesheet" type="text/css"
+          href="/resources/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
+    <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+    </head>
 <body>
 <form id="searchForm">
+    <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="javascript:$('#dlg').dialog('close');">取消</a><a href="javascript:void(0)" id="saveBtn"
+                                                                                  onclick="saveAdd()"
+                                                                                  class="easyui-linkbutton"
+                                                                                  iconCls="icon-save">保存</a></div>
 <fieldset>
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
@@ -39,7 +52,7 @@
 					"></td>
             <td align="right">
                 <shiro:hasPermission name="metadata-get">
-                    <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+                    <a href="javascript:void(0)" onclick="queryMetadata()" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
                     <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
                 </shiro:hasPermission>
             </td>
@@ -51,37 +64,30 @@
         style="height:620px; width:100%;">
     <thead>
     <tr>
-        <th data-options="field:'',checkbox:true"></th>
-        <th data-options="field:'metadataId'" width="12%">元数据名称</th>
-        <th data-options="field:'chineseName'" width="12%">中文名称</th>
-        <th data-options="field:'metadataName'" width="14%">英文全称</th>
-        <th data-options="field:'categoryChineseWord'" width="8%">类别词</th>
-        <th data-options="field:'type'" width="5%">类型</th>
-        <th data-options="field:'length'" width="4%">长度</th>
-        <th data-options="field:'scale'" width="3%">精度</th>
-        <th data-options="field:'dataCategory'" width="10%">数据项分类</th>
-        <th data-options="field:'status'" width="5%">状态</th>
+        <th data-options="field:'',checkbox:true"  width="5%"></th>
+        <th data-options="field:'metadataId'" width="15%">元数据名称</th>
+        <th data-options="field:'chineseName'" width="15%">中文名称</th>
+        <th data-options="field:'metadataName'" width="20%">英文全称</th>
+        <th data-options="field:'categoryChineseWord'" width="12%">类别词</th>
+        <th data-options="field:'type'" width="12%">类型</th>
+        <th data-options="field:'length', hidden:true" >长度</th>
+        <th data-options="field:'scale', hidden:true" >精度</th>
+        <th data-options="field:'status'" width="10%">状态</th>
     </tr>
     </thead>
 </table>
-<div id="w" class="easyui-window" title="" data-options="modal:true,closed:true,iconCls:'icon-add'"
-     style="width:500px;height:200px;padding:10px;">
 
-</div>
-<script type="text/javascript" src="/assets/metadata/metadataManager.js"></script>
-<script type="text/javascript" src="/assets/metadata/metadata.js"></script>
 <script type="text/javascript">
     $(function(){
         $("#metadataList").datagrid({
             rownumbers:true,
-            singleSelect:false,
+            singleSelect:true,
             url:'/metadata/query',
             method:'get',
-            toolbar:toolbar,
             pagination:true,
             pageSize:20,
             pageList: [20,30,50],
-            fitColumns:'false',
+            fitColumns:true,
             onLoadError: function (responce) {
                 var resText = responce.responseText;
                 if(resText.toString().indexOf("没有操作权限") > 0){
@@ -91,7 +97,6 @@
             }
         });
 
-        $(".datagrid-cell-group").width("auto");
         $("#categoryWordId").combobox({
             panelHeight:'130px',
             url:'/metadata/categoryWord',
@@ -104,7 +109,53 @@
         });
     });
 
+    function queryMetadata() {
+        var queryMetadataCallBack = function queryMetadataCallBack(data){
+            $('#metadataList').datagrid('loadData', data);
+        };
+        var params = {
+            "metadataId" : $("#metadataId").textbox("getValue"),
+            "chineseName" : encodeURI($("#chineseName").textbox("getValue")),
+            "categoryWordId" : $("#categoryWordId").combobox("getValue"),
+        };
+        $("#metadataList").datagrid('options').queryParams = params;
+        $("#metadataList").datagrid('reload');
+    };
+    function saveAdd(){
+        var row =  $('#metadataList').datagrid('getSelected');
+        if(row){
+            var uuid = "" + new Date().getTime();
+            var node = $('#tg').treegrid('getSelected');
+            var typeStr = row.type;
+            if(row.length){
+                typeStr += "(" + row.length;
+                if(row.scale){
+                    typeStr += "," + row.scale;
+                }
+                typeStr += ")";
+            }
+            $('#tg').treegrid('append',{
+                parent: node.id,
+                data: [{
+                    id: uuid,
+                    text:row.metadataId,
+                    parentId:node.id,
+                    append1: row.chineseName,
+                    append2: typeStr,
+                    append3: node.append3 + '/' + row.metadataId,
+                    append4: row.metadataId
+                }]
+            });
+            newIds.push(uuid);
+            $('#tg').treegrid('reloadFooter');
+            $('#tg').treegrid('select', uuid);
+            $('#dlg').dialog("close");
+        }else{
+            alert('请选中一行数据!');
+        }
 
+
+    }
 </script>
 </body>
 </html>

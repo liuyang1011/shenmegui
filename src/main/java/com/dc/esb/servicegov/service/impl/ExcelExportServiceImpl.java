@@ -384,7 +384,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         }
         if ((!StringUtils.isEmpty(sda.getType()) && (sda.getType().equalsIgnoreCase("array") || sda.getType().equalsIgnoreCase("struct"))) ||
                 (!StringUtils.isEmpty(sda.getLength()) && (sda.getLength().equalsIgnoreCase("array") || sda.getLength().equalsIgnoreCase("struct")))) {
-            sda.setRemark("start");
             fillSDA(sheet, counter.getCount(), sda, arrayStyle);
 
             List<SDA> childList = getSDAChildren(sda.getSdaId());
@@ -455,7 +454,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         }
         if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
             if(sda.getXpath() != null && !sda.getXpath().endsWith("/")){
-                sda.setRemark("start");
             }
             else{
                 sda.setRemark("end");
@@ -489,7 +487,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
         if ((!StringUtils.isEmpty(ida.getType()) && (ida.getType().equalsIgnoreCase("array") || ida.getType().equalsIgnoreCase("struct"))) ||
                 (!StringUtils.isEmpty(ida.getLength()) && (ida.getLength().equalsIgnoreCase("array") || ida.getLength().equalsIgnoreCase("struct")))) {
-            ida.setRemark("start");
             fillIda(sheet, counter.getCount(), ida);
             List<Ida> childList = getIdaChildren(ida.getId());
             for (int i = 0; i < childList.size(); i++) {

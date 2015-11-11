@@ -359,7 +359,7 @@ public class OperationController {
         //上线和发布的场景不能删除
         for (int i = 0; i < operationPks.length; i++) {
             Operation operation = operationServiceImpl.getById(operationPks[i]);
-            if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+            if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
                 return false;
             }
             logParam += ", [服务ID：" + operation.getServiceId() + ", 场景ID：" + operation.getOperationId() + ", 场景名称:" + operation.getOperationName() + "]";

@@ -26,6 +26,7 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
     private static final String SHEET_NAME = "表4元数据";
+    private static final String SHEET_NAME2 = "数据字典";
     private static final int START_ROW_NUM = 2;
 
     private static final String DATA_CATEGORY = "数据项分类";
@@ -59,7 +60,12 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     @Override
     public void parse(Workbook workbook) {
         Sheet sheet = workbook.getSheet(SHEET_NAME);
-        parseSheet(sheet);
+        if(null == sheet){
+            sheet = workbook.getSheet(SHEET_NAME2);
+        }
+        if(sheet != null){
+            parseSheet(sheet);
+        }
     }
 
     private void parseSheet(Sheet sheet) {

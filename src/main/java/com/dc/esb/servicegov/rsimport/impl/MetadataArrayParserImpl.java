@@ -23,6 +23,7 @@ public class MetadataArrayParserImpl implements IResourceParser {
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
     private static final String SHEET_NAME = "表5数组";
+    private static final String SHEET_NAME2 = "ARRAY";
     private static final int START_ROW_NUM = 2;
     private static final String DATA_CATEGORY = "数据分类";
     private static final String BUZZ_CATEGORY = "业务分类";
@@ -54,8 +55,10 @@ public class MetadataArrayParserImpl implements IResourceParser {
     @Override
     public void parse(Workbook workbook) {
         Sheet sheet = workbook.getSheet(SHEET_NAME);
-        if (null != sheet) {
-
+        if(null == sheet){
+            sheet = workbook.getSheet(SHEET_NAME2);
+        }
+        if(sheet != null){
             parseSheet(sheet);
         }
     }

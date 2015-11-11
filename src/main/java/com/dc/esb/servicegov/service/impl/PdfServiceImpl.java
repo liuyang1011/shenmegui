@@ -516,8 +516,7 @@ public class PdfServiceImpl {
         List<SDA> childSDAs = sdadao.findBy("parentId", sda.getSdaId());
         if (null != childSDAs && childSDAs.size() > 0) {
             idCell.setBackgroundColor(Color.yellow);
-//          o
-            PdfUtils.renderChineseTableData("start", remarkCell);
+            PdfUtils.renderChineseTableData(sda.getRemark(), remarkCell);
         } else {
             PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
         }
@@ -614,7 +613,7 @@ public class PdfServiceImpl {
         if (null != childSDAs && childSDAs.size() > 0) {
             idCell.setBackgroundColor(Color.yellow);
 //          o
-            PdfUtils.renderChineseTableData("start", remarkCell);
+            PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
         }else{
             PdfUtils.renderChineseTableData(sdaNodeRemark, remarkCell);
         }
