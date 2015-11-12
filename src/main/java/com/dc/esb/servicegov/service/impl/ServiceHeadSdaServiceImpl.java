@@ -37,7 +37,7 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
         sdaRoot.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
         sdaRoot.setXpath(Constants.ElementAttributes.ROOT_XPATH);
         sdaRoot.setSeq(0);
-        sdaRoot.setServceHeadId(serviceHeadId);
+        sdaRoot.setServiceHeadId(serviceHeadId);
 
         sdaDAO.save(sdaRoot);
         result.add(sdaRoot);
@@ -48,7 +48,7 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
         sdaReq.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
         sdaReq.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
         sdaReq.setSeq(1);
-        sdaReq.setServceHeadId(serviceHeadId);
+        sdaReq.setServiceHeadId(serviceHeadId);
         sdaReq.setParentId(sdaRoot.getSdaId());
 
         sdaDAO.save(sdaReq);
@@ -60,7 +60,7 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
         sdaRes.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
         sdaRes.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
         sdaRes.setSeq(2);
-        sdaRes.setServceHeadId(serviceHeadId);
+        sdaRes.setServiceHeadId(serviceHeadId);
         sdaRes.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaRes);
         result.add(sdaRes);
