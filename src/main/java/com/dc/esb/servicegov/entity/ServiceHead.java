@@ -26,6 +26,9 @@ public class ServiceHead implements Serializable {
 	@Column(name = "HEAD_REMARK")
 	private String headRemark;
 
+	@Column(name = "type")
+	private String type;
+
 	public String getHeadId() {
 		return headId;
 	}
@@ -57,5 +60,12 @@ public class ServiceHead implements Serializable {
 	public void setHeadRemark(String headRemark) {
 		this.headRemark = headRemark;
 	}
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
  * Created by vincentfxz on 15/6/29.
  */
 @Repository
-public class ServiceHeadDAOImpl extends HibernateDAO<ServiceHead, String>{
+public class ServiceHeadDAOImpl extends BaseDAOImpl<ServiceHead>{
 
 }

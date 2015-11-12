@@ -37,6 +37,9 @@
             <ul>
                 <li><a href="javascript:;" mid="4">服务信息管理</a></li>
                 <li><a href="javascript:;" mid="12">服务发布管理</a></li>
+                <shiro:hasPermission name="serviceHead-get">
+                <li><a href="javascript:;" mid="15">服务报文头管理</a></li>
+                </shiro:hasPermission>
                 <shiro:hasPermission name="operation-get">
                 <li><a href="javascript:;" mid="14">服务检索</a></li>
                 </shiro:hasPermission>
