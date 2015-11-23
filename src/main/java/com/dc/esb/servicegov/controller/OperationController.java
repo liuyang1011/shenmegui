@@ -13,6 +13,7 @@ import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
+import com.dc.esb.servicegov.vo.InterfaceInvokeVO2;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -70,6 +71,8 @@ public class OperationController {
     private ProcessContextServiceImpl processContextService;
     @Autowired
     private VersionServiceImpl versionService;
+    @Autowired
+    private InterfaceInvokeServiceImpl interfaceInvokeService;
 
     /**
      * 获取所有的服务场景
@@ -240,7 +243,21 @@ public class OperationController {
         }
         return result;
     }
-
+    @RequiresPermissions({"service-add"})
+    @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getInvokeMapping2(String serviceId, String operationId) {
+        List<InterfaceInvoke> result = interfaceInvokeService.getBySOId(serviceId, operationId);
+        if(result != null){
+            List<InterfaceInvokeVO2> voList = new ArrayList<InterfaceInvokeVO2>();
+            for(InterfaceInvoke interfaceInvoke : result){
+                voList.add(new InterfaceInvokeVO2(interfaceInvoke));
+            }
+            return  voList;
+        }
+        return null;
+    }
 
     /**
      * TODO 场景基本信息保存后，保存相关的接口映射关系。
@@ -342,7 +359,7 @@ public class OperationController {
         //上线和发布的场景不能删除
         for (int i = 0; i < operationPks.length; i++) {
             Operation operation = operationServiceImpl.getById(operationPks[i]);
-            if(operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || operation.getState().equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+            if(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equals(operation.getState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equals(operation.getState())){
                 return false;
             }
             logParam += ", [服务ID：" + operation.getServiceId() + ", 场景ID：" + operation.getOperationId() + ", 场景名称:" + operation.getOperationName() + "]";
@@ -459,7 +476,7 @@ public class OperationController {
     @RequestMapping(method = RequestMethod.GET, value = "/judgeInterface", headers = "Accept=application/json")
     @ResponseBody
     public boolean judgeInterface(String systemId,String type) {
-        boolean result = systemService.containsInterface(systemId,type);
+        boolean result = systemService.containsInterface(systemId, type);
         return result;
     }
 
@@ -541,7 +558,7 @@ public class OperationController {
     public
     @ResponseBody
     boolean submitToAudit(@RequestBody List list) throws  Throwable{
-        OperationLog operationLog = systemLogService.record("服务场景","提交审核","");
+        OperationLog operationLog = systemLogService.record("服务场景", "提交审核", "");
         String logParam = "";
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
@@ -559,7 +576,7 @@ public class OperationController {
             logParam += ", [服务ID：" + operation.getServiceId() + ", 场景ID：" + operation.getOperationId() + ", 场景名称:" + operation.getOperationName() + "]";
         }
 
-        operationLog.setParams(logParam.substring(1, logParam.length() -1 ));
+        operationLog.setParams(logParam.substring(1, logParam.length() - 1));
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -647,5 +664,17 @@ public class OperationController {
         operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
         systemLogService.updateResult(operationLog);
         return true;
+    }
+
+    /**
+     * 根据接口ID查询场景列表
+     * @param interfaceId
+     * @return
+     */
+    @RequiresPermissions({"service-get"})
+    @RequestMapping("/getByInterfaceId/{interfaceId}")
+    @ResponseBody
+    public List<TreeNode> getByInterfaceId(@PathVariable(value = "interfaceId") String interfaceId){
+        return operationServiceImpl.getByInterfaceId(interfaceId);
     }
 }

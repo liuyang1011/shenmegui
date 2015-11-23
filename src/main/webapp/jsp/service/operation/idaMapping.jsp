@@ -27,11 +27,11 @@
       </td>
       <th>接口id</th>
       <td>
-        <input class="easyui-text" readonly="true" value="${interface.interfaceId}" style="width:140px" type="text" name="name" id="masterName"/>
+        <input class="easyui-text" readonly="true" value="${inter.interfaceId}" style="width:140px" type="text" name="name" id="masterName"/>
       </td>
       <th>接口名称</th>
       <td>
-        <input class="easyui-text" readonly="true" value="${interface.interfaceName}" style="width:140px" type="text" name="name" id="slaveName"/>
+        <input class="easyui-text" readonly="true" value="${inter.interfaceName}" style="width:140px" type="text" name="name" id="slaveName"/>
       </td>
     </tr>
     <td>&nbsp;</td>
@@ -56,7 +56,7 @@
       textField : 'text',
       panelHeight : '200px',
       onSelect:function(node){
-          if(node.text == '根节点' || node.text == '请求头' || node.text == '响应头'){
+          if(node.text == '根节点' || node.text == '请求报文体' || node.text == '响应报文体'){
             alert('请选择其他节点');
             var node2 = $('#mappingdatagrid').treegrid('getSelected');
             $('#mappingdatagrid').treegrid('endEdit', node2.id);
@@ -88,7 +88,7 @@
   var processId = parent.processId;
   var taskId = parent.taskId;
   $(function(){
-    var url = "/ida/getIdaMapping/${interface.interfaceId}/${operation.serviceId}/${operation.operationId}?t=" + (new Date()).valueOf();
+    var url = "/ida/getIdaMapping/${inter.interfaceId}/${operation.serviceId}/${operation.operationId}?t=" + (new Date()).valueOf();
     $('#mappingdatagrid').treegrid({
       animate: true,
       fitColumns: true,

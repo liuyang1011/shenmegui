@@ -91,6 +91,7 @@
         var invokeList = new Array();
         /*在接口选完服务提供者消费者关系点击确定执行*/
         function addInterfaceContent(){
+            alert(0);
             var consumerNames = "";
             var consumerNameIds = "";
             var standardConsumerNames = "";
@@ -229,19 +230,26 @@
 			rownumbers:true,
 			singleSelect:true,
 			fitColumns:false,
-			method:'get',toolbar:toolbar,
-			pagination:true,
+			method:'get',
+			toolbar:toolbar
 				"
            style="height:400px; width:100%;">
         <thead>
         <tr>
-            <th data-options="field:'',checkbox:true,width:50"></th>
-            <th data-options="field:'consumerNames',width:250">消费者名称</th>
-            <th data-options="field:'consumerIds',width:150">消费者编码</th>
-            <th data-options="field:'interfaceName',width:100">接口名称</th>
-            <th data-options="field:'interfaceId',width:100">接口代码</th>
-            <th data-options="field:'providerNames',width:250">提供者名称</th>
-            <th data-options="field:'providerIds',width:150">提供者编码</th>
+            <th ></th>
+            <th colspan="4">消费者</th>
+            <th colspan="4">提供者</th>
+        </tr>
+        <tr>
+            <th data-options="field:'id', width:50, checkbox:true"></th>
+            <th data-options="field:'conName',width:120">系统名称</th>
+            <th data-options="field:'conId',width:120">系统编码</th>
+            <th data-options="field:'conInterName',width:120">接口名称</th>
+            <th data-options="field:'conInterId',width:120">接口代码</th>
+            <th data-options="field:'proName',width:120">系统名称</th>
+            <th data-options="field:'proId',width:120">系统编码</th>
+            <th data-options="field:'proInterName',width:120">接口名称</th>
+            <th data-options="field:'proInterId',width:120">接口代码</th>
 
         </tr>
         </thead>

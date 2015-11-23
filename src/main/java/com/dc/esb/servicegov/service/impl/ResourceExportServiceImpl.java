@@ -35,8 +35,9 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     static String RecordSheetName = "表1修订记录";
     static String EnglishWordSheetName = "表2中英文名称及缩写对照表";
     static String CategoryWordSheetName = "表3类别词";
-    static String DataSheetName = "数据字典";
-    static String ArraySheetName = "ARRAY";
+    static String DataSheetName = "表4元数据";
+    static String ArraySheetName = "表5数组";
+    static String OutdateSheetName = "表7过时元数据";
 
     static HSSFCellStyle commonStyle;//默认单元格样式
 
@@ -58,6 +59,9 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
         //填充数组页
         HSSFSheet arraySheet = workbook.getSheet(ArraySheetName);
         fillArraySheet(arraySheet);
+        //填充过时页
+        HSSFSheet outdateSheet = workbook.getSheet(OutdateSheetName);
+        fillOutdateSheet(outdateSheet);
         return workbook;
     }
     /**填充英文单词页**/
@@ -88,14 +92,29 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     }
     /**填充数据字典页**/
     public boolean fillDataSheet(HSSFSheet sheet){
-        String hql = " from " + Metadata.class.getName() +" m where (m.type != ? and m.type != ?) or m.type is null";
-        List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE);
+        String hql = " from " + Metadata.class.getName() +" m where ((m.type != ? and m.type != ?) or m.type is null) and m.status != ?";
+        List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE, Constants.Metadata.STATUS_OUTDATED);
         for(int i = 0; i < list.size(); i++){
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
                 String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
-                "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser()};
+                "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
+                setRowValue(row, commonStyle, values);
+            }
+        }
+        return true;
+    }
+    /**填充数据字典页**/
+    public boolean fillOutdateSheet(HSSFSheet sheet){
+        String hql = " from " + Metadata.class.getName() +" m where ((m.type != ? and m.type != ?) or m.type is null) and m.status = ?";
+        List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE, Constants.Metadata.STATUS_OUTDATED);
+        for(int i = 0; i < list.size(); i++){
+            Metadata metadata = list.get(i);
+            if(metadata != null){
+                HSSFRow row = sheet.createRow(i + 2);
+                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                        "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
         }
@@ -110,7 +129,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
                 String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
-                        "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser()};
+                        "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
         }

@@ -1155,6 +1155,19 @@ function SetWinHeight(obj) {
     }
 }
 
+function userPage(){
+    $('#userDlg').dialog({
+        title: '用户信息',
+        width: '550px',
+        left:'450px',
+        height:'403px',
+        closed: false,
+        cache: false,
+        href: '/user/getUserInfo',
+        modal: true
+    });
+}
+
 $(function () {
     $("#taskName").click(function () {
         uiinit.win({

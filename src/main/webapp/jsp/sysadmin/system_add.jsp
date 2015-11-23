@@ -152,7 +152,7 @@
 		 $.ajax({
 			 type: "GET",
 			 async:false,
-			 url: "/system/systemIdCheck/"+systemId,
+			 url: "/system/systemIdCheck/"+systemId+"?_t=" + new Date().getTime(),
 			 dataType: "json",
 			 success: function(data){
 				if(data){

@@ -22,7 +22,8 @@ public class MetadataArrayParserImpl implements IResourceParser {
 
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
-    private static final String SHEET_NAME = "ARRAY";
+    private static final String SHEET_NAME = "表5数组";
+    private static final String SHEET_NAME2 = "ARRAY";
     private static final int START_ROW_NUM = 2;
     private static final String DATA_CATEGORY = "数据分类";
     private static final String BUZZ_CATEGORY = "业务分类";
@@ -54,13 +55,16 @@ public class MetadataArrayParserImpl implements IResourceParser {
     @Override
     public void parse(Workbook workbook) {
         Sheet sheet = workbook.getSheet(SHEET_NAME);
-        if (null != sheet) {
-
+        if(null == sheet){
+            sheet = workbook.getSheet(SHEET_NAME2);
+        }
+        if(sheet != null){
             parseSheet(sheet);
         }
     }
 
     private void parseSheet(Sheet sheet) {
+        initIndexColnum(sheet);
 //		List<Metadata> metadatas = new ArrayList<Metadata>();
         for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
             Row row = sheet.getRow(rowNum);
@@ -102,7 +106,7 @@ public class MetadataArrayParserImpl implements IResourceParser {
         metadata.setScale("");
         metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
         metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
-        metadata.setStatus(Constants.Metadata.STATUS_UNAUDIT);
+        metadata.setStatus(Constants.Metadata.STATUS_FORMAL);
         return metadata;
     }
 

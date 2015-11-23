@@ -22,7 +22,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				animate: true,
     				collapsible: true,
     				fitColumns: true,
-    				url: '/operation/getByMetadataId/${param.metadataId}',
+    				url: '/operation/getByInterfaceId/${param.interfaceId}',
     				method: 'get',
     				idField: 'id',
     				treeField: 'text',
@@ -38,29 +38,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			</tr>
     		</thead>
     	</table>
-	<script type="text/javascript">
-		function servicePage(row){
-			var serviceId = null;
-			var operationId = null;
-			if(row.append2 !=  null && row.append2 != ""){
-				serviceId = row.append2;
-				if(row.append3 != null && row.append3 != ""){
-					operationId = row.append3;
-				}
-			}
-			if(serviceId != null && operationId!= null){
-				var urlPath =  '/jsp/service/servicePage2.jsp?serviceId='+serviceId + "&operationId="+operationId+"&_t=" + new Date().getTime();
-				var content = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+  <script type="text/javascript">
+	  function servicePage(row){
+		  var serviceId = null;
+		  var operationId = null;
+		  if(row.append2 !=  null && row.append2 != ""){
+			  serviceId = row.append2;
+			  if(row.append3 != null && row.append3 != ""){
+				  operationId = row.append3;
+			  }
+		  }
+		  if(serviceId != null && operationId!= null){
+			  var urlPath =  '/jsp/service/servicePage2.jsp?serviceId='+serviceId + "&operationId="+operationId+"&_t=" + new Date().getTime();
+			  var content = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
 
-				parent.parent.$('#mainContentTabs').tabs('add', {
-					title: '服务（'+ serviceId+")",
-					content: content,
-					closable: true
-				});
-			}
+			  parent.parent.$('#mainContentTabs').tabs('add', {
+				  title: '服务（'+ serviceId+")",
+				  content: content,
+				  closable: true
+			  });
+		  }
 
-		}
+	  }
 
-	</script>
+  </script>
   </body>
 </html>

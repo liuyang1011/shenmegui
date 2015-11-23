@@ -518,20 +518,18 @@
 					editor:{type:'combotree',
 					  options:{url:'/sda/headSdaComboTree?headId=${param.headId}',
 					  method : 'get',
-					  valueField : 'text',
-					  textField : 'text',
 					  panelHeight : '200px',
 					  onSelect:function(node){
-						  if(node.text == '根节点' || node.text == '请求头' || node.text == '响应头'){
+						  if(node.text == '根节点' || node.text == '请求报文体' || node.text == '响应报文体'){
 							alert('请选择其他节点');
 							var node2 = $('#tg').treegrid('getSelected');
 							$('#tg').treegrid('endEdit', node2.id);
 							return false;
 						  }else{
-							this.value = node.text;
 							var node2 = $('#tg').treegrid('getSelected');
 							node2.xpath = node.append2;
 							node2.sdaId = node.id;
+							node2.metadataId = node.text;
 						  }
 						}
 					  }

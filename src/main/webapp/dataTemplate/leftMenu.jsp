@@ -18,9 +18,7 @@
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
-        <shiro:hasRole name="admin">
             <li><a href="javascript:;" class="openable" mid="5.2">角色维护</a></li>
-        </shiro:hasRole>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="1.11">日志管理</a>
@@ -193,4 +191,28 @@
 </script>
 <%
         }
+    if(mid.equals("15")){
+%>
+<div class="tree-filter">
+    <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
+
+</div>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+
+<script>
+    var title = "服务报文头管理";
+    var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="/jsp/service/service_head/service_head_list.jsp" style="width:100%;height:98%;"></iframe>';
+    if ($('#mainContentTabs').tabs('exists',title)) {
+        $('#mainContentTabs').tabs('select',title);
+    }else{
+        $('#mainContentTabs').tabs('add', {
+            title: title,
+            content: content,
+            closable: true
+        });
+    }
+
+</script>
+<%
+    }
 %>

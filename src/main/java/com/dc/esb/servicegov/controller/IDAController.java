@@ -45,6 +45,7 @@ public class IDAController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		Map<String,String> reqMap = new HashMap<String,String>();
 		reqMap.put("headId", headId);
+		reqMap.put("state", Constants.IDA_STATE_COMMON);
 		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		for(Ida ida:idas){
 			ida.setHeads(null);
@@ -103,11 +104,19 @@ public class IDAController {
 		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
 		String logParam = "列表:";
 
+		for(int i=0; i < idas.length; i++){
+			Ida ida  = idas[i];
+			logParam += "[报文头ID:" +ida.getHeadId() + ",字段名称：" +ida.getStructName() + "],";
+			if(StringUtils.isNotEmpty(ida.getSdaId())){
+				SDA sda = sdaService.findUniqueBy("sdaId", ida.getSdaId());
+				if(sda != null){
+					ida.setMetadataId(sda.getMetadataId());
+				}
+			}
+		}
+
 		idaService.saveOrUpdate(idas);
 
-		for(int i=0; i < idas.length; i++){
-			logParam += "[报文头ID:" + idas[i].getHeadId() + ",字段名称：" +idas[i].getStructName() + "],";
-		}
 		operationLog.setParams(logParam.substring(0, logParam.length() - 2));
 		systemLogService.updateResult(operationLog);
 		return true;
@@ -188,7 +197,7 @@ public class IDAController {
 		Operation operation = operationService.getOperation(serviceId,operationId);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("system", system);
-		modelAndView.addObject("interface", inter);
+		modelAndView.addObject("inter", inter);
 		modelAndView.addObject("service", service);
 		modelAndView.addObject("operation", operation);
 

@@ -40,4 +40,10 @@ public class InterfaceInvokeServiceImpl extends AbstractBaseService<InterfaceInv
         return null;
     }
 
+    public List<InterfaceInvoke> getBySOId(String serviceId, String operationId){
+        String hql = " from " + InterfaceInvoke.class.getName() + " i where i.provider.serviceId = ? and i.provider.operationId = ?";
+        List<InterfaceInvoke> list = interfaceInvokeDAOImpl.find(hql, serviceId, operationId);
+        return list;
+    }
+
 }

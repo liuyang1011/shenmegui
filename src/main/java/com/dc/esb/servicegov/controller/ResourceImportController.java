@@ -7,8 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dc.esb.servicegov.entity.OperationLog;
-import com.dc.esb.servicegov.rsimport.impl.MetadataArrayParserImpl;
+import com.dc.esb.servicegov.rsimport.impl.*;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,9 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dc.esb.servicegov.rsimport.impl.CategoryWordParserImpl;
-import com.dc.esb.servicegov.rsimport.impl.EnglishWordXlsxParserImpl;
-import com.dc.esb.servicegov.rsimport.impl.MetadataXlsxParserImpl;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -43,6 +41,8 @@ public class ResourceImportController {
     private MetadataXlsxParserImpl metadataXlsxParserImpl;
     @Autowired
     private MetadataArrayParserImpl metadataArrayParserImpl;
+    @Autowired
+    private MetadataOutdatedParserImpl metadataOutdatedParserImpl;
 
     @RequiresPermissions({"importMetadata-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/import")
@@ -79,6 +79,7 @@ public class ResourceImportController {
                         categoryWordParserImpl.parse(workbook);
                         metadataXlsxParserImpl.parse(workbook);
                         metadataArrayParserImpl.parse(workbook);
+                        metadataOutdatedParserImpl.parse(workbook);
                     }catch (Exception e){
                         log.error(e, e);
                         msg =  "数据转换过程中出现错误！";

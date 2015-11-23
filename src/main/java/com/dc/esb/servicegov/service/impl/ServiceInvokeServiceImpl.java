@@ -245,4 +245,35 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 	public List<ServiceInvoke> getByOperationAndType(Operation operation, String type){
 		return serviceInvokeDAOImpl.getByOperationAndType(operation,type);
 	}
+
+	public ServiceInvoke genderServiceInvoke(LinkedHashMap<String, Object> map){
+		String systemId = map.get("systemId").toString();
+		String interfaceId = map.get("interfaceId").toString();
+		String type = map.get("type").toString();
+		String isStandard = map.get("isStandard").toString();
+		String serviceId = map.get("serviceId").toString();
+		String operationId = map.get("operationId").toString();
+
+
+		ServiceInvoke c = new ServiceInvoke();
+		c.setSystemId(systemId);
+		if(StringUtils.isNotEmpty(interfaceId)){
+			c.setInterfaceId(interfaceId);
+		}
+		c.setType(type);
+		c.setIsStandard(isStandard);
+		c.setOperationId(operationId);
+		c.setServiceId(serviceId);
+		serviceInvokeDAOImpl.save(c);
+		return c;
+	}
+
+	public boolean containOperation(String interfaceId){
+		String hql = "select count(*) from ServiceInvoke si where si.interfaceId = ? and si.operationId is not null and si.serviceId is not null";
+		long count = serviceInvokeDAOImpl.findUnique(hql, interfaceId);
+		if(count > 0){
+			return true;
+		}
+		return false;
+	}
 }

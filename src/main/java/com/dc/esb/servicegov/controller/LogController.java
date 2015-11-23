@@ -39,6 +39,8 @@ public class LogController {
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         Page page = logInfoService.getAll(rowCount);
         page.setPage(pageNo);
+        page.setOrderBy("time");
+        page.setOrder("desc");
         List<LogInfo> rows = logInfoService.getAll(page);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());

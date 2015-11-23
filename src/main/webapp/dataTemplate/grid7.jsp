@@ -63,11 +63,11 @@
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
-        <th data-options="field:'metadataId'" width="15%">元数据名称</th>
-        <th data-options="field:'chineseName'" width="15%">中文名称</th>
-        <th data-options="field:'metadataAlias'" width="10%">别名</th>
+        <th data-options="field:'metadataId'" width="12%">元数据名称</th>
+        <th data-options="field:'chineseName'" width="12%">中文名称</th>
+        <th data-options="field:'metadataName'" width="14%">英文全称</th>
         <%--<th data-options="field:'metadataName'">英文名称</th>--%>
-        <th data-options="field:'categoryChineseWord'" width="10%">类别词</th>
+        <th data-options="field:'categoryChineseWord'" width="8%">类别词</th>
         <th data-options="field:'type'" width="5%">类型</th>
         <th data-options="field:'length'" width="4%">长度</th>
         <th data-options="field:'scale'" width="3%">精度</th>
@@ -76,9 +76,10 @@
         <th data-options="field:'bussDefine'">业务定义</th>
         <th data-options="field:'bussRule'">业务规则</th>
         <th data-options="field:'dataSource'">数据来源</th>--%>
-        <%--<th data-options="field:'status'">状态</th>--%>
+
         <%--<th data-options="field:'version'">版本号</th>--%>
-        <th data-options="field:'optUser'" width="10%">创建人</th>
+        <th data-options="field:'status'" width="5%">状态</th>
+        <th data-options="field:'optUser'" width="7%">创建人</th>
         <th data-options="field:'optDate'" width="15%">创建时间</th>
         <!--
         <th data-options="field:'  '">审核人</th>

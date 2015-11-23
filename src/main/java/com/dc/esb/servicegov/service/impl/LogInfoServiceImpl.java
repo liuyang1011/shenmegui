@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.impl.LogInfoDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.LogInfo;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.Utils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -29,7 +30,7 @@ public class LogInfoServiceImpl extends AbstractBaseService<LogInfo,String>{
         LogInfo logInfo = new LogInfo();
         logInfo.setDetail(detail);
         logInfo.setType(type);
-        logInfo.setTime(Utils.getTime());
+        logInfo.setTime(DateUtils.format(new Date()));
         logInfoDAO.save(logInfo);
     }
     @Override

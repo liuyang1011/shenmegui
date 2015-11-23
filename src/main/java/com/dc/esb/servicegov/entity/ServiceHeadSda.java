@@ -1,18 +1,15 @@
 package com.dc.esb.servicegov.entity;
 
-import org.apache.commons.lang.StringUtils;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.lang.*;
-import java.lang.System;
-import java.util.List;
-
-import javax.persistence.*;
 
 
 @Entity
-@Table(name = "SDA")
-public class SDA implements Serializable {
+@Table(name = "service_head_sda")
+public class ServiceHeadSda implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,19 +30,7 @@ public class SDA implements Serializable {
 	private int seq = 0;
 
 	@Column(name = "PARENT_ID")
-	private String parentId;
-
-	@Column(name = "SERVICE_ID")
-	private String serviceId;
-
-	@Column(name = "OPT_USER", length = 100)
-	private String optUser;
-
-	@Column(name = "OPT_DATE", length = 50)
-	private String optDate;
-
-	@Column(name = "OPERATION_ID")
-	private String operationId;
+	private String _parentId;
 
 	@Column(name = "DESCRIPTION")
 	private String desc;
@@ -54,10 +39,7 @@ public class SDA implements Serializable {
 	private String remark;
 
 	@Column(name = "HEAD_ID")
-	private String headId;//用于关联接口报文头
-
-	@Column(name = "SERVICE_HEAD_ID")
-	private String serviceHeadId;//用于关联服务报文头
+	private String headId;
 
 	@Column(name = "VERSION")
 	private String version;
@@ -135,44 +117,12 @@ public class SDA implements Serializable {
 		this.seq = seq;
 	}
 
-	public String getParentId() {
-		return parentId;
+	public String get_parentId() {
+		return _parentId;
 	}
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
-
-	public String getServiceId() {
-		return serviceId;
-	}
-
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public String getOptUser() {
-		return optUser;
-	}
-
-	public void setOptUser(String optUser) {
-		this.optUser = optUser;
-	}
-
-	public String getOptDate() {
-		return optDate;
-	}
-
-	public void setOptDate(String optDate) {
-		this.optDate = optDate;
-	}
-
-	public String getOperationId() {
-		return operationId;
-	}
-
-	public void setOperationId(String operationId) {
-		this.operationId = operationId;
+	public void set_parentId(String _parentId) {
+		this._parentId = _parentId;
 	}
 
 	public String getDesc() {
@@ -261,14 +211,7 @@ public class SDA implements Serializable {
 		this.argType = argType;
 	}
 
-	public String getServiceHeadId() {
-		return serviceHeadId;
-	}
-
-	public void setServiceHeadId(String serviceHeadId) {
-		this.serviceHeadId = serviceHeadId;
-	}
-	//	public SDA getParent() {
+//	public SDA getParent() {
 //		return parent;
 //	}
 //

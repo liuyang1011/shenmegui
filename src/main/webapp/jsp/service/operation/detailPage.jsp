@@ -94,7 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <th data-options="field:'text',width:180,editor:'text'">字段名</th>
                     <th data-options="field:'append1',width:60,align:'right',editor:'text'">中文名称</th>
                     <th data-options="field:'append2',width:80,editor:'text'">功能描述</th>
-                    <th data-options="field:'append3',width:80,editor:'text'">备注</th>
+                    <th data-options="field:'append6',width:80,editor:'text'">备注</th>
                 </tr>
             </thead>
         </table>

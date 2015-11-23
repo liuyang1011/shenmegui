@@ -1,7 +1,6 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
 import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.Version;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
@@ -18,18 +17,14 @@ import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.BatchUpdateException;
-
 @Component
-public class MetadataXlsxParserImpl implements IResourceParser {
+public class MetadataOutdatedParserImpl implements IResourceParser {
 
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
-    private static final String SHEET_NAME = "表4元数据";
-    private static final String SHEET_NAME2 = "数据字典";
+    private static final String SHEET_NAME = "表7过时元数据";
     private static final int START_ROW_NUM = 2;
-
-    private static final String DATA_CATEGORY = "数据项分类";
+    private static final String DATA_CATEGORY = "数据分类";
     private static final String BUZZ_CATEGORY = "业务分类";
     private static final String METADATA_ID = "标准数据名称";
     private static final String CHINESE_NAME = "标准中文名称";
@@ -52,7 +47,6 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     private static int OPT_DATE_COLUMN = 13;
     private static int OPT_USER_COLUMN = 14;
     private static int REMARK_COLUMN = 15;
-
     @Autowired
     private MetadataServiceImpl metadataService;
     @Autowired
@@ -60,10 +54,8 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     @Override
     public void parse(Workbook workbook) {
         Sheet sheet = workbook.getSheet(SHEET_NAME);
-        if(null == sheet){
-            sheet = workbook.getSheet(SHEET_NAME2);
-        }
-        if(sheet != null){
+        if (null != sheet) {
+
             parseSheet(sheet);
         }
     }
@@ -89,8 +81,8 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 }else{
                     versionService.editVersion(metadata.getVersionId());//编辑版本
                 }
-            } catch (Exception e) {
-                log.error("导入元数据[" + metadata.getMetadataId() + "]失败", e);
+            } catch(Exception e ){
+                log.error("元数据[" + metadata.getMetadataId() + "]导入出错");
             }
         }
     }
@@ -105,84 +97,32 @@ public class MetadataXlsxParserImpl implements IResourceParser {
         metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
         metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
         String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
-        //TODO 本地化修改
-        String[] str = dataFormula.split("[()]+");
-        String type = getTypeFromFormula(str[0]);
-        String length = "";
-        String scale = "";
-        if (str.length > 1) {
-            length = getLengthFromFormula(str[1].replaceAll("，", ","));
-            scale = getScaleFromFormula(str[1].replaceAll("，", ","));
-        }
+        String type = getTypeFromFormula(dataFormula);
         metadata.setType(type);
-        metadata.setLength(length);
-        metadata.setScale(scale);
+        metadata.setLength("");
+        metadata.setScale("");
         metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
         metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
-        metadata.setStatus(Constants.Metadata.STATUS_FORMAL);
+        metadata.setStatus(Constants.Metadata.STATUS_OUTDATED);
         return metadata;
     }
 
+    //TODO 本地化修改
     public static String getTypeFromFormula(String formula) {
-       /* String type = "String";
+        String type = "String";
         if (null != formula) {
-            if (StringUtils.containsIgnoreCase(formula, "a")) {
-                type = "String";
-            } else if (StringUtils.containsIgnoreCase(formula, "n")) {
-                type = "Number";
-            }
-        }*/
-        return formula;
-    }
-
-    public static String getLengthFromFormula(String formula) {
-        String length = "";
-        if (null != formula) {
-            String str[] = formula.split(",");
-            length = str[0];
-        }
-        /*if (null != formula) {
-            int indexOfSeparator = formula.indexOf("!");
-            if (indexOfSeparator < 0) {
-                indexOfSeparator = formula.indexOf("n");
-            }
-            if (indexOfSeparator > 0) {
-                String lengthStr = formula.substring(0, indexOfSeparator);
-                if (StringUtils.isNumeric(lengthStr)) {
-                    length = lengthStr;
-                }
-            }
-        }*/
-        return length;
-    }
-
-    public static String getScaleFromFormula(String formula) {
-        String scale = "";
-
-        if (null != formula) {
-            String str[] = formula.split(",");
-            if (str.length > 1) {
-                scale = str[1];
+            if (StringUtils.containsIgnoreCase(formula, "ARRAY")) {
+                type = Constants.Metadata.ARRAY_TYPE;
+            } else if (StringUtils.containsIgnoreCase(formula, "STRUCT")) {
+                type = Constants.Metadata.STRUCT_TYPE;
             }
         }
-
-        /*if (null != formula) {
-            int startOfScale = formula.indexOf("(");
-            int endOfScale = formula.indexOf(")");
-            if (startOfScale > 0 && endOfScale > 0 && endOfScale > startOfScale) {
-                String tmp = formula.substring(startOfScale + 1, endOfScale);
-                if (StringUtils.isNumeric(tmp)) {
-                    scale = tmp;
-                }
-            }
-        }*/
-        return scale;
+        return type;
     }
 
     public static String getValueFromCell(Row row, int column) {
         return ExcelUtils.getValue(row.getCell(column));
     }
-
     /**
      * 初始化字段序号
      * @param sheet
@@ -229,4 +169,5 @@ public class MetadataXlsxParserImpl implements IResourceParser {
             }
         }
     }
+
 }

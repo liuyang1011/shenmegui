@@ -87,13 +87,26 @@
 //                $("#resultList").datagrid('get',{total:0,rows:[]});
                 var row = $("#resultList").datagrid('getSelected');
                 var index =  $("#resultList").datagrid('getRowIndex',row);
+//                <!--
+//                $.ajax({
+//                    type: "POST",
+//                    async: false,
+//                    contentType: "application/json; charset=utf-8",
+//                    url: "/serviceLink/deleteInvoke",
+//                    dataType: "json",
+//                    data : JSON.stringify(row),
+//                    success: function (data) {
+//                        $("#resultList").datagrid('deleteRow',index);
+//                        alert("删除成功");
+//                    }
+//                });
+//                -->
                 $.ajax({
                     type: "POST",
                     async: false,
                     contentType: "application/json; charset=utf-8",
-                    url: "/serviceLink/deleteInvoke",
+                    url: "/serviceLink/deleteInvoke2?id="+row.id,
                     dataType: "json",
-                    data : JSON.stringify(row),
                     success: function (data) {
                         $("#resultList").datagrid('deleteRow',index);
                         alert("删除成功");
@@ -233,7 +246,10 @@
 						{label: '审核未通过',value: '2'},
 						{label: '已发布',value: '3'},
 						{label: '已上线',value: '4'},
-						{label: '已下线',value: '5'}
+						{label: '已下线',value: '5'},
+						{label: '待审核',value: '6'},
+						{label: '修订',value: '7'},
+						{label: '下线',value: '8'}
 							]"
                             />
                 </td>
@@ -268,20 +284,27 @@
 			rownumbers:true,
 			singleSelect:true,
 			fitColumns:false,
-			url:'/operation/getInvokeMapping?serviceId=${operation.serviceId}&operationId=${operation.operationId}',
+			url:'/operation/getInvokeMapping2?serviceId=${operation.serviceId}&operationId=${operation.operationId}',
 			method:'get',toolbar:toolbar,
 			pagination:true,
 				"
            style="height:400px; width:100%;">
         <thead>
         <tr>
-            <th data-options="field:'',checkbox:true,width:50"></th>
-            <th data-options="field:'consumers',width:250">消费者名称</th>
-            <th data-options="field:'consumerIds',width:150">消费者编码</th>
-            <th data-options="field:'interfaceName',width:100">接口名称</th>
-            <th data-options="field:'interfaceId',width:100">接口代码</th>
-            <th data-options="field:'providers',width:250">提供者名称</th>
-            <th data-options="field:'providerIds',width:150">提供者编码</th>
+            <th ></th>
+            <th colspan="4">消费者</th>
+            <th colspan="4">提供者</th>
+        </tr>
+        <tr>
+            <th data-options="field:'id', width:50, checkbox:true"></th>
+            <th data-options="field:'conName',width:120">系统名称</th>
+            <th data-options="field:'conId',width:120">系统编码</th>
+            <th data-options="field:'conInterName',width:120">接口名称</th>
+            <th data-options="field:'conInterId',width:120">接口代码</th>
+            <th data-options="field:'proName',width:120">系统名称</th>
+            <th data-options="field:'proId',width:120">系统编码</th>
+            <th data-options="field:'proInterName',width:120">接口名称</th>
+            <th data-options="field:'proInterId',width:120">接口代码</th>
 
         </tr>
         </thead>
