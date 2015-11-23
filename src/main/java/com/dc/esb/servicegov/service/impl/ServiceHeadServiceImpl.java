@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dc.esb.servicegov.entity.ServiceHead;
 import com.dc.esb.servicegov.service.ServiceHeadService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -89,4 +86,15 @@ public class ServiceHeadServiceImpl extends AbstractBaseService<ServiceHead,Stri
         }
     }
 
+    public List<ServiceHead> getByIdStr(String headIdStr){
+        if(StringUtils.isNotEmpty(headIdStr)){
+            String[] headIds = headIdStr.split("\\,");
+            Map<String, Object> param = new HashMap<String, Object>();
+            param.put("headIds", headIds);
+            String hql = " from ServiceHead" + " sh where sh.headId in (:headIds)";
+            List<ServiceHead> list = serviceHeadDAO.find(hql, param);
+            return list;
+        }
+        return null;
+    }
 }

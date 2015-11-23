@@ -12,7 +12,7 @@
 				接口ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceIdText"  data-options="required:true,validType:['englishB']">
+				<input class="easyui-textbox" type="text" id="interfaceIdText"  data-options="required:true">
 			</td>
 		</tr>
 		<tr>
@@ -20,7 +20,7 @@
 				交易名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="interfaceNameText" data-options="validType:['chineseB']">
+				<input class="easyui-textbox" type="text" id="interfaceNameText" data-options="required:true">
 			</td>
 		</tr>
 		<tr>
@@ -189,11 +189,13 @@
 
 		try { 
 			var selectNode = $('.msinterfacetree').tree("getSelected");
-			systemId = selectNode.id;
-
 			var node = $('.msinterfacetree').tree("getParent",selectNode.target);
 			if(node && node.id!='root'){
 				 systemId = node.id;
+				var systemNode = $('.msinterfacetree').tree("getParent",node.target);
+				 if(systemNode && systemNode.id !='root'){
+					 systemId = systemNode.id;
+				 }
 			}
 
 		} catch (e) { 
@@ -224,6 +226,9 @@
 				$('#w').window('close');
 				//TODO selectNode 是null
 				var selectNode = treeObj.tree("getSelected");
+				if(selectNode.id.indexOf('_interface') < 0 ){//如果选择节点是某个接口节点
+					selectNode = $('.msinterfacetree').tree("getParent",selectNode.target);
+				}
 				treeObj.tree('append', {
 									parent: (selectNode?selectNode.target:null),
 									data: [{

@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -31,6 +33,8 @@ public class SLATemplateController {
 	private SLATemplateServiceImpl slaTemplateServiceImpl;
 	@Autowired
 	private SLAServiceImpl slaServiceImpl;
+	@Autowired
+	private OperationServiceImpl operationService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/getSLA/{templateId}", headers = "Accept=application/json")
 	public @ResponseBody
@@ -170,6 +174,32 @@ public class SLATemplateController {
 		}
 		operationLog.setParams(logParam);
 		systemLogService.updateResult(operationLog);
+		return true;
+	}
+
+
+	@RequestMapping(method = RequestMethod.POST, value = "/relateAll/{slaTemplateId}", headers = "Accept=application/json")
+	public @ResponseBody
+	boolean setTemplateData(@PathVariable(value = "slaTemplateId") String slaTemplateId){
+		String hql = " from SLA where sla.slaTemplateId = ?";
+		List<SLA> slaList = slaServiceImpl.find(hql, slaTemplateId);
+		for(int i=0; i < slaList.size(); i++){
+			SLA temSla = slaList.get(i);
+			List<Operation> operationList = operationService.getAll();
+			for(int j=0; j < operationList.size(); j++){
+				Operation operation = operationList.get(j);
+				String hql2 = " from SLA where operationId=? and serviceId=? and slaName=?";
+				List<SLA> list = slaServiceImpl.find(hql2, operation.getOperationId(), operation.getServiceId(), temSla.getSlaName());
+				if(list != null && list.size() > 0){
+					continue;
+				}else{
+					SLA sla = new SLA(temSla);
+					sla.setOperationId(operation.getOperationId());
+					sla.setServiceId(operation.getServiceId());
+					slaServiceImpl.save(sla);
+				}
+			}
+		}
 		return true;
 	}
 

@@ -65,13 +65,14 @@
         $('#tg').treegrid('beginEdit', editingId);
         var ed = $('#tg').treegrid('getEditor',
                 {id:editingId,field:'append4'});
-
-        $(ed.target).combobox({"onSelect":function(record) {
-          comboboxSelect(record);
-        }});
+        $(ed.target).combobox({
+          onShowPanel:function(){
+            $('#tg').treegrid('select',row.id);
+            showMetadata('edit');
+            $(ed.target).combobox('hidePanel');
+          }
+        });
         $(ed.target).combobox('setValue', row.append4);
-//					$("#cancelbtn"+editingId).show();
-//					$("#okbtn"+editingId).show();
       }
     }
 
@@ -92,15 +93,17 @@
       });
       editingId = uuid;
       newIds.push(uuid);
-      $('#tg').treegrid('reloadFooter');
       $('#tg').treegrid('select',uuid);
       $('#tg').treegrid('beginEdit', uuid);
       var ed = $('#tg').treegrid('getEditor',
               {id:uuid,field:'append4'});
-      $(ed.target).combobox({"onSelect":function(record) {
-        $('#tg').treegrid('select',uuid);
-        comboboxSelect(record);
-      }});
+      $(ed.target).combobox({
+        onShowPanel:function(){
+          $('#tg').treegrid('select',uuid);
+          showMetadata('add');
+          $(ed.target).combobox('hidePanel');
+        }
+      });
     }
     function saveSDA(){
       if (!confirm("确定保存吗？")) {
@@ -121,8 +124,7 @@
             node.structName = editNode.text;
             node.parentId = editNode.parentId;
 
-            node.serviceId = "${service.serviceId }";
-            node.operationId = "${operation.operationId }";
+            node.serviceHeadId = "${entity.headId}";
 
             node.structAlias = editNode.append1;
             node.type = editNode.append2;
@@ -132,7 +134,6 @@
             node.remark = editNode.append6;
             node.constraint = editNode.append7;
             node.seq = editNode.attributes;
-            node.xpath = editNode.append3;
 
             editNodes.push(node);
           }
@@ -144,7 +145,7 @@
           type: "post",
           async: false,
           contentType:"application/json; charset=utf-8",
-          url: "/sda/saveSDA",
+          url: "/sda/commonSaveSDA",
           dataType: "json",
           data: JSON.stringify(editNodes),
           success: function(data){
@@ -154,8 +155,7 @@
               //t.treegrid('reload');
             }else{
               result = false;
-              alert("只有服务定义状态和修订状态能进行修改");
-              t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+              alert("保存失败！");
               return false;
             }
           }
@@ -179,7 +179,7 @@
       }
       if(result){
         alert("保存成功");
-        t.treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+        t.treegrid({url:'/serviceHeadSda/sdaTree?serviceHeadId=${param.serviceHeadId}&t='+ new Date().getTime()});
       }
     }
 
@@ -202,7 +202,7 @@
           data: {"sdaId": node.id},
           success: function(data){
             if(data){
-              $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+              $('#tg').treegrid({url : '/serviceHeadSda/sdaTree?serviceHeadId=${param.serviceHeadId}&t='+ new Date().getTime()});
             }
           }
         });
@@ -227,7 +227,7 @@
           data: {"sdaId": node.id},
           success: function(data){
             if(data){
-              $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+              $('#tg').treegrid({url:'/serviceHeadSda/sdaTree?serviceHeadId=${param.serviceHeadId}&t='+ new Date().getTime()});
 
             }
           }
@@ -247,18 +247,6 @@
         message: '新建节点名称不能为“root、request、response”'
       }
     });
-    //选择元数据自动更新其他数据
-    function comboboxSelect(record){
-      var node = $('#tg').treegrid('getSelected');
-      $('#tg').treegrid('endEdit', node.id);
-      var node2 = $('#tg').treegrid('getSelected');
-      node2.text =  record.metadataId;
-      node2.append1 = record.chineseName;
-      node2.append2 = record.formula;
-      node2.append3 = node.append3+"/"+record.metadataId;
-      node2.append4 = record.metadataId;
-      $('#tg').treegrid('refreshRow',node2.id);
-    }
     //弹出元数据选择界面
     function appendByMetadata(){
       var node = $('#tg').treegrid('getSelected');
@@ -276,28 +264,13 @@
         modal: true
       });
     }
-    function getMetadataJson(){
-      if(!metadataJson){
-        $.ajax({
-          type: "get",
-          async: false,
-          contentType: "application/json; charset=utf-8",
-          url: "/metadata/getAll",
-          dataType: "json",
-          success: function(data){
-            metadataJson = data;
-          }
-        });
-      }
-      return metadataJson;
-    }
   </script>
 </head>
 <body >
 <div id="mm" class="easyui-menu" style="width:120px;">
   <shiro:hasPermission name="sda-add">
-    <div onclick="append()" data-options="iconCls:'icon-add'">新增</div>
-    <div onclick="appendByMetadata()" data-options="iconCls:'icon-add'">根据元数据新增</div>
+    <%--<div onclick="append()" data-options="iconCls:'icon-add'">新增</div>--%>
+    <div onclick="appendByMetadata()" data-options="iconCls:'icon-add'">新增</div>
   </shiro:hasPermission>
   <shiro:hasPermission name="sda-update">
     <div onclick="editIt()" data-options="iconCls:'icon-edit'">编辑</div>
@@ -307,19 +280,17 @@
   </shiro:hasPermission>
 </div>
 <fieldset>
-  <legend>条件搜索</legend>
+  <legend>服务报文头信息</legend>
   <table border="0" cellspacing="0" cellpadding="0">
     <tr style="width:100%;">
-      <th><nobr>服务代码</nobr></th>
-      <td><input class="easyui-textbox" disabled type="text" name="serviceId" value="${service.serviceId }" style="width:100px"></td>
-      <th><nobr>服务名称</nobr></th>
-      <td><input class="easyui-textbox" disabled type="text" name="serviceName" value="${service.serviceName }"  style="width:250px"></td>
-      <th><nobr>场景号</nobr></th>
-      <td> <input class="easyui-textbox"disabled  type="text" name="operationId" value="${operation.operationId }"   style="width:50px"></td>
-      <th><nobr>场景名称</nobr></th>
-      <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.operationName }"  style="width:250px"></td>
-      <th><nobr>版本</nobr></th>
-      <td><input class="easyui-textbox" disabled type="text" name="operationName" value="${operation.version.code }"  style="width:50px"></td>
+      <th><nobr>报文头名称</nobr></th>
+      <td><input class="easyui-textbox" disabled type="text" name="headName" value="${entity.headName }" style="width:150px"></td>
+      <th><nobr>类型</nobr></th>
+      <td><input class="easyui-textbox" disabled type="text" name="type" value="${entity.type }"  style="width:50px"></td>
+      <th><nobr>描述</nobr></th>
+      <td> <input class="easyui-textbox"disabled  type="text" name="headDesc" value="${entity.headDesc }"   style="width:150px"></td>
+      <th><nobr>备注</nobr></th>
+      <td><input class="easyui-textbox" disabled type="text" name="headRemark" value="${entity.headRemark }"  style="width:150px"></td>
     </tr>
 
   </table>
@@ -334,7 +305,7 @@
 				animate: true,
 				collapsible: true,
 				fitColumns: true,
-				url: '/serviceHeadSda/sdaTree?serviceHeadId=${param.headId}&t='+ new Date().getTime(),
+				url: '/serviceHeadSda/sdaTree?serviceHeadId=${param.serviceHeadId}&t='+ new Date().getTime(),
 				method: 'get',
 				idField: 'id',
 				treeField: 'text',
@@ -343,16 +314,16 @@
           >
     <thead>
     <tr>
-      <th data-options="field:'text',width:140" editor="{type:'textbox',options:{editable:false, validType:['englishB']}}">字段名</th>
-      <th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox', options:{editable:false}}">字段别名</th>
-      <th data-options="field:'append2',width:50" editor="{type:'textbox', options:{editable:false}}">类型/长度</th>
-      <th data-options="field:'append3',width:60,editor:'text', hidden:true">xpath</th>
-      <th field="append4" width="80" editor="{type:'combobox', options:{required:true, method:'get', data: getMetadataJson(), valueField:'metadataId',textField:'metadataId'}}">元数据</th>
+      <th data-options="field:'text',width:140" >字段名</th>
+      <th data-options="field:'append1',width:60,align:'left'">字段别名</th>
+      <th data-options="field:'append2',width:50">类型</th>
+      <th field="append4" width="80" editor="{type:'combobox', options:{required:true}}">元数据</th>
       <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
       <!--
          <th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
-         -->
+
       <th field ="append7" width="80" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data2.json',valueField:'id',textField:'text'}}">约束条件</th>
+      -->
       <th data-options="field:'append6',width:80,editor:'text'">备注</th>
     </tr>
     </thead>
@@ -368,9 +339,6 @@
             <a href="javascript:void(0)" onclick="addNode()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>&nbsp;&nbsp;
             -->
             <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
-          </shiro:hasPermission>
-          <shiro:hasPermission name="sda-get">
-            <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton" iconCls="icon-save" plain="true">版本对比</a>
           </shiro:hasPermission>
         </td>
         <td align="right"></td>

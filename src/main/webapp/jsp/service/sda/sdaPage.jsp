@@ -26,7 +26,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 var editingId;
 var newIds = [];
 var delIds = [];
-var metadataJson;
 		function onContextMenu(e,row){
 			e.preventDefault();
 			$(this).treegrid('select', row.id);
@@ -69,10 +68,13 @@ var metadataJson;
 					$('#tg').treegrid('beginEdit', editingId);
 					var ed = $('#tg').treegrid('getEditor',
 							{id:editingId,field:'append4'});
-
-					$(ed.target).combobox({"onSelect":function(record) {
-						comboboxSelect(record);
-					}});
+					$(ed.target).combobox({
+						onShowPanel:function(){
+							$('#tg').treegrid('select',row.id);
+							showMetadata('edit');
+							$(ed.target).combobox('hidePanel');
+						}
+					});
 					$(ed.target).combobox('setValue', row.append4);
 //					$("#cancelbtn"+editingId).show();
 //					$("#okbtn"+editingId).show();
@@ -96,22 +98,16 @@ var metadataJson;
 			});
 			editingId = uuid;
 			newIds.push(uuid);
-			$('#tg').treegrid('reloadFooter');
-//			$('#tg').treegrid('beginEdit', uuid);
-			$('#tg').treegrid('select',uuid);
-			var tempNode = $('#tg').treegrid('getSelected');
-//			tempNode = node;
 			$('#tg').treegrid('beginEdit', uuid);
-//			tempNode.text =  "cs";
-//			$('#tg').treegrid('endEdit', uuid);
-//			$('#tg').treegrid('reload',{id:uuid, text:'mikel'});
-//			{'name':'mikel'})
 			var ed = $('#tg').treegrid('getEditor',
 					{id:uuid,field:'append4'});
-			$(ed.target).combobox({"onSelect":function(record) {
-				$('#tg').treegrid('select',uuid);
-				comboboxSelect(record);
-			}});
+			$(ed.target).combobox({
+				onShowPanel:function(){
+					$('#tg').treegrid('select',uuid);
+					showMetadata('add');
+					$(ed.target).combobox('hidePanel');
+				}
+			});
 		}
 		function saveSDA(){
 			if (!confirm("确定保存吗？")) {
@@ -313,19 +309,7 @@ var metadataJson;
                             message: '新建节点名称不能为“root、request、response”'
                         }
                     });
-	//选择元数据自动更新其他数据
-	function comboboxSelect(record){
-		var node = $('#tg').treegrid('getSelected');
-		$('#tg').treegrid('endEdit', node.id);
-		var node2 = $('#tg').treegrid('getSelected');
-		node2.text =  record.metadataId;
-		node2.append1 = record.chineseName;
-		node2.append2 = record.formula;
-		node2.append3 = node.append3+"/"+record.metadataId;
-		node2.append4 = record.metadataId;
-		$('#tg').treegrid('refreshRow',node2.id);
-	}
-	//弹出元数据选择界面
+	//弹出元数据选择界面(根据元数据新增操作)
 	function appendByMetadata(){
 		var node = $('#tg').treegrid('getSelected');
 		if(node.text == "root" && node.parentId == null){
@@ -342,28 +326,25 @@ var metadataJson;
 			modal: true
 		});
 	}
-	function getMetadataJson(){
-		if(!metadataJson){
-			$.ajax({
-				type: "get",
-				async: false,
-				contentType: "application/json; charset=utf-8",
-				url: "/metadata/getAll",
-				dataType: "json",
-				success: function(data){
-					metadataJson = data;
-				}
-			});
-		}
-		return metadataJson;
+	//弹出元数据选择界面（新增、编辑操作）
+	function showMetadata(optType){
+		var urlPath ="/jsp/metadata/metadata_choose2.jsp?optType=" +optType;
+		$('#dlg').dialog({
+			title: '元数据',
+			width: 770,
+			left:100,
+			closed: false,
+			href: urlPath,
+			modal: true
+		});
 	}
 </script>
 </head>
 <body >
 <div id="mm" class="easyui-menu" style="width:120px;">
 	<shiro:hasPermission name="sda-add">
-		<div onclick="append()" data-options="iconCls:'icon-add'">新增</div>
-		<div onclick="appendByMetadata()" data-options="iconCls:'icon-add'">根据元数据新增</div>
+		<%--<div onclick="append()" data-options="iconCls:'icon-add'">新增</div>--%>
+		<div onclick="appendByMetadata()" data-options="iconCls:'icon-add'">新增</div>
 	</shiro:hasPermission>
 	<shiro:hasPermission name="sda-update">
 		<div onclick="editIt()" data-options="iconCls:'icon-edit'">编辑</div>
@@ -409,16 +390,17 @@ var metadataJson;
                 >
 		<thead>
 			<tr>
-				<th data-options="field:'text',width:140" editor="{type:'textbox',options:{editable:false, validType:['englishB']}}">字段名</th>
-				<th data-options="field:'append1',width:60,align:'left'" editor="{type:'textbox', options:{editable:false}}">字段别名</th>
-				<th data-options="field:'append2',width:50" editor="{type:'textbox', options:{editable:false}}">类型/长度</th>
-				<th data-options="field:'append3',width:60,editor:'text', hidden:true">xpath</th>
-				<th field="append4" width="80" editor="{type:'combobox', options:{required:true, method:'get', data: getMetadataJson(), valueField:'metadataId',textField:'metadataId'}}">元数据</th>
+				<th data-options="field:'text',width:140" >字段名</th>
+				<th data-options="field:'append1',width:60,align:'left'" >字段别名</th>
+				<th data-options="field:'append2',width:50" >类型/长度</th>
+				<th data-options="field:'append3',width:60, hidden:true">xpath</th>
+				<%--<th field="append4" width="80" editor="{type:'combobox', options:{required:true, method:'get', data: getMetadataJson(), valueField:'metadataId',textField:'metadataId'}}">元数据</th>--%>
+				<th field="append4" width="80" editor="{type:'combobox', options:{required:true}}">元数据</th>
                 <th field ="append5" width="40" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">是否必输</th>
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
                	-->
-				<th field ="append7" width="80" editor="{type:'combobox',options:{url:'/jsp/service/sda/combobox_data2.json',valueField:'id',textField:'text'}}">约束条件</th>
+				<th field ="append7" width="80" editor="{type:'combobox',options:{url:'/serviceHead/queryByHeadIds?headIds=${operation.headId}', method:'get', valueField:'headId',textField:'headName'}}">约束条件</th>
                	<th data-options="field:'append6',width:80,editor:'text'">备注</th>
 			</tr>
 		</thead>

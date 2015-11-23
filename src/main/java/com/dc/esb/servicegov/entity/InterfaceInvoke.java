@@ -31,7 +31,12 @@ public class InterfaceInvoke {
     @JoinColumn(name="CONSUMER_INVOKE_ID", insertable = false, updatable = false)
     private ServiceInvoke consumer;
 
+    public InterfaceInvoke(){}
 
+    public InterfaceInvoke(String providerInvokeId, String consumerInvokeId){
+        this.providerInvokeId = providerInvokeId;
+        this.consumerInvokeId = consumerInvokeId;
+    }
     public String getId() {
         return id;
     }

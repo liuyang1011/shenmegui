@@ -14,8 +14,11 @@ var ff = {
     isStandardText: function (value, row, index) {
         if ("0" == value) {
             return "是";
-        } else {
+        }
+        else if("1" == value){
             return "否";
+        }else{
+            return "未知";
         }
     },
     typeText: function (value, row, index) {

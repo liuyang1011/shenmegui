@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.entity.Interface;
 import com.dc.esb.servicegov.entity.SDA;
 import com.dc.esb.servicegov.service.IdaService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.drools.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -532,5 +533,85 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		}
 
 		return false;
+	}
+
+	public Map<String, Ida> genderHeadIdaAuto(String headId){
+		Map<String, Ida> result = new HashMap<String, Ida>();
+		Ida rootIda = new Ida();
+		rootIda.setHeadId(headId);
+		rootIda.set_parentId(null);
+		rootIda.setStructName(Constants.ElementAttributes.ROOT_NAME);
+		rootIda.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
+		rootIda.setXpath(Constants.ElementAttributes.ROOT_XPATH);
+		rootIda.setState(Constants.IDA_STATE_COMMON);
+		idaDAOImpl.save(rootIda);
+		result.put(Constants.ElementAttributes.ROOT_NAME, rootIda);
+
+		Ida reqIda = new Ida();
+		reqIda.setHeadId(headId);
+		reqIda.set_parentId(rootIda.getId());
+		reqIda.setStructName(Constants.ElementAttributes.REQUEST_NAME);
+		reqIda.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
+		reqIda.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
+		reqIda.setSeq(0);
+		reqIda.setState(Constants.IDA_STATE_COMMON);
+		idaDAOImpl.save(reqIda);
+		result.put(Constants.ElementAttributes.REQUEST_NAME, reqIda);
+
+		Ida resIda = new Ida();
+		resIda.setHeadId(headId);
+		resIda.set_parentId(rootIda.getId());
+		resIda.setSeq(1);
+		resIda.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
+		resIda.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
+		resIda.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
+		resIda.setState(Constants.IDA_STATE_COMMON);
+		idaDAOImpl.save(resIda);
+		result.put(Constants.ElementAttributes.RESPONSE_NAME, resIda);
+		return result;
+	}
+	public Map<String, Ida> genderInterIdaAuto(String interfaceId){
+		Map<String, Ida> result = new HashMap<String, Ida>();
+		Ida rootIda = new Ida();
+		rootIda.setInterfaceId(interfaceId);
+		rootIda.set_parentId(null);
+		rootIda.setStructName(Constants.ElementAttributes.ROOT_NAME);
+		rootIda.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
+		rootIda.setXpath(Constants.ElementAttributes.ROOT_XPATH);
+		rootIda.setState(Constants.IDA_STATE_COMMON);
+		idaDAOImpl.save(rootIda);
+		result.put(Constants.ElementAttributes.ROOT_NAME, rootIda);
+
+		Ida reqIda = new Ida();
+		reqIda.setInterfaceId(interfaceId);
+		reqIda.set_parentId(rootIda.getId());
+		reqIda.setStructName(Constants.ElementAttributes.REQUEST_NAME);
+		reqIda.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
+		reqIda.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
+		reqIda.setSeq(0);
+		reqIda.setState(Constants.IDA_STATE_COMMON);
+		idaDAOImpl.save(reqIda);
+		result.put(Constants.ElementAttributes.REQUEST_NAME, reqIda);
+
+		Ida resIda = new Ida();
+		resIda.setInterfaceId(interfaceId);
+		resIda.set_parentId(rootIda.getId());
+		resIda.setSeq(1);
+		resIda.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
+		resIda.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
+		resIda.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
+		resIda.setState(Constants.IDA_STATE_COMMON);
+		idaDAOImpl.save(resIda);
+		result.put(Constants.ElementAttributes.RESPONSE_NAME, resIda);
+		return result;
+	}
+	public void deleteByInterfaceId(String interfaceId){
+		String hql = " delete from Ida where interfaceId = ?";
+		idaDAOImpl.exeHql(hql, interfaceId);
+	}
+
+	public void deleteByHeadId(String headId){
+		String hql = " delete from Ida where headId = ?";
+		idaDAOImpl.exeHql(hql, headId);
 	}
 }

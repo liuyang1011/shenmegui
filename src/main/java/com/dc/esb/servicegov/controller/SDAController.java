@@ -97,9 +97,9 @@ public class SDAController {
 	}
 	@RequiresPermissions({"sda-update"})
 	//保存对象数组
-	@RequestMapping(method = RequestMethod.POST, value = "/saveHeadSDA", headers = "Accept=application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/commonSaveSDA", headers = "Accept=application/json")
 	@ResponseBody
-	public boolean saveHeadSDA(@RequestBody SDA[] sdas){
+	public boolean commonSaveSDA(@RequestBody SDA[] sdas){
 		OperationLog operationLog = systemLogService.record("SDA", "报文头SDA批量保存", "数量：" + sdas.length);
 
 		String logParam = serviceImpl.saveHeadSDA(sdas);

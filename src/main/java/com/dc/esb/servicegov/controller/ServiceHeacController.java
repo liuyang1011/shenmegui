@@ -48,6 +48,27 @@ public class ServiceHeacController {
         result.put("rows", rows);
         return result;
     }
+    @RequiresPermissions({"serviceHead-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/queryAll", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<ServiceHead> queryAll(String type){
+        List<ServiceHead> result = serviceHeadService.getAll();
+        return result;
+    }
+
+    /**
+     * @param headIds id组成的字符串，中间用逗号‘，’隔开
+     * @return
+     */
+    @RequiresPermissions({"serviceHead-get"})
+    @RequestMapping(method = RequestMethod.GET, value = "/queryByHeadIds", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<ServiceHead> queryByHeadIds(String headIds){
+        List<ServiceHead> result = serviceHeadService.getByIdStr(headIds);
+        return result;
+    }
 
     @RequiresPermissions({"serviceHead-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/uniqueValid", headers = "Accept=application/json")

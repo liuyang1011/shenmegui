@@ -79,7 +79,7 @@ public class OperationController {
      *
      * @return
      */
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -98,7 +98,7 @@ public class OperationController {
      * @param serviceId
      * @return
      */
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/getOperationByServiceId/{serviceId}")
     @ResponseBody
     public Map<String, Object> getOperationByServiceId(@PathVariable(value = "serviceId") String serviceId) {
@@ -109,7 +109,7 @@ public class OperationController {
         result.put("rows", rows);
         return result;
     }
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/getByServiceId")
     @ResponseBody
     public List<Operation> getByServiceId(String serviceId) {
@@ -129,7 +129,7 @@ public class OperationController {
      * @param serviceId
      * @return
      */
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/getAudits/{serviceId}")
     @ResponseBody
     public Map<String, Object> getAudits(
@@ -148,7 +148,7 @@ public class OperationController {
      * @param serviceId
      * @return TODO 建议不要通过Controller控制页面跳转
      */
-    @RequiresPermissions({"service-add"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping("/addPage/{serviceId}")
     public ModelAndView addPage(HttpServletRequest req, @PathVariable(value = "serviceId") String serviceId) {
         ModelAndView mv = new ModelAndView("service/operation/add");
@@ -168,7 +168,7 @@ public class OperationController {
      * @param serviceId
      * @return
      */
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.GET, value = "/uniqueValid", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -199,7 +199,7 @@ public class OperationController {
             return true;
         }
     }
-    @RequiresPermissions({"service-add"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/addInvokeMapping", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -207,7 +207,7 @@ public class OperationController {
 
         return operationServiceImpl.addInvokeMapping(serviceInvokes);
     }
-    @RequiresPermissions({"service-add"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -243,7 +243,7 @@ public class OperationController {
         }
         return result;
     }
-    @RequiresPermissions({"service-add"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping2", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -269,7 +269,7 @@ public class OperationController {
      * @param providerStr
      * @return
      */
-    @RequiresPermissions({"service-add"})
+    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.POST, value = "/afterAdd", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -312,7 +312,7 @@ public class OperationController {
      * @param serviceId
      * @return
      */
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"operation-update"})
     @RequestMapping("/editPage")
     public ModelAndView editPage(HttpServletRequest req, String operationId, String serviceId) {
         ModelAndView mv = new ModelAndView("service/operation/edit");
@@ -372,7 +372,7 @@ public class OperationController {
         return true;
     }
 
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/getServiseById/{value}", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -414,7 +414,7 @@ public class OperationController {
         return result;
     }
 
-    @RequiresPermissions({"service-update"})
+    @RequiresPermissions({"operation-update"})
     @RequestMapping("/auditPage")
     public ModelAndView auditPage(HttpServletRequest req, String serviceId) {
         ModelAndView mv = new ModelAndView("service/operation/audit");
@@ -472,7 +472,7 @@ public class OperationController {
 
 
     // 根据系统id查询该系统过是有接口
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/judgeInterface", headers = "Accept=application/json")
     @ResponseBody
     public boolean judgeInterface(String systemId,String type) {
@@ -480,7 +480,7 @@ public class OperationController {
         return result;
     }
 
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/interfacePage")
     public ModelAndView interfacePage(String operationId, String serviceId, HttpServletRequest req) {
         ModelAndView mv = new ModelAndView("service/operation/interfacePage");
@@ -518,7 +518,7 @@ public class OperationController {
      * @param metadataId
      * @return
      */
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/getByMetadataId/{metadataId}")
     @ResponseBody
     public List<TreeNode> getByMetadataId(@PathVariable(value = "metadataId") String metadataId){
@@ -671,7 +671,7 @@ public class OperationController {
      * @param interfaceId
      * @return
      */
-    @RequiresPermissions({"service-get"})
+    @RequiresPermissions({"operation-get"})
     @RequestMapping("/getByInterfaceId/{interfaceId}")
     @ResponseBody
     public List<TreeNode> getByInterfaceId(@PathVariable(value = "interfaceId") String interfaceId){

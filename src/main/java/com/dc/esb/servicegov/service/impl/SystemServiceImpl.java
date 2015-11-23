@@ -81,5 +81,9 @@ public class SystemServiceImpl extends AbstractBaseService<System, String> imple
 		}
 		return false;
 	}
-
+	public System findUniqueByName(String name){
+		String hql = " from System where systemId = ? or systemAb = ? or systemChineseName = ?";
+		System system = systemDAOImpl.findUnique(hql, name, name, name);
+		return system;
+	}
 }

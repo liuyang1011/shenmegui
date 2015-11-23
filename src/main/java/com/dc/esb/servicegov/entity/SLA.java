@@ -53,7 +53,14 @@ public class SLA implements Serializable {
 				((null == this.operationId) ? (null == another.getOperationId()) : (this.operationId.equals(another.getOperationId()))) &&
 				((null == this.slaName) ? (null == another.getSlaName()) : (this.slaName.equals(another.getSlaName())));
 	}*/
-	
+	public SLA(){}
+
+	public SLA(SLA temSLA){
+		this.slaName = temSLA.getSlaName();
+		this.slaValue = temSLA.getSlaValue();
+		this.slaDesc = temSLA.getSlaDesc();
+		this.slaRemark = temSLA.getSlaRemark();
+	}
 	
 	public String getSlaId() {
 		return slaId;

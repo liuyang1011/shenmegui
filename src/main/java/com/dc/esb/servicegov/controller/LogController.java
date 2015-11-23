@@ -62,6 +62,15 @@ public class LogController {
         return true;
     }
 
+    @RequiresPermissions({"importlog-delete"})
+    @RequestMapping(method = RequestMethod.POST,value = "/deleteAll", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean deleteAll(){
+        logInfoService.deleteAll();
+        return true;
+    }
+
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
 //        ModelAndView mv = new ModelAndView("403");

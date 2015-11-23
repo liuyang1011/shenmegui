@@ -128,7 +128,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             entity.setVersionId(versionId);
             entity.setDeleted(Constants.DELTED_FALSE);
             operationDAOImpl.save(entity);
-            sdaService.genderSDAAuto(entity);
+            sdaService.genderSDAAuto(entity.getServiceId(), entity.getOperationId());//自动生成sda节点
+
+
         } catch (Exception e) {
             log.error(e,e);
             return false;
@@ -141,6 +143,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
 
             operationDAOImpl.save(entity);
+            versionServiceImpl.editVersion(entity.getVersionId());
             //清空
         } catch (Exception e) {
             log.error(e,e);

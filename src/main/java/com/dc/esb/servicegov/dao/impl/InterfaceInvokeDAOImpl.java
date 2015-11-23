@@ -44,4 +44,12 @@ public class InterfaceInvokeDAOImpl extends HibernateDAO<InterfaceInvoke, String
         List<InterfaceInvoke> list = this.find(hql, serviceId, operationId);
         return list;
     }
+
+    public InterfaceInvoke getByProIdConId(String providerId, String consumerId){
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("providerInvokeId", providerId);
+        params.put("consumerInvokeId", consumerId);
+        InterfaceInvoke interfaceInvoke = this.findUniqureBy(params);
+        return interfaceInvoke;
+    }
 }

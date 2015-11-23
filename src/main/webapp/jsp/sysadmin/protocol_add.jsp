@@ -77,7 +77,16 @@
 				生成类
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" disabled="disabled" id="generatorIdText" value="com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator">
+				<%--<input class="easyui-textbox" type="text" id="generatorIdText">--%>
+				<select class="easyui-combobox" id="generator" style="width:173px" panelHeight="auto"
+						data-options="
+						url:'/generator/getAll',
+						method:'get',
+						mode:'remote',
+						valueField:'id',
+						textField:'name'
+						">
+				</select>
 			</td>
 		</tr>
 
@@ -95,7 +104,6 @@
 </form>
 
 <script type="text/javascript">
-
 	function save(){
 
         var protocolName = $("#protocolNameText").val();
@@ -107,7 +115,7 @@
 
 //		var succCode = $("#succCodeText").val();
 		var templateContent = $("#templateContent").val();
-		var generatorId = $("#generatorIdText").val();
+		var generatorId = $("#generator").combobox('getValue');
 		var data = {};
 
 		data.protocolName = protocolName;
