@@ -162,4 +162,16 @@ public class ServiceInvoke {
 		};
 		return names;
 	}
+	public ServiceInvoke(){}
+	public ServiceInvoke(String systemId, String isStandard, String serviceId, String operationId, String interfaceId, String type, String desc, String remark, String protocolId) {
+		this.systemId = systemId;
+		this.isStandard = isStandard;
+		this.serviceId = serviceId;
+		this.operationId = operationId;
+		this.interfaceId = interfaceId;
+		this.type = type;
+		this.desc = desc;
+		this.remark = remark;
+		this.protocolId = protocolId;
+	}
 }

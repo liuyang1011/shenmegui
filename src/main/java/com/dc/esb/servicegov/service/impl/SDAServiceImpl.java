@@ -41,7 +41,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     private MetadataServiceImpl metadataService;
     @Autowired
     private VersionServiceImpl versionService;
-    public List<SDA> genderSDAAuto(Operation operation){
+    public List<SDA> genderSDAAuto(String serviceId, String operationId){
         List<SDA> result = new ArrayList<SDA>();
         SDA sdaRoot = new SDA();
         sdaRoot.setSdaId(UUID.randomUUID().toString());
@@ -49,8 +49,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRoot.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
         sdaRoot.setXpath(Constants.ElementAttributes.ROOT_XPATH);
         sdaRoot.setSeq(0);
-        sdaRoot.setServiceId(operation.getServiceId());
-        sdaRoot.setOperationId(operation.getOperationId());
+        sdaRoot.setServiceId(serviceId);
+        sdaRoot.setOperationId(operationId);
 
         sdaDAO.save(sdaRoot);
         result.add(sdaRoot);
@@ -61,8 +61,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaReq.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
         sdaReq.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
         sdaReq.setSeq(1);
-        sdaReq.setServiceId(operation.getServiceId());
-        sdaReq.setOperationId(operation.getOperationId());
+        sdaReq.setServiceId(serviceId);
+        sdaReq.setOperationId(operationId);
         sdaReq.setParentId(sdaRoot.getSdaId());
 
         sdaDAO.save(sdaReq);
@@ -74,8 +74,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRes.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
         sdaRes.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
         sdaRes.setSeq(2);
-        sdaRes.setServiceId(operation.getServiceId());
-        sdaRes.setOperationId(operation.getOperationId());
+        sdaRes.setServiceId(serviceId);
+        sdaRes.setOperationId(operationId);
         sdaRes.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaRes);
         result.add(sdaRes);
@@ -91,7 +91,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRoot.setHeadId(headId);
         sdaRoot.setSeq(0);
         sdaDAO.save(sdaRoot);
-        result.put("root", sdaRoot);
+        result.put(Constants.ElementAttributes.ROOT_NAME, sdaRoot);
 
         SDA sdaReq = new SDA();
         sdaReq.setSdaId(UUID.randomUUID().toString());
@@ -102,7 +102,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaReq.setSeq(1);
         sdaReq.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaReq);
-        result.put("request", sdaReq);
+        result.put(Constants.ElementAttributes.REQUEST_NAME, sdaReq);
 
         SDA sdaRes = new SDA();
         sdaRes.setSdaId(UUID.randomUUID().toString());
@@ -113,7 +113,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaRes.setSeq(2);
         sdaRes.setParentId(sdaRoot.getSdaId());
         sdaDAO.save(sdaRes);
-        result.put("response", sdaRes);
+        result.put(Constants.ElementAttributes.RESPONSE_NAME, sdaRes);
         return result;
     }
     public ModelAndView sdaPage(String operationId, String serviceId,
@@ -166,6 +166,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         fields.put("append5", "required");
         fields.put("append6", "remark");
         fields.put("append7", "constraint");
+        fields.put("append8", "serviceId");
+        fields.put("append9", "operationId");
         fields.put("attributes", "seq");
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
@@ -541,7 +543,9 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
      */
     public boolean moveUp(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
-        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+        if(sda.getServiceId() != null && sda.getOperationId() != null){
+            operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+        }
         String hql = " from SDA where parentId = ? order by seq asc";
         List<SDA> list = sdaDAO.find(hql, sda.getParentId());//查询兄弟节点
         int position = list.indexOf(sda);
@@ -570,7 +574,9 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public boolean moveDown(String sdaId) {
         SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
-        operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+        if(sda.getServiceId() != null && sda.getOperationId() != null){
+            operationService.editReleate(sda.getServiceId(), sda.getOperationId());
+        }
         String hql = " from SDA where parentId = ? order by seq asc";
         List<SDA> list = sdaDAO.find(hql, sda.getParentId());//查询兄弟节点
         int position = list.indexOf(sda);
@@ -623,6 +629,17 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         List<SDA> list = sdaDAO.findBy(map);
         sdaDAO.delete(list);
         operationService.editReleate(serviceId, OperationId);
+        return true;
+    }
+    public boolean deleteByOS(String serviceId, String operationId){//不做版本更新
+       String hql = " delete from SDA where serviceId = ? and operationId = ?";
+        sdaDAO.exeHql(hql, serviceId, operationId);
+        return true;
+    }
+
+    public boolean deleteByHeadId(String headId){
+        String hql = " delete from SDA where headId = ?";
+        sdaDAO.exeHql(hql, headId);
         return true;
     }
 

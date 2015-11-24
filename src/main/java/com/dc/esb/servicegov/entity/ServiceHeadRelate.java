@@ -1,12 +1,9 @@
 package com.dc.esb.servicegov.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * Created by Administrator on 2015/11/12.
+ * 服务场景与服务头的关系表，服务头与场景是一对多的关系
  */
 @Entity
 @Table(name = "SERVICE_HEAD_RELATE")
@@ -20,6 +17,10 @@ public class ServiceHeadRelate {
     private String serviceId;
     @Column(name = "operation_id")
     private String operationId;
+
+    @ManyToOne()
+    @JoinColumn(name = "service_head_id", insertable = false, updatable = false)
+    private ServiceHead serviceHead;
 
     public String getId() {
         return id;
@@ -51,5 +52,13 @@ public class ServiceHeadRelate {
 
     public void setOperationId(String operationId) {
         this.operationId = operationId;
+    }
+
+    public ServiceHead getServiceHead() {
+        return serviceHead;
+    }
+
+    public void setServiceHead(ServiceHead serviceHead) {
+        this.serviceHead = serviceHead;
     }
 }

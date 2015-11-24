@@ -428,6 +428,17 @@
                 $('#tg').treegrid('unselect', row.id);
             }
         }
+        function onDblClickRow(row){
+            if (row.structName != 'root' && row.structName != 'request' && row.structName != 'response') {
+                var texts = '<div style="word-wrap:break-word" >'+row.remark+'</div>';
+                $.messager.show({
+                    title:'备注',
+                    msg:texts,
+                    showType:'show',
+                    height:'auto'
+                });
+            }
+        }
         var formatter = {
             interfaceState: function (value, row, index) {
                 if (value == 0) {
@@ -582,7 +593,8 @@
                 toolbar:toolbar,
                 onContextMenu:onContextMenu,
                 singleSelect:true,
-                onClickRow:onClickRow
+                onClickRow:onClickRow,
+                onDblClickRow:onDblClickRow
                
 			">
     <thead>

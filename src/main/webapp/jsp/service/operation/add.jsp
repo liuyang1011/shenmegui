@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="utf-8" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
@@ -77,7 +78,8 @@
                     href: '/jsp/service/operation/consumer_provider_add.jsp',
                     modal: true
                 });
-            }},{
+            }},
+            {
             text: '清空',
             iconCls: 'icon-remove',
             handler: function () {
@@ -217,6 +219,28 @@
                     <ul id="tags"></ul>
                 </td>
             </tr>
+
+            <tr>
+                <th>服务头:</th>
+                <td >
+                    <input
+                            name = "headId"
+                            class="easyui-combobox"
+                            value="sys_head,app_head"
+                            data-options="
+                       panelHeight:'200px',
+                       multiple:true,
+						url:'/serviceHead/queryAll',
+				 		 method:'get',
+				 		 valueField: 'headId',
+				 		 textField: 'headName'
+					"/>
+                </td>
+                <th></th>
+                <td >
+                </td>
+            </tr>
+
         </table>
 
 

@@ -84,6 +84,25 @@
 
 		}
 	});
+	slaTemplatetoolbar.push({
+		text : ' 关联所有场景',
+		iconCls : 'icon-save',
+		handler : function() {
+			var info = $('#slaTemplateTable').edatagrid('getSelected');
+			if(info==""||info==null){
+				alert("请选择一条信息！");
+				return false;
+			}
+			if(info.slaTemplateId) {
+				slaTemplateManager.relateAll(info.slaTemplateId, function (result) {
+					if (result) {
+						alert("关联成功!")
+						$('#sla').edatagrid("reload");
+					}
+				});
+			}
+		}
+	});
 	</shiro:hasPermission>
 	<shiro:hasPermission name="sla-update">
 	slaTemplatetoolbar.push({

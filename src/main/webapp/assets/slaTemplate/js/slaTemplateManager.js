@@ -36,5 +36,18 @@ var slaTemplateManager = {
 				callBack(result);
 			}
 		});
+	},
+	"relateAll" : function(slaTemplateId, callBack) {
+		alert(0)
+		var url="/slaTemplate/relateAll/"+slaTemplateId;
+		$.ajax({
+			"type" : "POST",
+			"contentType" : "application/json; charset=utf-8",
+			"url" : url,
+			"dataType" : "json",
+			"success" : function(result) {
+				callBack(result);
+			}
+		});
 	}
 };

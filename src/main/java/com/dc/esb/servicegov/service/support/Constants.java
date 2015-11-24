@@ -1,9 +1,13 @@
 package com.dc.esb.servicegov.service.support;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Created by vincentfxz on 15/7/12.
  */
 public class Constants {
+
+
     public static final String STATE_PASS = "1";
     public static final String STATE_UNPASS = "2";
 
@@ -12,13 +16,36 @@ public class Constants {
 
     public static final String INTERFACE_STATUS_TC = "0";//0投产  1废弃
     public static final String INTERFACE_STATUS_FQ = "1";
+    public static String getInterfaceStatus(String stateName){
+        if(StringUtils.isNotEmpty(stateName)){
+            if("废弃".equalsIgnoreCase(stateName)){
+                return INTERFACE_STATUS_FQ;
+            }else{
+                return INTERFACE_STATUS_TC;
+            }
+        }else{
+            return INTERFACE_STATUS_TC;
+        }
+    }
 
 
     public static final String INVOKE_TYPE_CONSUMER = "1";//接口映射类型，1：消费者，0：提供者
     public static final String INVOKE_TYPE_PROVIDER = "0";
-    public static final String INVOKE_TYPE_STANDARD_Y = "0";//是否标准接口，1：否，0：是
-    public static final String INVOKE_TYPE_STANDARD_N = "1";
+    public static String getInvokeType(String name){
+        if(StringUtils.isNotEmpty(name)){
+            if("consumer".equalsIgnoreCase(name)){
+                return INVOKE_TYPE_CONSUMER;
+            }else{
+                return INVOKE_TYPE_PROVIDER;
+            }
+        }else{
+            return INVOKE_TYPE_PROVIDER;
+        }
+    }
 
+    public static final String INVOKE_TYPE_STANDARD_Y = "0";//是否标准接口，1：否，0：是,99：未知
+    public static final String INVOKE_TYPE_STANDARD_N = "1";
+    public static final String INVOKE_TYPE_STANDARD_U = "99";
 
     public static final String IDA_STATE_COMMON = "0";//0:普通，1：导出使用
     public static final String IDA_STATE_DISABLE = "1";
@@ -47,12 +74,13 @@ public class Constants {
     public static final String EXCEL_TEMPLATE_DATA_DICTIONARY= Constants.class.getResource("/").getPath() + "/template/excel_data_dictionary_template.xls";
 
     public static class Operation {
-        public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线 6待审核 7修订 8下线
+        public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线 6待审核 7修订 8下线 9废弃
         public static final String OPT_STATE_PASS = "1";
         public static final String OPT_STATE_UNPASS = "2";
         public static final String OPT_STATE_REQUIRE_UNAUDIT = "6";
         public static final String OPT_STATE_REVISE = "7";
         public static final String OPT_STATE_QUIT = "8";
+        public static final String OPT_STATE_ABANDONED = "9";
 
         public static final String LIFE_CYCLE_STATE_PUBLISHED = "3";
         public static final String LIFE_CYCLE_STATE_ONLINE = "4";
@@ -80,7 +108,34 @@ public class Constants {
             if(LIFE_CYCLE_STATE_DISCHARGE.equals(state)){
                 return "已下线";
             }
+            if(OPT_STATE_ABANDONED.equals(state)){
+                return "废弃";
+            }
             return "";
+        }
+        public static String getState(String stateName){
+            if("服务定义".equals(stateName)){
+                return OPT_STATE_UNAUDIT;
+            }
+            if("待审核".equals(stateName)){
+                return OPT_STATE_REQUIRE_UNAUDIT;
+            }
+            if("审核通过".equals(stateName)){
+                return OPT_STATE_PASS;
+            }
+            if("审核不通过".equals(stateName)){
+                return OPT_STATE_UNPASS;
+            }
+            if("已发布".equals(stateName)){
+                return LIFE_CYCLE_STATE_PUBLISHED;
+            }
+            if("已上线".equals(stateName)){
+                return LIFE_CYCLE_STATE_ONLINE;
+            }
+            if("已下线".equals(stateName)){
+                return LIFE_CYCLE_STATE_DISCHARGE;
+            }
+            return OPT_STATE_UNAUDIT;//默认服务定义状态
         }
 //    	public static final String LIFE_CYCLE_STATE_TEST = "3";//测试
 //    	public static final String LIFE_CYCLE_STATE_STOP = "4";//停止
@@ -122,5 +177,14 @@ public class Constants {
 
         public static final String ARRAY_TYPE = "Array";
         public static final String STRUCT_TYPE = "Struct";
+    }
+
+    public static class ServiceHead{
+        public static final String DEFAULT_SYSHEAD_ID = "sys_head";
+        public static final String DEFAULT_APPHEAD_ID = "app_head";
+    }
+    public static class ServiceCategory{
+        public static final Integer CATEGORY_CHILD_LENGTH = 5;//服务分类id长度
+        public static final Integer CATEGORY_PARENT_LENGTH = 4;//服务大类id长度
     }
 }

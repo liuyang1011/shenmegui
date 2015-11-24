@@ -133,20 +133,17 @@ var delIds = [];
 				}
 				
 				editingId = undefined;
-				
+				var result = false;
 				$.ajax({
 			         type: "post",
 			         async: false,
 			         contentType:"application/json; charset=utf-8",
-			         url: "/sda/saveHeadSDA",
+			         url: "/sda/commonSaveSDA",
 			         dataType: "json",
 			         data: JSON.stringify(editNodes),
 			         success: function(data){
 			        	 if(data){
-			        	 	newIds = [];
-			        	 	alert("保存成功");
-							 t.treegrid({url:'/sda/headSdaTree?headId=${head.headId }&t='+ new Date().getTime()});
-			        	 	//t.treegrid('reload');
+							 result = true;
 			        	 }
 			            }
 				 });
@@ -161,13 +158,18 @@ var delIds = [];
 			         data: JSON.stringify(delIds),
 			         success: function(data){
 			        	 if(data){
-			        	 	delIds = [];
-			        	 	alert("保存成功");
-							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+			        	 	result = true;
 						 }
 			            }
 				 });
 			}
+			if(result){
+				alert("保存成功！");
+				t.treegrid({url:'/sda/headSdaTree?headId=${head.headId }&t='+ new Date().getTime()});
+			}else{
+				alert("保存数据时发生错误,保存失败！");
+			}
+
 		}
 		function cancel(){
 			if (editingId != undefined){
@@ -202,7 +204,7 @@ var delIds = [];
 			        data: {"sdaId": node.id},
 			        success: function(data){
 			        	 if(data){
-							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+							 $('#tg').treegrid({url:'/sda/headSdaTree?headId=${head.headId }&t='+ new Date().getTime()});
 						 }
 			            }
 				});
@@ -227,7 +229,7 @@ var delIds = [];
 			        data: {"sdaId": node.id},
 			        success: function(data){
 			        	 if(data){
-							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
+							 $('#tg').treegrid({url:'/sda/headSdaTree?headId=${head.headId }&t='+ new Date().getTime()});
 
 						 }
 			            }
@@ -321,7 +323,7 @@ var delIds = [];
 	</shiro:hasPermission>
 	</div>
 <fieldset>
- <legend>条件搜索</legend>
+ <legend>报文头信息</legend>
 <table border="0" cellspacing="0" cellpadding="0">
 	<input type = "hidden" id = "headId" value="${head.headId}" />
   <tr style="width:100%;">

@@ -430,7 +430,7 @@ public class ServiceInvokeController {
             }
         }
         if(null != operation){
-            operationService.editOperation(null,operation);
+            operationService.editReleate(serviceId, operationId);
         }
 
         logParam += "服务ID：" + serviceId + ", 场景ID:" + operationId + ", 消费者提供者关系：数量:" + list.size();

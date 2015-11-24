@@ -127,6 +127,13 @@
                 }
             }
         }
+
+        function standardStyle(value, row, index) {
+            if(row.isStandard == '99'){
+                return 'background-color:#d9d2e9;color:white';
+            }
+
+        }
     </script>
 
 </head>
@@ -176,11 +183,11 @@
                 <%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
                 <th data-options="field:'systemId', width:'10%'">系统id</th>
                 <th data-options="field:'systemChineseName', width:'15%'">系统名称</th>
-                <th data-options="field:'isStandard', width:'10%'"
+                <th data-options="field:'isStandard', width:'10%', styler:standardStyle"
                     formatter='ff.isStandardText'>标准
                 </th>
-                <th data-options="field:'interfaceId', width:'15%'">接口id</th>
-                <th data-options="field:'interfaceName', width:'15%'">接口名称</th>
+                <th data-options="field:'interfaceId', width:'15%', styler:standardStyle">接口id</th>
+                <th data-options="field:'interfaceName', width:'15%', styler:standardStyle">接口名称</th>
                 <th data-options="field:'type', width:'10%'"
                     formatter='ff.typeText'>类型
                 </th>

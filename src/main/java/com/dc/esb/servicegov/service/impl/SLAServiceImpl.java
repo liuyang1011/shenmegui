@@ -8,6 +8,8 @@ import com.dc.esb.servicegov.entity.SLAHis;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,8 @@ import java.util.Map;
 @Service
 @Transactional
 public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
+
+    private static final Log log = LogFactory.getLog(SLAServiceImpl.class);
 
     @Autowired
     private SLADAOImpl slaDAOImpl;
@@ -40,7 +44,9 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
     }
 
     public void backUpSLAByCondition(Map<String, String> params, String autoId){
+        log.info("find sla by["+params.values()+"]");
         List<SLA> slaList = findBy(params);
+
         if(slaList != null && slaList.size() > 0){
             for(SLA sla : slaList){
                 SLAHis slaHis = new SLAHis(sla, autoId);

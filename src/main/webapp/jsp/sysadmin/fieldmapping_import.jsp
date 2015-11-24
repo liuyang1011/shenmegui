@@ -13,7 +13,7 @@
 <body>
 <fieldset>
     <legend>导入Excel</legend>
-    <form id="uploadimg-form"  action="/excelHelper/fieldimport" method="post" enctype="multipart/form-data">
+    <form id="uploadimg-form"  action="/mappingImport/fieldImport" method="post" enctype="multipart/form-data" onsubmit="uploading()">
     <shiro:hasPermission name="importExcel-update">
         <input type="file" title="选择文件" name="file" id="file"/>
         <br /><br />
@@ -52,6 +52,10 @@
     <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var msg = "${message}";
+            if(msg){
+                alert(msg);
+            }
             $('#tt').datagrid({
                 rownumbers:true,
                 singleSelect:false,
@@ -65,11 +69,18 @@
 
         var toolbar = [
             <shiro:hasPermission name="importlog-delete">
-            {
+         {
             text: '删除',
             iconCls: 'icon-remove',
             handler: function () {
                 deleteObj();
+            }
+        },
+        {
+            text: '清空',
+            iconCls: 'icon-remove',
+            handler: function () {
+                deleteAll();
             }
         }
             </shiro:hasPermission>
@@ -105,6 +116,24 @@
             }else{
                 alert("没有选中项！");
             }
+        }
+        function deleteAll(){
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "/log/deleteAll",
+                dataType: "json",
+                success: function (data) {
+                    alert("操作成功");
+                    $('#tt').datagrid('reload');
+                }
+            });
+        }
+        function uploading(){
+            $.messager.progress({
+                title:'请稍后',
+                msg:'正在上传文件...'
+            });
         }
 
     </script>

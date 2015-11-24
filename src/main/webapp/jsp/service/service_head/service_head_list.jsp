@@ -177,7 +177,7 @@
     });
 
    function dbclick(index,field,value){
-    var url = '/jsp/service/service_head/service_head_sda.jsp?headId='+field.headId;
+    var url = '/serviceHeadSda/sdaPage?serviceHeadId='+field.headId;
     var title = "";
     title = '服务报文头:' + field.headName;
     var mainTabs = parent.$('#mainContentTabs');

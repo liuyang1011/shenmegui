@@ -192,6 +192,16 @@
             row.interfaceId= interfaceId;
             return row;
         }
+        function consumerStyle(value, row, index) {
+            if(row.conIsStandard == '99'){
+                return 'background-color:#d9d2e9;color:white';
+            }
+        }
+        function providerStyle(value, row, index) {
+            if(row.proIsStandard == '99'){
+                return 'background-color:#d9d2e9;color:white';
+            }
+        }
     </script>
 
 </head>
@@ -271,6 +281,26 @@
                     <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
                 </th>--%>
             </tr>
+            <tr>
+                <th>服务头:</th>
+                <td >
+                    <input
+                            name = "headId"
+                            class="easyui-combobox"
+                            value="${operation.headId}"
+                            data-options="
+                       panelHeight:'200px',
+                       multiple:true,
+						url:'/serviceHead/queryAll',
+				 		 method:'get',
+				 		 valueField: 'headId',
+				 		 textField: 'headName'
+					"/>
+                </td>
+                <th></th>
+                <td >
+                </td>
+            </tr>
         </table>
 
 
@@ -292,19 +322,21 @@
         <thead>
         <tr>
             <th ></th>
-            <th colspan="4">消费者</th>
-            <th colspan="4">提供者</th>
+            <th colspan="5">消费者</th>
+            <th colspan="5">提供者</th>
         </tr>
         <tr>
             <th data-options="field:'id', width:50, checkbox:true"></th>
-            <th data-options="field:'conName',width:120">系统名称</th>
-            <th data-options="field:'conId',width:120">系统编码</th>
-            <th data-options="field:'conInterName',width:120">接口名称</th>
-            <th data-options="field:'conInterId',width:120">接口代码</th>
+            <th data-options="field:'conName',width:120 ">系统名称</th>
+            <th data-options="field:'conId',width:70">系统编码</th>
+            <th data-options="field:'conInterName',width:120,styler:consumerStyle">接口名称</th>
+            <th data-options="field:'conInterId',width:120,styler:consumerStyle">接口代码</th>
+            <th data-options="field:'conIsStandard',width:70,styler:consumerStyle " formatter='ff.isStandardText'>是否标准</th>
             <th data-options="field:'proName',width:120">系统名称</th>
-            <th data-options="field:'proId',width:120">系统编码</th>
-            <th data-options="field:'proInterName',width:120">接口名称</th>
-            <th data-options="field:'proInterId',width:120">接口代码</th>
+            <th data-options="field:'proId',width:70">系统编码</th>
+            <th data-options="field:'proInterName',width:120,styler:providerStyle ">接口名称</th>
+            <th data-options="field:'proInterId',width:120,styler:providerStyle ">接口代码</th>
+            <th data-options="field:'proIsStandard',width:70,styler:providerStyle " formatter='ff.isStandardText'>是否标准</th>
 
         </tr>
         </thead>
