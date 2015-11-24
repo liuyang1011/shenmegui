@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.*;
+import com.dc.esb.servicegov.service.impl.ConfigExportServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
@@ -68,6 +69,9 @@ public class ConfigExportController {
 
     @Autowired
     ProtocolService protocolService;
+
+    @Autowired
+    ConfigExportServiceImpl configExportService;
 
     @Autowired
     LogInfoServiceImpl logInfoService;
@@ -632,14 +636,24 @@ public class ConfigExportController {
     @ResponseBody
     boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
         OperationLog operationLog = systemLogService.record("配置文件", "导出", "根据服务场景列表导出");
-        String path = "";
+        String path = this.getClass().getClassLoader().getResource("/").getPath() + "/generator" ;
         InputStream in = null;
         OutputStream out = null;
-
-        systemLogService.updateResult(operationLog);
-
+        String message = "";
         try {
-
+            if(null != pkvo){
+                List<OperationPK> operationPKs = pkvo.getPks();
+                if(null != operationPKs && operationPKs.size() > 0){
+                   for(OperationPK operationPK : operationPKs){
+                       try {
+                           configExportService.generateBy(path, operationPK);
+                       }catch (Exception e){
+                           message +="导出服务[" + operationPK.getServiceId() + operationPK.getOperationId() +"]时出现异常!";
+                           logger.error(e, e);
+                       }
+                   }
+                }
+            }
             ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
 
             File metadata = new File(path + "/metadata.zip");
@@ -673,6 +687,7 @@ public class ConfigExportController {
                 in.close();
                 out.close();
                 FileUtil.deleteDirectory(path);
+                systemLogService.updateResult(operationLog);
             } catch (Exception e) {
                 logger.error("导出文件，关闭流异常," + e.getMessage());
             }

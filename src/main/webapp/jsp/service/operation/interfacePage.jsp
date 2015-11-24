@@ -43,7 +43,7 @@
         var toolbar = [
             <shiro:hasPermission name="ida-get">
             {
-                text: '映射元数据',
+                text: '关联SDA',
                 iconCls: 'icon-qxfp',
                 handler: function () {
                     //标准的没有映射功能
