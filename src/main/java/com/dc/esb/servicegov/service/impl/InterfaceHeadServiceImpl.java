@@ -100,6 +100,10 @@ public class InterfaceHeadServiceImpl extends AbstractBaseService<InterfaceHead,
 		return headNames;
 	}
 	public String getHeadNames(String interfaceId){
-		return getHeadNames(getByInterfaceId(interfaceId));
+		List<InterfaceHead> heads =getByInterfaceId(interfaceId);
+		if(null != heads){
+			return getHeadNames(heads);
+		}
+		return "";
 	}
 }

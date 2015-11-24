@@ -625,5 +625,59 @@ public class ConfigExportController {
 
         return null;
     }
+    /*根据场景列表导出字段映射*/
+    @RequiresPermissions({"exportConfig-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/exportByOperaions", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
+        OperationLog operationLog = systemLogService.record("配置文件", "导出", "根据服务场景列表导出");
+        String path = "";
+        InputStream in = null;
+        OutputStream out = null;
 
+        systemLogService.updateResult(operationLog);
+
+        try {
+
+            ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
+
+            File metadata = new File(path + "/metadata.zip");
+
+            response.setContentType("application/zip");
+            response.addHeader("Content-Disposition",
+                    "attachment;filename=metadata.zip");
+            in = new BufferedInputStream(new FileInputStream(metadata));
+            out = new BufferedOutputStream(response.getOutputStream());
+            long fileLength = metadata.length();
+            byte[] cache = null;
+            if (fileLength > Integer.MAX_VALUE) {
+                cache = new byte[Integer.MAX_VALUE];
+            } else {
+                cache = new byte[(int) fileLength];
+            }
+            int i = 0;
+            while ((i = in.read(cache)) > 0) {
+                out.write(cache, 0, i);
+            }
+            out.flush();
+
+//            systemLogService.updateResult(operationLog);
+
+        } catch (Exception e) {
+            logger.error(e, e);
+            printMsg(response, "数据错误，导出失败!");
+
+        } finally {
+            try {
+                in.close();
+                out.close();
+                FileUtil.deleteDirectory(path);
+            } catch (Exception e) {
+                logger.error("导出文件，关闭流异常," + e.getMessage());
+            }
+        }
+
+        return true;
+    }
 }
