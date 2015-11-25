@@ -111,7 +111,7 @@ var delIds = [];
 					var editNode = t.treegrid('find', newIds[i]);
 					t.treegrid('endEdit', editNode.id);
 					var node = {};
-					node.sdaId = editNode.id;
+					node.id = editNode.id;
 					node.structName = editNode.text;
 					node.parentId = editNode.parentId;
 					
@@ -201,7 +201,7 @@ var delIds = [];
 					type:"get",
 					url: "/sda/moveUp?_t=" + new Date().getTime(),
 			        dataType: "json",
-			        data: {"sdaId": node.id},
+			        data: {"id": node.id},
 			        success: function(data){
 			        	 if(data){
 							 $('#tg').treegrid({url:'/sda/headSdaTree?headId=${head.headId }&t='+ new Date().getTime()});
@@ -226,7 +226,7 @@ var delIds = [];
 					type:"get",
 					url: "/sda/moveDown?_t="+new Date().getTime(),
 			        dataType: "json",
-			        data: {"sdaId": node.id},
+			        data: {"id": node.id},
 			        success: function(data){
 			        	 if(data){
 							 $('#tg').treegrid({url:'/sda/headSdaTree?headId=${head.headId }&t='+ new Date().getTime()});

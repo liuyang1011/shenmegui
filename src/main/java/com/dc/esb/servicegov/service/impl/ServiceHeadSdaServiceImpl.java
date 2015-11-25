@@ -2,9 +2,7 @@ package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.SDADAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
-import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.SDA;
-import com.dc.esb.servicegov.service.SDAService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
@@ -32,7 +30,7 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
     public List<SDA> genderSDAAuto(String serviceHeadId){
         List<SDA> result = new ArrayList<SDA>();
         SDA sdaRoot = new SDA();
-        sdaRoot.setSdaId(UUID.randomUUID().toString());
+        sdaRoot.setId(UUID.randomUUID().toString());
         sdaRoot.setStructName(Constants.ElementAttributes.ROOT_NAME);
         sdaRoot.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
         sdaRoot.setXpath(Constants.ElementAttributes.ROOT_XPATH);
@@ -43,25 +41,25 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
         result.add(sdaRoot);
 
         SDA sdaReq = new SDA();
-        sdaReq.setSdaId(UUID.randomUUID().toString());
+        sdaReq.setId(UUID.randomUUID().toString());
         sdaReq.setStructName(Constants.ElementAttributes.REQUEST_NAME);
         sdaReq.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
         sdaReq.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
         sdaReq.setSeq(1);
         sdaReq.setServiceHeadId(serviceHeadId);
-        sdaReq.setParentId(sdaRoot.getSdaId());
+        sdaReq.setParentId(sdaRoot.getId());
 
         sdaDAO.save(sdaReq);
         result.add(sdaReq);
 
         SDA sdaRes = new SDA();
-        sdaRes.setSdaId(UUID.randomUUID().toString());
+        sdaRes.setId(UUID.randomUUID().toString());
         sdaRes.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
         sdaRes.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
         sdaRes.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
         sdaRes.setSeq(2);
         sdaRes.setServiceHeadId(serviceHeadId);
-        sdaRes.setParentId(sdaRoot.getSdaId());
+        sdaRes.setParentId(sdaRoot.getId());
         sdaDAO.save(sdaRes);
         result.add(sdaRes);
         return result;

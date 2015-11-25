@@ -1,7 +1,6 @@
 package com.dc.esb.servicegov.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,6 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -80,34 +78,34 @@ public class InterfaceHeadController {
 			//root
 			Ida ida = new Ida();
 			ida.setHeadId(head.getHeadId());
-			ida.set_parentId(null);
+			ida.setParentId(null);
 			ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
 			ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
 			ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
 			ida.setState(Constants.IDA_STATE_COMMON);
-			ida.setSdaId(map.get("root").getSdaId());
+			ida.setSdaId(map.get("root").getId());
 			idaService.save(ida);
 			String parentId = ida.getId();
 			
 			ida = new Ida();
 			ida.setHeadId(head.getHeadId());
-			ida.set_parentId(parentId);
+			ida.setParentId(parentId);
 			ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
 			ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
 			ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
 			ida.setState(Constants.IDA_STATE_COMMON);
 			ida.setSeq(0);
-			ida.setSdaId(map.get("request").getSdaId());
+			ida.setSdaId(map.get("request").getId());
 			idaService.save(ida);
 			
 			ida = new Ida();
 			ida.setHeadId(head.getHeadId());
-			ida.set_parentId(parentId);
+			ida.setParentId(parentId);
 			ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
 			ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
 			ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
 			ida.setState(Constants.IDA_STATE_COMMON);
-			ida.setSeq(1);ida.setSdaId(map.get("response").getSdaId());
+			ida.setSeq(1);ida.setSdaId(map.get("response").getId());
 			idaService.save(ida);
 		}
 

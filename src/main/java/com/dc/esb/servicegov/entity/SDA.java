@@ -1,24 +1,22 @@
 package com.dc.esb.servicegov.entity;
 
-import org.apache.commons.lang.StringUtils;
+import com.dc.esb.servicegov.export.IExportableNode;
 
 import java.io.Serializable;
 import java.lang.*;
-import java.lang.System;
-import java.util.List;
 
 import javax.persistence.*;
 
 
 @Entity
 @Table(name = "SDA")
-public class SDA implements Serializable {
+public class SDA extends IExportableNode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "SDA_ID")
-	private String sdaId;
+	private String Id;
 
 	@Column(name = "STRUCTNAME")
 	private String structName;
@@ -103,12 +101,12 @@ public class SDA implements Serializable {
 		this.constraint = constraint;
 	}
 
-	public String getSdaId() {
-		return sdaId;
+	public String getId() {
+		return Id;
 	}
 
-	public void setSdaId(String sdaId) {
-		this.sdaId = sdaId;
+	public void setId(String id) {
+		this.Id = id;
 	}
 
 	public String getStructName() {

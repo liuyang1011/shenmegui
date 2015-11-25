@@ -194,7 +194,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         int order = 0;
         for (int j = start; j <= end; j++) {
             SDA sda = new SDA();
-            sda.setSdaId(UUID.randomUUID().toString());
+            sda.setId(UUID.randomUUID().toString());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -291,7 +291,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         int order = 0;
         for (int j = start; j <= end; j++) {
             SDA sda = new SDA();
-            sda.setSdaId( UUID.randomUUID().toString());
+            sda.setId(UUID.randomUUID().toString());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -454,8 +454,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             Ida ida = new Ida();
             SDA sda = new SDA();
-            sda.setSdaId( UUID.randomUUID().toString());
-            ida.setSdaId(sda.getSdaId());
+            sda.setId(UUID.randomUUID().toString());
+            ida.setSdaId(sda.getId());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null) continue;
             Cell cellObj = sheetRow.getCell(0);
@@ -656,8 +656,8 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int j = start; j <= end; j++) {
             Ida ida = new Ida();
             SDA sda = new SDA();
-            sda.setSdaId(UUID.randomUUID().toString());
-            ida.setSdaId(sda.getSdaId());
+            sda.setId(UUID.randomUUID().toString());
+            ida.setSdaId(sda.getId());
             Row sheetRow = sheet.getRow(j);
             if(sheetRow == null){
                 continue;
@@ -826,7 +826,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
             SDA sda = genderSDA(sheetRow, inputArraySdas, tempHeadId, i);
             if(sda != null){
-                ida.setSdaId(sda.getSdaId());
+                ida.setSdaId(sda.getId());
                 ida.setXpath(sda.getXpath());
             }
 
@@ -902,7 +902,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
             SDA sda = genderSDA(sheetRow, outArraySdas, outTempHeadId, j);
             if(sda != null){
-                ida.setSdaId(sda.getSdaId());
+                ida.setSdaId(sda.getId());
                 ida.setXpath(sda.getXpath());
             }
 
@@ -1483,7 +1483,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         idaDao.exeHql(hql, inter.getInterfaceId());
 
         ida.setInterfaceId(inter.getInterfaceId());
-        ida.set_parentId(null);
+        ida.setParentId(null);
         ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
         ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
         ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
@@ -1492,7 +1492,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         ida = new Ida();
         ida.setInterfaceId(inter.getInterfaceId());
-        ida.set_parentId(rootId);
+        ida.setParentId(rootId);
         ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
         ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
         ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
@@ -1502,7 +1502,7 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
 
         ida = new Ida();
         ida.setInterfaceId(inter.getInterfaceId());
-        ida.set_parentId(rootId);
+        ida.setParentId(rootId);
         ida.setSeq(1);
         ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
         ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
@@ -1514,9 +1514,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int i = 0; i < idainput.size(); i++) {
             ida = idainput.get(i);
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(requestId);
+            ida.setParentId(requestId);
             if (parentId != null) {
-                ida.set_parentId(parentId);
+                ida.setParentId(parentId);
             }
 
             //包含bug，当节点end后，下一节点 不在request 或 response下 就会出现问题，
@@ -1538,9 +1538,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
         for (int i = 0; i < idaoutput.size(); i++) {
             ida = idaoutput.get(i);
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(responseId);
+            ida.setParentId(responseId);
             if (parentId != null) {
-                ida.set_parentId(parentId);
+                ida.setParentId(parentId);
             }
 
             if ("end".equalsIgnoreCase(ida.getRemark()) || "不映射".equalsIgnoreCase(ida.getRemark()) || ida.getStructName() == null || "".equals(ida.getStructName())) {

@@ -386,7 +386,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 (!StringUtils.isEmpty(sda.getLength()) && (sda.getLength().equalsIgnoreCase("array") || sda.getLength().equalsIgnoreCase("struct")))) {
             fillSDA(sheet, counter.getCount(), sda, arrayStyle);
 
-            List<SDA> childList = getSDAChildren(sda.getSdaId());
+            List<SDA> childList = getSDAChildren(sda.getId());
             for (int i = 0; i < childList.size(); i++) {
                 fillMappRow(sheet, counter, childList.get(i), idaList);
             }
@@ -659,7 +659,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                     SDA sdaChild = sdaDao.findUniqueBy("sdaId", idaChild.getSdaId());//子节点对应的sda
                     fillHeadRow(sheet, counter, idaChild, sdaChild);
                     if(sdaChild != null){
-                        subSdaIds.add(sdaChild.getSdaId());
+                        subSdaIds.add(sdaChild.getId());
                     }
                 }
             }
@@ -670,7 +670,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             String subHql = subSdaIds.size() > 0 ? " and s.sdaId not in (:subSdaIds) " : "";
             String hql2 = " from " + SDA.class.getName() + " as s where s.parentId = :parentId" +subHql + " order by s.seq asc";
             Map<String, Object> param = new HashMap<String, Object>();
-            param.put("parentId", sda.getSdaId());
+            param.put("parentId", sda.getId());
             param.put("subSdaIds", subSdaIds);
             List<SDA> sdaChildren = sdaDao.find(hql2, param);
             if(sdaChildren != null && sdaChildren.size() > 0){

@@ -116,11 +116,11 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
             }
         }
         for (Ida ida : idas) {
-            if (null == ida.get_parentId()) {
+            if (null == ida.getParentId()) {
                 continue;
-            } else if (ida.get_parentId().equals(reqId)) {
+            } else if (ida.getParentId().equals(reqId)) {
                 reqIdas.add(ida);
-            } else if (ida.get_parentId().equals(resId)) {
+            } else if (ida.getParentId().equals(resId)) {
                 resIdas.add(ida);
             }
         }

@@ -1,7 +1,5 @@
 package com.dc.esb.servicegov.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -81,7 +79,7 @@ public class IdaHIS {
 		this.scale = ida.getScale();
 		this.length = ida.getLength();
 		this.required = ida.getRequired();
-		this._parentId = ida.get_parentId();
+		this._parentId = ida.getParentId();
 		this.interfaceId = ida.getInterfaceId();
 		this.potUser = ida.getPotUser();
 		this.potDate = ida.getPotDate();

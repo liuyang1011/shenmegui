@@ -31,7 +31,7 @@ public class ExportUtil {
         while (it.hasNext()) {
             MetadataNode body = (MetadataNode) it.next();
             SDA s = new SDA();
-            s.setSdaId(body.getNodeId());
+            s.setId(body.getNodeId());
             if (hasChild(sdas, s)) {
                 recursionFindSDA(sdas, s, body);
             }
@@ -68,9 +68,9 @@ public class ExportUtil {
     private static List<MetadataNode> getChildList(List<SDA> sdas, SDA sda) {
         List<MetadataNode> result = new ArrayList<MetadataNode>();
         for (SDA s : sdas) {
-            if (s.getParentId() != null && s.getParentId().equals(sda.getSdaId())) {
+            if (s.getParentId() != null && s.getParentId().equals(sda.getId())) {
                 MetadataNode requestBody = new MetadataNode();
-                requestBody.setNodeId(s.getSdaId());
+                requestBody.setNodeId(s.getId());
                 requestBody.setMetadataId(s.getMetadataId());
                 requestBody.setNodeName(s.getStructName());
                 requestBody.setChineseName(s.getStructAlias());
@@ -84,7 +84,7 @@ public class ExportUtil {
     private static List<MetadataNode> getChildList(List<Ida> idas, Ida ida) {
         List<MetadataNode> result = new ArrayList<MetadataNode>();
         for (Ida s : idas) {
-            if (s.get_parentId() != null && s.get_parentId().equals(ida.getId())) {
+            if (s.getParentId() != null && s.getParentId().equals(ida.getId())) {
                 MetadataNode requestBody = new MetadataNode();
                 requestBody.setNodeId(s.getId());
                 requestBody.setMetadataId(s.getMetadataId());
@@ -100,7 +100,7 @@ public class ExportUtil {
     // 判断是否有子节点
     private static boolean hasChild(List<SDA> sdas, SDA sda) {
         for (SDA s : sdas) {
-            if (s.getParentId() != null && s.getParentId().equals(sda.getSdaId())) {
+            if (s.getParentId() != null && s.getParentId().equals(sda.getId())) {
                return true;
             }
         }
@@ -110,7 +110,7 @@ public class ExportUtil {
     // 判断是否有子节点
     private static boolean hasChild(List<Ida> idas, Ida ida) {
         for (Ida s : idas) {
-            if (s.get_parentId() != null && s.get_parentId().equals(ida.getId())) {
+            if (s.getParentId() != null && s.getParentId().equals(ida.getId())) {
                return true;
             }
         }
@@ -233,7 +233,7 @@ public class ExportUtil {
 
     public static String generatorServiceDefineSOAP(List<SDA> sdas, SDA sda) {
         MetadataNode esbBody = new MetadataNode();
-        esbBody.setNodeId(sda.getSdaId());
+        esbBody.setNodeId(sda.getId());
         esbBody.setNodeName(sda.getStructName());
         esbBody = ExportUtil.recursionFindSDA(sdas, sda, esbBody);
 
@@ -250,7 +250,7 @@ public class ExportUtil {
 
     public static String generatorServiceDefineXML(List<SDA> sdas, SDA sda) {
         MetadataNode esbBody = new MetadataNode();
-        esbBody.setNodeId(sda.getSdaId());
+        esbBody.setNodeId(sda.getId());
         esbBody.setNodeName(sda.getStructName());
         esbBody = ExportUtil.recursionFindSDA(sdas, sda, esbBody);
 

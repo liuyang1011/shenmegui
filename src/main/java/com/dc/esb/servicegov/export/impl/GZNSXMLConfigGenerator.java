@@ -10,14 +10,12 @@ import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mvel2.util.Make;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by vincentfxz on 15/10/27.
@@ -65,11 +63,11 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
                 }
             }
             for(Ida ida : idas){
-                if(null == ida.get_parentId()){
+                if(null == ida.getParentId()){
                     continue;
-                }else if(ida.get_parentId().equals(reqId)){
+                }else if(ida.getParentId().equals(reqId)){
                     reqIdas.add(ida);
-                }else if(ida.get_parentId().equals(resId)){
+                }else if(ida.getParentId().equals(resId)){
                     resIdas.add(ida);
                 }
             }
@@ -109,11 +107,11 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
                         }
                     }
                     for(Ida ida : headIdas){
-                        if(null == ida.get_parentId()){
+                        if(null == ida.getParentId()){
                             continue;
-                        }else if(ida.get_parentId().equals(reqHeadId)){
+                        }else if(ida.getParentId().equals(reqHeadId)){
                             reqHeadIdas.add(ida);
-                        }else if(ida.get_parentId().equals(resHeadId)){
+                        }else if(ida.getParentId().equals(resHeadId)){
                             resHeadIdas.add(ida);
                         }
                     }
@@ -159,11 +157,11 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
                 }
             }
             for(Ida ida : idas){
-                if(null == ida.get_parentId()){
+                if(null == ida.getParentId()){
                     continue;
-                }else if(ida.get_parentId().equals(reqId)){
+                }else if(ida.getParentId().equals(reqId)){
                     reqIdas.add(ida);
-                }else if(ida.get_parentId().equals(resId)){
+                }else if(ida.getParentId().equals(resId)){
                     resIdas.add(ida);
                 }
             }
@@ -206,11 +204,11 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
                         }
                     }
                     for(Ida ida : headIdas){
-                        if(null == ida.get_parentId()){
+                        if(null == ida.getParentId()){
                             continue;
-                        }else if(ida.get_parentId().equals(reqHeadId)){
+                        }else if(ida.getParentId().equals(reqHeadId)){
                             reqHeadIdas.add(ida);
-                        }else if(ida.get_parentId().equals(resHeadId)){
+                        }else if(ida.getParentId().equals(resHeadId)){
                             resHeadIdas.add(ida);
                         }
                     }
@@ -258,7 +256,7 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
         for (SDA sda : sdaAll){
             if(sda.getStructName() == null) continue;
             if(sda.getStructName().equals(type)){
-                bodyId = sda.getSdaId();
+                bodyId = sda.getId();
             }
         }
         for(SDA sda : sdaAll){

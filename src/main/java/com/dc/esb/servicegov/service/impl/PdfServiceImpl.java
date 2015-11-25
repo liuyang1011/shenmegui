@@ -4,14 +4,12 @@ import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.PdfUtils;
-import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
 import com.dc.esb.servicegov.vo.OperationPKVO;
 import com.dc.esb.servicegov.vo.SDAVO;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -312,7 +310,7 @@ public class PdfServiceImpl {
                 params.put("structName", Constants.ElementAttributes.REQUEST_NAME);
                 SDA reqSDA = sdadao.findUniqureBy(params);
                 if (null != reqSDA) {
-                    List<SDA> childrenOfReq = sdadao.findBy("parentId", reqSDA.getSdaId());
+                    List<SDA> childrenOfReq = sdadao.findBy("parentId", reqSDA.getId());
                     if (null != childrenOfReq) {
                         for (int i = 0; i < childrenOfReq.size(); i++) {
                             int j = i+1;
@@ -328,7 +326,7 @@ public class PdfServiceImpl {
                 params.put("structName", Constants.ElementAttributes.RESPONSE_NAME);
                 SDA rspSDA = sdadao.findUniqureBy(params);
                 if (null != rspSDA) {
-                    List<SDA> childrenOfRsp = sdadao.findBy("parentId", rspSDA.getSdaId());
+                    List<SDA> childrenOfRsp = sdadao.findBy("parentId", rspSDA.getId());
                     if (null != childrenOfRsp) {
                         for (int i = 0; i < childrenOfRsp.size(); i++) {
                             int j = i+1;
@@ -513,7 +511,7 @@ public class PdfServiceImpl {
 
         PdfPCell remarkCell = new PdfPCell();
 
-        List<SDA> childSDAs = sdadao.findBy("parentId", sda.getSdaId());
+        List<SDA> childSDAs = sdadao.findBy("parentId", sda.getId());
         if (null != childSDAs && childSDAs.size() > 0) {
             idCell.setBackgroundColor(Color.yellow);
             PdfUtils.renderChineseTableData(sda.getRemark(), remarkCell);
@@ -536,12 +534,12 @@ public class PdfServiceImpl {
                 renderSDA("" + index + "." + j, childSDAs.get(i), table, childOffSet, indexColor);
             }
             SDA endSDA = new SDA();
-            endSDA.setSdaId(UUID.randomUUID().toString());
+            endSDA.setId(UUID.randomUUID().toString());
             endSDA.setStructName(sda.getStructName());
             endSDA.setType(sda.getType());
             endSDA.setConstraint(sda.getConstraint());
             endSDA.setRequired(sda.getRequired());
-            endSDA.setSdaId(UUID.randomUUID().toString());
+            endSDA.setId(UUID.randomUUID().toString());
             endSDA.setRemark("end");
             renderSDA("" + index, endSDA, table, offset, Color.yellow);
         }
@@ -655,7 +653,7 @@ public class PdfServiceImpl {
         SDAVO sdavo = new SDAVO();
         sdavo.setValue(sda);
         List<SDAVO> children = new ArrayList<SDAVO>();
-        List<SDA> sdaList = sdadao.findBy("parentId", sda.getSdaId());
+        List<SDA> sdaList = sdadao.findBy("parentId", sda.getId());
         for(int i = 0; i< sdaList.size(); i++){
             SDAVO child = genderSDAVO(sdaList.get(i));
             children.add(child);

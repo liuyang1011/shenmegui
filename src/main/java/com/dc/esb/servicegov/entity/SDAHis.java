@@ -5,11 +5,8 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "SDA_HIS")
@@ -82,7 +79,7 @@ public class SDAHis implements Serializable {
 	public SDAHis(SDA sda, String operationHisId) {
 		this.autoId = UUID.randomUUID().toString();
 		this.operationHisId = operationHisId;
-		this.sdaId = sda.getSdaId();
+		this.sdaId = sda.getId();
 		this.structName = sda.getStructName();
 		this.structAlias = sda.getStructAlias();
 		this.metadataId = sda.getMetadataId();

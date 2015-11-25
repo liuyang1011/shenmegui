@@ -224,7 +224,7 @@ public class ESBMappingExcelGenerator implements
 //                SDA n = entry.getValue();
 //                createMetadataStuct(n, wb);
 //                log.info("SERVICEID " + n.getServiceId() + ", RESOURCEID "
-//                        + n.getSdaId());
+//                        + n.getId());
 //            }
 //        }
 //    }

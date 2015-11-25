@@ -124,7 +124,7 @@ var delIds = [];
 					if(editNode != null){
 						t.treegrid('endEdit', editNode.id);
 						var node = {};
-						node.sdaId = editNode.id;
+						node.id = editNode.id;
 						node.structName = editNode.text;
 						node.parentId = editNode.parentId;
 
@@ -219,7 +219,7 @@ var delIds = [];
 					type:"get",
 					url: "/sda/moveUp?_t=" + new Date().getTime(),
 			        dataType: "json",
-			        data: {"sdaId": node.id},
+			        data: {"id": node.id},
 			        success: function(data){
 			        	 if(data){
 							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});
@@ -244,7 +244,7 @@ var delIds = [];
 					type:"get",
 					url: "/sda/moveDown?_t="+new Date().getTime(),
 			        dataType: "json",
-			        data: {"sdaId": node.id},
+			        data: {"id": node.id},
 			        success: function(data){
 			        	 if(data){
 							 $('#tg').treegrid({url:'/sda/sdaTree?serviceId=${service.serviceId }&operationId=${operation.operationId }&t='+ new Date().getTime()});

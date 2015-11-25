@@ -10,14 +10,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.dom4j.io.SAXEventRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.crypto.spec.OAEPParameterSpec;
 
 @Controller
 @RequestMapping("/ida")
@@ -264,19 +261,19 @@ public class IDAController {
 
 					Map<String, String> params = new HashMap<String, String>();
 					params.put("state", Constants.IDA_STATE_DISABLE);
-					params.put("_parentId", ida.get_parentId());
+					params.put("_parentId", ida.getParentId());
 					params.put("xpath", arrayEndSda.getXpath());
 					List<Ida> endIdas = idaService.findBy(params);
 					if(endIdas != null && endIdas.size() > 0 ){
 						arrayEndIda = endIdas.get(0);
 					}
 
-					arrayEndIda.setSdaId(arrayEndSda.getSdaId());
+					arrayEndIda.setSdaId(arrayEndSda.getId());
 					arrayEndIda.setXpath(arrayEndSda.getXpath());
 					arrayEndIda.setInterfaceId(ida.getInterfaceId());
 					arrayEndIda.setState(Constants.IDA_STATE_DISABLE);
 					arrayEndIda.setSeq(ida.getSeq() + 1);
-					arrayEndIda.set_parentId(ida.get_parentId());
+					arrayEndIda.setParentId(ida.getParentId());
 					idaService.save(arrayEndIda);
 				}
 			}

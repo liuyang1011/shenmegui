@@ -102,7 +102,7 @@
 					data.remark = remark;
 					data.metadataId = row.metadataId;
 					data.xpath = row.xpath;
-					data.sdaId = row.sdaId;
+					data.id = row.id;
 					reqAry.push(data);
 				}
 			}
@@ -135,7 +135,7 @@
 					data.remark = remark;
 					data.metadataId = row.metadataId;
 					data.xpath = row.xpath;
-					data.sdaId = row.sdaId;
+					data.id = row.id;
 					reqAry.push(data);
 				}
 			}
@@ -512,7 +512,7 @@
 					<th data-options="field:'seq',width:50">
 						排序
 					</th>
-					<th data-options="field:'sdaId', hidden:true">sdaId</th>
+					<th data-options="field:'id', hidden:true">id</th>
 					<th data-options="field:'xpath', hidden:true">xpath</th>
 					<th data-options="field:'metadataId',width:150,
 					editor:{type:'combotree',
@@ -528,7 +528,7 @@
 						  }else{
 							var node2 = $('#tg').treegrid('getSelected');
 							node2.xpath = node.append2;
-							node2.sdaId = node.id;
+							node2.id = node.id;
 							node2.metadataId = node.text;
 						  }
 						}

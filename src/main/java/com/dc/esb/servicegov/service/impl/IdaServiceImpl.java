@@ -234,7 +234,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setScale(ida.getScale());
 			setLength(ida.getLength());
 			setRequired(ida.getRequired());
-			set_parentId(ida.get_parentId());
+			set_parentId(ida.getParentId());
 			setInterfaceId(ida.getInterfaceId());
 			setPotUser(ida.getPotUser());
 			setPotDate(ida.getPotDate());
@@ -253,7 +253,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			}
 			setSDARemark(sda.getRemark());
 			setSDAXpath(sda.getXpath());
-			setSDAId(sda.getSdaId());
+			setSDAId(sda.getId());
 			setSDAMetadataId(sda.getMetadataId());
 		}
 
@@ -274,7 +274,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setScale(ida.getScale());
 			setLength(ida.getLength());
 			setRequired(ida.getRequired());
-			set_parentId(ida.get_parentId());
+			set_parentId(ida.getParentId());
 			setInterfaceId(ida.getInterfaceId());
 			setPotUser(ida.getPotUser());
 			setPotDate(ida.getPotDate());
@@ -482,7 +482,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	public boolean moveUp(String id) {
 		Ida ida = idaDAOImpl.findUnique(" from Ida where id=?", id);
 		String hql = " from Ida where _parentId = ? order by seq asc";
-		List<Ida> list = idaDAOImpl.find(hql, ida.get_parentId());//查询兄弟节点
+		List<Ida> list = idaDAOImpl.find(hql, ida.getParentId());//查询兄弟节点
 		int position = list.indexOf(ida);
 		if(position == 0){
 			return false;
@@ -510,7 +510,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	public boolean moveDown(String id) {
 		Ida ida = idaDAOImpl.findUnique(" from Ida where id=?", id);
 		String hql = " from Ida where _parentId = ? order by seq asc";
-		List<Ida> list = idaDAOImpl.find(hql, ida.get_parentId());//查询兄弟节点
+		List<Ida> list = idaDAOImpl.find(hql, ida.getParentId());//查询兄弟节点
 		int position = list.indexOf(ida);
 		if(position == (list.size()-1)){
 			return false;
@@ -539,7 +539,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		Map<String, Ida> result = new HashMap<String, Ida>();
 		Ida rootIda = new Ida();
 		rootIda.setHeadId(headId);
-		rootIda.set_parentId(null);
+		rootIda.setParentId(null);
 		rootIda.setStructName(Constants.ElementAttributes.ROOT_NAME);
 		rootIda.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
 		rootIda.setXpath(Constants.ElementAttributes.ROOT_XPATH);
@@ -549,7 +549,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 		Ida reqIda = new Ida();
 		reqIda.setHeadId(headId);
-		reqIda.set_parentId(rootIda.getId());
+		reqIda.setParentId(rootIda.getId());
 		reqIda.setStructName(Constants.ElementAttributes.REQUEST_NAME);
 		reqIda.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
 		reqIda.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
@@ -560,7 +560,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 		Ida resIda = new Ida();
 		resIda.setHeadId(headId);
-		resIda.set_parentId(rootIda.getId());
+		resIda.setParentId(rootIda.getId());
 		resIda.setSeq(1);
 		resIda.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
 		resIda.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
@@ -574,7 +574,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		Map<String, Ida> result = new HashMap<String, Ida>();
 		Ida rootIda = new Ida();
 		rootIda.setInterfaceId(interfaceId);
-		rootIda.set_parentId(null);
+		rootIda.setParentId(null);
 		rootIda.setStructName(Constants.ElementAttributes.ROOT_NAME);
 		rootIda.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
 		rootIda.setXpath(Constants.ElementAttributes.ROOT_XPATH);
@@ -584,7 +584,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 		Ida reqIda = new Ida();
 		reqIda.setInterfaceId(interfaceId);
-		reqIda.set_parentId(rootIda.getId());
+		reqIda.setParentId(rootIda.getId());
 		reqIda.setStructName(Constants.ElementAttributes.REQUEST_NAME);
 		reqIda.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
 		reqIda.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
@@ -595,7 +595,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 		Ida resIda = new Ida();
 		resIda.setInterfaceId(interfaceId);
-		resIda.set_parentId(rootIda.getId());
+		resIda.setParentId(rootIda.getId());
 		resIda.setSeq(1);
 		resIda.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
 		resIda.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);
