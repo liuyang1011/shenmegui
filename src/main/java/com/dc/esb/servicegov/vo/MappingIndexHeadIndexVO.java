@@ -18,7 +18,7 @@ public class MappingIndexHeadIndexVO {
     final String  providerAbsHead = "提供方";
     final String  typeHead = "接口方向";
     final String  interfaceProIdHead = "接口提供";
-    final String  protocolHead = "报文类型";
+    final String  messageHead = "报文类型";
     final String  optUserHead = "处理人";
     final String  optDateHead = "更新时间";
     final String  protocolTranHead = "报文转换方向";
@@ -31,6 +31,7 @@ public class MappingIndexHeadIndexVO {
     final String  operationStateHead = "场景状态";
     final String  isStandardHead = "是否标准";
     final String  remarkHead = "备注";
+    final String  protocolHead = "关联协议";
 
     Integer  interfaceIdIndex = 0;
     Integer  interfaceNameIndex= 1;
@@ -42,7 +43,7 @@ public class MappingIndexHeadIndexVO {
     Integer  providerAbsIndex = 7;
     Integer  typeIndex = 8;
     Integer  interfaceProIdIndex = 9;
-    Integer  protocolIndex = 10;
+    Integer  messageIndex = 10;
     Integer  optUserIndex = 11;
     Integer  optDateIndex = 12;
     Integer  protocolTranIndex = 13;
@@ -55,6 +56,7 @@ public class MappingIndexHeadIndexVO {
     Integer  operationStateIndex = 20;
     Integer  isStandardIndex = 21;
     Integer  remarkIndex = 22;
+    Integer  protocolIndex = 23;
 
     public MappingIndexHeadIndexVO(Row row){
         for(int i = 0; i <= row.getLastCellNum(); i++) {//遍历第1行所有单元格
@@ -89,6 +91,9 @@ public class MappingIndexHeadIndexVO {
             }
             if (content.contains(interfaceProIdHead)) {//接口提供系统id中可能有换行，以保函‘接口提供’字段为标准
                 interfaceProIdIndex = i;
+            }
+            if(messageHead.equals(content)){
+                messageIndex = i;
             }
             if (protocolHead.equals(content)) {
                 protocolIndex = i;

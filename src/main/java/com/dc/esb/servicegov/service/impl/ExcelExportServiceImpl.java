@@ -70,6 +70,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     private StatisticsServiceImpl statisticsService;
     @Autowired
     private InterfaceHeadServiceImpl interfaceHeadService;
+    @Autowired
+    private ProtocolDAOImpl protocolDAO;
     /**
      * TODO根据参数id和类型，返回excel文件
      */
@@ -89,19 +91,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             logger.error(errorMsg);
         }
         return null;
-    }
-
-    public HSSFWorkbook genderExcelByOperation(OperationPKVO pkvo) {
-        List<ServiceInvoke> siList = new ArrayList<ServiceInvoke>();
-        List<OperationPK> pks = pkvo.getPks();
-        for (int i = 0; i < pks.size(); i++) {
-            List<ServiceInvoke> opSiList = siDao.getByOperationPK(pks.get(i));
-            for (ServiceInvoke si : opSiList) {
-                siList.add(si);
-            }
-        }
-        HSSFWorkbook workbook = fillExcel(siList);
-        return workbook;
     }
 
     /**
@@ -161,7 +150,18 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         HSSFWorkbook workbook = fillExcel(siList);
         return workbook;
     }
-
+    public HSSFWorkbook genderExcelByOperation(OperationPKVO pkvo) {
+        List<ServiceInvoke> siList = new ArrayList<ServiceInvoke>();
+        List<OperationPK> pks = pkvo.getPks();
+        for (int i = 0; i < pks.size(); i++) {
+            List<ServiceInvoke> opSiList = siDao.getByOperationPK(pks.get(i));
+            for (ServiceInvoke si : opSiList) {
+                siList.add(si);
+            }
+        }
+        HSSFWorkbook workbook = fillExcel(siList);
+        return workbook;
+    }
     public HSSFWorkbook fillExcel(List<ServiceInvoke> siList) {
         if (siList.size() > 0) {
             HSSFWorkbook workbook = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE);
@@ -176,80 +176,116 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     }
 
     /**
-     * TODO 填充index页
-     *
+     * 填充index和index_exd页
      * @param siList
      */
     public boolean fillIndex(HSSFWorkbook workbook, List<ServiceInvoke> siList) {
         HSSFSheet sheet = workbook.getSheet("INDEX");
-        try {
-            List<InterfaceInvokeVO> voList = getVOList(siList);
-            for (int i = 0; i < voList.size(); i++){
-                HSSFRow row = sheet.createRow(i + 1);
-                InterfaceInvokeVO vo = voList.get(i);
-                Operation operation = operationDAO.getBySO(vo.getServiceId(), vo.getOperationId());
-                Interface inter = interfaceDAO.findUniqueBy("interfaceId", vo.getInterfaceId());
-
-                setCellValue(row.createCell(0), commonStyle, vo.getInterfaceId());//交易码
-
-                Hyperlink hyperlink = new HSSFHyperlink(Hyperlink.LINK_DOCUMENT);
-                // "#"表示本文档    "明细页面"表示sheet页名称  "A10"表示第几列第几行
-                hyperlink.setAddress("#" + vo.getInterfaceId() + "!A1");
-                row.getCell(0).setHyperlink(hyperlink);
-
-                setCellValue(row.createCell(1), commonStyle, vo.getInterfaceName());//交易名称
-
-                setCellValue(row.createCell(2), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
-                setCellValue(row.createCell(3), commonStyle, operation.getOperationId());//场景id
-                setCellValue(row.createCell(4), commonStyle, operation.getOperationName());//场景名称
-                //用systemAb
-//                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
-                setCellValue(row.createCell(5), commonStyle, vo.getConsumerNames());//调用方
-//                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
-                setCellValue(row.createCell(6), commonStyle, vo.getProviderNames());//提供者
-                String systemAb = Constants.INVOKE_TYPE_CONSUMER.equals(vo.getType())? "Consumer" : "Provider";
-                setCellValue(row.createCell(7), commonStyle, systemAb);//接口方向
-                setCellValue(row.createCell(8), commonStyle, vo.getProviderIds());//接口提供系统ID
-
-                setCellValue(row.createCell(9), commonStyle, "");//报文名称
-                setCellValue(row.createCell(10), commonStyle, "");//处理人
-                setCellValue(row.createCell(11), commonStyle, "");//更新时间
-                setCellValue(row.createCell(12), commonStyle, "");//报文转换方向
-                setCellValue(row.createCell(13), commonStyle, "");//是否已有调用
-                setCellValue(row.createCell(14), commonStyle, vo.getConsumers());//调用方系统ID
-                setCellValue(row.createCell(15), commonStyle, "");//参考文档
-                setCellValue(row.createCell(16), commonStyle, "");//模块划分
-                setCellValue(row.createCell(17), commonStyle, "");//是否穿透
-                setCellValue(row.createCell(18), commonStyle, interfaceHeadService.getHeadNames(vo.getInterfaceId()));//业务报文头
-                if(inter != null){
-                    String interStatus = "";
-                    if( Constants.INTERFACE_STATUS_TC.equals(inter.getStatus())){
-                        interStatus = "投产";
+        int sheetRowNum = 1;
+        HSSFSheet exdSheet = workbook.getSheet("INDEX_EXD");
+        int exdSheetRow = 1;
+        for(int i =0; i < siList.size(); i++){
+            ServiceInvoke serviceInvoke = siList.get(i);
+            if(!Constants.INVOKE_TYPE_STANDARD_U.equals(serviceInvoke.getIsStandard())){//不是未知
+                String hql = " from InterfaceInvoke where providerInvokeId = ? or consumerInvokeId = ?";
+                List<InterfaceInvoke> interfaceInvokes = interfaceInvokeDAO.find(hql, serviceInvoke.getInvokeId(), serviceInvoke.getInvokeId());
+                List<ServiceInvoke> consumers = new ArrayList<ServiceInvoke>();
+                List<ServiceInvoke> providers = new ArrayList<ServiceInvoke>();
+                for(InterfaceInvoke interfaceInvoke : interfaceInvokes){
+                    ServiceInvoke consumer = interfaceInvoke.getConsumer();
+                    ServiceInvoke provider = interfaceInvoke.getProvider();
+                    if(null !=consumer){
+                        if(!consumers.contains(consumer)){
+                            consumers.add(consumer);
+                        }
                     }
-                    if( Constants.INTERFACE_STATUS_FQ.equals(inter.getStatus())){
-                        interStatus = "废弃";
+                    if(null !=provider){
+                        if(!providers.contains(provider)){
+                            providers.add(provider);
+                        }
                     }
-                    setCellValue(row.createCell(19), commonStyle, interStatus);//接口状态
                 }
-                String operaStatus = Constants.Operation.getStateName(operation.getState());
-                setCellValue(row.createCell(20), commonStyle, operaStatus);//场景状态
-                String isStandard = "";
-                if ( Constants.INVOKE_TYPE_STANDARD_Y.equals(vo.getIsStandard())){
-                    isStandard = "是";
+                if(StringUtils.isNotEmpty(serviceInvoke.getInterfaceId())){
+                    fillIndexRow(sheet, sheetRowNum, serviceInvoke, consumers, providers);
+                    sheetRowNum++;
+                }else{
+                    fillIndexRow(exdSheet, exdSheetRow, serviceInvoke, consumers, providers);
+                    exdSheetRow++;
                 }
-                if ( Constants.INVOKE_TYPE_STANDARD_N.equals(vo.getIsStandard())){
-                    isStandard = "否";
-                }
-                setCellValue(row.createCell(21), commonStyle, isStandard);//是否标准
+            }else{
+                continue;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("===========填充[" + sheet.getSheetName() + "]页失败===========");
-            return false;
         }
         return true;
     }
+    public void fillIndexRow(HSSFSheet sheet, int rowNum, ServiceInvoke serviceInvoke, List<ServiceInvoke> consumers, List<ServiceInvoke> providers){
+        HSSFRow row = sheet.createRow(rowNum);
+        Operation operation = operationDAO.getBySO(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
 
+        setCellValue(row.createCell(0), commonStyle, serviceInvoke.getInterfaceId());//接口代码
+        Hyperlink hyperlink = new HSSFHyperlink(Hyperlink.LINK_DOCUMENT);
+        // "#"表示本文档    "明细页面"表示sheet页名称  "A10"表示第几列第几行
+        hyperlink.setAddress("#" + serviceInvoke.getInterfaceId() + "!A1");
+        row.getCell(0).setHyperlink(hyperlink);
+        Interface inter = interfaceDAO.findUniqueBy("interfaceId", serviceInvoke.getInterfaceId());
+        if(null != inter){
+            setCellValue(row.createCell(1), commonStyle, inter.getEcode());//交易名称
+            setCellValue(row.createCell(2), commonStyle, inter.getInterfaceName());//交易名称
+            String interStatus = "";
+            if( Constants.INTERFACE_STATUS_TC.equals(inter.getStatus())){
+                interStatus = "投产";
+            }
+            if( Constants.INTERFACE_STATUS_FQ.equals(inter.getStatus())){
+                interStatus = "废弃";
+            }
+            setCellValue(row.createCell(20), commonStyle, interStatus);//接口状态
+        }else{
+            setCellValue(row.createCell(1), commonStyle, null);//交易名称
+            setCellValue(row.createCell(2), commonStyle, null);//交易名称
+            setCellValue(row.createCell(20), commonStyle, null);//接口状态
+        }
+        setCellValue(row.createCell(3), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
+        setCellValue(row.createCell(4), commonStyle, operation.getOperationId());//场景id
+        setCellValue(row.createCell(5), commonStyle, operation.getOperationName());//场景名称
+        //用systemAb
+//                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
+        setCellValue(row.createCell(6), commonStyle, joinServiceInvokeSystemName(consumers, "systemAb"));//调用方
+//                setCellValue(row.createCell(6), commonStyle, vo.getProviders());//提供者
+        setCellValue(row.createCell(7), commonStyle, joinServiceInvokeSystemName(providers, "systemAb"));//提供者
+        String systemAb = Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())? "consumer" : "provider";
+        setCellValue(row.createCell(8), commonStyle, systemAb);//接口方向
+        setCellValue(row.createCell(9), commonStyle, joinServiceInvokeSystemName(providers, "systemId"));//接口提供系统ID
+
+        setCellValue(row.createCell(10), commonStyle, "");//报文名称
+        setCellValue(row.createCell(11), commonStyle, "");//处理人
+        setCellValue(row.createCell(12), commonStyle, "");//更新时间
+        setCellValue(row.createCell(13), commonStyle, "");//报文转换方向
+        setCellValue(row.createCell(14), commonStyle, "");//是否已有调用
+        setCellValue(row.createCell(15), commonStyle, joinServiceInvokeSystemName(consumers, "systemChineseName"));//调用方系统名称
+        setCellValue(row.createCell(16), commonStyle, "");//参考文档
+        setCellValue(row.createCell(17), commonStyle, "");//模块划分
+        setCellValue(row.createCell(18), commonStyle, "");//是否穿透
+        setCellValue(row.createCell(19), commonStyle, interfaceHeadService.getHeadNames(serviceInvoke.getInterfaceId()));//业务报文头
+        String operaStatus = Constants.Operation.getStateName(operation.getState());
+        setCellValue(row.createCell(21), commonStyle, operaStatus);//场景状态
+        String isStandard = "";
+        if ( Constants.INVOKE_TYPE_STANDARD_Y.equals(serviceInvoke.getIsStandard())){
+            isStandard = "是";
+        }
+        if ( Constants.INVOKE_TYPE_STANDARD_N.equals(serviceInvoke.getIsStandard())){
+            isStandard = "否";
+        }
+        setCellValue(row.createCell(22), commonStyle, isStandard);//是否标准
+        String protocolName = "";
+        if(StringUtils.isNotEmpty(serviceInvoke.getProtocolId())){
+            Protocol protocol = protocolDAO.findUniqueBy("protocolId", serviceInvoke.getProtocolId());
+            if(null != protocol){
+                protocolName = protocol.getProtocolName();
+
+            }
+        }
+        setCellValue(row.createCell(23), commonStyle, protocolName);//关联协议
+    }
     /**
      * 循环填充mapping
      *
@@ -896,7 +932,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         for (int i = 0; i < serviceInvokes.size(); i++) {
             ServiceInvoke serviceInvoke = serviceInvokes.get(i);
             if (serviceInvoke.getSystem() != null) {
-                if (org.apache.commons.lang.StringUtils.isNotEmpty(serviceInvoke.getSystem().getSystemChineseName())) {
+                if (StringUtils.isNotEmpty(serviceInvoke.getSystem().getSystemChineseName())) {
                     if (i == 0) {
                         sysNames += serviceInvoke.getSystem().getSystemChineseName();
                     } else {

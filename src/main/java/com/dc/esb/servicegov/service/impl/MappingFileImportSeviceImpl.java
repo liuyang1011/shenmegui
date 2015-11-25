@@ -677,10 +677,10 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
     }
     //建立调用关系
     public boolean insertInterfaceInvoke(ServiceInvoke serviceInvoke, String systemAbsStr){
+        String providerInvokeId = null;
+        String consumerInvokeId = null;
         if(StringUtils.isNotEmpty(systemAbsStr)){
             String otherType = Constants.INVOKE_TYPE_PROVIDER.equalsIgnoreCase(serviceInvoke.getType()) ?  Constants.INVOKE_TYPE_CONSUMER : Constants.INVOKE_TYPE_PROVIDER;
-            String providerInvokeId = null;
-            String consumerInvokeId = null;
             systemAbsStr = systemAbsStr.replaceAll("，", ",");
             String[] systemAbs = systemAbsStr.split("\\,");
             if(null != systemAbs && systemAbs.length > 0){
@@ -708,6 +708,17 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                     }
                     i++;
                 }while ( i < systemAbs.length);
+            }
+        }else{
+            if(Constants.INVOKE_TYPE_PROVIDER.equalsIgnoreCase(serviceInvoke.getType())){//provider方向
+                providerInvokeId = serviceInvoke.getInvokeId();
+            }else{
+                consumerInvokeId = serviceInvoke.getInvokeId();
+            }
+            InterfaceInvoke interfaceInvoke = interfaceInvokeDAO.getByProIdConId(providerInvokeId, consumerInvokeId);//查询是否已经建立了调用关系
+            if(null == interfaceInvoke){
+                interfaceInvoke = new InterfaceInvoke(providerInvokeId, consumerInvokeId);
+                interfaceInvokeDAO.save(interfaceInvoke);
             }
         }
         return true;
