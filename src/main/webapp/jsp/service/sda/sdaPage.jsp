@@ -133,7 +133,7 @@ var delIds = [];
 
 						node.structAlias = editNode.append1;
 						node.type = editNode.append2;
-						node.length = editNode.append3;
+//						node.length = editNode.append3;
 						node.metadataId = editNode.append4;
 						node.required = editNode.append5;
 						node.remark = editNode.append6;

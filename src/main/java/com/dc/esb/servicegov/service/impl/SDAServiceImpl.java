@@ -151,9 +151,6 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         //TODO 台行  类型和长度合并显示
         for(SDA per : list){
             SDABean sdaBean = new SDABean(per);
-            if(null != sdaBean.getType() && !"STRUCT".equals(sdaBean.getType()) && !"ARRAY".equals(sdaBean.getType())){
-                sdaBean.setType(sdaBean.getType() + "("+sdaBean.getLength()+")");
-            }
             tempList.add(sdaBean);
         }
         Map<String, String> fields = new HashMap<String, String>();
@@ -471,18 +468,18 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         String logParam = "SDA:";
         if (sdas != null && sdas.length > 0) {
             for (SDA sda : sdas) {
-                //TODO TZB类型和长度合并了
-                String type = sda.getType();
-                type.replaceAll("（","(").replaceAll("）",")");
-                if(type.indexOf("(")>=0){
-                    sda.setType(type.split("[()]+")[0]);
-                    sda.setLength(type.split("[()]+")[1]);
-                }
+//                //TODO TZB类型和长度合并了
+//                String type = sda.getType();
+//                type.replaceAll("（","(").replaceAll("）",")");
+//                if(type.indexOf("(")>=0){
+//                    sda.setType(type.split("[()]+")[0]);
+//                    sda.setLength(type.split("[()]+")[1]);
+//                }
                 sda.setOptDate(DateUtils.format(new Date()));
                 //TODO TZB元数据修改对应sda的structName修改,长度，类型，精度
                 sda.setStructName(sda.getMetadataId());
                 Metadata metadata = metadataService.getById(sda.getMetadataId());
-                sda.setType(metadata.getType());
+//                sda.setType(metadata.getType());
                 sda.setLength(metadata.getLength());
                 sda.setStructAlias(metadata.getChineseName());
                 sdaDAO.save(sda);
@@ -666,5 +663,12 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaDAO.save(endSda);
         return endSda;
     }
-
+    public boolean isSDAParentLast(SDA sda){
+        String hql = "from SDA where parentId = ? and seq > ?";
+        List<SDA> list = sdaDAO.find(hql, sda.getParentId(), sda.getSeq());
+        if(null != list && list.size() > 0){
+            return false;
+        }
+        return true;
+    }
 }

@@ -380,15 +380,18 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 interDB.setInterfaceName(interfaceName);
                 interDB.setStatus(interfaceState);
                 interfaceDAO.save(interDB);
-                inter = interDB;
                 //删除接口相关ida
                 idaService.deleteByInterfaceId(interfaceId);
+                //更新版本
+                versionService.editVersion(interDB.getInterfaceId());
             }
         }else{
             inter = new Interface();
             inter.setInterfaceId(interfaceId);
             inter.setEcode(interfaceCode);
             inter.setInterfaceName(interfaceName);
+            String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(), Constants.Version.TYPE_ELSE);
+            inter.setVersionId(versionId);
             interfaceDAO.save(inter);
         }
         return true;
@@ -672,11 +675,13 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         if(Constants.INVOKE_TYPE_CONSUMER.equals(type)){
             systemAbs = indexVO.getProviderAbs();
         }
-        insertInterfaceInvoke(serviceInvoke, systemAbs);
+        if(!insertInterfaceInvoke(indexVO, serviceInvoke, systemAbs)){
+            return false;
+        };
         return true;
     }
     //建立调用关系
-    public boolean insertInterfaceInvoke(ServiceInvoke serviceInvoke, String systemAbsStr){
+    public boolean insertInterfaceInvoke(MappingImportIndexRowVO indexVO, ServiceInvoke serviceInvoke, String systemAbsStr){
         String providerInvokeId = null;
         String consumerInvokeId = null;
         if(StringUtils.isNotEmpty(systemAbsStr)){
@@ -688,7 +693,15 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 int i = 0;
                 do{
                     String systemId = systemService.findUniqueByName(systemAbs[i]).getSystemId();
-                    ServiceInvoke serviceInvoke2 = serviceInvokeDAO.findUnique(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType);
+                    ServiceInvoke serviceInvoke2 = null;
+                    List<ServiceInvoke> list = serviceInvokeDAO.find(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType);
+                    if(null != list && list.size() > 0){
+                        if(list.size() > 1){
+                            logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败，根据系统[" + systemAbs[i] + "], 在场景[" + indexVO.getOperationName() + "]中找到同一方向的多条调用关系！");
+                        }else{
+                            serviceInvoke2 = list.get(0);
+                        }
+                    }
                     if(null == serviceInvoke2){//如果不存在可以匹配的映射关系
                         //生成一条调用的映射关系，接口id为空，是否标准属性为未知
                         serviceInvoke2 = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_U, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), null, otherType, null, null, null);

@@ -9,7 +9,6 @@ import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.*;
-import com.dc.esb.servicegov.service.impl.ConfigExportServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
@@ -69,10 +68,6 @@ public class ConfigExportController {
 
     @Autowired
     ProtocolService protocolService;
-
-    @Autowired
-    ConfigExportServiceImpl configExportService;
-
     @Autowired
     LogInfoServiceImpl logInfoService;
 
@@ -628,71 +623,5 @@ public class ConfigExportController {
         }
 
         return null;
-    }
-    /*根据场景列表导出字段映射*/
-    @RequiresPermissions({"exportConfig-get"})
-    @RequestMapping(method = RequestMethod.POST, value = "/exportByOperaions", headers = "Accept=application/json")
-    public
-    @ResponseBody
-    boolean exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
-        OperationLog operationLog = systemLogService.record("配置文件", "导出", "根据服务场景列表导出");
-        String path = this.getClass().getClassLoader().getResource("/").getPath() + "/generator" ;
-        InputStream in = null;
-        OutputStream out = null;
-        String message = "";
-        try {
-            if(null != pkvo){
-                List<OperationPK> operationPKs = pkvo.getPks();
-                if(null != operationPKs && operationPKs.size() > 0){
-                   for(OperationPK operationPK : operationPKs){
-                       try {
-                           configExportService.generateBy(path, operationPK);
-                       }catch (Exception e){
-                           message +="导出服务[" + operationPK.getServiceId() + operationPK.getOperationId() +"]时出现异常!";
-                           logger.error(e, e);
-                       }
-                   }
-                }
-            }
-            ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
-
-            File metadata = new File(path + "/metadata.zip");
-
-            response.setContentType("application/zip");
-            response.addHeader("Content-Disposition",
-                    "attachment;filename=metadata.zip");
-            in = new BufferedInputStream(new FileInputStream(metadata));
-            out = new BufferedOutputStream(response.getOutputStream());
-            long fileLength = metadata.length();
-            byte[] cache = null;
-            if (fileLength > Integer.MAX_VALUE) {
-                cache = new byte[Integer.MAX_VALUE];
-            } else {
-                cache = new byte[(int) fileLength];
-            }
-            int i = 0;
-            while ((i = in.read(cache)) > 0) {
-                out.write(cache, 0, i);
-            }
-            out.flush();
-
-//            systemLogService.updateResult(operationLog);
-
-        } catch (Exception e) {
-            logger.error(e, e);
-            printMsg(response, "数据错误，导出失败!");
-
-        } finally {
-            try {
-                in.close();
-                out.close();
-                FileUtil.deleteDirectory(path);
-                systemLogService.updateResult(operationLog);
-            } catch (Exception e) {
-                logger.error("导出文件，关闭流异常," + e.getMessage());
-            }
-        }
-
-        return true;
     }
 }
