@@ -590,31 +590,33 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         }else{
             return true;
         }
-        if(null != sda && StringUtils.isNotEmpty(sda.getType()) && sda.getType().toLowerCase().contains("array")){
-            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")){//一个新数组加入父节点缓存
-                sdaService.save(sda);
-                sdaParents.add(sda);
-            }
-            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("end")){//最后加入的数组最先结束
-                sdaParents.remove(sdaParents.size() -1);//删除最后一个元素
-            }
-        }else{
-            sdaService.save(sda);
-        }
+        sdaService.save(sda);
+//        if(null != sda && StringUtils.isNotEmpty(sda.getType()) && sda.getType().toLowerCase().contains("array")){
+//            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")){//一个新数组加入父节点缓存
+//                sdaService.save(sda);
+//                sdaParents.add(sda);
+//            }
+//            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("end")){//最后加入的数组最先结束
+//                sdaParents.remove(sdaParents.size() -1);//删除最后一个元素
+//            }
+//        }else{
+//            sdaService.save(sda);
+//        }
         return true;
     }
     public boolean insertIda(Ida ida, List<Ida> idaParents){
-        if(null != ida && "array".equalsIgnoreCase(ida.getType())){
-            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("start")){
-                idaService.save(ida);
-                idaParents.add(ida);
-            }
-            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("end")){
-                idaParents.remove(idaParents.size() -1);//删除最后一个元素
-            }
-        }else{
-            idaService.save(ida);
-        }
+        idaService.save(ida);
+//        if(null != ida && "array".equalsIgnoreCase(ida.getType())){
+//            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("start")){
+//                idaService.save(ida);
+//                idaParents.add(ida);
+//            }
+//            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("end")){
+//                idaParents.remove(idaParents.size() -1);//删除最后一个元素
+//            }
+//        }else{
+//            idaService.save(ida);
+//        }
         return true;
     }
     //建立映射关系

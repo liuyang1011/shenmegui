@@ -450,7 +450,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             endIda.setType(ida.getType());
             endIda.setLength(ida.getLength());
             endIda.setRequired(ida.getRequired());
-            endIda.setRemark("END");
+            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().contains("start")){
+                endIda.setRemark("END");
+            }
         }
         fillIda(sheet, counter.getCount(), endIda);
         SDA endSda = new SDA();
@@ -461,7 +463,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             endSda.setType(sda.getType());
             endSda.setRequired(sda.getRequired());
             endSda.setConstraint(sda.getConstraint());
-            endSda.setRemark("END");
+            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().contains("start")){
+                endSda.setRemark("END");
+            }
         }
         fillSDA(sheet, counter.getCount(), endSda);
     }

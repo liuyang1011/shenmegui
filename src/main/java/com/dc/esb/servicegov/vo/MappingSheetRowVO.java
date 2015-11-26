@@ -22,7 +22,7 @@ public class MappingSheetRowVO {
     public MappingSheetRowVO() {
     }
 
-    public MappingSheetRowVO(MappingSheetIndexVO sheetIndex,Sheet sheet, int rowNum, List<Ida> idaParentIds ,List<SDA> sdaParentIds) {
+    public MappingSheetRowVO(MappingSheetIndexVO sheetIndex,Sheet sheet, int rowNum, List<Ida> idaParents ,List<SDA> sdaParents) {
         this.rowNum = rowNum;
         Row row = sheet.getRow(rowNum);
         if(null != row){
@@ -43,9 +43,9 @@ public class MappingSheetRowVO {
                 sda.setRemark(sdaRemark);
                 sda.setType(sdaTypeAndLength);
                 sda.setMetadataId(sdaEnName);
-                if(null != sdaParentIds){
-                    if(sdaParentIds.size() > 0){
-                        SDA parentSda = sdaParentIds.get(sdaParentIds.size() -1);
+                if(null != sdaParents){
+                    if(sdaParents.size() > 0){
+                        SDA parentSda = sdaParents.get(sdaParents.size() -1);
                         if(null != parentSda){
                             sda.setParentId(parentSda.getSdaId());
                             if(StringUtils.isNotEmpty(parentSda.getXpath()) && StringUtils.isNotEmpty(sdaEnName)){
@@ -72,9 +72,9 @@ public class MappingSheetRowVO {
                     ida.setMetadataId(sdaEnName);
                     ida.setSdaId(sda.getSdaId());
                 }
-                if(null != idaParentIds){
-                    if(idaParentIds.size() > 0){
-                        Ida parentIda = idaParentIds.get(idaParentIds.size() -1);
+                if(null != idaParents){
+                    if(idaParents.size() > 0){
+                        Ida parentIda = idaParents.get(idaParents.size() -1);
                         if(null != parentIda){
                             ida.set_parentId(parentIda.getId());
                             if(StringUtils.isNotEmpty(parentIda.getXpath()) && StringUtils.isNotEmpty(sdaEnName)){
@@ -84,7 +84,18 @@ public class MappingSheetRowVO {
                         }
                     }
                 }
-
+                if(null != sda && StringUtils.isNotEmpty(sda.getType()) && sda.getType().toLowerCase().contains("array")) {
+                    if (StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")) {//一个新数组加入父节点缓存
+                        sdaParents.add(sda);
+                        idaParents.add(ida);//sda为数组则对应ida节点一定为数组节点
+                    }
+                    if (StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("end")) {//最后加入的数组最先结束
+                        sdaParents.remove(sdaParents.size() - 1);//删除最后一个元素
+                        idaParents.remove(idaParents.size() - 1);//删除最后一个元素
+                        sda = null;//end行不保存到数据库
+                        ida = null;
+                    }
+                }
 
             }
         }
