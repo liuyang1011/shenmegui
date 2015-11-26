@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/serviceHead")
-public class ServiceHeacController {
+public class ServiceHeadController {
     @Autowired
     private SystemLogServiceImpl systemLogService;
     @Autowired

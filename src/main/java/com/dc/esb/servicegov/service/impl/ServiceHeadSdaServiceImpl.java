@@ -69,7 +69,7 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
 
         List<SDA> list = sdaDAO.findBy("serviceHeadId", serviceHeadId);
         Map<String, String> fields = new HashMap<String, String>();
-        fields.put("id", "sdaId");
+        fields.put("id", "id");
         fields.put("text", "structName");
         fields.put("append1", "structAlias");
         fields.put("append2", "type");

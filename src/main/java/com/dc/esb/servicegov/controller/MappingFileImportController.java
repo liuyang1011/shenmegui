@@ -112,7 +112,7 @@ public class MappingFileImportController {
                             logger.info("===========INDEX页第" + indexVO.getIndexNum() + "条记录导入完成，,接口代码[" + indexVO.getInterfaceId() + "]，耗时" + useTime + "ms=============");
                         }
                     }catch (Exception e){
-                        mappingFileImportSevice.logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败,导入时发生异常！");
+                        mappingFileImportSevice.logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败,导入时发生异常！异常信息："+e.getMessage());
                         logger.error(e, e);
                         continue;
                     }
@@ -147,10 +147,10 @@ public class MappingFileImportController {
                 mappingFileImportSevice.setMsg("导入成功!");
             }
         }catch (IOException e){
-           mappingFileImportSevice.logMsg("读取文档内容时发生IO错误，请检查文档格式！");
+           mappingFileImportSevice.logMsg("读取文档内容时发生IO错误，请检查文档格式！异常信息：" + e.getMessage());
             logger.error(e, e);
         }catch (Exception e){
-           mappingFileImportSevice.logMsg("导入出现异常，导入失败！");
+           mappingFileImportSevice.logMsg("导入出现异常，导入失败！异常信息：" + e.getMessage());
             logger.error(e, e);
         }
         finally {

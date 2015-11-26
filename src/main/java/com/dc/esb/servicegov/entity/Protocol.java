@@ -16,7 +16,19 @@ public class Protocol {
 	
 	@Column(name = "PROTOCOL_NAME")
 	private String protocolName;
-	
+
+	@Column(name = "COMMU_PROTOCOL")
+	private String commuProtocol;
+
+	@Column(name = "IS_ENCRYPT")
+	private String isEncrypt;
+
+	@Column(name = "IS_SYNC")
+	private String isSync;
+
+	@Column(name = "IS_LONG_CONNECTION")
+	private String isLongCon;
+
 	@Column(name = "REMARK")
 	private String remark;
 	
@@ -135,5 +147,37 @@ public class Protocol {
 
 	public void setMsgTemplate(MsgTemplate msgTemplate) {
 		this.msgTemplate = msgTemplate;
+	}
+
+	public String getIsEncrypt() {
+		return isEncrypt;
+	}
+
+	public void setIsEncrypt(String isEncrypt) {
+		this.isEncrypt = isEncrypt;
+	}
+
+	public String getIsSync() {
+		return isSync;
+	}
+
+	public void setIsSync(String isSync) {
+		this.isSync = isSync;
+	}
+
+	public String getIsLongCon() {
+		return isLongCon;
+	}
+
+	public void setIsLongCon(String isLongCon) {
+		this.isLongCon = isLongCon;
+	}
+
+	public String getCommuProtocol() {
+		return commuProtocol;
+	}
+
+	public void setCommuProtocol(String commuProtocol) {
+		this.commuProtocol = commuProtocol;
 	}
 }

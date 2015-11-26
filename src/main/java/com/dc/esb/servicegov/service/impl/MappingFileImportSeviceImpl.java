@@ -353,6 +353,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             operation.setOperationId(operationId);
             operation.setOperationDesc(operationDesc);
             operation.setState(Constants.Operation.getState(indexVO.getOperationState()));
+            operation.setHeadId(Constants.ServiceHead.DEFAULT_HEAD_ID);
             String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_OPERATION, operationId, Constants.Version.TYPE_ELSE);//初始化版本信息
             operation.setVersionId(versionId);
             operationDAO.save(operation);
@@ -379,20 +380,21 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 interDB.setInterfaceName(interfaceName);
                 interDB.setStatus(interfaceState);
                 interfaceDAO.save(interDB);
-
                 versionService.editVersion(inter.getVersionId());
                 inter = interDB;
                 //删除接口相关ida
                 idaService.deleteByInterfaceId(interfaceId);
+                //更新版本
+                versionService.editVersion(interDB.getInterfaceId());
             }
         }else{
             inter = new Interface();
             inter.setInterfaceId(interfaceId);
             inter.setEcode(interfaceCode);
             inter.setInterfaceName(interfaceName);
-            interfaceDAO.save(inter);
             String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(), Constants.Version.TYPE_ELSE);
             inter.setVersionId(versionId);
+            interfaceDAO.save(inter);
         }
         return true;
     }
@@ -590,31 +592,33 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         }else{
             return true;
         }
-        if(null != sda && StringUtils.isNotEmpty(sda.getType()) && sda.getType().toLowerCase().contains("array")){
-            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")){//一个新数组加入父节点缓存
-                sdaService.save(sda);
-                sdaParents.add(sda);
-            }
-            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("end")){//最后加入的数组最先结束
-                sdaParents.remove(sdaParents.size() -1);//删除最后一个元素
-            }
-        }else{
-            sdaService.save(sda);
-        }
+        sdaService.save(sda);
+//        if(null != sda && StringUtils.isNotEmpty(sda.getType()) && sda.getType().toLowerCase().contains("array")){
+//            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")){//一个新数组加入父节点缓存
+//                sdaService.save(sda);
+//                sdaParents.add(sda);
+//            }
+//            if(StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("end")){//最后加入的数组最先结束
+//                sdaParents.remove(sdaParents.size() -1);//删除最后一个元素
+//            }
+//        }else{
+//            sdaService.save(sda);
+//        }
         return true;
     }
     public boolean insertIda(Ida ida, List<Ida> idaParents){
-        if(null != ida && "array".equalsIgnoreCase(ida.getType())){
-            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("start")){
-                idaService.save(ida);
-                idaParents.add(ida);
-            }
-            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("end")){
-                idaParents.remove(idaParents.size() -1);//删除最后一个元素
-            }
-        }else{
-            idaService.save(ida);
-        }
+        idaService.save(ida);
+//        if(null != ida && "array".equalsIgnoreCase(ida.getType())){
+//            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("start")){
+//                idaService.save(ida);
+//                idaParents.add(ida);
+//            }
+//            if(StringUtils.isNotEmpty(ida.getRemark()) && ida.getRemark().toLowerCase().startsWith("end")){
+//                idaParents.remove(idaParents.size() -1);//删除最后一个元素
+//            }
+//        }else{
+//            idaService.save(ida);
+//        }
         return true;
     }
     //建立映射关系
@@ -675,11 +679,13 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         if(Constants.INVOKE_TYPE_CONSUMER.equals(type)){
             systemAbs = indexVO.getProviderAbs();
         }
-        insertInterfaceInvoke(serviceInvoke, systemAbs);
+        if(!insertInterfaceInvoke(indexVO, serviceInvoke, systemAbs)){
+            return false;
+        };
         return true;
     }
     //建立调用关系
-    public boolean insertInterfaceInvoke(ServiceInvoke serviceInvoke, String systemAbsStr){
+    public boolean insertInterfaceInvoke(MappingImportIndexRowVO indexVO, ServiceInvoke serviceInvoke, String systemAbsStr){
         String providerInvokeId = null;
         String consumerInvokeId = null;
         if(StringUtils.isNotEmpty(systemAbsStr)){
@@ -691,7 +697,15 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 int i = 0;
                 do{
                     String systemId = systemService.findUniqueByName(systemAbs[i]).getSystemId();
-                    ServiceInvoke serviceInvoke2 = serviceInvokeDAO.findUnique(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType);
+                    ServiceInvoke serviceInvoke2 = null;
+                    List<ServiceInvoke> list = serviceInvokeDAO.find(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType);
+                    if(null != list && list.size() > 0){
+                        if(list.size() > 1){
+                            logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败，根据系统[" + systemAbs[i] + "], 在场景[" + indexVO.getOperationName() + "]中找到同一方向的多条调用关系！");
+                        }else{
+                            serviceInvoke2 = list.get(0);
+                        }
+                    }
                     if(null == serviceInvoke2){//如果不存在可以匹配的映射关系
                         //生成一条调用的映射关系，接口id为空，是否标准属性为未知
                         serviceInvoke2 = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_U, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), null, otherType, null, null, null);

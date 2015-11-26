@@ -147,13 +147,10 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         //TODO 台行  类型和长度合并显示
         for(SDA per : list){
             SDABean sdaBean = new SDABean(per);
-            if(null != sdaBean.getType() && !"STRUCT".equals(sdaBean.getType()) && !"ARRAY".equals(sdaBean.getType())){
-                sdaBean.setType(sdaBean.getType() + "("+sdaBean.getLength()+")");
-            }
             tempList.add(sdaBean);
         }
         Map<String, String> fields = new HashMap<String, String>();
-        fields.put("id", "sdaId");
+        fields.put("id", "id");
         fields.put("text", "structName");
         fields.put("append1", "structAlias");
         fields.put("append2", "type");
@@ -177,7 +174,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         List<SDA> list = getSDAListBySO(serviceId, operationId);
 
         Map<String, String> fields = new HashMap<String, String>();
-        fields.put("id", "sdaId");
+        fields.put("id", "id");
         fields.put("text", "structAlias");
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
@@ -200,7 +197,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             tempList.add(sdaBean);
         }
         Map<String, String> fields = new HashMap<String, String>();
-        fields.put("id", "sdaId");
+        fields.put("id", "id");
         fields.put("text", "structName");
         fields.put("append1", "structAlias");
         fields.put("append2", "type");
@@ -224,7 +221,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         List<SDA> list = sdaDAO.find(hql, headId);
 
         Map<String, String> fields = new HashMap<String, String>();
-        fields.put("id", "sdaId");
+        fields.put("id", "id");
         fields.put("text", "structName");
         fields.put("append1", "structAlias");
         fields.put("append2", "xpath");
@@ -467,18 +464,18 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         String logParam = "SDA:";
         if (sdas != null && sdas.length > 0) {
             for (SDA sda : sdas) {
-                //TODO TZB类型和长度合并了
-                String type = sda.getType();
-                type.replaceAll("（","(").replaceAll("）",")");
-                if(type.indexOf("(")>=0){
-                    sda.setType(type.split("[()]+")[0]);
-                    sda.setLength(type.split("[()]+")[1]);
-                }
+//                //TODO TZB类型和长度合并了
+//                String type = sda.getType();
+//                type.replaceAll("（","(").replaceAll("）",")");
+//                if(type.indexOf("(")>=0){
+//                    sda.setType(type.split("[()]+")[0]);
+//                    sda.setLength(type.split("[()]+")[1]);
+//                }
                 sda.setOptDate(DateUtils.format(new Date()));
                 //TODO TZB元数据修改对应sda的structName修改,长度，类型，精度
                 sda.setStructName(sda.getMetadataId());
                 Metadata metadata = metadataService.getById(sda.getMetadataId());
-                sda.setType(metadata.getType());
+//                sda.setType(metadata.getType());
                 sda.setLength(metadata.getLength());
                 sda.setStructAlias(metadata.getChineseName());
                 sdaDAO.save(sda);
@@ -519,11 +516,11 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     public String delete(String[] delIds) {
         String logParam = "SDA:";
         if (delIds != null && delIds.length > 0) {
-            SDA sda = sdaDAO.findUniqueBy("sdaId", delIds[0]);
+            SDA sda = sdaDAO.findUniqueBy("id", delIds[0]);
             if(sda != null){
                 operationService.editReleate(sda.getServiceId(), sda.getOperationId());
                 for (String id : delIds) {
-                    SDA entity = sdaDAO.findUniqueBy("sdaId", id);
+                    SDA entity = sdaDAO.findUniqueBy("id", id);
                     if(entity != null){
                         logParam += "[服务ID：" + entity.getServiceId() +", 场景ID:" + entity.getOperationId() + ", SDA:" + entity.getStructName() + "],";
                     }
@@ -538,7 +535,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
      * 将一个节点上移
      */
     public boolean moveUp(String sdaId) {
-        SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
+        SDA sda = sdaDAO.findUnique(" from SDA where id=?", sdaId);
         if(sda.getServiceId() != null && sda.getOperationId() != null){
             operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         }
@@ -569,7 +566,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     }
 
     public boolean moveDown(String sdaId) {
-        SDA sda = sdaDAO.findUnique(" from SDA where sdaId=?", sdaId);
+        SDA sda = sdaDAO.findUnique(" from SDA where id=?", sdaId);
         if(sda.getServiceId() != null && sda.getOperationId() != null){
             operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         }
@@ -662,5 +659,12 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         sdaDAO.save(endSda);
         return endSda;
     }
-
+    public boolean isSDAParentLast(SDA sda){
+        String hql = "from SDA where parentId = ? and seq > ?";
+        List<SDA> list = sdaDAO.find(hql, sda.getParentId(), sda.getSeq());
+        if(null != list && list.size() > 0){
+            return false;
+        }
+        return true;
+    }
 }

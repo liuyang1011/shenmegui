@@ -147,6 +147,9 @@
             if (value == 8) {
                 return "<font color='red'>已下线</font>";
             }
+            if (value == 9) {
+                return "<font color='red'>已废弃</font>";
+            }
         },
         version: function (value, row, index) {
             try {
@@ -289,14 +292,21 @@
         text: '历史版本',
         iconCls: 'icon-qxfp',
         handler: function () {
-            var urlPath = "/operationHis/hisPage?serviceId=${entity.serviceId }";
             var checkedItems = $('#operationList').datagrid('getChecked');
             if (checkedItems != null && checkedItems.length > 0) {
+                if(checkedItems.length > 1){
+                    alert('请只选中一个要查看的场景！');
+                    return;
+                }
+                var urlPath = "/operationHis/hisPage?serviceId=${entity.serviceId }";
                 urlPath += "&operationId=" + checkedItems[0].operationId;
-            }
-            var opeHisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
+                var opeHisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
 
-            parent.parent.addTab('历史场景', opeHisContent);
+                parent.parent.addTab('历史场景', opeHisContent);
+            }else{
+                alert('没有选中数据哦！');
+            }
+
         }
     });
     </shiro:hasPermission>
@@ -349,24 +359,26 @@
                         alert("只有服务定义状态和修订状态的服务能提交审核");
                         return;
                     }
-                }
-            }
-            if (!confirm("确定要提交审核吗？")) {
-                return;
-            }
-            $.ajax({
-                "type": "POST",
-                "async": false,
-                "contentType": "application/json; charset=utf-8",
-                "url": "/operation/submitToAudit",
-                "data": JSON.stringify(items),
-                "dataType": "json",
-                "success": function (result) {
-                    if(result){
-                        $('#operationList').datagrid('reload');
+                    if (!confirm("确定要提交审核吗？")) {
+                        return;
                     }
+                    $.ajax({
+                        "type": "POST",
+                        "async": false,
+                        "contentType": "application/json; charset=utf-8",
+                        "url": "/operation/submitToAudit",
+                        "data": JSON.stringify(items),
+                        "dataType": "json",
+                        "success": function (result) {
+                            if(result){
+                                $('#operationList').datagrid('reload');
+                            }
+                        }
+                    });
                 }
-            });
+            }else{
+                alert('没有选中数据哦！');
+            }
         }
     });
     </shiro:hasPermission>
@@ -410,30 +422,33 @@
             var items = $('#operationList').datagrid('getSelections');
             if (items != null && items.length > 0) {
                 for(var i = 0; i < items.length; i++){
-                    if(items[i].optState == 1 || items[i].optState == 2 || items[i].optState == 3 || items[i].optState == 4){
+                    if(items[i].optState == 1 || items[i].optState == 2 || items[i].optState == 3 || items[i].optState == 4|| items[i].optState == 9){
 
                     }else{
-                        alert("审核通过，审核不通过，已上线，已发布状态的服务才能进行修订");
+                        alert("审核通过，审核不通过，已上线，已发布，已废弃状态的服务才能进行修订");
                         return;
                     }
                 }
-            }
-            if (!confirm("确定要修订吗？")) {
-                return;
-            }
-            $.ajax({
-                "type": "POST",
-                "async": false,
-                "contentType": "application/json; charset=utf-8",
-                "url": "/operation/revise",
-                "data": JSON.stringify(items),
-                "dataType": "json",
-                "success": function (result) {
-                    if(result){
-                        $('#operationList').datagrid('reload');
-                    }
+
+                if (!confirm("确定要修订吗？")) {
+                    return;
                 }
-            });
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/operation/revise",
+                    "data": JSON.stringify(items),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result){
+                            $('#operationList').datagrid('reload');
+                        }
+                    }
+                });
+            }else{
+                alert('没有选中数据哦！');
+            };
         }
     });
     </shiro:hasPermission>
@@ -454,26 +469,61 @@
                         return;
                     }
                 }
-            }
-            if (!confirm("确定要下线吗？")) {
-                return;
-            }
-            $.ajax({
-                "type": "POST",
-                "async": false,
-                "contentType": "application/json; charset=utf-8",
-                "url": "/operation/quit",
-                "data": JSON.stringify(items),
-                "dataType": "json",
-                "success": function (result) {
-                    if(result){
-                        $('#operationList').datagrid('reload');
-                    }
+                if (!confirm("确定要下线吗？")) {
+                    return;
                 }
-            });
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/operation/quit",
+                    "data": JSON.stringify(items),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result){
+                            $('#operationList').datagrid('reload');
+                        }
+                    }
+                });
+            }else{
+                alert('没有选中数据哦！');
+            }
         }
     });
     </shiro:hasPermission>
+
+//    废弃
+    toolbar.push({
+        text: '废弃',
+        iconCls: 'icon-audit',
+        handler: function () {
+            var url = "";
+            var items = $('#operationList').datagrid('getChecked');
+            if (items != null && items.length > 0) {
+                if (confirm("确定要废弃已选中的" + items.length + "项吗？")) {
+                    $.ajax({
+                        "type": "POST",
+                        "async": false,
+                        "contentType": "application/json; charset=utf-8",
+                        "url": "/operation/drop",
+                        "data": JSON.stringify(items),
+                        "dataType": "json",
+                        "success": function (result) {
+                            if(result){
+                                alert("操作成功");
+                                $('#operationList').datagrid('reload');
+                            }else{
+                                alert("操作失败");
+                            }
+                        }
+                    });
+                }
+            }else{
+                alert("没用选中数据哦！")
+            }
+        }
+    });
+
     <shiro:hasPermission name="excelExport-get">
     toolbar.push({
         text:'导出EXCEL',

@@ -627,6 +627,43 @@ public class OperationController {
         return true;
     }
 
+
+    @RequestMapping(method = RequestMethod.POST, value = "/drop", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean drop(@RequestBody List list) {
+        OperationLog operationLog = systemLogService.record("服务场景","废弃","");
+        String logParam = "场景：";
+
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String,String> map = (LinkedHashMap<String,String>)list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String,String> params = new HashMap<String, String>();
+            params.put("serviceId",serviceId);
+            params.put("operationId",operationId);
+            Operation operation = operationServiceImpl.findUniqueBy(params);
+            boolean canRevise = true;
+            if(canRevise){
+                operation.setState(Constants.Operation.OPT_STATE_ABANDONED);
+                operationServiceImpl.save(operation);
+                //将版本状态改为‘废弃’
+//                Version version = operation.getVersion();
+//                if(version != null){
+//                    version.setOptType(Constants.Version.STATE_DROPPED);
+//                    versionService.save(version);
+//                }
+            }else {
+                return false;
+            }
+
+            logParam += "[服务ID:" + serviceId + ", 场景ID:" + operationId + "],";
+        }
+
+        operationLog.setParams(logParam.substring(0, logParam.length() -2 ));
+        systemLogService.updateResult(operationLog);
+        return true;
+    }
     /**
      * 下线，变为下线状态  只有已上线状态的服务才能进行下线
      * @param list
