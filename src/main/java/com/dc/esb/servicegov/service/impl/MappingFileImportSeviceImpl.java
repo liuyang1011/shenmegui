@@ -354,6 +354,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             operation.setOperationId(operationId);
             operation.setOperationDesc(operationDesc);
             operation.setState(Constants.Operation.getState(indexVO.getOperationState()));
+            operation.setHeadId(Constants.ServiceHead.DEFAULT_HEAD_ID);
             String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_OPERATION, operationId, Constants.Version.TYPE_ELSE);//初始化版本信息
             operation.setVersionId(versionId);
             operationDAO.save(operation);

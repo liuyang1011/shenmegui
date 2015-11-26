@@ -182,7 +182,7 @@ public class Constants {
     public static class ServiceHead{
         public static final String DEFAULT_SYSHEAD_ID = "sys_head";
         public static final String DEFAULT_APPHEAD_ID = "app_head";
-        public static final String DEFAULT_HEAD_ID = "sys_head, app_head";
+        public static final String DEFAULT_HEAD_ID = "sys_head,app_head";
     }
     public static class ServiceCategory{
         public static final Integer CATEGORY_CHILD_LENGTH = 5;//服务分类id长度
