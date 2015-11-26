@@ -235,7 +235,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public static class SDABean {
 
-        private String sdaId;
+        private String id;
 
         private String structName;
 
@@ -276,7 +276,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         private String xpath;
 
         public SDABean(SDA sda){
-            setSdaId(sda.getId());
+            setId(sda.getId());
             setStructName(sda.getStructName());
             setStructAlias(sda.getStructAlias());
             setMetadataId(sda.getMetadataId());
@@ -299,12 +299,12 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         }
 
-        public String getSdaId() {
-            return sdaId;
+        public String getId() {
+            return id;
         }
 
-        public void setSdaId(String sdaId) {
-            this.sdaId = sdaId;
+        public void setId(String sdaId) {
+            this.id = sdaId;
         }
 
         public String getStructName() {

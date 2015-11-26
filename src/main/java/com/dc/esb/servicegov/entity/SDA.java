@@ -16,7 +16,7 @@ public class SDA extends IExportableNode implements Serializable {
 
 	@Id
 	@Column(name = "SDA_ID")
-	private String Id;
+	private String id;
 
 	@Column(name = "STRUCTNAME")
 	private String structName;
@@ -102,11 +102,11 @@ public class SDA extends IExportableNode implements Serializable {
 	}
 
 	public String getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(String id) {
-		this.Id = id;
+		this.id = id;
 	}
 
 	public String getStructName() {

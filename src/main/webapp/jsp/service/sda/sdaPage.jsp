@@ -400,7 +400,8 @@ var delIds = [];
                 <!--
                	<th data-options="field:'append6',width:80,formatter:formatConsole">备注</th>
                	-->
-				<th field ="append7" width="80" editor="{type:'combobox',options:{url:'/serviceHead/queryByHeadIds?headIds=${operation.headId}', method:'get', valueField:'headId',textField:'headName'}}">约束条件</th>
+				<%--<th field ="append7" width="80" editor="{type:'combobox',options:{url:'/serviceHead/queryByHeadIds?headIds=${operation.headId}', method:'get', valueField:'headId',textField:'headName'}}">约束条件</th>--%>
+				<th field ="append7" width="80" editor="{type:'combobox',options:{data:[{headId:'sys_head', headName:'sys_head'}, {headId:'app_head', headName:'app_head'}], method:'get', valueField:'headId',textField:'headName'}}">约束条件</th>
                	<th data-options="field:'append6',width:80,editor:'text'">备注</th>
 			</tr>
 		</thead>
