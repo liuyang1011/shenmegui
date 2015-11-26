@@ -61,6 +61,10 @@ public class Protocol {
 	@JoinColumn(name = "MSG_TEMPLATE_ID",referencedColumnName = "TEMPLATE_ID",insertable = false,updatable = false)
 	private MsgTemplate msgTemplate;
 
+	@ManyToOne()
+	@JoinColumn(name = "GENERATOR_ID", insertable = false, updatable = false)
+	private Generator generator;
+
 	public String getProtocolId() {
 		return protocolId;
 	}
@@ -179,5 +183,13 @@ public class Protocol {
 
 	public void setCommuProtocol(String commuProtocol) {
 		this.commuProtocol = commuProtocol;
+	}
+
+	public Generator getGenerator() {
+		return generator;
+	}
+
+	public void setGenerator(Generator generator) {
+		this.generator = generator;
 	}
 }

@@ -76,7 +76,7 @@
         <th data-options="field:'remark',align:'right',width:'15%'">
             备注
         </th>
-        <th data-options="field:'generatorId',width:'20%',align:'right'">
+        <th data-options="field:'generatorId',width:'20%',align:'right'" formatter='formatter.generator'>
             生成类
         </th>
         <th data-options="field:'protocolId',align:'right',hidden:true">
@@ -209,6 +209,14 @@
         $('#tg').datagrid('options').queryParams = queryParams;//传递值
         $("#tg").datagrid('reload');//重新加载table
     }
+    var formatter = {
+        generator: function (value, row, index) {
+            try {
+                return row.generator.name
+            } catch (exception) {
+            }
+        }
+    };
 </script>
 
 </body>
