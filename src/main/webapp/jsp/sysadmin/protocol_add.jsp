@@ -77,10 +77,6 @@
 				生成类
 			</th>
 			<td>
-<<<<<<< HEAD
-				<input class="easyui-textbox" type="text"  id="generatorIdText" value="com.dc.esb.servicegov.export.impl.TZBStandardXMLConfigGenerator">
-=======
-				<%--<input class="easyui-textbox" type="text" id="generatorIdText">--%>
 				<select class="easyui-combobox" id="generator" style="width:173px" panelHeight="auto"
 						data-options="
 						url:'/generator/getAll',
@@ -90,7 +86,6 @@
 						textField:'name'
 						">
 				</select>
->>>>>>> 483771fccfd6868859361c09b356ab45308b60bd
 			</td>
 		</tr>
 

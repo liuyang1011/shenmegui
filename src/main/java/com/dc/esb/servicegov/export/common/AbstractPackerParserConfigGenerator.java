@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.export.IExportableNode;
 import com.dc.esb.servicegov.export.IPackerParserConfigGenerator;
 import com.dc.esb.servicegov.export.exception.ExportException;
 import com.dc.esb.servicegov.export.util.FileUtil;
+import com.dc.esb.servicegov.export.util.XMLUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,42 +37,52 @@ public abstract class AbstractPackerParserConfigGenerator implements IPackerPars
         }
         return configFolder;
     }
-        /**
+
+    /**
      * 生成XML的拆组包文件
      *
-     * @param bodyNodeList    export node 比如 sda 或者Ida
-     * @param serviceId   服务Id
-     * @param operationId 场景ID
-     * @param systemAb    系统简称
-     * @param type        类型，是提供方／消费方 provider/consumer
+     * @param bodyNodeList export node 比如 sda 或者Ida
+     * @param serviceId    服务Id
+     * @param operationId  场景ID
+     * @param systemAb     系统简称
+     * @param type         类型，是提供方／消费方 provider/consumer
      * @return
      */
     @Override
     public synchronized List<File> generate(List<List<? extends IExportableNode>> headNodeList, List<? extends IExportableNode> bodyNodeList, String serviceId,
-                               String operationId, String systemAb, String type) throws ExportException {
+                                            String operationId, String systemAb, String type) throws ExportException {
 
         log.info("开始导出拆组包配置,服务[" + serviceId + "]场景[" + operationId + "],系统[" + systemAb + "],类型[" + type + "]," +
                 "报文类型[" + getMsgType() + "],使用模版[" + getTemplatePath() + "]");
 
+        ClassLoader loader = this.getClass().getClassLoader();
         List<File> resultFiles = new ArrayList<File>();
         String configFolder = getConfigFolder(type);
         String templatePath = getTemplatePath();
-        templatePath = templatePath + configFolder;
-        ClassLoader loader = this.getClass().getClassLoader();
-        String destPath = loader.getResource("/").getPath() + "/generator/" + serviceId + operationId;
+        templatePath = loader.getResource("").getPath() + "/" + templatePath + "/" + configFolder;
+        String destPath = loader.getResource("").getPath() + "/generator/" + serviceId + operationId ;
+        File resultDir = new File(destPath);
+        if (!resultDir.exists()) {
+            resultDir.mkdirs();
+        } else {
+            resultDir.delete();
+        }
+        resultFiles.add(resultDir);
+
+        destPath = destPath + "/" + configFolder;
         File destDir = new File(destPath);
-        if(!destDir.exists()){
+        if (!destDir.exists()) {
             destDir.mkdirs();
-        }else {
+        } else {
             destDir.delete();
         }
-        resultFiles.add(destDir);
+
         String reqContent = composeContent(bodyNodeList, "request");
         String respContent = composeContent(bodyNodeList, "response");
-        String reqHeadContent = null;
-        String respHeadContent = null;
-        for(List<? extends IExportableNode> headNodes : headNodeList){
-            reqHeadContent += composeContent(headNodes,"request");
+        String reqHeadContent = "";
+        String respHeadContent = "";
+        for (List<? extends IExportableNode> headNodes : headNodeList) {
+            reqHeadContent += composeContent(headNodes, "request");
             respHeadContent += composeContent(headNodes, "response");
         }
 
@@ -88,6 +99,7 @@ public abstract class AbstractPackerParserConfigGenerator implements IPackerPars
                     fileContent = fileContent.replace("${request}$", reqContent);
                     fileContent = fileContent.replace("${rspHead}$", respHeadContent);
                     fileContent = fileContent.replace("${response}$", respContent);
+                    fileContent = XMLUtil.formatXml(fileContent);
                     String targetFilePath = destPath + "/" + fileName;
                     FileUtil.writeFile(fileContent, targetFilePath);
                 }
@@ -115,25 +127,27 @@ public abstract class AbstractPackerParserConfigGenerator implements IPackerPars
 
     protected String composeLine(IExportableNode node) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<");
-        sb.append(node.getStructName());
-        sb.append(" ");
-        String metadataId = node.getMetadataId();
-        if (null != metadataId && !"".equalsIgnoreCase(metadataId.trim())) {
-            sb.append("metadataid=\"" + node.getMetadataId() + "\"");
+        if (null != node.getStructName() && !"".equalsIgnoreCase(node.getStructName().trim())) {
+            sb.append("<");
+            sb.append(node.getStructName());
             sb.append(" ");
+            String metadataId = node.getMetadataId();
+            if (null != metadataId && !"".equalsIgnoreCase(metadataId.trim())) {
+                sb.append("metadataid=\"" + node.getMetadataId() + "\"");
+                sb.append(" ");
+            }
+            String type = node.getType();
+            if (null != type && !"".equalsIgnoreCase(type.trim())) {
+                sb.append("type=\"" + node.getType() + "\"");
+                sb.append(" ");
+            }
+            String length = node.getLength();
+            if (null != length && !"".equalsIgnoreCase(length.trim())) {
+                sb.append("length=\"" + node.getLength() + "\"");
+                sb.append(" ");
+            }
+            sb.append("/>\n");
         }
-        String type = node.getType();
-        if (null != type && !"".equalsIgnoreCase(type.trim())) {
-            sb.append("type=\"" + node.getType() + "\"");
-            sb.append(" ");
-        }
-        String length = node.getLength();
-        if (null != length && !"".equalsIgnoreCase(length.trim())) {
-            sb.append("length=\"" + node.getLength() + "\"");
-            sb.append(" ");
-        }
-        sb.append("/>\n");
         return sb.toString();
     }
 
@@ -168,7 +182,7 @@ public abstract class AbstractPackerParserConfigGenerator implements IPackerPars
                 contentBuilder.append(" ");
                 contentBuilder.append("metadataida=\"");
                 contentBuilder.append(node.getMetadataId());
-                contentBuilder.append("\" />\n");
+                contentBuilder.append("\">\n");
                 contentBuilder.append(composeContent(childNode, hierarchy));
                 contentBuilder.append("</");
                 contentBuilder.append(node.getStructName());

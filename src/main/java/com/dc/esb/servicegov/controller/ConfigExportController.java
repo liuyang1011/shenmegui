@@ -107,7 +107,7 @@ public class ConfigExportController {
         Map<String, String> idaMap = new HashMap<String, String>();
         sdaMap.put("serviceId", export.getServiceId());
         sdaMap.put("operationId", export.getOperationId());
-        sdaMap.put("interfaceId", export.getConsumerInterfaceId());
+//        sdaMap.put("interfaceId", export.getConsumerInterfaceId());
         List<SDA> sdas = sdaService.findBy(sdaMap);
         //这个又是什么鬼东西
         List<Ida> idas = idaService.findBy(idaMap);
@@ -146,7 +146,7 @@ public class ConfigExportController {
         } else {
             //非标准接口导出,我不得不改了
             try {
-                IPackerParserConfigGenerator generator = getGenerator(export);
+                IPackerParserConfigGenerator generator = getGenerator(export.getServiceId(), export.getOperationId(), export.getConsumerInterfaceId(), export.getConsumerSystemId());
                 Map<String, String> param = new HashMap<String, String>();
                 param.put("interfaceId", export.getConsumerInterfaceId());
                 List<Ida> bodyNodes = idaService.findBy(param, "seq");
@@ -159,6 +159,7 @@ public class ConfigExportController {
                         export.getConsumerSystemId(), "consumer");
                 in_file = resultFiles.get(0);
             } catch (Exception e) {
+                logger.error(e,e);
                 printMsg(response, e.getMessage());
             }
         }
@@ -172,12 +173,12 @@ public class ConfigExportController {
         } else {
             //非标准接口导出,我不得不改了
             try {
-                IPackerParserConfigGenerator generator = getGenerator(export);
+                IPackerParserConfigGenerator generator = getGenerator(export.getServiceId(),export.getOperationId(),export.getProviderInterfaceId(), export.getProviderSystemId());
                 Map<String, String> param = new HashMap<String, String>();
-                param.put("interfaceId", export.getConsumerInterfaceId());
+                param.put("interfaceId", export.getProviderInterfaceId());
                 List<Ida> bodyNodes = idaService.findBy(param, "seq");
                 List<List<? extends IExportableNode>> headers = new ArrayList<List<? extends IExportableNode>>();
-                List<List<Ida>> headIdas = interfaceHeadService.getHeadersByInterfaceId(export.getConsumerInterfaceId());
+                List<List<Ida>> headIdas = interfaceHeadService.getHeadersByInterfaceId(export.getProviderInterfaceId());
                 for(List<Ida> headIda : headIdas){
                     headers.add(headIda);
                 }
@@ -185,6 +186,7 @@ public class ConfigExportController {
                         export.getConsumerSystemId(), "provider");
                 in_file = resultFiles.get(0);
             } catch (Exception e) {
+                logger.error(e,e);
                 printMsg(response, e.getMessage());
             }
         }
@@ -216,15 +218,14 @@ public class ConfigExportController {
             systemLogService.updateResult(operationLog);
 
         } catch (Exception e) {
-
-
+            logger.error(e,e);
         } finally {
             try {
                 in.close();
                 out.close();
                 FileUtil.deleteDirectory(new File(path).getParent());
             } catch (Exception e) {
-                logger.error("导出文件，关闭流异常," + e.getMessage());
+                logger.error("导出文件，关闭流异常," + e.getMessage(),e);
             }
         }
 
@@ -232,13 +233,13 @@ public class ConfigExportController {
     }
 
 
-    private IPackerParserConfigGenerator getGenerator(ExportBean export) throws Exception {
+    private IPackerParserConfigGenerator getGenerator(String serviceId, String operationId, String interfaceId, String systemId) throws Exception {
         IPackerParserConfigGenerator generator = null;
         Map<String, String> paramMap = new HashMap<String, String>();
-        paramMap.put("serviceId", export.getServiceId());
-        paramMap.put("operationId", export.getOperationId());
-        paramMap.put("interfaceId", export.getConsumerInterfaceId());
-        paramMap.put("systemId", export.getConsumerSystemId());
+        paramMap.put("serviceId", serviceId);
+        paramMap.put("operationId", operationId);
+        paramMap.put("interfaceId", interfaceId);
+        paramMap.put("systemId", systemId);
         ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
         if (invoke != null) {
             String protocolId = invoke.getProtocolId();

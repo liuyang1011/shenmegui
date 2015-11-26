@@ -61,7 +61,6 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
     private InterfaceInvokeDAOImpl interfaceInvokeDAO;
     @Autowired
     private MetadataDAOImpl metadataDAO;
-
     @Autowired
     private VersionServiceImpl versionService;
     @Autowired
@@ -380,6 +379,8 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 interDB.setInterfaceName(interfaceName);
                 interDB.setStatus(interfaceState);
                 interfaceDAO.save(interDB);
+
+                versionService.editVersion(inter.getVersionId());
                 inter = interDB;
                 //删除接口相关ida
                 idaService.deleteByInterfaceId(interfaceId);
@@ -390,6 +391,8 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             inter.setEcode(interfaceCode);
             inter.setInterfaceName(interfaceName);
             interfaceDAO.save(inter);
+            String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_INTERFACE, inter.getInterfaceId(), Constants.Version.TYPE_ELSE);
+            inter.setVersionId(versionId);
         }
         return true;
     }

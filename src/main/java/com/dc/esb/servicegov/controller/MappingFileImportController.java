@@ -44,7 +44,6 @@ public class MappingFileImportController {
     protected Log logger = LogFactory.getLog(getClass());
     @Autowired
     private SystemLogServiceImpl systemLogService;
-
     @Autowired
     private LogInfoServiceImpl logInfoService;
     @Autowired

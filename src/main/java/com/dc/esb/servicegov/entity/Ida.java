@@ -39,7 +39,7 @@ public class Ida extends IExportableNode {
     private String required;
 
     @Column(name = "PARENT_ID",updatable=false,insertable=true)
-    private String parentId;
+    private String _parentId;
 
     @Column(name = "INTERFACE_ID")
     private String interfaceId;
@@ -149,11 +149,11 @@ public class Ida extends IExportableNode {
     }
 
 	public String getParentId() {
-		return parentId;
+		return get_parentId();
 	}
 
 	public void setParentId(String id) {
-		parentId = id;
+		set_parentId(id);
 	}
 
 	public String getInterfaceId() {
@@ -274,5 +274,13 @@ public class Ida extends IExportableNode {
 
     public void setXpath(String xpath) {
         this.xpath = xpath;
+    }
+
+    public String get_parentId() {
+        return _parentId;
+    }
+
+    public void set_parentId(String _parentId) {
+        this._parentId = _parentId;
     }
 }
