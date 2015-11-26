@@ -2,13 +2,14 @@ package com.dc.esb.servicegov.entity;
 
 import javax.persistence.*;
 
+import com.dc.esb.servicegov.export.IExportableNode;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "IDA")
 @JsonIgnoreProperties("interObj")
-public class Ida {
+public class Ida extends IExportableNode {
     @Id
     @Column(name = "ID")
     @GeneratedValue(generator="system-uuid")
@@ -66,10 +67,6 @@ public class Ida {
 
     @Column(name = "xpath")
     private String xpath;
-
-//    @Column(name = "ARG_TYPE")
-    //参数类型 输出还是输入参数，导入时判断，有可能输入和输出参数名相同
-//    private String argType;
 
     @ManyToOne
     @JoinColumn(name="INTERFACE_ID",referencedColumnName = "INTERFACE_ID",insertable = false,updatable = false)
@@ -151,12 +148,12 @@ public class Ida {
         this.required = required;
     }
 
-	public String get_parentId() {
-		return _parentId;
+	public String getParentId() {
+		return get_parentId();
 	}
 
-	public void set_parentId(String id) {
-		_parentId = id;
+	public void setParentId(String id) {
+		set_parentId(id);
 	}
 
 	public String getInterfaceId() {
@@ -277,5 +274,13 @@ public class Ida {
 
     public void setXpath(String xpath) {
         this.xpath = xpath;
+    }
+
+    public String get_parentId() {
+        return _parentId;
+    }
+
+    public void set_parentId(String _parentId) {
+        this._parentId = _parentId;
     }
 }

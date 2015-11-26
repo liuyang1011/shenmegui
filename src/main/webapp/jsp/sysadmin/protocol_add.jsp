@@ -77,7 +77,6 @@
 				生成类
 			</th>
 			<td>
-				<%--<input class="easyui-textbox" type="text" id="generatorIdText">--%>
 				<select class="easyui-combobox" id="generator" style="width:173px" panelHeight="auto"
 						data-options="
 						url:'/generator/getAll',

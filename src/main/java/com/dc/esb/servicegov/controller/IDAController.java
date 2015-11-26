@@ -10,14 +10,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.dom4j.io.SAXEventRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.crypto.spec.OAEPParameterSpec;
 
 @Controller
 @RequestMapping("/ida")
@@ -108,7 +105,7 @@ public class IDAController {
 			Ida ida  = idas[i];
 			logParam += "[报文头ID:" +ida.getHeadId() + ",字段名称：" +ida.getStructName() + "],";
 			if(StringUtils.isNotEmpty(ida.getSdaId())){
-				SDA sda = sdaService.findUniqueBy("sdaId", ida.getSdaId());
+				SDA sda = sdaService.findUniqueBy("id", ida.getSdaId());
 				if(sda != null){
 					ida.setMetadataId(sda.getMetadataId());
 				}
@@ -248,7 +245,7 @@ public class IDAController {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
 			String sdaId = map.get("sdastructAlias");    //前台用sdastructAlias做field展示，选中节点后值变为sdaId
-			SDA sda = sdaService.findUniqueBy("sdaId", sdaId);
+			SDA sda = sdaService.findUniqueBy("id", sdaId);
 			Ida ida = idaService.getById(idaId);
 			ida.setSdaId(sdaId);
 			if(sda != null){
@@ -258,27 +255,6 @@ public class IDAController {
 				serviceId = sda.getServiceId();
 				operationId = sda.getOperationId();
 
-//				if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){ //如果是数组，生成一个结束元素
-//					Ida arrayEndIda = new Ida();
-//					SDA arrayEndSda = sdaService.genderArrayEnd(sda);
-//
-//					Map<String, String> params = new HashMap<String, String>();
-//					params.put("state", Constants.IDA_STATE_DISABLE);
-//					params.put("_parentId", ida.get_parentId());
-//					params.put("xpath", arrayEndSda.getXpath());
-//					List<Ida> endIdas = idaService.findBy(params);
-//					if(endIdas != null && endIdas.size() > 0 ){
-//						arrayEndIda = endIdas.get(0);
-//					}
-//
-//					arrayEndIda.setSdaId(arrayEndSda.getSdaId());
-//					arrayEndIda.setXpath(arrayEndSda.getXpath());
-//					arrayEndIda.setInterfaceId(ida.getInterfaceId());
-//					arrayEndIda.setState(Constants.IDA_STATE_DISABLE);
-//					arrayEndIda.setSeq(ida.getSeq() + 1);
-//					arrayEndIda.set_parentId(ida.get_parentId());
-//					idaService.save(arrayEndIda);
-//				}
 			}
 			idaService.save(ida);
 
@@ -308,7 +284,7 @@ public class IDAController {
 			idaService.save(ida);
 			logParam += ida.getStructName() + ",";
 			String sdaId = map.get("sdaId");
-			SDA sda = sdaService.findUniqueBy("sdaId", sdaId);
+			SDA sda = sdaService.findUniqueBy("id", sdaId);
 			if(sda != null){
 				serviceId = sda.getServiceId();
 				operationId = sda.getOperationId();

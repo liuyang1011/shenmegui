@@ -8,9 +8,7 @@ import com.dc.esb.servicegov.export.bean.ExportBean;
 import com.dc.esb.servicegov.export.bean.MetadataNode;
 import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
-import com.dc.esb.servicegov.service.InterfaceService;
-import com.dc.esb.servicegov.service.SDAService;
-import com.dc.esb.servicegov.service.SystemService;
+import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -134,6 +132,16 @@ public class StandardSOAPConfigGenerator implements IMetadataConfigGenerator {
 
     @Override
     public void setOperationService(OperationServiceImpl operationService) {
+
+    }
+
+    @Override
+    public void setInterfaceHeadService(InterfaceHeadService interfaceHeadService) {
+
+    }
+
+    @Override
+    public void setIdaService(IdaService idaService) {
 
     }
 

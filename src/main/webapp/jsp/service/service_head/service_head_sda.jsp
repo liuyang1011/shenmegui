@@ -120,7 +120,7 @@
           if(editNode != null){
             t.treegrid('endEdit', editNode.id);
             var node = {};
-            node.sdaId = editNode.id;
+            node.id = editNode.id;
             node.structName = editNode.text;
             node.parentId = editNode.parentId;
 
@@ -199,7 +199,7 @@
           type:"get",
           url: "/sda/moveUp?_t=" + new Date().getTime(),
           dataType: "json",
-          data: {"sdaId": node.id},
+          data: {"id": node.id},
           success: function(data){
             if(data){
               $('#tg').treegrid({url : '/serviceHeadSda/sdaTree?serviceHeadId=${param.serviceHeadId}&t='+ new Date().getTime()});
@@ -224,7 +224,7 @@
           type:"get",
           url: "/sda/moveDown?_t="+new Date().getTime(),
           dataType: "json",
-          data: {"sdaId": node.id},
+          data: {"id": node.id},
           success: function(data){
             if(data){
               $('#tg').treegrid({url:'/serviceHeadSda/sdaTree?serviceHeadId=${param.serviceHeadId}&t='+ new Date().getTime()});

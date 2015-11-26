@@ -4,21 +4,20 @@ import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.export.IMetadataConfigGenerator;
 import com.dc.esb.servicegov.export.bean.ExportBean;
-import com.dc.esb.servicegov.export.bean.MetadataNode;
 import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.service.*;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/7/15.
@@ -31,11 +30,12 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
     private String requestText = "";
     private String responseText = "";
 
-    public void init(String requestText,String responseText){
+    public void init(String requestText, String responseText) {
         this.requestText = requestText;
         this.responseText = responseText;
 
     }
+
     @Autowired
     SystemService systemService;
     @Autowired
@@ -68,7 +68,7 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
         String service_define_path = loader.getResource("template/in_config/service_define_template.xml").getPath();
         String channel__service_path = loader.getResource("template/in_config/channel_service_template.xml").getPath();
         String service_system__path = loader.getResource("template/in_config/service_system_template.xml").getPath();
-        String destpath = loader.getResource("").getPath() + "/generator/"+export.getServiceId()+export.getOperationId();
+        String destpath = loader.getResource("").getPath() + "/generator/" + export.getServiceId() + export.getOperationId();
         try {
             System system_consumer = systemService.getById(export.getConsumerSystemId());
 
@@ -80,7 +80,7 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
             file = new File(destpath);
 
         } catch (Exception e) {
-            logger.error("StandardConfigGenerator.generatorIn 导出出现异常,"+e.getMessage());
+            logger.error("StandardConfigGenerator.generatorIn 导出出现异常," + e.getMessage());
         }
         return file;
     }
@@ -106,21 +106,21 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
         List<Ida> resIdas = new ArrayList<Ida>();
         String reqId = "";
         String resId = "";
-        for (Ida ida : idas){
-            if(ida.getStructName() == null) continue;
-            if(ida.getStructName().equals("request")){
+        for (Ida ida : idas) {
+            if (ida.getStructName() == null) continue;
+            if (ida.getStructName().equals("request")) {
                 reqId = ida.getId();
             }
-            if(ida.getStructName().equals("response")){
+            if (ida.getStructName().equals("response")) {
                 resId = ida.getId();
             }
         }
-        for(Ida ida : idas){
-            if(null == ida.get_parentId()){
+        for (Ida ida : idas) {
+            if (null == ida.getParentId()) {
                 continue;
-            }else if(ida.get_parentId().equals(reqId)){
+            } else if (ida.getParentId().equals(reqId)) {
                 reqIdas.add(ida);
-            }else if(ida.get_parentId().equals(resId)){
+            } else if (ida.getParentId().equals(resId)) {
                 resIdas.add(ida);
             }
         }
@@ -128,16 +128,18 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
         System consumer_system = systemService.getById(export.getConsumerSystemId());
         Interface provide_interface = interfaceService.getById(export.getProviderInterfaceId());
         //test
-        requestText = ExportUtil.generatorMappingXML(reqIdas,"request",provide_system.getSystemAb(),sdaService,export.getServiceId(),export.getOperationId());
-        responseText = ExportUtil.generatorMappingXML(resIdas,"response","esb",sdaService,export.getServiceId(),export.getOperationId());
+        requestText = ExportUtil.generatorMappingXML(reqIdas, "request", provide_system.getSystemAb(),
+                sdaService, export.getServiceId(), export.getOperationId());
+        responseText = ExportUtil.generatorMappingXML(resIdas, "response", "esb", sdaService, export.getServiceId(),
+                export.getOperationId());
         //in_config
-        Map<String,String> map = new HashMap<String, String>();
-        map.put("serviceId",export.getServiceId());
-        map.put("operationId",export.getOperationId());
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("serviceId", export.getServiceId());
+        map.put("operationId", export.getOperationId());
         Operation operation = operationService.findUniqueBy(map);
-        String identifySystemInText = ExportUtil.generatorIdentifyInXML(consumer_system.getSystemAb(),operation.getOperationName(),consumer_system.getSystemId(), export.getServiceId(), export.getOperationId());
+        String identifySystemInText = ExportUtil.generatorIdentifyInXML(consumer_system.getSystemAb(), operation.getOperationName(), consumer_system.getSystemId(), export.getServiceId(), export.getOperationId());
 
-        String identifySystemOutText = ExportUtil.generatorIdentifyOutXML(provide_system.getSystemAb(),provide_interface.getInterfaceName(), provide_interface.getEcode(), export.getServiceId(), export.getOperationId());
+        String identifySystemOutText = ExportUtil.generatorIdentifyOutXML(provide_system.getSystemAb(), provide_interface.getInterfaceName(), provide_interface.getEcode(), export.getServiceId(), export.getOperationId());
 
         //out_config
 //        String identifySystemOutText = ExportUtil.generatorIdentifyOutXML(provide_system.getSystemAb(), export.getServiceId(), export.getOperationId());
@@ -157,24 +159,24 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
         String identify_config_system_out_path = loader.getResource("template/out_config/system_identify_system.xml").getPath();
         String identify_config_system_int_path = loader.getResource("template/in_config/identify_config_system.xml").getPath();
 
-        String destpath = loader.getResource("").getPath() + "/generator/" + export.getServiceId()+export.getOperationId();
+        String destpath = loader.getResource("").getPath() + "/generator/" + export.getServiceId() + export.getOperationId();
 
         try {
-//            FileUtil.copyFile(service_define_path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+".xml",requestText,responseText);
-//            FileUtil.copyFile(channel__service_path,destpath+"/out_config/metadata/channel_"+provide_system.getSystemAb()+"_service_"+export.getServiceId()+export.getOperationId()+".xml","",responseText);
-//            FileUtil.copyFile(service_system__path,destpath+"/out_config/metadata/service_"+export.getServiceId()+export.getOperationId()+"_system_"+provide_system.getSystemAb()+".xml",requestText,"");
+            FileUtil.copyFile(service_define_path, destpath + "/out_config/metadata/service_" + export.getServiceId() + export.getOperationId() + ".xml", requestText, responseText);
+            FileUtil.copyFile(channel__service_path, destpath + "/out_config/metadata/channel_" + provide_system.getSystemAb() + "_service_" + export.getServiceId() + export.getOperationId() + ".xml", "", responseText);
+            FileUtil.copyFile(service_system__path, destpath + "/out_config/metadata/service_" + export.getServiceId() + export.getOperationId() + "_system_" + provide_system.getSystemAb() + ".xml", requestText, "");
             String systemAb = provide_system.getSystemAb();
             String ecode = provide_interface.getEcode();
             //TZB导出
-            FileUtil.copyFileTZB(type_mapping_ecode_path,destpath+"/out_config/frameworkdist/channel/mapping/provider_mapping_ecode_"+export.getProviderInterfaceId()+".xml",systemAb,ecode,requestText,responseText);
+            FileUtil.copyFileTZB(type_mapping_ecode_path, destpath + "/out_config/frameworkdist/channel/mapping/provider_mapping_ecode_" + export.getProviderInterfaceId() + ".xml", systemAb, ecode, requestText, responseText);
             //in_config/identify
-            FileUtil.copyFileTZBIdentify(identify_config_system_int_path,destpath+"/in_config/frameworkdist/channel/identify/identify_config_"+consumer_system.getSystemAb()+".xml",consumer_system.getSystemAb(),identifySystemInText);
+            FileUtil.copyFileTZBIdentify(identify_config_system_int_path, destpath + "/in_config/frameworkdist/channel/identify/identify_config_" + consumer_system.getSystemAb() + ".xml", consumer_system.getSystemAb(), identifySystemInText);
             //out_config/identify
             FileUtil.copyFileTZBIdentifyOut(identify_config_system_out_path, destpath + "/out_config/frameworkdist/channel/identify/system_identify_" + provide_system.getSystemAb() + ".xml", provide_system.getSystemAb(), identifySystemOutText);
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("StandardConfigGenerator.generatorOut 导出出现异常,"+e.getMessage());
+            logger.error("StandardConfigGenerator.generatorOut 导出出现异常," + e.getMessage());
         }
     }
 
@@ -213,5 +215,15 @@ public class TZBStandardXMLConfigGenerator implements IMetadataConfigGenerator {
 
     public void setOperationService(OperationServiceImpl operationService) {
         this.operationService = operationService;
+    }
+
+    @Override
+    public void setInterfaceHeadService(InterfaceHeadService interfaceHeadService) {
+
+    }
+
+    @Override
+    public void setIdaService(IdaService idaService) {
+
     }
 }

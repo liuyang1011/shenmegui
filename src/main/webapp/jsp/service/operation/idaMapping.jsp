@@ -69,7 +69,7 @@
       }
     "></th>
     <th data-options="field:'sdaremark',title:'服务备注',width:'21%'"></th>
-    <th data-options="field:'sdaId', hidden:true"></th>
+    <th data-options="field:'id', hidden:true"></th>
   </tr>
   </thead>
 </table>

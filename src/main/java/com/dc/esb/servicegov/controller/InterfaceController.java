@@ -11,7 +11,6 @@ import com.dc.esb.servicegov.service.impl.TagServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
-import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.JSONUtil;
 import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.commons.lang.StringUtils;
@@ -191,7 +190,7 @@ public class InterfaceController {
             //root
             Ida ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(null);
+            ida.setParentId(null);
             ida.setStructName("root");
             ida.setStructAlias("根节点");
             ida.setState(Constants.IDA_STATE_COMMON);
@@ -200,7 +199,7 @@ public class InterfaceController {
 
             ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(parentId);
+            ida.setParentId(parentId);
             ida.setStructName("request");
             ida.setStructAlias("请求报文体");
             ida.setSeq(0);
@@ -209,7 +208,7 @@ public class InterfaceController {
 
             ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(parentId);
+            ida.setParentId(parentId);
             ida.setSeq(1);
             ida.setStructName("response");
             ida.setStructAlias("响应报文体");
@@ -247,7 +246,7 @@ public class InterfaceController {
             //root
             Ida ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(null);
+            ida.setParentId(null);
             ida.setStructName(Constants.ElementAttributes.ROOT_NAME);
             ida.setStructAlias(Constants.ElementAttributes.ROOT_ALIAS);
             ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
@@ -256,7 +255,7 @@ public class InterfaceController {
 
             ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(parentId);
+            ida.setParentId(parentId);
             ida.setSeq(0);
             ida.setStructName(Constants.ElementAttributes.REQUEST_NAME);
             ida.setStructAlias(Constants.ElementAttributes.REQUEST_ALIAS);
@@ -265,7 +264,7 @@ public class InterfaceController {
 
             ida = new Ida();
             ida.setInterfaceId(inter.getInterfaceId());
-            ida.set_parentId(parentId);
+            ida.setParentId(parentId);
             ida.setSeq(1);
             ida.setStructName(Constants.ElementAttributes.RESPONSE_NAME);
             ida.setStructAlias(Constants.ElementAttributes.RESPONSE_ALIAS);

@@ -41,7 +41,7 @@ public class SDADAOImpl extends BaseDAOImpl<SDA> {
     }
     public List<SDA> findByHead(String headId, String structName){
         if(StringUtils.isNotEmpty(headId)){
-            String hql = "from SDA a where a.parentId in (select b.sdaId from SDA b where b.headId = ? and b.structName = ?)";
+            String hql = "from SDA a where a.parentId in (select b.id from SDA b where b.headId = ? and b.structName = ?)";
             List<SDA> sdas = this.find(hql, headId, structName);
             return sdas;
         }

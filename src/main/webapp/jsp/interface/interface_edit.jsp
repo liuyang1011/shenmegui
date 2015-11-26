@@ -114,6 +114,7 @@
         			}
         		});
 		var systemId ="";
+		var treeObj =$('.msinterfacetree') ;
 		try {
 			var selectNode = $('.msinterfacetree').tree("getSelected");
 			systemId = selectNode.id;

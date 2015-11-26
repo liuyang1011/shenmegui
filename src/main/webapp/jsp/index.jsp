@@ -59,7 +59,8 @@
     </ul>
     <div id="header_toolsbar">
         <a href="javascript:;" class="login_user"><shiro:principal/></a>
-        <a id="taskName" href="javascript:;" style="display: none">当前任务:</a>
+
+        <a id="taskName" href="javascript:;" >当前任务:</a>
         <input id="serviceCategoryPermission" <shiro:hasPermission name="serviceCategory-add"> value="1" </shiro:hasPermission> style="display: none"></input>
         <input id="serviceCategoryPermissionEdit" <shiro:hasPermission name="serviceCategory-update"> value="1" </shiro:hasPermission> style="display: none"></input>
         <input id="serviceCategoryPermissionDelete" <shiro:hasPermission name="serviceCategory-delete"> value="1" </shiro:hasPermission> style="display: none"></input>

@@ -130,7 +130,7 @@ public class SDAController {
 	@ResponseBody
 	public boolean moveUp(String sdaId){
 		OperationLog operationLog = systemLogService.record("SDA","元素上移","");
-		SDA entity = serviceImpl.findUniqueBy("sdaId", sdaId);
+		SDA entity = serviceImpl.findUniqueBy("id", sdaId);
 		if(entity != null){
 			operationLog.setParams("SDA:" + entity.getStructName());
 		}
@@ -146,7 +146,7 @@ public class SDAController {
 	@ResponseBody
 	public boolean moveDown(String sdaId){
 		OperationLog operationLog = systemLogService.record("SDA","元素上移","元素ID:" + sdaId);
-		SDA entity = serviceImpl.findUniqueBy("sdaId", sdaId);
+		SDA entity = serviceImpl.findUniqueBy("id", sdaId);
 		if(entity != null){
 			operationLog.setParams("SDA:" + entity.getStructName());
 		}

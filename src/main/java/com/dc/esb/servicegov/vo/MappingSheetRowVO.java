@@ -35,7 +35,7 @@ public class MappingSheetRowVO {
                 String sdaRequired =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaRequiredCol));
                 String sdaRemark =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaRemarkCol));
                 sda = new SDA();
-                sda.setSdaId(UUID.randomUUID().toString());
+                sda.setId(UUID.randomUUID().toString());
                 sda.setStructName(sdaEnName);
                 sda.setStructAlias(sdaChName);
                 sda.setConstraint(sdaConstraint);
@@ -47,7 +47,7 @@ public class MappingSheetRowVO {
                     if(sdaParents.size() > 0){
                         SDA parentSda = sdaParents.get(sdaParents.size() -1);
                         if(null != parentSda){
-                            sda.setParentId(parentSda.getSdaId());
+                            sda.setParentId(parentSda.getId());
                             if(StringUtils.isNotEmpty(parentSda.getXpath()) && StringUtils.isNotEmpty(sdaEnName)){
                                 String xpath = parentSda.getXpath() + "/" + sdaEnName;
                                 sda.setXpath(xpath);
@@ -70,13 +70,13 @@ public class MappingSheetRowVO {
                 ida.setState(Constants.IDA_STATE_COMMON);
                 if(StringUtils.isNotEmpty(sda.getMetadataId())){
                     ida.setMetadataId(sdaEnName);
-                    ida.setSdaId(sda.getSdaId());
+                    ida.setSdaId(sda.getId());
                 }
                 if(null != idaParents){
                     if(idaParents.size() > 0){
                         Ida parentIda = idaParents.get(idaParents.size() -1);
                         if(null != parentIda){
-                            ida.set_parentId(parentIda.getId());
+                            ida.setParentId(parentIda.getId());
                             if(StringUtils.isNotEmpty(parentIda.getXpath()) && StringUtils.isNotEmpty(sdaEnName)){
                                 String xpath = parentIda.getXpath() + "/" + sdaEnName;
                                 ida.setXpath(xpath);

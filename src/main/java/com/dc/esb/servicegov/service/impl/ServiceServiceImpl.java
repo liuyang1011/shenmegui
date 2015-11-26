@@ -8,7 +8,6 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.Operation;
 import com.dc.esb.servicegov.entity.OperationHis;
 import com.dc.esb.servicegov.entity.SDA;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.util.EasyUiTreeUtil;
 import com.dc.esb.servicegov.util.TreeNode;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +83,7 @@ public class ServiceServiceImpl extends AbstractBaseService<com.dc.esb.servicego
                 SDAVO sda = new SDAVO();
                 sda.setValue(sdaNode);
                 // sda.setProperties(nodeProperties);
-                sdaMap.put(sdaNode.getSdaId(), sda);
+                sdaMap.put(sdaNode.getId(), sda);
                 String parentResourceId = sdaNode.getParentId();
                 if ("/".equalsIgnoreCase(parentResourceId)) {
                     root = sda;

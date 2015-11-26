@@ -43,7 +43,7 @@ public class SDABean {
     private String argType;
 
     public SDABean(SDA sda){
-        setSdaId(sda.getSdaId());
+        setSdaId(sda.getId());
         setStructName(sda.getStructName());
         setStructAlias(sda.getStructAlias());
         setMetadataId(sda.getMetadataId());

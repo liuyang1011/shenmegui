@@ -403,7 +403,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public void fillStandarNode(HSSFSheet sheet, Counter counter, SDA sda){
         addRow(sheet, counter);
         fillSDA(sheet, counter.getCount(), sda);
-        List<SDA> children = sdaDao.findByParentId(sda.getSdaId());
+        List<SDA> children = sdaDao.findByParentId(sda.getId());
         if(null != children && 0 < children.size()){
             for(SDA child :children){
                 addRow(sheet, counter);
@@ -613,7 +613,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      */
     public List<SDA> getSDAByParentName(String serviceId, String operationId, String parentName) {
         String hql = " from " + SDA.class.getName() + " as s where s.parentId in( " +
-                "select s2.sdaId from " + SDA.class.getName() + " as s2 where s2.serviceId=? and s2.operationId=? and s2.structName=? " +
+                "select s2.id from " + SDA.class.getName() + " as s2 where s2.serviceId=? and s2.operationId=? and s2.structName=? " +
                 ") order by s.seq asc";
         List<SDA> list = sdaDao.find(hql, serviceId, operationId, parentName);
         return list;
