@@ -12,7 +12,15 @@
 				协议名称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="protocolNameText">
+				<input class="easyui-textbox" type="text" id="protocolNameText" required="true">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				通讯协议
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="commuProtocol">
 			</td>
 		</tr>
 		<tr>
@@ -37,6 +45,51 @@
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="timeoutText">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				加密
+			</th>
+			<td>
+				<input class="easyui-combobox" id="isEncrypt"
+						data-options="
+						valueField:'value',
+						textField:'label',
+						data:[{label:'加密', value:'1'}, {label:'不加密', value:'0'}]
+						"
+					   value="0"
+						>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				同步
+			</th>
+			<td>
+				<input class="easyui-combobox" id="isSync"
+					   data-options="
+						valueField:'value',
+						textField:'label',
+						data:[{label:'同步', value:'1'}, {label:'不同步', value:'0'}]
+						"
+					   value="0"
+						>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				链接
+			</th>
+			<td>
+				<input class="easyui-combobox" id="isLongCon"
+					   data-options="
+						valueField:'value',
+						textField:'label',
+						data:[{label:'长链接', value:'1'}, {label:'短链接', value:'0'}]
+						"
+					   value="0"
+						>
 			</td>
 		</tr>
 		<%--<tr>
@@ -126,7 +179,10 @@
 //		data.succCode = succCode;
 		//data.msgTemplateId = msgTemplateId;
 		data.generatorId = generatorId;
-
+		data.commuProtocol = $("#commuProtocol").val();
+		data.isEncrypt = $("#isEncrypt").combobox("getValue");
+		data.isSync = $("#isSync").combobox("getValue");
+		data.isLongCon = $("#isLongCon").combobox("getValue");
 		var msgTemplate = {};
 
 		msgTemplate.templateContent = templateContent;
