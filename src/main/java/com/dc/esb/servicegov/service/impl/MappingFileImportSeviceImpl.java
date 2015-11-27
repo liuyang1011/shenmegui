@@ -364,7 +364,6 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
      * 导入接口信息
      */
     public boolean importInterface(Workbook workbook, MappingImportIndexRowVO indexVO){
-        Interface inter = null;
         String interfaceId = indexVO.getInterfaceId();
         String interfaceState = indexVO.getInterfaceState();
         Sheet mappingSheet = workbook.getSheet(interfaceId);
@@ -373,7 +372,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         Row nameRow = mappingSheet.getRow(INTERFACE_NAME_ROW);
         String interfaceName =  getCell(nameRow, INTERFACE_NAME_COL);;//交易名称
 
-        inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
+        Interface inter = interfaceDAO.findUniqueBy("interfaceId", interfaceId);
         if(null != inter){//接口已存在
             if(operateFlag){
                 inter.setEcode(interfaceCode);

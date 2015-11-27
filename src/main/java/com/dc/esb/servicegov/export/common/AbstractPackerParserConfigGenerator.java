@@ -69,7 +69,7 @@ public abstract class AbstractPackerParserConfigGenerator implements IPackerPars
         }
         resultFiles.add(resultDir);
 
-        destPath = destPath + "/" + configFolder;
+        destPath = destPath + "/" + configFolder + "/metadata";
         File destDir = new File(destPath);
         if (!destDir.exists()) {
             destDir.mkdirs();
