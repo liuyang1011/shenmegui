@@ -696,31 +696,27 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 int i = 0;
                 do{
                     String systemId = systemService.findUniqueByName(systemAbs[i]).getSystemId();
-                    ServiceInvoke serviceInvoke2 = null;
                     List<ServiceInvoke> list = serviceInvokeDAO.find(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType);
-                    if(null != list && list.size() > 0){
-                        if(list.size() > 1){
-                            logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败，根据系统[" + systemAbs[i] + "], 在场景[" + indexVO.getOperationName() + "]中找到同一方向的多条调用关系！");
-                        }else{
-                            serviceInvoke2 = list.get(0);
-                        }
-                    }
-                    if(null == serviceInvoke2){//如果不存在可以匹配的映射关系
+                    if(list.size() == 0){
+                        //如果不存在可以匹配的映射关系
                         //生成一条调用的映射关系，接口id为空，是否标准属性为未知
-                        serviceInvoke2 = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_U, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), null, otherType, null, null, null);
+                        ServiceInvoke serviceInvoke2 = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_U, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), null, otherType, null, null, null);
                         serviceInvokeDAO.save(serviceInvoke2);
+                        list.add(serviceInvoke2);
                     }
-                    if(Constants.INVOKE_TYPE_PROVIDER.equalsIgnoreCase(serviceInvoke.getType())){//provider方向
-                        providerInvokeId = serviceInvoke.getInvokeId();
-                        consumerInvokeId = serviceInvoke2.getInvokeId();
-                    }else{//consumer方向
-                        providerInvokeId = serviceInvoke2.getInvokeId();
-                        consumerInvokeId = serviceInvoke.getInvokeId();
-                    }
-                    InterfaceInvoke interfaceInvoke = interfaceInvokeDAO.getByProIdConId(providerInvokeId, consumerInvokeId);//查询是否已经建立了调用关系
-                    if(null == interfaceInvoke){
-                        interfaceInvoke = new InterfaceInvoke(providerInvokeId, consumerInvokeId);
-                        interfaceInvokeDAO.save(interfaceInvoke);
+                    for(ServiceInvoke serviceInvoke2 : list){
+                        if(Constants.INVOKE_TYPE_PROVIDER.equalsIgnoreCase(serviceInvoke.getType())){//provider方向
+                            providerInvokeId = serviceInvoke.getInvokeId();
+                            consumerInvokeId = serviceInvoke2.getInvokeId();
+                        }else{//consumer方向
+                            providerInvokeId = serviceInvoke2.getInvokeId();
+                            consumerInvokeId = serviceInvoke.getInvokeId();
+                        }
+                        InterfaceInvoke interfaceInvoke = interfaceInvokeDAO.getByProIdConId(providerInvokeId, consumerInvokeId);//查询是否已经建立了调用关系
+                        if(null == interfaceInvoke){
+                            interfaceInvoke = new InterfaceInvoke(providerInvokeId, consumerInvokeId);
+                            interfaceInvokeDAO.save(interfaceInvoke);
+                        }
                     }
                     i++;
                 }while ( i < systemAbs.length);

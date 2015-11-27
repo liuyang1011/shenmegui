@@ -150,7 +150,7 @@ public class MappingFileImportController {
            mappingFileImportSevice.logMsg("读取文档内容时发生IO错误，请检查文档格式！异常信息：" + e.getMessage());
             logger.error(e, e);
         }catch (Exception e){
-           mappingFileImportSevice.logMsg("导入出现异常，导入失败！异常信息：" + e.getMessage());
+           mappingFileImportSevice.logMsg("导入出现异常，导入失败！异常信息：" + e.getMessage()+"======"+e.getCause()+"====="+e.getStackTrace());
             logger.error(e, e);
         }
         finally {
