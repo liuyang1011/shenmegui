@@ -61,19 +61,31 @@
 <table id="tg" style="height: 300px; width: 100%;" data-options="pageSize:5">
     <thead>
     <tr>
-        <th data-options="field:'protocolName',width:'14%'">
+        <th data-options="field:'protocolName',width:'12%'">
             协议名称
         </th>
-        <th data-options="field:'msgType',width:'12%'">
+        <th data-options="field:'commuProtocol',width:'12%'">
+            通讯协议
+        </th>
+        <th data-options="field:'msgType',width:'8%'">
             消息类型
         </th>
-        <th data-options="field:'encoding',width:'12%'">
+        <th data-options="field:'encoding',width:'8%'">
             协议编码
         </th>
         <th data-options="field:'timeout',width:'8%',align:'center'">
             超时时间
         </th>
-        <th data-options="field:'remark',align:'right',width:'15%'">
+        <th data-options="field:'isEncrypt',width:'8%'">
+            加密
+        </th>
+        <th data-options="field:'isSync',width:'8%'">
+            同步
+        </th>
+        <th data-options="field:'isLongCon',width:'8%'">
+            链接
+        </th>
+        <th data-options="field:'remark',align:'right',width:'10%'">
             备注
         </th>
         <th data-options="field:'generatorId',width:'20%',align:'right'" formatter='formatter.generator'>

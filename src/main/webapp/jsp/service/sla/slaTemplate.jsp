@@ -19,7 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <body>
 
-<table id="slaTemplate" style="height:370px; width:auto;" title="模版${param.templateName}">
+<table id="slaTemplate" style="height:370px; width:auto;" title="模版">
 	<thead>
 	<tr>
 		<th field="slaId" width="100" editor="text" data-options="hidden:true"  >ID</th>

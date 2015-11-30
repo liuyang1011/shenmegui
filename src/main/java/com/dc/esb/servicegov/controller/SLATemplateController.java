@@ -181,7 +181,7 @@ public class SLATemplateController {
 	@RequestMapping(method = RequestMethod.POST, value = "/relateAll/{slaTemplateId}", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean setTemplateData(@PathVariable(value = "slaTemplateId") String slaTemplateId){
-		String hql = " from SLA where sla.slaTemplateId = ?";
+		String hql = " from SLA where slaTemplateId = ?";
 		List<SLA> slaList = slaServiceImpl.find(hql, slaTemplateId);
 		for(int i=0; i < slaList.size(); i++){
 			SLA temSla = slaList.get(i);

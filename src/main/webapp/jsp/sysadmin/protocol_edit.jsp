@@ -52,14 +52,15 @@
                 加密
             </th>
             <td>
-                <input class="easyui-combobox" id="isEncrypt"
-                       data-options="
-						valueField:'value',
-						textField:'label',
-						data:[{label:'加密', value:'1'}, {label:'不加密', value:'0'}]
-						"
-                       value="${protocol.isEncrypt}"
-                        >
+                <input class="easyui-textbox" type="text" id="isEncrypt" value="${protocol.isEncrypt}">
+                <%--<input class="easyui-combobox" id="isEncrypt"--%>
+                       <%--data-options="--%>
+						<%--valueField:'value',--%>
+						<%--textField:'label',--%>
+						<%--data:[{label:'加密', value:'1'}, {label:'不加密', value:'0'}]--%>
+						<%--"--%>
+                       <%--value="${protocol.isEncrypt}"--%>
+                        <%-->--%>
             </td>
         </tr>
         <tr>
@@ -67,14 +68,15 @@
                 同步
             </th>
             <td>
-                <input class="easyui-combobox" id="isSync"
-                       data-options="
-						valueField:'value',
-						textField:'label',
-						data:[{label:'同步', value:'1'}, {label:'不同步', value:'0'}]
-						"
-                       value="${protocol.isSync}"
-                        >
+                <input class="easyui-textbox" type="text" id="isSync" value="${protocol.isSync}">
+                <%--<input class="easyui-combobox" id="isSync"--%>
+                       <%--data-options="--%>
+						<%--valueField:'value',--%>
+						<%--textField:'label',--%>
+						<%--data:[{label:'同步', value:'1'}, {label:'不同步', value:'0'}]--%>
+						<%--"--%>
+                       <%--value="${protocol.isSync}"--%>
+                        <%-->--%>
             </td>
         </tr>
         <tr>
@@ -82,14 +84,15 @@
                 链接
             </th>
             <td>
-                <input class="easyui-combobox" id="isLongCon"
-                       data-options="
-						valueField:'value',
-						textField:'label',
-						data:[{label:'长链接', value:'1'}, {label:'短链接', value:'0'}]
-						"
-                       value="${protocol.isLongCon}"
-                        >
+                <input class="easyui-textbox" type="text" id="isLongCon" value="${protocol.isLongCon}">
+                <%--<input class="easyui-combobox" id="isLongCon"--%>
+                       <%--data-options="--%>
+						<%--valueField:'value',--%>
+						<%--textField:'label',--%>
+						<%--data:[{label:'长链接', value:'1'}, {label:'短链接', value:'0'}]--%>
+						<%--"--%>
+                       <%--value="${protocol.isLongCon}"--%>
+                        <%-->--%>
             </td>
         </tr>
 	<%--
@@ -202,9 +205,9 @@ function save(){
     data.msgTemplateId = msgTemplateId;
     data.generatorId = generatorId;
     data.commuProtocol = $("#commuProtocol").val();
-    data.isEncrypt = $("#isEncrypt").combobox("getValue");
-    data.isSync = $("#isSync").combobox("getValue");
-    data.isLongCon = $("#isLongCon").combobox("getValue");
+    data.isEncrypt = $("#isEncrypt").val();;
+    data.isSync = $("#isSync").val();;
+    data.isLongCon = $("#isLongCon").val();;
     var msgTemplate = {};
 
     msgTemplate.templateContent = templateContent;
