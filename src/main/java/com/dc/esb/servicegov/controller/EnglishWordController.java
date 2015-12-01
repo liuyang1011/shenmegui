@@ -32,7 +32,8 @@ public class EnglishWordController {
     Map<String, Object> getAll(@RequestParam("page") int pageNo, @RequestParam("rows") int rowCount) {
         Page page = englishWordService.getAll(rowCount);
         page.setPage(pageNo);
-        List<EnglishWord> rows = englishWordService.getAll(page);
+        String hql = " from EnglishWord order by wordAb asc";
+        List<EnglishWord> rows = englishWordService.findBy(hql, page);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
         result.put("rows", rows);

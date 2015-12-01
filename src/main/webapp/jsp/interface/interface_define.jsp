@@ -600,17 +600,17 @@
     <thead>
     <tr>
         <th
-                data-options="field:'structName',width:120,align:'left'" editor="{type:'textbox',options:{validType:['englishB']}}">
+                data-options="field:'structName',width:120,align:'left'" editor="{type:'textbox'}">
             字段名称
         </th>
         <th
-                data-options="field:'structAlias',width:90,align:'left'" editor="{type:'textbox',options:{validType:['chineseB']}}">
+                data-options="field:'structAlias',width:90,align:'left'" editor="{type:'textbox'}">
             字段别名
         </th>
-        <th data-options="field:'type',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['englishB']}}">
+        <th data-options="field:'type',width:80,editor:'text'" editor="{type:'textbox'}">
             类型
         </th>
-        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox',options:{validType:['intOrFloat']}}">
+        <th data-options="field:'length',width:80,editor:'text'" editor="{type:'textbox'}">
             长度
         </th>
         <%--<th data-options="field:'metadataId',width:100,editor:'text'">

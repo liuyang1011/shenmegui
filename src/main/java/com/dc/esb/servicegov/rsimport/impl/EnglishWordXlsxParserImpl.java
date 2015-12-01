@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EnglishWordXlsxParserImpl implements IResourceParser {
 
 	private static final String SHEET_NAME = "表2中英文名称及缩写对照表";
-	private static final int START_ROW_NUM = 2;
+	private static final int START_ROW_NUM = 1;
 
 	private static final String CHINESE_WORD = "词汇中文名称";
 	private static final String ENGLISH_WORD = "词汇英文名称";

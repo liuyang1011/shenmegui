@@ -20,122 +20,7 @@
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/jsp/service/operation/operation.js"></script>
-    <script type="text/javascript">
-        var serviceId;
-        $(function () {
-            var url = '/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }';
-            $("#invokeList").datagrid({
-                rownumbers: true,
-                singleSelect: true,
-                fixed: false,
-                url: url,
-                method: 'get',
-                pagination: true,
-                toolbar: '#tb',
-                striped: true,
-                pageSize: 10,
-                onClickRow: function () {
-                    relateInterface();
-                }
-            });
-        });
-        var item;
-        var toolbar = [
-            <shiro:hasPermission name="ida-get">
-            {
-                text: '关联SDA',
-                iconCls: 'icon-qxfp',
-                handler: function () {
-                    //标准的没有映射功能
-                    if (item.isStandard == 0) {
-                        alert("标准接口没有映射");
-                        return false;
-                    }
-                    /*var selectData = $('#ida').datagrid('getSelected');
-                     if (selectData == null) {
-                     alert("请先选择一条记录");
-                     return;
-                     }*/
-                    serviceId = $("#1").textbox('getValue');
-                    var operationId = $("#3").textbox('getValue');
-                    var url = '/ida/idaMapping/' + serviceId + '/' + operationId + '/' + item.interfaceId + '/' + item.systemId ;
-                    var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '"  style="width:100%;height:100%;"></iframe>';
-                    var title = "ida映射元数据";
-
-                    if (parent.$('#subtab').tabs('exists', title)) {
-                        parent.$('#subtab').tabs('close', title);
-                        parent.$('#subtab').tabs('update', {
-                            "title": title,
-                            "content": content,
-                            "closable": true
-                        });
-                    } else {
-                        parent.$('#subtab').tabs('add', {
-                            "title": title,
-                            "content": content,
-                            "closable": true
-                        });
-                    }
-                }
-            }
-            </shiro:hasPermission>
-        ];
-        //根据已选中的接口关系在“接口映射”区域更新接口信息
-        function relateInterface() {
-            item = $('#invokeList').treegrid('getSelected');
-            if (item != null) {
-                if (item.interfaceId == null || item.interfaceId == '') {
-                    alert("该系统没有关联接口！");
-                    return false;
-                }
-                else {
-                    $('#ida').treegrid({
-                        url: '/ida/getInterfaces/' + item.interfaceId + "?time=" + (new Date()).valueOf()
-                    });
-                }
-            }
-        }
-        //根据已选中的sda的元数据替换“接口映射”区域中对应选中接口的元数据。
-        function replaceMetadataId() {
-            var sda = $("#sda").treegrid("getSelected");
-            if (sda != null) {
-                if (sda.text == "root" || sda.text == "request" || sda.text == "response") {
-                    alert("请选择其他节点!");
-                    return false
-                }
-                var ida = $("#ida").treegrid("getSelected");
-                if (ida != null) {
-                    if (ida.structName == "root" || ida.structName == "request" || ida.structName == "response") {
-                        alert("请选择其他节点!");
-                        return false
-                    }
-
-                    if (sda.append4 != null) {
-                        $.ajax({
-                            type: "post",
-                            async: false,
-                            url: "/ida/updateMetadataId",
-                            dataType: "json",
-                            data: {"metadataId": sda.append4, "id": ida.id},
-                            success: function (data) {
-                                if (data) {
-                                    $('#ida').treegrid("reload");
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        }
-
-        function standardStyle(value, row, index) {
-            if(row.isStandard == '99'){
-                return 'background-color:#d9d2e9;color:white';
-            }
-
-        }
-    </script>
-
+    <script type="text/javascript" src="/js/ida/idaManager.js"></script>
 </head>
 
 <body>
@@ -168,16 +53,10 @@
                            value="${operation.operationName }" disabled="disabled">
                 </td>
             </tr>
-            <tr>
-                <th>
-                    <nobr>映射关系列表</nobr>
-                </th>
-                <td></td>
-            </tr>
         </table>
     </div>
     <div>
-        <table id="invokeList" style="height:200px; width:100%;">
+        <table id="invokeList" style="height:150px; width:100%;">
             <thead>
             <tr>
                 <%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
@@ -202,101 +81,227 @@
             <a href="javascript:void(0);" onclick="relateInterface()" class="easyui-linkbutton" iconCls="icon-save" plain="true">关联映射结果</a>
     </div>--%>
 </fieldset>
-<fieldset>
-    <div>
-        <table width="100%">
-            <tr>
-                <td width="50%" style="display: none">
-                    接口需求
-                </td>
-                <td width="50%">
-                    映射结果
-                </td>
-            </tr>
-            <tr>
-                <td colspan=2 width="100%">
-                    <div style="width:40%;padding:1px; margin-top:0; float:left;display: none">
-                        <table id="sda" title="sda" class="easyui-treegrid" id="tg" style=" width:auto;"
-                               data-options="
-                                iconCls: 'icon-ok',
-                                rownumbers: true,
-                                animate: true,
-                                fitColumns: false,
-                                url: '/sda/sdaTree?serviceId=${service.serviceId }&operationId='+encodeURI(encodeURI('${operation.operationId }')),
-                                method: 'get',
-                                idField: 'id',
-                                treeField: 'text'
-                                "
-                                >
-                            <thead>
-                            <tr>
-                                <th data-options="field:'id',checkbox:true"></th>
-                                <th data-options="field:'text',width:180,editor:'text'">字段名</th>
-                                <th data-options="field:'append1',width:130,align:'right',editor:'text'">字段别名</th>
-                                <th data-options="field:'append2',width:80,editor:'text'">类型</th>
-                                <%--<th data-options="field:'append3',width:80,editor:'text'">长度</th>
-                                <th data-options="field:'append4',width:80,editor:'text'">元数据</th>--%>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div style="width:15px; float:left;text-align:center; display: none">
-                        <table style="margin:auto; margin-top:20px">
-                            <tr>
-                                <td><a href="#" title="元数据关联" class="easyui-linkbutton" iconCls="icon-select-add"
-                                       onClick="replaceMetadataId()"></a></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div style="width:100%;padding:1px; margin-top:0; float:left">
-                        <table title="接口定义信息" id="ida"
-                               class="easyui-treegrid"
-                               data-options="
-                                                                iconCls:'icon-edit',
-                                                                rownumbers: false,
-                                                                animate: true,
-                                                                fitColumns: false,
-                                                                method: 'get',
-                                                                idField: 'id',
-                                                                treeField: 'structName',
-                                                                singleSelect:true,
-                                                                collapsible:true,
-                                                                toolbar:toolbar
-                                                            ">
-                            <thead>
-                            <tr>
-                                <%--<th data-options="field:'id',checkbox:true"></th>--%>
-                                <th
-                                        data-options="field:'structName',width:'20%',align:'left',editor:'text'">
-                                    字段名称
-                                </th>
-                                <th
-                                        data-options="field:'structAlias',width:'16%',align:'left',editor:'text'">
-                                    字段别名
-                                </th>
-                                <th data-options="field:'type',width:'6%',editor:'text'">
-                                    类型
-                                </th>
-                                <th data-options="field:'length',width:'6%',editor:'text'">
-                                    长度
-                                </th>
-                                <th data-options="field:'metadataId',width:'20%',editor:'text'">
-                                    元数据ID
-                                </th>
-                                <th data-options="field:'remark',width:'16%',editor:'text'">
-                                    备注
-                                </th>
-                                <th data-options="field:'required',width:'10%',editor:'text'">
-                                    是否必须
-                                </th>
-                            </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </table>
-</fieldset>
+<div id="mm" class="easyui-menu" style="width:120px;">
+    <div onclick="beginRelate()" data-options="iconCls:'icon-edit'">关联字段映射</div>
+    <div onclick="delRelate()" data-options="iconCls:'icon-edit'">删除字段映射</div>
+</div>
+<div>
+    <table title="字段映射操作" id="mappingdatagrid"
+           class="easyui-treegrid"
+           width="100%"
+           data-options="
+            iconCls:'icon-edit',
+            rownumbers: false,
+            animate: true,
+            method: 'get',
+            idField: 'id',
+            treeField: 'structName',
+            singleSelect:true,
+            toolbar:mappingToolbar,
+            onDblClickCell:onDblClickCell,
+            onContextMenu: onContextMenu
+        ">
+        <thead>
+        <tr>
+            <th colspan="6">
+                <b>接口信息</b>
+            </th>
+            <th></th>
+            <th colspan="4">
+                <b>SDA信息</b>
+            </th>
+        </tr>
+        <tr>
+            <th data-options="field:'id',checkbox:true"></th>
+            <th data-options="field:'structName',width:'17%',align:'left'">
+                字段名称
+            </th>
+            <th data-options="field:'structAlias',width:'14%',align:'left'">
+                字段别名
+            </th>
+            <th data-options="field:'type',width:'10%'">
+                类型
+            </th>
+            <th data-options="field:'remark',title:'IDA备注',width:'10%'"></th>
+            <th data-options="field:'',width:'1%',styler:splitStyle">
+            </th>
+            <th data-options="field:'sdastructAlias',width:'12%', editor:{type:'combobox'}">
+                对应SDA
+            </th>
+            <th data-options="field:'sdametadataId',width:'10%'">
+                元数据
+            </th>
+            <th data-options="field:'sdarequired',width:'6%'" >是否必输</th>
+            <th data-options="field:'sdaconstraint',width:'9%'">约束条件</th>
+            <th data-options="field:'sdaremark',title:'SDA备注',width:'15%'"></th>
+            <th data-options="field:'sdaxpath',hidden:true"></th>
+            <th data-options="field:'sdaid',hidden:true"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div id="sdaDlg" class="easyui-dialog"  data-options="toolbar:'#sdaBar'" closed="true"  resizable="true"></div>
+<div id="sdaBar" >
+    <input class="easyui-searchbox" id="sdaFilter" style="width:300px">&nbsp;&nbsp;
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="cancel()">取消</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="addRelate()">确定</a>
+</div>
+<script type="text/javascript">
+    var editingRowId;
+    var changeIds =[];
+    $(function () {
+        var url = '/serviceLink/getInterfaceByOSS?operationId=${operation.operationId }&serviceId=${service.serviceId }';
+        $("#invokeList").datagrid({
+            rownumbers: true,
+            singleSelect: true,
+            fixed: false,
+            url: url,
+            method: 'get',
+            pagination: true,
+            striped: true,
+            pageSize: 10,
+            onClickRow: function () {
+                relateInterface();
+            }
+        });
+    });
+    var mappingToolbar = [];
+    <shiro:hasPermission name="ida-update">
+    mappingToolbar.push({
+        text: '保存',
+        iconCls: 'icon-save',
+        handler: function () {
+            if(undefined != editingRowId){
+                $("#mappingdatagrid").treegrid("endEdit", editingRowId);//结束上次编辑
+            }
+            if(changeIds.length > 0){
+                var editData = []
+                for(var i=0; i < changeIds.length; i++){
+                    var node = $("#mappingdatagrid").treegrid("find", changeIds[i]);
+                    editData.push(node);
+                }
+                idaManager.saveIdaMapping(editData, function (result) {
+                    if (result) {
+                        alert("保存成功！");
+                        $('#mappingdatagrid').treegrid('reload');
+                    }
+                });
+                changeIds = [];
+            }else{
+                alert("没有改变任何数据!");
+            }
+        }
+    });
+    </shiro:hasPermission>
+    //根据已选中的接口关系在“接口映射”区域更新接口信息
+    function relateInterface() {
+        item = $('#invokeList').treegrid('getSelected');
+        if (item != null) {
+            if (item.interfaceId == null || item.interfaceId == '') {
+                alert("该系统没有关联接口！");
+                return false;
+            }
+            else {
+                $('#mappingdatagrid').treegrid({
+                    url: '/ida/getIdaMapping/' + item.interfaceId + '/${operation.serviceId}/${operation.operationId}?time=' + (new Date()).valueOf()
+                });
+            }
+        }
+    }
+    //标准样式判断
+    function standardStyle(value, row, index) {
+        if (row.isStandard == '99') {
+            return 'background-color:#d9d2e9;color:white';
+        }
 
+    }
+    //分割列样式
+    function splitStyle(value, row, index) {
+        return 'background-color:#cc0033';
+    }
+    //右键菜单
+    function onContextMenu(e, row) {
+        e.preventDefault();
+        if (row.structName == 'root' || row.structName == 'request' || row.structName == 'response') {
+            $('#mappingdatagrid').treegrid('unselect', row.id);
+            return;
+        }
+        $(this).treegrid('select', row.id);
+        $('#mm').menu('show', {
+            left: e.pageX,
+            top: e.pageY
+        });
+    }
+    //双击单元格弹出
+    function onDblClickCell(field, row){
+        var texts = '<div style="word-wrap:break-word" >'+row[field]+'</div>';
+        $.messager.show({
+            title:'详细',
+            msg:texts,
+            showType:'show',
+            height:'auto'
+        });
+    }
+    //删除映射关系
+    function delRelate(){
+        var node = $('#mappingdatagrid').treegrid('getSelected');
+        $('#mappingdatagrid').treegrid('update',{
+            id: node.id,
+            row: {
+                sdastructAlias: null,
+                sdametadataId: null,
+                sdarequired: null,
+                sdaconstraint: null,
+                sdaremark: null,
+                sdaxpath: null,
+                sdaid: null
+            }
+        });
+        editingRowId = node.id;
+        changeIds.push(editingRowId);
+    }
+    //开始编辑关联行
+    function beginRelate(){
+        if(undefined != editingRowId){
+            $("#mappingdatagrid").treegrid("endEdit", editingRowId);//结束上次编辑
+        }
+        var node = $('#mappingdatagrid').treegrid('getSelected');
+        if ("root" != node.structName && "response" != node.structName && "response" != node.structName) {
+            var parent = $('#mappingdatagrid').treegrid('getParent', node.id);//查询当前ida的父节点
+            if(null == parent.sdaid || "" == parent.sdaid || undefined == parent.sdaid){//根据父节点查询对应sda
+                alert("请先关联父节点！");
+                return false;
+            }
+            editingRowId = node.id;
+            showSDA();
+
+//            $('#mappingdatagrid').treegrid('beginEdit', editingRowId);
+//            //填充SDA列编辑器
+//            var ed2 = $('#mappingdatagrid').treegrid('getEditor', {id: editingRowId, field: 'sdastructAlias'});
+//            $(ed2.target).combobox({
+//                onShowPanel: function () {
+//                    showSDA();
+//                    $(ed2.target).combobox('hidePanel');
+//                }
+//            });
+//            $(ed2.target).combobox('setValue', node.sdastructAlias);
+        }
+    }
+    //弹出sda选择窗口
+    function showSDA(){
+        var selectData = $('#mappingdatagrid').treegrid('getSelected');
+        var urlPath = "/jsp/service/sda/sdaWinPage.jsp?serviceId=${service.serviceId}&operationId=${operation.operationId}&idaId="+selectData.id;
+        $("#sdaDlg").dialog({
+            title: 'SDA选择',
+            width: 870,
+            height:500,
+            left: 100,
+            top:$(document).scrollTop() + ($(window).height()-250) * 0.3,
+            closed: false,
+            href: urlPath,
+            modal: true
+        })
+    }
+</script>
 </body>
 </html>

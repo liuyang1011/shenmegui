@@ -1,6 +1,8 @@
 package com.dc.esb.servicegov.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +70,7 @@ public class SDAController {
 		return serviceImpl.genderSDATree2(headId);
 	}
 
-	@RequiresPermissions({"service-get"})
+	@RequiresPermissions({"sda-get"})
 	//生成一个sdaId
 	@RequestMapping("/genderSDAUuid")
 	@ResponseBody
@@ -115,7 +117,7 @@ public class SDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/deleteSDA", headers = "Accept=application/json")
 	@ResponseBody
 	public boolean deleteSDA(@RequestBody String[] delIds){
-		OperationLog operationLog = systemLogService.record("SDA","批量删除","数量：" + delIds.length);
+		OperationLog operationLog = systemLogService.record("SDA", "批量删除", "数量：" + delIds.length);
 
 		String logParam = serviceImpl.delete(delIds);
 
@@ -157,13 +159,28 @@ public class SDAController {
 		return result;
 	}
 
-	@RequestMapping("comparePage")
+	/**
+	 * 查询sda的子节点中是否含有metadataId的元素
+	 * @param parentId sda的id
+	 * @param metadataId 元数据id
+	 */
+	@RequiresPermissions({"sda-get"})
+	@RequestMapping("getChildByMetadataId")
 	@ResponseBody
-	public boolean comparePage(String serviceId, String operationId){
-//		return serviceImpl.comparePage(serviceId, operationId);
-		return true;
+	public SDA getChildByMetadataId(String parentId, String metadataId){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("parentId", parentId);
+		params.put("metadataId", metadataId);
+		SDA sda  = serviceImpl.findUniqueBy(params);
+		return sda;
 	}
-
+	@RequiresPermissions({"sda-get"})
+	//根据serviceId，operationId获取sda树
+	@RequestMapping("/querySDATree")
+	@ResponseBody
+	public List<TreeNode> querySDATree(String serviceId, String operationId, String keyword){
+		return serviceImpl.querySDATree(serviceId, operationId, keyword);
+	}
 
 	@ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
 	public String processUnauthorizedException() {

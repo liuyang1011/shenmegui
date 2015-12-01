@@ -638,7 +638,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
     public boolean judgeCanModifyOperation(String serviceId, String OperationId){
         Map map = new HashMap();
-        map.put("operationId",OperationId);
+        map.put("operationId", OperationId);
         map.put("serviceId",serviceId);
         Operation operation = operationService.findUniqueBy(map);
         if(Constants.Operation.OPT_STATE_UNAUDIT.equals(operation.getState()) || Constants.Operation.OPT_STATE_REVISE.equals(operation.getState())){
@@ -666,5 +666,53 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             return false;
         }
         return true;
+    }
+
+    /**
+     * 根据关键词匹配一棵树
+     * @param serviceId
+     * @param operationId
+     * @param keyword
+     * @return
+     */
+    public List<TreeNode> querySDATree(String serviceId, String operationId, String keyword){
+        String hql = " from SDA where serviceId= ? and operationId = ? and (structName like '%" + keyword + "%' or structAlias like '%" + keyword + "%' or metadataId  like '%" + keyword + "%')";
+        List<SDA> list = sdaDAO.find(hql, serviceId, operationId);
+        List<SDA> reList = new ArrayList<SDA>();
+        reList.addAll(list);
+        for(SDA sda : list){
+            addParentToTree(reList, sda);
+        }
+
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("id", "id");
+        fields.put("text", "structName");
+        fields.put("append1", "structAlias");
+        fields.put("append2", "type");
+        fields.put("append3", "xpath");
+        fields.put("append4", "metadataId");
+        fields.put("append5", "required");
+        fields.put("append6", "remark");
+        fields.put("append7", "constraint");
+        fields.put("append8", "serviceId");
+        fields.put("append9", "operationId");
+        fields.put("attributes", "seq");
+
+        EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
+
+        List<TreeNode> nodeList = eUtil.convertTree(reList, fields);
+        return nodeList;
+    }
+    //查询
+    public void addParentToTree(List<SDA> resultList, SDA sda){
+        SDA parent = sdaDAO.findUniqueBy("id", sda.getParentId());
+        if(null != parent){
+            if(!resultList.contains(parent)){
+                resultList.add(parent);
+            }
+            if(StringUtils.isNotEmpty(parent.getParentId())){
+                addParentToTree(resultList, parent);
+            }
+        }
     }
 }

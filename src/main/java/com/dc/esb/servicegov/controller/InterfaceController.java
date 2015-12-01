@@ -194,6 +194,7 @@ public class InterfaceController {
             ida.setStructName("root");
             ida.setStructAlias("根节点");
             ida.setState(Constants.IDA_STATE_COMMON);
+            ida.setXpath(Constants.ElementAttributes.ROOT_XPATH);
             idaService.save(ida);
             String parentId = ida.getId();
 
@@ -204,6 +205,7 @@ public class InterfaceController {
             ida.setStructAlias("请求报文体");
             ida.setSeq(0);
             ida.setState(Constants.IDA_STATE_COMMON);
+            ida.setXpath(Constants.ElementAttributes.REQUEST_XPATH);
             idaService.save(ida);
 
             ida = new Ida();
@@ -213,6 +215,7 @@ public class InterfaceController {
             ida.setStructName("response");
             ida.setStructAlias("响应报文体");
             ida.setState(Constants.IDA_STATE_COMMON);
+            ida.setXpath(Constants.ElementAttributes.RESPONSE_XPATH);
             idaService.save(ida);
         }
 

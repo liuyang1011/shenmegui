@@ -257,8 +257,18 @@ public class ServiceInvokeController {
             ServiceInvoke consumer = interfaceInvoke.getConsumer();
             ServiceInvoke provider = interfaceInvoke.getProvider();
             interfaceInvokeService.delete(interfaceInvoke);
-            serviceInvokeService.delete(consumer);
-            serviceInvokeService.delete(provider);
+
+            String hql = " from InterfaceInvoke where consumerInvokeId = ?";
+            List<ServiceInvoke> cList = serviceInvokeService.find(hql, consumer.getInvokeId());
+            if(null == cList || cList.size() == 0){
+                serviceInvokeService.delete(consumer);
+            }
+
+            String hql2 = " from InterfaceInvoke where providerInvokeId = ?";
+            List<ServiceInvoke> pList = serviceInvokeService.find(hql2, provider.getInvokeId());
+            if(null == pList || pList.size() == 0){
+                serviceInvokeService.delete(provider);
+            }
         }
 
         operationLog.setParams("服务ID:" + serviceId + "; 场景ID:" + operationId);
@@ -413,12 +423,12 @@ public class ServiceInvokeController {
 
         for (int i = 0; i < providers.size(); i++) {
             LinkedHashMap<String, Object> mapProvider = (LinkedHashMap) providers.get(i);
+            ServiceInvoke p = serviceInvokeService.genderServiceInvoke(mapProvider);
+            operation = operationService.getOperation(p.getServiceId(), p.getOperationId());
+            serviceId = p.getServiceId();
+            operationId = p.getOperationId();
 
             for (int j = 0; j < consumers.size(); j++) {
-                ServiceInvoke p = serviceInvokeService.genderServiceInvoke(mapProvider);
-                operation = operationService.getOperation(p.getServiceId(), p.getOperationId());
-                serviceId = p.getServiceId();
-                operationId = p.getOperationId();
 
                 LinkedHashMap<String, Object> mapConsumer = (LinkedHashMap) consumers.get(j);
                 ServiceInvoke c = serviceInvokeService.genderServiceInvoke(mapConsumer);

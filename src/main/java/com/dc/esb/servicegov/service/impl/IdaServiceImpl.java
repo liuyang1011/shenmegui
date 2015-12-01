@@ -214,7 +214,8 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		private String SDAStructAlias;
 		private String SDAType;
 		private String SDARemark;
-		private String SDAConstraintAlias;
+		private String SDARequired;
+		private String SDAConstraint;
 		private String SDAXpath;
 
 		public IdaMappingBean(Ida ida,SDA sda){
@@ -243,7 +244,8 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setRemark(ida.getRemark());
 			setXpath(ida.getXpath());
 			setSDAStructAlias(sda.getStructAlias());
-			setSDAConstraintAlias(sda.getConstraint());
+			setSDAConstraint(sda.getConstraint());
+			setSDARequired(sda.getRequired());
 			if(sda.getType() != null){
 				if(sda.getLength() != null){
 					setSDAType(sda.getType() + "(" + sda.getLength() + ")");
@@ -283,12 +285,12 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setRemark(ida.getRemark());
 		}
 
-		public String getSDAConstraintAlias() {
-			return SDAConstraintAlias;
+		public String getSDAConstraint() {
+			return SDAConstraint;
 		}
 
-		public void setSDAConstraintAlias(String SDAConstraintAlias) {
-			this.SDAConstraintAlias = SDAConstraintAlias;
+		public void setSDAConstraint(String SDAConstraint) {
+			this.SDAConstraint = SDAConstraint;
 		}
 
 		public String getSDAStructAlias() {
@@ -473,6 +475,14 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 
 		public void setSDAMetadataId(String SDAMetadataId) {
 			this.SDAMetadataId = SDAMetadataId;
+		}
+
+		public String getSDARequired() {
+			return SDARequired;
+		}
+
+		public void setSDARequired(String SDARequired) {
+			this.SDARequired = SDARequired;
 		}
 	}
 

@@ -85,7 +85,9 @@
 			singleSelect:false,
 			<%--fitColumns:true,--%>
 			url:'/operation/query?serviceId=${entity.serviceId }',
-			method:'get',toolbar:toolbar,
+			method:'get',
+			toolbar:toolbar,
+			onDblClickCell:onDblClickCell,
 			pagination:true,
 				pageSize:10"
        style="height:370px; width:100%;">
@@ -632,7 +634,15 @@
 
     });
 
-
+    function onDblClickCell(rowIndex, field,value){
+        var texts = '<div style="word-wrap:break-word" >'+value+'</div>';
+        $.messager.show({
+            title:'详细',
+            msg:texts,
+            showType:'show',
+            height:'auto'
+        });
+    }
 </script>
 
 </body>

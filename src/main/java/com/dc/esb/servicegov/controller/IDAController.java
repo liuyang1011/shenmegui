@@ -244,7 +244,7 @@ public class IDAController {
 		for (int i = 0; i < list.size(); i++) {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
-			String sdaId = map.get("sdastructAlias");    //前台用sdastructAlias做field展示，选中节点后值变为sdaId
+			String sdaId = map.get("sdaid");
 			SDA sda = sdaService.findUniqueBy("id", sdaId);
 			Ida ida = idaService.getById(idaId);
 			ida.setSdaId(sdaId);
@@ -254,11 +254,12 @@ public class IDAController {
 
 				serviceId = sda.getServiceId();
 				operationId = sda.getOperationId();
-
+			}else{
+				ida.setSdaId(null);
+				ida.setXpath(null);
+				ida.setMetadataId(null);
 			}
 			idaService.save(ida);
-
-
 		}
 		logParam = "服务ID:" + serviceId + "; 场景ID:" + operationId + logParam;
 		operationLog.setParams(logParam);
