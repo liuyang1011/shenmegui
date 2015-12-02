@@ -33,7 +33,7 @@
             <%--</ul>--%>
         </li>
         <li>
-            <a href="javascript:;">服务管理</a>
+            <a href="javascript:;"  mid="4">服务管理</a>
             <ul>
                 <li><a href="javascript:;" mid="4">服务信息管理</a></li>
                 <li><a href="javascript:;" mid="12">服务发布管理</a></li>

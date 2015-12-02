@@ -40,6 +40,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
 
     private HSSFCellStyle commonStyle;
     private HSSFCellStyle arrayStyle;
+    private HSSFCellStyle splitStyle;
 
     private static final String serviceType = "service";
     private static final String serviceCategoryType0 = "root";
@@ -169,6 +170,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             arrayStyle = CellStyleSupport.arrayStyle(workbook);
             fillIndex(workbook, siList);
             fillHeads(workbook, siList);
+            fillProtocol(workbook, siList);
             fillMapings(workbook, siList);
             return workbook;
         }
@@ -330,6 +332,8 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public boolean fillMapping(HSSFSheet sheet, ServiceInvoke si) {
         try {
             HSSFRow row0 = sheet.getRow(0);
+            HSSFCell splitCell = row0.getCell(6);
+            splitStyle = splitCell.getCellStyle();
             HSSFRow row1 = sheet.getRow(1);
             HSSFRow row2 = sheet.getRow(2);
             HSSFRow row3 = sheet.getRow(3);
@@ -566,6 +570,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * 填充head页
      */
     public void fillHead(HSSFSheet sheet, InterfaceHead head) {
+        HSSFRow row0 = sheet.getRow(0);
+        HSSFCell splitCell = row0.getCell(6);
+        splitStyle = splitCell.getCellStyle();
         Counter counter = new Counter(4);
 
         List<Ida> reqListIda = idaDao.findHeadOrder(head.getHeadId(), Constants.ElementAttributes.REQUEST_NAME);
@@ -619,6 +626,38 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         return list;
     }
 
+    /**
+     * 填充协议页
+     * @param workbook
+     * @param siList
+     */
+    public void fillProtocol(HSSFWorkbook workbook, List<ServiceInvoke> siList){
+        HSSFSheet sheet = workbook.getSheet("PROTOCOL");
+        if(null != sheet){
+            List<Protocol> protocols = new ArrayList<Protocol>();
+            Counter counter = new Counter(0);
+            for(int i = 0; i < siList.size(); i++){
+                ServiceInvoke serviceInvoke = siList.get(i);
+                if(StringUtils.isNotEmpty(serviceInvoke.getProtocolId())){
+                    Protocol protocol = protocolDAO.findUniqueBy("protocolId", serviceInvoke.getProtocolId());
+                    if(!protocols.contains(protocol)){
+                        System system = serviceInvoke.getSystem();
+                        fillProtocolRow(sheet, counter, protocol, system);
+                        protocols.add(protocol);
+                    }
+                }
+            }
+        }
+    }
+    public void fillProtocolRow(HSSFSheet sheet , Counter counter, Protocol protocol, System system){
+        sheet.createRow(sheet.getLastRowNum() + 1);
+        counter.increment();
+        sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        String[] values ={system.getSystemChineseName(), protocol.getProtocolName(), protocol.getCommuProtocol(), protocol.getIsEncrypt(), protocol.getIsSync(), protocol.getIsLongCon(),
+                protocol.getEncoding(), protocol.getMsgType(), protocol.getTimeout(), protocol.getSuccCode(), protocol.getErrorCode(), null != protocol.getGenerator() ? protocol.getGenerator().getName() : ""};
+        HSSFRow row = sheet.getRow(counter.getCount());
+        setRowValue(row, commonStyle, values);
+    }
     /**
      * 导出服务视图
      * @param categoryId
@@ -686,7 +725,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
      * @param categoryId 子分类
      */
     public void fillView( HSSFSheet sheet,  String categoryId, HSSFCellStyle cellStyle, Counter counter){
-        ServiceCategory sc = serviceCategoryDao.findUniqueBy("categoryId",categoryId);
+        ServiceCategory sc = serviceCategoryDao.findUniqueBy("categoryId", categoryId);
         ServiceCategory parent = serviceCategoryDao.findUniqueBy("categoryId",sc.getParentId());
 
         int start = counter.getCount();
@@ -877,7 +916,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             String providerNames ="";
             for(int i=0; i < consList.size(); i++){
                 ServiceInvoke si = consList.get(i);
-                List<ServiceInvoke> provList =  siDao.find( hql, si.getInvokeId());
+                List<ServiceInvoke> provList =  siDao.find(hql, si.getInvokeId());
                 if(i > 0){
                     providers += ",";
                     providerIds += ",";
@@ -1137,6 +1176,9 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         sheet.createRow(sheet.getLastRowNum() + 1);
         counter.increment();
         sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        HSSFRow row = sheet.getRow(counter.getCount());
+        HSSFCell splitCell = row.createCell(6);
+        splitCell.setCellStyle(splitStyle);
     }
     public boolean isSDAParentLast(SDA sda){
         String hql = "from SDA where parentId = ? and seq > ?";

@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.entity.SystemProtocol;
 import com.dc.esb.servicegov.service.ProtocolService;
 import com.dc.esb.servicegov.service.SystemProtocolService;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -109,6 +110,9 @@ public class ProtocolController {
         Protocol add(@RequestBody Protocol protocol) {
         OperationLog operationLog = systemLogService.record("协议","添加","协议名称：" + protocol.getProtocolName());
 
+        if(StringUtils.isEmpty(protocol.getGeneratorId())){
+            protocol.setGeneratorId(null);
+        }
         if(protocol.getMsgTemplateId()==null || "".equals(protocol.getMsgTemplateId())) {
             String msgtemplateId = UUID.randomUUID().toString();
             protocol.setMsgTemplateId(msgtemplateId);

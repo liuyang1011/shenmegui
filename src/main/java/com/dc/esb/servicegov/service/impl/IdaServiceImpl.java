@@ -224,14 +224,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 			setStructAlias(ida.getStructAlias());
 			setMetadataId(ida.getMetadataId());
 			setSeq(ida.getSeq());
-			if(ida.getType() != null){
-				if(ida.getLength() != null){
-					setType(ida.getType() + "("+ida.getLength()+")");
-				} else {
-					setType(ida.getType());
-				}
-			}
-
+			setType(ida.getType());
 			setScale(ida.getScale());
 			setLength(ida.getLength());
 			setRequired(ida.getRequired());

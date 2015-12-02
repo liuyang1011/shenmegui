@@ -207,6 +207,7 @@ var sysManager = {
     addProtocolPage: function () {
         uiinit.win({
             w: 500,
+            top:100,
             iconCls: 'icon-add',
             title: "新增协议",
             url: "/jsp/sysadmin/protocol_add.jsp"
@@ -253,6 +254,7 @@ var sysManager = {
         var node = $('.msinterfacetree').tree("getSelected");
         uiinit.win({
             w:500,
+            top:100,
             //top:"20px",
             //left:"150px",
             iconCls:'icon-add',

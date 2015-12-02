@@ -32,9 +32,8 @@
             <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px"
                        class="easyui-combobox"
                        data-options="
-						url:'/metadata/categoryWord',
 				 		 method:'get',
-				 		 valueField: 'englishWord',
+				 		 valueField: 'esglisgAb',
 				 		 textField: 'chineseWord',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;
@@ -265,7 +264,7 @@
             panelHeight:'130px',
             url:'/metadata/categoryWord',
             method:'get',
-            valueField: 'englishWord',
+            valueField: 'esglisgAb',
             textField: 'chineseWord',
             onChange:function(newValue, oldValue){
                 this.value=newValue;

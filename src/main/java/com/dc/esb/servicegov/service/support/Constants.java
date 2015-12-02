@@ -84,6 +84,7 @@ public class Constants {
 
         public static final String LIFE_CYCLE_STATE_PUBLISHED = "3";
         public static final String LIFE_CYCLE_STATE_ONLINE = "4";
+        @Deprecated
         public static final String LIFE_CYCLE_STATE_DISCHARGE = "5";
 
         public static String getStateName(String state){

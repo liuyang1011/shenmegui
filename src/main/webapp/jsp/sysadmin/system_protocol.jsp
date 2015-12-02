@@ -68,7 +68,7 @@
             通讯协议
         </th>
         <th data-options="field:'msgType',width:'8%'">
-            消息类型
+            报文类型
         </th>
         <th data-options="field:'encoding',width:'8%'">
             协议编码

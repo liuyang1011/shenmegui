@@ -3,13 +3,12 @@ package com.dc.esb.servicegov.service.impl;
 import java.net.URLDecoder;
 import java.util.*;
 
+import com.dc.esb.servicegov.dao.impl.InterfaceDAOImpl;
 import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.InterfaceInvoke;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.ServiceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
@@ -32,6 +31,8 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 	private ServiceInvokeDAOImpl serviceInvokeDAOImpl;
 	@Autowired
 	private InterfaceInvokeDAOImpl interfaceInvokeDAO;
+	@Autowired
+	private InterfaceDAOImpl interfaceDAO;
 
 	@Override
 	public HibernateDAO<ServiceInvoke, String> getDAO() {
@@ -258,6 +259,11 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		ServiceInvoke c = new ServiceInvoke();
 		c.setSystemId(systemId);
 		if(StringUtils.isNotEmpty(interfaceId)){
+			String hql = "from ServiceInvoke s where s.interfaceId = ? and s.systemId = ? and s.serviceId is null and s.operationId is null and s.protocolId is not null";
+			ServiceInvoke serviceInvoke = serviceInvokeDAOImpl.findUnique(hql, interfaceId, systemId);
+			if(null != serviceInvoke){
+				c.setProtocolId(serviceInvoke.getProtocolId());
+			}
 			c.setInterfaceId(interfaceId);
 		}
 		c.setType(type);

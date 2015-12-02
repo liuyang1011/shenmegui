@@ -52,6 +52,14 @@
 
 %>
 <%
+	if(mid.equals("1.13")){
+%>
+{"success":true,"url":"/jsp/generator/generator.jsp","title":"生成类管理"}
+<%
+	}
+
+%>
+<%
 	if(mid.equals("2.3")){
 %>
 {"success":true,"url":"/dataTemplate/grid4.jsp","title":"任务管理"}

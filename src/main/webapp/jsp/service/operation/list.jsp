@@ -14,9 +14,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
 
   <body>
-  	<table title="服务场景" class="easyui-treegrid" id="tg" style=" width:auto;"
+  	<table class="easyui-treegrid" id="tg" style=" width:100%;"
     			data-options="
-    				iconCls: 'icon-ok',
     				rownumbers: true,
     				fitColumns: false,
     				animate: true,

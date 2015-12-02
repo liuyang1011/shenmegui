@@ -1,3 +1,4 @@
+<%--用于'元数据-关联服务场景，接口-关联服务场景双击操作--%>
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%

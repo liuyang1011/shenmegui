@@ -82,6 +82,7 @@
     </div>--%>
 </fieldset>
 <div id="mm" class="easyui-menu" style="width:120px;">
+    <div onclick="insertRow()" data-options="iconCls:'icon-edit'">插入</div>
     <div onclick="beginRelate()" data-options="iconCls:'icon-edit'">关联字段映射</div>
     <div onclick="delRelate()" data-options="iconCls:'icon-edit'">删除字段映射</div>
 </div>
@@ -195,7 +196,7 @@
     </shiro:hasPermission>
     //根据已选中的接口关系在“接口映射”区域更新接口信息
     function relateInterface() {
-        item = $('#invokeList').treegrid('getSelected');
+        var item = $('#invokeList').treegrid('getSelected');
         if (item != null) {
             if (item.interfaceId == null || item.interfaceId == '') {
                 alert("该系统没有关联接口！");
@@ -241,6 +242,19 @@
             showType:'show',
             height:'auto'
         });
+    }
+    //插入行
+    function insertRow(){
+        var node = $('#mappingdatagrid').treegrid('getSelected');
+        editingRowId = ""+new Date().getTime();
+        $('#mappingdatagrid').treegrid('insert', {
+            before: node.id,
+            data: {
+                id: editingRowId,
+                structName:''
+            }
+        });
+        $('#mappingdatagrid').treegrid('select', editingRowId);
     }
     //删除映射关系
     function delRelate(){

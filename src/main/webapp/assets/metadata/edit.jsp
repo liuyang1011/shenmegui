@@ -54,7 +54,7 @@
 						panelHeight:'300px',
 						url:'/metadata/categoryWord',
 				 		 method:'get',
-				 		 valueField: 'englishWord',
+				 		 valueField: 'esglisgAb',
 				 		 textField: 'chineseWord',
 				 		 onChange:function(newValue, oldValue){
 							this.value=newValue;

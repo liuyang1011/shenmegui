@@ -30,7 +30,6 @@
       <td><input name="serviceId" id="serviceId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
-                 url:'/service/getAll',
                  textField:'serviceId',
                  valueField:'serviceId',
                  onChange:function(newValue, oldValue){
@@ -52,7 +51,6 @@
       <td><input name="serviceName" id="serviceName"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
-                 url:'/service/getAll',
                  textField:'serviceName',
                  valueField:'serviceId',
                   onChange:function(newValue, oldValue){
@@ -81,7 +79,6 @@
       <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:150px"
                  data-options="
                  method:'get',
-                  url:'/operation/getByServiceId',
                  textField:'operationId',
                  valueField:'operationId',
                  onChange:function(newValue, oldValue){
@@ -101,7 +98,6 @@
         <input name="operationName" id="operationName"  class="easyui-combobox" style="width:150px"
                data-options="
                  method:'get',
-                 url:'/operation/getByServiceId',
                  textField:'operationName',
                  valueField:'operationId',
                  onChange:function(newValue, oldValue){
@@ -133,9 +129,9 @@
                     {'id':'2','text':'审核不通过'},
                     {'id':'3','text':'已发布'},
                     {'id':'4','text':'已上线'},
-                    {'id':'5','text':'已下线'},
                     {'id':'7','text':'修订'},
-                    {'id':'8','text':'已下线'}
+                    {'id':'8','text':'已下线'},
+                    {'id':'9','text':'已废弃'}
 
                  ]
                  "
@@ -147,7 +143,6 @@
         <td><input name="providerId" id="providerId"  class="easyui-combobox" style="width:150px"
                    data-options="
                  method:'get',
-                 url:'/system/getSystemAll',
                  textField:'chineseName',
                  valueField:'id',
                  onChange:function(newValue, oldValue){
@@ -160,7 +155,6 @@
         <td><input name="consumerId" id="consumerId"  class="easyui-combobox" style="width:150px"
                    data-options="
                  method:'get',
-                 url:'/system/getSystemAll',
                  textField:'chineseName',
                  valueField:'id',
                  onChange:function(newValue, oldValue){
@@ -231,6 +225,12 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
+        $("#serviceId").combobox({url:"/service/getAll"});
+        $("#serviceName").combobox({url:"/service/getAll"});
+        $("#operationId").combobox({url:"/operation/getByServiceId"});
+        $("#operationName").combobox({url:"/operation/getByServiceId"});
+        $("#providerId").combobox({url:"/system/getSystemAll"});
+        $("#consumerId").combobox({url:"/system/getSystemAll"});
         $("#resultList").datagrid({url:"/operation/query"});
         var configResult;
         query();

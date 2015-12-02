@@ -16,8 +16,10 @@ import com.dc.esb.servicegov.service.impl.InterfaceHeadServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.vo.ConfigListVO;
 import com.dc.esb.servicegov.vo.ConfigVO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -147,7 +149,7 @@ public class ConfigExportController {
         } else {
             //非标准接口导出,我不得不改了
             try {
-                IPackerParserConfigGenerator generator = getGenerator(export.getServiceId(), export.getOperationId(), export.getConsumerInterfaceId(), export.getConsumerSystemId());
+                IPackerParserConfigGenerator generator = getGenerator(response, export.getServiceId(), export.getOperationId(), export.getConsumerInterfaceId(), export.getConsumerSystemId());
                 Map<String, String> param = new HashMap<String, String>();
                 param.put("interfaceId", export.getConsumerInterfaceId());
                 List<Ida> bodyNodes = idaService.findBy(param, "seq");
@@ -174,7 +176,7 @@ public class ConfigExportController {
         } else {
             //非标准接口导出,我不得不改了
             try {
-                IPackerParserConfigGenerator generator = getGenerator(export.getServiceId(),export.getOperationId(),export.getProviderInterfaceId(), export.getProviderSystemId());
+                IPackerParserConfigGenerator generator = getGenerator(response, export.getServiceId(),export.getOperationId(),export.getProviderInterfaceId(), export.getProviderSystemId());
                 Map<String, String> param = new HashMap<String, String>();
                 param.put("interfaceId", export.getProviderInterfaceId());
                 List<Ida> bodyNodes = idaService.findBy(param, "seq");
@@ -234,7 +236,7 @@ public class ConfigExportController {
     }
 
 
-    private IPackerParserConfigGenerator getGenerator(String serviceId, String operationId, String interfaceId, String systemId) throws Exception {
+    private IPackerParserConfigGenerator getGenerator(HttpServletResponse response, String serviceId, String operationId, String interfaceId, String systemId) throws Exception {
         IPackerParserConfigGenerator generator = null;
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("serviceId", serviceId);
@@ -245,8 +247,18 @@ public class ConfigExportController {
         if (invoke != null) {
             String protocolId = invoke.getProtocolId();
             if (protocolId == null || "".equals(protocolId)) {
-                logger.error("消费方接口未关联协议，导出失败");
-                logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
+                String msg = "接口未关联协议，导出失败";
+                if(StringUtils.isNotEmpty(invoke.getType())){
+                    if(Constants.INVOKE_TYPE_PROVIDER.equalsIgnoreCase(invoke.getType())){
+                        msg = "提供方接口未关联协议，导出失败";
+                    }
+                    if(Constants.INVOKE_TYPE_CONSUMER.equalsIgnoreCase(invoke.getType())){
+                        msg = "消费方接口未关联协议，导出失败";
+                    }
+                }
+                logger.error(msg);
+//                logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
+                printMsg(response, msg);
                 return null;
             } else {
                 Protocol protocol = protocolService.getById(protocolId);
@@ -255,9 +267,10 @@ public class ConfigExportController {
                     Class c = Class.forName(generatorClass);
                     generator = (IPackerParserConfigGenerator) c.newInstance();
                 } catch (ReflectiveOperationException e) {
-                    logger.error("消费方接口协议报文生成类反射失败，导出失败");
-                    logInfoService.saveLog("消费方接口协议报文生成类反射失败，导出失败", "导出");
-                    throw new ExportException("消费方接口协议报文生成类反射失败，导出失败");
+                    logger.error("接口协议报文生成类反射失败，导出失败");
+//                    logInfoService.saveLog("消费方接口协议报文生成类反射失败，导出失败", "导出");
+                    printMsg(response, "接口协议报文生成类反射失败，导出失败");
+                    throw new ExportException("接口协议报文生成类反射失败，导出失败");
                 }
 
             }

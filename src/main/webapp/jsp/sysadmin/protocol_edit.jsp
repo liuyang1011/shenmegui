@@ -25,7 +25,7 @@
         </tr>
 		<tr>
 			<th>
-				消息类型
+				报文类型
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="msgTypeText" value="${protocol.msgType}">
@@ -124,7 +124,7 @@
     </tr>
     <tr>
         <th>
-            消息模板
+            报文模板
         </th>
         <td>
             <input class="easyui-textbox" type="text" id="templateContent" value="${protocol.msgTemplate.templateContent}">
