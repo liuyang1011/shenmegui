@@ -245,10 +245,22 @@ public class IDAController {
 			LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
 			String idaId = map.get("id");
 			String sdaId = map.get("sdaid");
+			String interfceId = map.get("interfaceId");
 			SDA sda = sdaService.findUniqueBy("id", sdaId);
 			Ida ida = idaService.getById(idaId);
-			ida.setSdaId(sdaId);
+			if(null == ida){
+				ida = new Ida();
+				ida.setStructName(" ");
+				ida.setInterfaceId(interfceId);
+				String seq = map.get("seq");
+				if(StringUtils.isNotEmpty(seq)){
+					ida.setSeq(Integer.parseInt(seq));
+				}
+				ida.setState(Constants.IDA_STATE_COMMON);
+				ida.set_parentId(map.get("_parentId"));
+			}
 			if(sda != null){
+				ida.setSdaId(sdaId);
 				ida.setMetadataId(sda.getMetadataId());
 				ida.setXpath(sda.getXpath());
 

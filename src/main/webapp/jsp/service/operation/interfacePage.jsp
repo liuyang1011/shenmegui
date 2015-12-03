@@ -132,11 +132,13 @@
             <th data-options="field:'sdametadataId',width:'10%'">
                 元数据
             </th>
+
             <th data-options="field:'sdarequired',width:'6%'" >是否必输</th>
             <th data-options="field:'sdaconstraint',width:'9%'">约束条件</th>
             <th data-options="field:'sdaremark',title:'SDA备注',width:'15%'"></th>
             <th data-options="field:'sdaxpath',hidden:true"></th>
             <th data-options="field:'sdaid',hidden:true"></th>
+            <th data-options="field:'interfaceId',hidden:true"></th>
         </tr>
         </thead>
     </table>
@@ -250,8 +252,11 @@
         $('#mappingdatagrid').treegrid('insert', {
             before: node.id,
             data: {
-                id: editingRowId,
-                structName:''
+                id : editingRowId,
+                seq : '' +node.seq,
+                _parentId : node._parentId,
+                interfaceId:node.interfaceId,
+                structName : ''
             }
         });
         $('#mappingdatagrid').treegrid('select', editingRowId);

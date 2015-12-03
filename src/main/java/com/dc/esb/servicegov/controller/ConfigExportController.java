@@ -98,9 +98,8 @@ public class ConfigExportController {
                         HttpServletResponse response) {
         logger.info("开始导出配置,服务ID:[" + serviceId + "],操作ID:[" + operationId + "],提供者ID:[" + providerSystemId + "" +
                 "j],消费者ID:[" + consumerSystemId + "],提供接口ID:[" + providerInterfaceId + "],消费接口ID:[" + consumerInterfaceId + "]");
-        OperationLog operationLog = systemLogService.record("服务", "配置导出", "服务ID:" + serviceId + ";操作ID：" + operationId
-                + ";提供者ID" + providerSystemId + ";消费者ID:" + consumerSystemId + ", 提供者接口ID"
-                + providerInterfaceId + ", consumerSystemId 消费者接口ID:");
+        OperationLog operationLog = systemLogService.record("服务", "配置导出", "服务ID:[" + serviceId + "],操作ID:[" + operationId + "],提供者ID:[" + providerSystemId + "" +
+                "j],消费者ID:[" + consumerSystemId + "],提供接口ID:[" + providerInterfaceId + "],消费接口ID:[" + consumerInterfaceId + "]");
         File in_file = null;
         //构造导出的条件Bean
         ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId,
@@ -262,17 +261,20 @@ public class ConfigExportController {
                 return null;
             } else {
                 Protocol protocol = protocolService.getById(protocolId);
-                String generatorClass = protocol.getGeneratorId();
-                try {
-                    Class c = Class.forName(generatorClass);
-                    generator = (IPackerParserConfigGenerator) c.newInstance();
-                } catch (ReflectiveOperationException e) {
-                    logger.error("接口协议报文生成类反射失败，导出失败");
+                Generator generatorClass = protocol.getGenerator();
+                if(null != generatorClass){
+                    try {
+                        Class c = Class.forName(generatorClass.getImplementsClazz());
+                        generator = (IPackerParserConfigGenerator) c.newInstance();
+                    } catch (ReflectiveOperationException e) {
+                        logger.error("接口协议报文生成类反射失败，导出失败");
 //                    logInfoService.saveLog("消费方接口协议报文生成类反射失败，导出失败", "导出");
-                    printMsg(response, "接口协议报文生成类反射失败，导出失败");
-                    throw new ExportException("接口协议报文生成类反射失败，导出失败");
+                        printMsg(response, "接口协议报文生成类反射失败，导出失败");
+                        throw new ExportException("接口协议报文生成类反射失败，导出失败");
+                    }
+                }else{
+                    printMsg(response, "接口协议报文没有关联生成类，导出失败");
                 }
-
             }
         }
         return generator;

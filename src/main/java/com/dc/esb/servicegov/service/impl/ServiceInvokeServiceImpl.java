@@ -255,8 +255,18 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		String serviceId = map.get("serviceId").toString();
 		String operationId = map.get("operationId").toString();
 
-
-		ServiceInvoke c = new ServiceInvoke();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("systemId", systemId);
+		params.put("interfaceId", interfaceId);
+		params.put("type", type);
+		params.put("isStandard", isStandard);
+		params.put("serviceId", serviceId);
+		params.put("operationId", operationId);
+		ServiceInvoke c = serviceInvokeDAOImpl.findUniqureBy(params);
+		if(null != c){
+			return c;
+		}
+		c = new ServiceInvoke();
 		c.setSystemId(systemId);
 		if(StringUtils.isNotEmpty(interfaceId)){
 			String hql = "from ServiceInvoke s where s.interfaceId = ? and s.systemId = ? and s.serviceId is null and s.operationId is null and s.protocolId is not null";
