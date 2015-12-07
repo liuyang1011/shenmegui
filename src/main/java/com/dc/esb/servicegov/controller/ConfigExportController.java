@@ -266,7 +266,7 @@ public class ConfigExportController {
                     try {
                         Class c = Class.forName(generatorClass.getImplementsClazz());
                         generator = (IPackerParserConfigGenerator) c.newInstance();
-                    } catch (ReflectiveOperationException e) {
+                    } catch (Exception e) {
                         logger.error("接口协议报文生成类反射失败，导出失败");
 //                    logInfoService.saveLog("消费方接口协议报文生成类反射失败，导出失败", "导出");
                         printMsg(response, "接口协议报文生成类反射失败，导出失败");
