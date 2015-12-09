@@ -153,7 +153,7 @@
                 parentId : node.parentId,
                 append1: row.chineseName,
                 append2: typeStr,
-                append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/",
+                append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/"+row.metadataId,
                 append4: row.metadataId,
                 attributes:getSeq(node.id),
             }
@@ -218,7 +218,7 @@
                 parentId : node.parentId,
                 append1: row.chineseName,
                 append2: typeStr,
-                append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/",
+                append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/"+row.metadataId,
                 append4: row.metadataId,
                 attributes:getSeq(node.id)+1,
             }

@@ -177,25 +177,42 @@
         text: '保存',
         iconCls: 'icon-save',
         handler: function () {
-            if(undefined != editingRowId){
-                $("#mappingdatagrid").treegrid("endEdit", editingRowId);//结束上次编辑
-            }
-            if(changeIds.length > 0){
-                var editData = []
-                for(var i=0; i < changeIds.length; i++){
-                    var node = $("#mappingdatagrid").treegrid("find", changeIds[i]);
-                    editData.push(node);
-                }
-                idaManager.saveIdaMapping(editData, function (result) {
-                    if (result) {
-                        alert("保存成功！");
-                        $('#mappingdatagrid').treegrid('reload');
+            $.ajax({
+                type: "get",
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                url: "/operation/updateable",
+                dataType: "json",
+                data: {"serviceId": "${service.serviceId }",
+                    "operationId":"${operation.operationId}"
+                },
+                success: function (data) {
+                    if(data){
+                        if(undefined != editingRowId){
+                            $("#mappingdatagrid").treegrid("endEdit", editingRowId);//结束上次编辑
+                        }
+                        if(changeIds.length > 0){
+                            var editData = []
+                            for(var i=0; i < changeIds.length; i++){
+                                var node = $("#mappingdatagrid").treegrid("find", changeIds[i]);
+                                editData.push(node);
+                            }
+                            idaManager.saveIdaMapping(editData, function (result) {
+                                if (result) {
+                                    alert("保存成功！");
+                                    $('#mappingdatagrid').treegrid('reload');
+                                }
+                            });
+                            changeIds = [];
+                        }else{
+                            alert("没有改变任何数据!");
+                        }
+                    }else{
+                        alert("该状态下不能保存修改!");
                     }
-                });
-                changeIds = [];
-            }else{
-                alert("没有改变任何数据!");
-            }
+                }
+            });
+
         }
     });
     </shiro:hasPermission>

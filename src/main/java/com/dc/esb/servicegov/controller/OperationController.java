@@ -713,4 +713,18 @@ public class OperationController {
     public List<TreeNode> getByInterfaceId(@PathVariable(value = "interfaceId") String interfaceId){
         return operationServiceImpl.getByInterfaceId(interfaceId);
     }
+    @RequiresPermissions({"operation-get"})
+    @RequestMapping("/updateable")
+    @ResponseBody
+    public boolean updateable(String serviceId, String operationId){
+        Map<String,String> params = new HashMap<String, String>();
+        params.put("serviceId",serviceId);
+        params.put("operationId",operationId);
+        Operation operation = operationServiceImpl.findUniqueBy(params);
+        //只有服务定义和修订状态能修改
+        if(operation.getState().equals(Constants.Operation.OPT_STATE_UNAUDIT) || operation.getState().equals(Constants.Operation.OPT_STATE_REVISE)){
+            return true;
+        }
+        return false;
+    }
 }
