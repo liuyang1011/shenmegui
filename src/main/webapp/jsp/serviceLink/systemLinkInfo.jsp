@@ -47,14 +47,15 @@
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
-        <th colspan="7">交易属性</th>
+        <th colspan="8">交易属性</th>
         <th colspan="4">节点属性</th>
         <th colspan="3">节点依赖信息</th>
 
     </tr>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
-        <th data-options="field:'interfaceId'" width="15%">交易码</th>
+        <th data-options="field:'interfaceId'" width="10%">接口ID</th>
+        <th data-options="field:'ecode'" width="10%">交易代码</th>
         <th data-options="field:'interfaceName'" width="15%">交易名称</th>
         <th data-options="field:'serviceId'" width="10%">服务码</th>
         <th data-options="field:'serviceName'" width="15%">服务名称</th>

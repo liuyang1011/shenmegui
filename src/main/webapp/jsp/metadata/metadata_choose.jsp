@@ -20,7 +20,7 @@
 <form id="searchForm">
     <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
                                                        onClick="javascript:$('#dlg').dialog('close');">取消</a><a href="javascript:void(0)" id="saveBtn"
-                                                                                  onclick="saveAdd()"
+                                                                                  onclick="saveAdd('${param.optType}')"
                                                                                   class="easyui-linkbutton"
                                                                                   iconCls="icon-save">确定</a></div>
 <fieldset>
@@ -121,7 +121,48 @@
         $("#metadataList").datagrid('options').queryParams = params;
         $("#metadataList").datagrid('reload');
     };
-    function saveAdd(){
+    function saveAdd(optType){
+        if('insertBef' == optType){
+            insertBef();
+        }
+        if('append' == optType){
+            append();
+        }
+        if('insertAft' == optType){
+            insertAft()
+        }
+    }
+    function insertBef(){
+        var node = $('#tg').treegrid('getSelected');
+        var row =  $('#metadataList').datagrid('getSelected');
+        editingId = ""+new Date().getTime();
+        var typeStr = row.type;
+        if(row.length){
+            typeStr += "(" + row.length;
+            if(row.scale){
+                typeStr += "," + row.scale;
+            }
+            typeStr += ")";
+        }
+        newIds.push(editingId);
+        $('#tg').treegrid('insert', {
+            before: node.id,
+            data: {
+                id : editingId,
+                text:row.metadataId,
+                parentId : node.parentId,
+                append1: row.chineseName,
+                append2: typeStr,
+                append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/",
+                append4: row.metadataId,
+                attributes:getSeq(node.id),
+            }
+        });
+        $('#tg').treegrid('reloadFooter');
+        $('#tg').treegrid('select', editingId);
+        $('#dlg').dialog("close");
+    }
+    function append(){
         var row =  $('#metadataList').datagrid('getSelected');
         if(row){
             var uuid = "" + new Date().getTime();
@@ -155,8 +196,36 @@
         }else{
             alert('请选中一行数据!');
         }
-
-
+    }
+    function insertAft(){
+        var node = $('#tg').treegrid('getSelected');
+        var row =  $('#metadataList').datagrid('getSelected');
+        editingId = ""+new Date().getTime();
+        var typeStr = row.type;
+        if(row.length){
+            typeStr += "(" + row.length;
+            if(row.scale){
+                typeStr += "," + row.scale;
+            }
+            typeStr += ")";
+        }
+        newIds.push(editingId);
+        $('#tg').treegrid('insert', {
+            after: node.id,
+            data: {
+                id : editingId,
+                text:row.metadataId,
+                parentId : node.parentId,
+                append1: row.chineseName,
+                append2: typeStr,
+                append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/",
+                append4: row.metadataId,
+                attributes:getSeq(node.id)+1,
+            }
+        });
+        $('#tg').treegrid('reloadFooter');
+        $('#tg').treegrid('select', editingId);
+        $('#dlg').dialog("close");
     }
     function getSeq(nodeId){
         var children = $('#tg').treegrid('getChildren', nodeId);

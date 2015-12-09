@@ -15,6 +15,10 @@ public class ServiceLinkNodeVO {
      */
     private String interfaceId;
     /**
+     *   交易名称
+     */
+    private String ecode;
+    /**
      * 接口名称
      */
     private String interfaceName;
@@ -181,6 +185,7 @@ public class ServiceLinkNodeVO {
         this.interfaceId = serviceInvoke.getInterfaceId();
         if(null != serviceInvoke.getInter()){
             this.interfaceName = serviceInvoke.getInter().getInterfaceName();
+            this.ecode = serviceInvoke.getInter().getEcode();
         }
         this.operationId = serviceInvoke.getOperationId();
         this.id = serviceInvoke.getInvokeId();
@@ -215,5 +220,13 @@ public class ServiceLinkNodeVO {
 
     public void setConnectionDesc(String connectionDesc) {
         this.connectionDesc = connectionDesc;
+    }
+
+    public String getEcode() {
+        return ecode;
+    }
+
+    public void setEcode(String ecode) {
+        this.ecode = ecode;
     }
 }

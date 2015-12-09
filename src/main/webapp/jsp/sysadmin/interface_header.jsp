@@ -102,7 +102,8 @@
 					data.remark = remark;
 					data.metadataId = row.metadataId;
 					data.xpath = row.xpath;
-					data.id = row.id;
+//					data.id = row.id;
+					data.state = "0";
 					reqAry.push(data);
 				}
 			}
@@ -136,6 +137,7 @@
 					data.metadataId = row.metadataId;
 					data.xpath = row.xpath;
 					data.id = row.id;
+					data.state = "0";
 					reqAry.push(data);
 				}
 			}
@@ -384,7 +386,7 @@
 		}
 		var idIndex=999;
 		function append(){
-		
+
 			idIndex++;
 			
 			var node = $('#tg').treegrid('getSelected');
@@ -525,11 +527,6 @@
 							var node2 = $('#tg').treegrid('getSelected');
 							$('#tg').treegrid('endEdit', node2.id);
 							return false;
-						  }else{
-							var node2 = $('#tg').treegrid('getSelected');
-							node2.xpath = node.append2;
-							node2.id = node.id;
-							node2.metadataId = node.text;
 						  }
 						}
 					  }

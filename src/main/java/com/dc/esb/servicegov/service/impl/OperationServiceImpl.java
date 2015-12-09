@@ -414,6 +414,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
         for( int i = 0; i < opList.size(); i++){
             Operation operation = opList.get(i);
+            //场景名称=operationName + （serviceId：operationId）
+            String text = operation.getOperationName() + "(" + operation.getServiceId() + ":" + operation.getOperationId() + ")";
             //节点转换
             Map<String, String> opFields = new HashMap<String, String>();
             opFields.put("id", "operationId");
@@ -422,7 +424,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             opFields.put("append2", "serviceId");
             opFields.put("append3", "operationId");
             TreeNode opNode = EasyUiTreeUtil.getInstance().convertTreeNode(operation, opFields);
-
+            opNode.setText(text);
             com.dc.esb.servicegov.entity.Service service = operation.getService();
             Map<String, String> serviceFields = new HashMap<String, String>();
             serviceFields.put("id", "serviceId");

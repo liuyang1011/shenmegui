@@ -11,7 +11,7 @@
                                                                                                              class="easyui-linkbutton"
                                                                                                              iconCls="icon-save">确定</a></div>
     <fieldset>
-        <legend>服务消费者</legend>
+        <legend>调用方</legend>
         <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
             <tr>
                 <th align="center">已经应用</th>
@@ -39,7 +39,7 @@
     </fieldset>
     <div style="margin-top:10px;"></div>
     <fieldset>
-        <legend>服务提供者</legend>
+        <legend>提供方</legend>
         <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">
             <tr>
                 <th align="center">已经应用</th>

@@ -8,8 +8,12 @@
 <form id="categoryWordForm" class="formui">
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>类别词中文名称</th>
+            <th>中文名称</th>
             <td><input class="easyui-textbox" data-options="required:true, validType:['uniqueName','chineseB']" type="text" id="chineseWord_" ></td>
+        </tr>
+        <tr>
+            <th>英文全称</th>
+            <td><input class="easyui-textbox" type="text" id="englishWord"></td>
         </tr>
         <tr>
             <th>类别词英文</th>
@@ -78,6 +82,7 @@
         }
         var categoryWord = {};
         categoryWord.chineseWord = $('#chineseWord_').textbox("getValue");
+        categoryWord.esglisgAb = $('#englishWord').textbox("getValue");
         categoryWord.esglisgAb = $('#esglisgAb_').textbox("getValue");
         categoryWord.remark = $('#remark_').textbox("getValue");
         $.ajax({

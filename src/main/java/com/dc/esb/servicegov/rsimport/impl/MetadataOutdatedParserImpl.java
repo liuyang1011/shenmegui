@@ -3,6 +3,7 @@ package com.dc.esb.servicegov.rsimport.impl;
 import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
+import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MetadataOutdatedParserImpl implements IResourceParser {
-
+    @Autowired
+    LogInfoServiceImpl logInfoService;
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
     private static final String SHEET_NAME = "表7过时元数据";
@@ -65,7 +67,8 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
 //		List<Metadata> metadatas = new ArrayList<Metadata>();
         for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
             Row row = sheet.getRow(rowNum);
-            Metadata metadata = parseRow(row);
+            Metadata metadata = parseRow(row, rowNum);
+            if(null == metadata) continue;
             String userName = (String) SecurityUtils.getSubject().getPrincipal();
             metadata.setOptUser(userName);
             try {
@@ -73,6 +76,7 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
                 versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
             } catch (NonUniqueObjectException e) {
                 log.error("元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", e);
+                logInfoService.saveLog("第" + (rowNum+1) + "行导入元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", "表7过时元数据");
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
                 metadataService.save(metadata);
@@ -83,28 +87,43 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
                 }
             } catch(Exception e ){
                 log.error("元数据[" + metadata.getMetadataId() + "]导入出错");
+                logInfoService.saveLog("第" + (rowNum+1) + "行导入[" + metadata.getMetadataId() + "]失败！"+e.getMessage(), "表7过时元数据");
             }
         }
     }
 
-    private Metadata parseRow(Row row) {
-        Metadata metadata = new Metadata();
-        metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
-        metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
-        metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
-        metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
-        metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
-        metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
-        metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
-        String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
-        String type = getTypeFromFormula(dataFormula);
-        metadata.setType(type);
-        metadata.setLength("");
-        metadata.setScale("");
-        metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
-        metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
-        metadata.setStatus(Constants.Metadata.STATUS_OUTDATED);
-        return metadata;
+    private Metadata parseRow(Row row, int rowNum) {
+        try{
+            Metadata metadata =  new Metadata();
+            metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
+            metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
+            metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
+            metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
+            metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
+            metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
+            metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
+            String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
+            //TODO 本地化修改
+            String[] str = dataFormula.split("[()]+");
+            String type = getTypeFromFormula(str[0]);
+            String length = "";
+            String scale = "";
+            if (str.length > 1) {
+                length = getLengthFromFormula(str[1].replaceAll("，", ","));
+                scale = getScaleFromFormula(str[1].replaceAll("，", ","));
+            }
+            metadata.setType(type);
+            metadata.setLength(length);
+            metadata.setScale(scale);
+            metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
+            metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
+            metadata.setStatus(Constants.Metadata.STATUS_OUTDATED);
+            return metadata;
+        }catch (Exception e){
+            log.error(e, e);
+            logInfoService.saveLog("第"+(rowNum+1)+"行解析数据失败！", "表7过时元数据");
+        }
+        return null;
     }
 
     //TODO 本地化修改
@@ -119,7 +138,25 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
         }
         return type;
     }
+    public static String getLengthFromFormula(String formula) {
+        String length = "";
+        if (null != formula) {
+            String str[] = formula.split(",");
+            length = str[0];
+        }
+        return length;
+    }
+    public static String getScaleFromFormula(String formula) {
+        String scale = "";
 
+        if (null != formula) {
+            String str[] = formula.split(",");
+            if (str.length > 1) {
+                scale = str[1];
+            }
+        }
+        return scale;
+    }
     public static String getValueFromCell(Row row, int column) {
         return ExcelUtils.getValue(row.getCell(column));
     }

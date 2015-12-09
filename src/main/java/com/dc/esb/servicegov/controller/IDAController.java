@@ -64,7 +64,7 @@ public class IDAController {
 //		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		//TODO 空和0都要显示
 		String hql = "from Ida t where t.interfaceId = '"+interfaceId+"'";
-		hql += " and (t.state = '"+Constants.IDA_STATE_COMMON+"' or t.state is null) order by seq";
+		hql += " and (t.state = '"+Constants.IDA_STATE_COMMON+"' or t.state is null) and (structName is not null or structAlias is not null) order by seq";
 
 		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){
@@ -104,10 +104,12 @@ public class IDAController {
 		for(int i=0; i < idas.length; i++){
 			Ida ida  = idas[i];
 			logParam += "[报文头ID:" +ida.getHeadId() + ",字段名称：" +ida.getStructName() + "],";
-			if(StringUtils.isNotEmpty(ida.getSdaId())){
-				SDA sda = sdaService.findUniqueBy("id", ida.getSdaId());
+			if(StringUtils.isNotEmpty(ida.getMetadataId())){
+				SDA sda = sdaService.findUniqueBy("id", ida.getMetadataId());//前台接收sda id 的字段是metadataId
 				if(sda != null){
 					ida.setMetadataId(sda.getMetadataId());
+					ida.setXpath(sda.getXpath());
+					ida.setSdaId(sda.getId());
 				}
 			}
 		}

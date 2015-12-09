@@ -27,10 +27,13 @@
 <div id="mm" class="easyui-menu" style="width:120px;">
     <shiro:hasPermission name="sda-add">
         <%--<div onclick="append()" data-options="iconCls:'icon-add'">新增</div>--%>
-        <div onclick="appendByMetadata()" data-options="iconCls:'icon-add'">新增</div>
+        <div onclick="insert('insertBef')" data-options="iconCls:'icon-add'">在上方插入</div>
+        <div onclick="insert('append')" data-options="iconCls:'icon-add'">插入子节点</div>
+        <div onclick="insert('insertAft')" data-options="iconCls:'icon-add'">在下方插入</div>
     </shiro:hasPermission>
     <shiro:hasPermission name="sda-update">
         <div onclick="editIt()" data-options="iconCls:'icon-edit'">编辑</div>
+        <%--<div onclick="addLevel()" data-options="iconCls:'icon-edit'">升级</div>--%>
     </shiro:hasPermission>
     <shiro:hasPermission name="sda-delete">
         <div onclick="removeIt()" data-options="iconCls:'icon-remove'">删除</div>
@@ -388,13 +391,13 @@
 
     }
     //弹出元数据选择界面(根据元数据新增操作)
-    function appendByMetadata() {
+    function insert(optType) {
         var node = $('#tg').treegrid('getSelected');
-        if (node.text == "root" && node.parentId == null) {
+        if (node.text == "root" || ((node.text == "request" || node.text == "response") && "append" != optType)) {
             alert("请选择其他节点！");
             return false;
         }
-        var urlPath = "/jsp/metadata/metadata_choose.jsp"
+        var urlPath = "/jsp/metadata/metadata_choose.jsp?optType=" + optType;
         $('#dlg').dialog({
             title: '元数据',
             width: 770,
@@ -426,6 +429,24 @@
             showType:'show',
             height:'auto'
         });
+    }
+    function addLevel(){
+        var node = $("#tg").treegrid("getSelected");
+        var parent = $("#tg").treegrid("getParent", node.id);
+        if(parent.text == "root" || parent.text == "response" || parent.text == "request"){
+            alert("已经到达顶层，不能够继续升级!");
+            return false
+        }
+        alert(parent.parentId)
+        $("#tg").treegrid("update", {
+            id: node.id,
+            row: {
+                text:'1234',
+                parentId: parent.parentId
+            }
+        });
+        $("#tg").treegrid("refresh", parent.parentId);
+        $("#tg").treegrid("select", node.id);
     }
 </script>
 </body>

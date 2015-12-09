@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.entity.Version;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
+import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -22,6 +23,8 @@ import java.sql.BatchUpdateException;
 
 @Component
 public class MetadataXlsxParserImpl implements IResourceParser {
+    @Autowired
+    LogInfoServiceImpl logInfoService;
 
     private static final Log log = LogFactory.getLog(MetadataXlsxParserImpl.class);
 
@@ -73,7 +76,8 @@ public class MetadataXlsxParserImpl implements IResourceParser {
 //		List<Metadata> metadatas = new ArrayList<Metadata>();
         for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
             Row row = sheet.getRow(rowNum);
-            Metadata metadata = parseRow(row);
+            Metadata metadata = parseRow(row, rowNum);
+            if(null == metadata) continue;
             String userName = (String) SecurityUtils.getSubject().getPrincipal();
             metadata.setOptUser(userName);
             try {
@@ -81,6 +85,7 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
             } catch (NonUniqueObjectException e) {
                 log.error("元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", e);
+                logInfoService.saveLog("第" + (rowNum+1) + "行导入元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", "表4元数据");
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
                 metadataService.save(metadata);
@@ -91,36 +96,43 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 }
             } catch (Exception e) {
                 log.error("导入元数据[" + metadata.getMetadataId() + "]失败", e);
+                logInfoService.saveLog("第"+(rowNum+1)+"行导入[" + metadata.getMetadataId() + "]失败！"+e.getMessage(), "表4元数据");
             }
         }
     }
 
-    private Metadata parseRow(Row row) {
-        Metadata metadata = new Metadata();
-        metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
-        metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
-        metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
-        metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
-        metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
-        metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
-        metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
-        String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
-        //TODO 本地化修改
-        String[] str = dataFormula.split("[()]+");
-        String type = getTypeFromFormula(str[0]);
-        String length = "";
-        String scale = "";
-        if (str.length > 1) {
-            length = getLengthFromFormula(str[1].replaceAll("，", ","));
-            scale = getScaleFromFormula(str[1].replaceAll("，", ","));
+    private Metadata parseRow(Row row, int rowNum) {
+        try{
+            Metadata metadata =  new Metadata();
+            metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
+            metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
+            metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
+            metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
+            metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
+            metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
+            metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
+            String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
+            //TODO 本地化修改
+            String[] str = dataFormula.split("[()]+");
+            String type = getTypeFromFormula(str[0]);
+            String length = "";
+            String scale = "";
+            if (str.length > 1) {
+                length = getLengthFromFormula(str[1].replaceAll("，", ","));
+                scale = getScaleFromFormula(str[1].replaceAll("，", ","));
+            }
+            metadata.setType(type);
+            metadata.setLength(length);
+            metadata.setScale(scale);
+            metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
+            metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
+            metadata.setStatus(Constants.Metadata.STATUS_FORMAL);
+            return metadata;
+        }catch (Exception e){
+            log.error(e, e);
+            logInfoService.saveLog("第"+(rowNum+1)+"行解析数据失败！", "表4元数据");
         }
-        metadata.setType(type);
-        metadata.setLength(length);
-        metadata.setScale(scale);
-        metadata.setOptDate(getValueFromCell(row, OPT_DATE_COLUMN));
-        metadata.setOptUser(getValueFromCell(row, OPT_USER_COLUMN));
-        metadata.setStatus(Constants.Metadata.STATUS_FORMAL);
-        return metadata;
+        return null;
     }
 
     public static String getTypeFromFormula(String formula) {
@@ -165,17 +177,6 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 scale = str[1];
             }
         }
-
-        /*if (null != formula) {
-            int startOfScale = formula.indexOf("(");
-            int endOfScale = formula.indexOf(")");
-            if (startOfScale > 0 && endOfScale > 0 && endOfScale > startOfScale) {
-                String tmp = formula.substring(startOfScale + 1, endOfScale);
-                if (StringUtils.isNumeric(tmp)) {
-                    scale = tmp;
-                }
-            }
-        }*/
         return scale;
     }
 

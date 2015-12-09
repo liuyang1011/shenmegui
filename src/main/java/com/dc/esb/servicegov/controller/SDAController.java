@@ -130,13 +130,13 @@ public class SDAController {
 	@RequiresPermissions({"sda-update"})
 	@RequestMapping("/moveUp")
 	@ResponseBody
-	public boolean moveUp(String sdaId){
+	public boolean moveUp(String id){
 		OperationLog operationLog = systemLogService.record("SDA","元素上移","");
-		SDA entity = serviceImpl.findUniqueBy("id", sdaId);
+		SDA entity = serviceImpl.findUniqueBy("id", id);
 		if(entity != null){
 			operationLog.setParams("SDA:" + entity.getStructName());
 		}
-		boolean result = serviceImpl.moveUp(sdaId);
+		boolean result = serviceImpl.moveUp(id);
 
 		systemLogService.updateResult(operationLog);
 		return result;
@@ -146,14 +146,14 @@ public class SDAController {
 	@RequiresPermissions({"sda-update"})
 	@RequestMapping("/moveDown")
 	@ResponseBody
-	public boolean moveDown(String sdaId){
-		OperationLog operationLog = systemLogService.record("SDA","元素上移","元素ID:" + sdaId);
-		SDA entity = serviceImpl.findUniqueBy("id", sdaId);
+	public boolean moveDown(String id){
+		OperationLog operationLog = systemLogService.record("SDA","元素下移","元素ID:" + id);
+		SDA entity = serviceImpl.findUniqueBy("id", id);
 		if(entity != null){
 			operationLog.setParams("SDA:" + entity.getStructName());
 		}
 
-		boolean result = serviceImpl.moveDown(sdaId);
+		boolean result = serviceImpl.moveDown(id);
 
 		systemLogService.updateResult(operationLog);
 		return result;

@@ -30,11 +30,6 @@
                 src="/operation/editPage?serviceId=${param.serviceId}&operationId=${param.operationId}"
                 style="width:100%;height:99%;"></iframe>
     </div>
-    <div title="服务基本信息" style="padding:0px;">
-        <iframe id="serviceInfo" name="serviceInfo" scrolling="auto" frameborder="0"
-                src="/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>"
-                style="width:100%;height:99%;"></iframe>
-    </div>
     <div title="服务SDA" style="padding:0px;">
     </div>
     <div title="服务SLA" style="padding:0px;">
@@ -48,15 +43,7 @@
 </div>
 
 <script type="text/javascript">
-    function closeTab(title) {
-        $('#subtab').tabs('close', title);
-    }
-    var k = 1;
-    var j = 1;
-    var m = 1;
-    var n = 1;
-    var q = 1;
-    var p = 1;
+
     $('#subtab').tabs({
         border: false,
         border: false,
@@ -65,7 +52,7 @@
         onSelect: function (title, index) {
             if(index == 1){
 //                $("#serviceInfo").$("#operationList").datagrid("reload");
-                var urlPath = "/service/serviceGrid?serviceId=<%=request.getParameter("serviceId") %>&_t" + new Date().getTime();
+                var urlPath = "/sda/sdaPage?serviceId=${param.serviceId}&operationId=${param.operationId}&_t" + new Date().getTime();
                 var currTab = $('#subtab').tabs('getSelected');
                 $('#subtab').tabs('update', {
                     tab: currTab,
@@ -74,112 +61,32 @@
                     }
                 });
             }
-            if (index == 0 && k == 0) {
-                var opId = serviceInfo.getSelected();
-                if (opId != null) {
-                    var urlPath = "/operation/editPage?serviceId=${param.serviceId}&operationId=" + opId+"&_t" + new Date().getTime();
-                                var currTab = $('#subtab').tabs('getSelected');
-                                $('#subtab').tabs('update', {
-                                    tab: currTab,
-                                    options: {
-                                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:99%;"></iframe>',
-                                        fit:true
-                                    }
-                                });
-                }else {
-                                     alert("请选则一个场景！");
-                                     $('#subtab').tabs('select', '服务基本信息');
-                                 }
-            }
-            if (index == 2 && j == 0) {
-                var opId = serviceInfo.getSelected();
-                if (opId != null) {
-                    var urlPath = "/sda/sdaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&t="+ new Date().getTime();
-                    var currTab = $('#subtab').tabs('getSelected');
-                    $('#subtab').tabs('update', {
-                        tab: currTab,
-                        options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:99%;"></iframe>',
-                            fit:true
-                        }
-                    });
-                } else {
-                    alert("请选则一个场景！");
-                    $('#subtab').tabs('select', '服务基本信息');
-                }
-            }
-
-            if (index == 3 && m == 0) {
-                var opId = serviceInfo.getSelected();
-                if (opId != null) {
-                    var urlPath = "/sla/slaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&_t" + new Date().getTime();
-                    var currTab = $('#subtab').tabs('getSelected');
-                    $('#subtab').tabs('update', {
-                        tab: currTab,
-                        options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:99%;"></iframe>',
-                            fit:true
-                        }
-                    });
-                } else {
-                    alert("请选则一个场景！");
-                    $('#subtab').tabs('select', '服务基本信息');
-                }
-            }
-            /*if (index == 4  && k == 0) {
-                var opId = serviceInfo.getSelected();
-                if (opId != null) {
-                    var urlPath = "/ola/olaPage?serviceId=<%=request.getParameter("serviceId") %>&operationId=" + opId+"&_t" + new Date().getTime();
-                    var currTab = $('#subtab').tabs('getSelected');
-                    $('#subtab').tabs('update', {
-                        tab: currTab,
-                        options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
-                        }
-                    });
-                } else {
-                    alert("请选则一个场景！");
-                    $('#subtab').tabs('select', '服务基本信息');
-                }
-            }*/
-            if (index == 4  && q == 0) {
-                var opId = serviceInfo.getSelected();
-                if (opId != null) {
-                    var urlPath = "/operation/interfacePage?serviceId=${param.serviceId}&operationId=" + opId+"&_t" + new Date().getTime();
-                    var currTab = $('#subtab').tabs('getSelected');
-                    $('#subtab').tabs('update', {
-                        tab: currTab,
-                        options: {
-                            content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:99%;"></iframe>',
-                            fit:true
-                        }
-                    });
-                } else {
-                    alert("请选则一个场景！");
-                    $('#subtab').tabs('select', '服务基本信息');
-                }
-            }
-           /* if (index == 6  && p == 0) {
+            if (index == 2) {
+                var urlPath = "/sla/slaPage?serviceId=${param.serviceId}&operationId=${param.operationId}&t="+ new Date().getTime();
                 var currTab = $('#subtab').tabs('getSelected');
-                var urlPath = "jsp/service/search.jsp?_t" + new Date().getTime();
                 $('#subtab').tabs('update', {
                     tab: currTab,
                     options: {
-                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:100%;"></iframe>'
+                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '"  style="width:100%;height:99%;"></iframe>',
+                        fit:true
                     }
                 });
-            }*/
-            //if(title+' is selected');
+            }
 
+            if (index == 3) {
+                var urlPath = "/operation/interfacePage?serviceId=${param.serviceId}&operationId=${param.operationId}&_t" + new Date().getTime();
+                var currTab = $('#subtab').tabs('getSelected');
+                $('#subtab').tabs('update', {
+                    tab: currTab,
+                    options: {
+                        content: ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '"  style="width:100%;height:99%;"></iframe>',
+                        fit:true
+                    }
+                });
+            }
         }
 
     });
-    k = 0;
-    j = 0;
-    m = 0;
-    n = 0;
-    q = 0;
-    p = 0;
 //页面拖动宽度自适应
     var tabUrl = "/operation/editPage?serviceId=${param.serviceId}&operationId=${param.operationId}";
     var tabItem = $('#subtab').tabs('getTab','服务场景');

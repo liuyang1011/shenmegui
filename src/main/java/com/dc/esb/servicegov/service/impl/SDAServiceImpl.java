@@ -534,8 +534,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     /**
      * 将一个节点上移
      */
-    public boolean moveUp(String sdaId) {
-        SDA sda = sdaDAO.findUnique(" from SDA where id=?", sdaId);
+    public boolean moveUp(String id) {
+        SDA sda = sdaDAO.findUnique(" from SDA where id=?", id);
         if(sda.getServiceId() != null && sda.getOperationId() != null){
             operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         }
@@ -565,8 +565,8 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         return false;
     }
 
-    public boolean moveDown(String sdaId) {
-        SDA sda = sdaDAO.findUnique(" from SDA where id=?", sdaId);
+    public boolean moveDown(String id) {
+        SDA sda = sdaDAO.findUnique(" from SDA where id=?", id);
         if(sda.getServiceId() != null && sda.getOperationId() != null){
             operationService.editReleate(sda.getServiceId(), sda.getOperationId());
         }

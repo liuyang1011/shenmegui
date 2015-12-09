@@ -158,7 +158,10 @@ public class StatisticsServiceImpl implements StatisticsService{
     }
 //根据系统id，type计算服务场景 消费者数量大于1的场景数
     public long getOperationReuseCount(String systemId, String type){
-        String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM (SELECT service_id, operation_id FROM service_invoke WHERE TYPE =? AND system_id=? GROUP BY service_id, operation_id) a ," +
+        String sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) FROM " +
+                " (SELECT a1.service_id, a1.operation_id from operation a1, " +
+                " (SELECT service_id, operation_id FROM service_invoke WHERE TYPE =? AND system_id=? GROUP BY service_id, operation_id) a2 " +
+                " where a1.service_id = a2.service_id and a1.operation_id = a2.operation_id and a1.state in (" + Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED + ", " + Constants.Operation.LIFE_CYCLE_STATE_ONLINE + ")) a ," +
                 " service_invoke b WHERE a.service_id = b.service_id AND a.operation_id = b.operation_id AND TYPE=? GROUP BY b.service_id, b.operation_id HAVING COUNT(*) > 1) c";
         Session session = serviceInvokeDAO.getSession();
         Query query = session.createSQLQuery(sql.toString());

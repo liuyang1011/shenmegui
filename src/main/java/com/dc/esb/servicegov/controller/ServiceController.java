@@ -236,7 +236,7 @@ public class ServiceController {
         for (ServiceCategory serviceCategory : serviceCategoryList) {
             ServiceTreeViewBean treeViewBean = new ServiceTreeViewBean();
             treeViewBean.setId(serviceCategory.getCategoryId());
-            treeViewBean.setText(serviceCategory.getCategoryName());
+            treeViewBean.setText(serviceCategory.getCategoryName() + "(" + serviceCategory.getCategoryId()+")");
             treeViewBean.setType("serviceCategory");
             treeViewBean.setServiceCategory(serviceCategory);
             treeBeans.add(treeViewBean);

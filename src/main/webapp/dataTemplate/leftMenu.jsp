@@ -38,7 +38,7 @@
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
             <shiro:hasPermission name="englishWord-get">
-                <li><a href="javascript:;" class="openable" mid="3.2">英文单词管理</a></li>
+                <li><a href="javascript:;" class="openable" mid="3.2">英文单词及缩写管理</a></li>
             </shiro:hasPermission>
             <shiro:hasPermission name="categoryWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>

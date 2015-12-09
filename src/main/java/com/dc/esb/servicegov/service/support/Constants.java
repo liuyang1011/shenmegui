@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
  * Created by vincentfxz on 15/7/12.
  */
 public class Constants {
+    public static final String BANK_NAME="ChangShu";
 
 
     public static final String STATE_PASS = "1";

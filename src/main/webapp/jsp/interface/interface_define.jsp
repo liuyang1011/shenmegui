@@ -274,7 +274,7 @@
                             var urlPath = "/jsp/sysadmin/relate_operation.jsp?interfaceId=${param.interfaceId}";
                             $('#releaseDlg').dialog({
                                 title: '关联的服务场景',
-                                width: 500,
+                                width: 800,
                                 left:150,
                                 top:50,
                                 closed: false,
@@ -397,6 +397,55 @@
             parentIdAry.push(parentId);
 
         }
+        function insertBef() {
+            var node = $('#tg').treegrid('getSelected');
+            if (node.structName == "root" || node.structName == "request" || node.structName == "response") {
+                alert("请选择其他节点！");
+                return false;
+            }
+            idIndex++;
+            editingId = idIndex;
+            parentId = node._parentId;
+            $('#tg').treegrid('insert', {
+                before: node.id,
+                data: {
+                    id : editingId,
+                    seq : '' +node.seq,
+                    _parentId : node._parentId,
+                    interfaceId:node.interfaceId,
+                    structName : ''
+                }
+            });
+            $('#tg').treegrid('select', editingId);
+            $('#tg').treegrid('beginEdit', editingId);
+            addArray.push(idIndex);
+            parentIdAry.push(parentId);
+        }
+        function insertAft() {
+            var node = $('#tg').treegrid('getSelected');
+            if (node.structName == "root" || node.structName == "request" || node.structName == "response") {
+                alert("请选择其他节点！");
+                return false;
+            }
+            idIndex++;
+            editingId = idIndex;
+            parentId = node._parentId;
+            $('#tg').treegrid('insert', {
+                after: node.id,
+                data: {
+                    id : editingId,
+                    seq : '' +(node.seq+1),
+                    _parentId : node._parentId,
+                    interfaceId:node.interfaceId,
+                    structName : ''
+                }
+            });
+            $('#tg').treegrid('select', editingId);
+            $('#tg').treegrid('beginEdit', editingId);
+            addArray.push(idIndex);
+            parentIdAry.push(parentId);
+        }
+
 
         function loadData() {
             var interfaceId = "${param.interfaceId}"
@@ -569,9 +618,11 @@
 </div>
 
 <div id="mm" class="easyui-menu" style="width: 120px;">
+    <div onclick="insertBef()" data-options="iconCls:'icon-add'">在上方插入</div>
     <div onclick="append()" data-options="iconCls:'icon-add'">
-        新增
+        插入子节点
     </div>
+    <div onclick="insertAft()" data-options="iconCls:'icon-add'">在下方插入</div>
     <div onclick="editIt()" data-options="iconCls:'icon-edit'">
         编辑
     </div>

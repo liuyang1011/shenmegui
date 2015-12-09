@@ -196,10 +196,10 @@
                         success: function (data) {
                             if(data){
                                 uiinit.win({
-                                    w: 600,
+                                    w: 800,
                                     iconCls: 'icon-cfp',
                                     title: "关联服务场景",
-                                    url: "/jsp/service/operation/list.jsp?metadataId="+checkedItems[0].metadataId
+                                    url: "/jsp/service/operation/list.jsp?metadataId="+checkedItems[0].metadataId + "&_t=" + new Date().getTime()
                                 });
                             }
                             else{

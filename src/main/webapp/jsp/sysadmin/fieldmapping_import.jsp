@@ -63,7 +63,8 @@
                 method: 'get',
                 pagination: true,
                 pageSize: 10,
-                toolbar:toolbar
+                toolbar:toolbar,
+                onDblClickCell:onDblClickCell
             });
         })
 
@@ -135,7 +136,16 @@
                 msg:'正在上传文件...'
             });
         }
-
+        //双击单元格弹出
+        function onDblClickCell(rowIndex, field,value){
+            var texts = '<div style="word-wrap:break-word" >'+value+'</div>';
+            $.messager.show({
+                title:'详细',
+                msg:texts,
+                showType:'show',
+                height:'auto'
+            });
+        }
     </script>
 
    

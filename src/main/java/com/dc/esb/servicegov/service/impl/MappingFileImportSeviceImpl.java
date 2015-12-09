@@ -784,7 +784,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
     }
     public void logMsg(String msg){
         this.msg = msg;
-        logInfoService.saveLog(msg, "导入");
+        logInfoService.saveLog(msg, "字段映射导入");
         logger.error(msg);
     }
 

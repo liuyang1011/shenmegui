@@ -312,7 +312,7 @@ public class OperationController {
      * @param serviceId
      * @return
      */
-    @RequiresPermissions({"operation-update"})
+//    @RequiresPermissions({"operation-update"})
     @RequestMapping("/editPage")
     public ModelAndView editPage(HttpServletRequest req, String operationId, String serviceId) {
         ModelAndView mv = new ModelAndView("service/operation/edit");
@@ -349,7 +349,6 @@ public class OperationController {
         return mv;
     }
 
-//    @RequiresPermissions({"service-delete"})
     @RequiresPermissions({"operation-delete"})
     @RequestMapping(method = RequestMethod.POST, value = "/deletes", headers = "Accept=application/json")
     @ResponseBody

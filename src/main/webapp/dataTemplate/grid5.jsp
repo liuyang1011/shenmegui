@@ -116,7 +116,6 @@
                     }
                     for (var j = 0; j < deletedDatas.length; j++) {
                         var deleteData = deletedDatas[j];
-                        alert(deleteData.id);
                         englishWordManager.deleteById(deleteData.id,
                                 function (result) {
                                     if (result) {

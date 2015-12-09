@@ -191,7 +191,9 @@
 			rownumbers:true,
 			singleSelect:false,
 			fitColumns:false,
-			method:'get',toolbar:toolbar,
+			method:'get',
+			toolbar:toolbar,
+			onDblClickCell:onDblClickCell,
 			pagination:true,
 			pageSize: 13,
 			pageList: [13,20,50]
@@ -200,18 +202,18 @@
   <thead>
   <tr>
     <th data-options="field:'',checkbox:true,width:50"></th>
-    <th data-options="field:'serviceId',width:80">服务代码</th>
-    <th data-options="field:'serviceName',width:100">服务名称</th>
-    <th data-options="field:'serviceDesc',width:100">服务功能描述</th>
-    <th data-options="field:'operationId',width:80">场景代码</th>
-    <th data-options="field:'operationName',width:100">场景名称</th>
-    <th data-options="field:'operationDesc',width:150">场景功能描述</th>
-    <th data-options="field:'consumers',width:150">消费者</th>
-    <th data-options="field:'providers',width:150">提供者</th>
+    <th data-options="field:'serviceId',width:90">服务代码</th>
+    <th data-options="field:'serviceName',width:150">服务名称</th>
+    <%--<th data-options="field:'serviceDesc',width:100">服务功能描述</th>--%>
+    <th data-options="field:'operationId',width:70">场景代码</th>
+    <th data-options="field:'operationName',width:180">场景名称</th>
+    <%--<th data-options="field:'operationDesc',width:150">场景功能描述</th>--%>
+    <th data-options="field:'consumers',width:130">调用方</th>
+    <th data-options="field:'providers',width:130">提供方</th>
     <th data-options="field:'version', width:80" >版本号</th>
-    <th data-options="field:'optDate',width:100">更新时间</th>
-    <th data-options="field:'optUser', width:50">更新用户</th>
-    <th data-options="field:'optState',width:50"  formatter='formatter.operationState'>状态</th>
+    <th data-options="field:'optDate',width:120">更新时间</th>
+    <th data-options="field:'optUser', width:80">更新用户</th>
+    <th data-options="field:'optState',width:60"  formatter='formatter.operationState'>状态</th>
   </tr>
   </thead>
 </table>
@@ -339,55 +341,55 @@
         }
       }
     },
-      {
-          text:'导出配置&nbsp;&nbsp;&nbsp;',
-          iconCls:'icon-excel-export',
-          handler: function () {
-              var checkedItems = $('#resultList').datagrid('getSelections');
-              if (checkedItems != null && checkedItems.length > 0) {
-                  $.ajax({
-                      "type": "POST",
-                      "async": false,
-                      "contentType": "application/json; charset=utf-8",
-                      "url": "/export/getConfigVo",
-                      "data": JSON.stringify(checkedItems),
-                      "dataType": "json",
-                      "success": function (result) {
-                          if(result && result.length > 0){
-                              configResult = result;
-                              $('#opDialog').dialog({
-                                  title: '导出配置',
-                                  width: 900,
-                                  left:100,
-                                  closed: false,
-                                  cache: false,
-                                  href: "/jsp/service/export_config_list.jsp",
-                                  modal: true,
-                                  onLoad:function(){
-                                      $("#choosedList").datagrid("loadData", configResult);
-                                  }
-                              });
-                          }else{
-                              alert("没有可导出的配置！");
-                          }
-                      }
-                  });
-
-              }
-              else{
-                  alert("没有选中数据！");
-              }
-          }
-      },
+//      {
+//          text:'导出配置&nbsp;&nbsp;&nbsp;',
+//          iconCls:'icon-excel-export',
+//          handler: function () {
+//              var checkedItems = $('#resultList').datagrid('getSelections');
+//              if (checkedItems != null && checkedItems.length > 0) {
+//                  $.ajax({
+//                      "type": "POST",
+//                      "async": false,
+//                      "contentType": "application/json; charset=utf-8",
+//                      "url": "/export/getConfigVo",
+//                      "data": JSON.stringify(checkedItems),
+//                      "dataType": "json",
+//                      "success": function (result) {
+//                          if(result && result.length > 0){
+//                              configResult = result;
+//                              $('#opDialog').dialog({
+//                                  title: '导出配置',
+//                                  width: 900,
+//                                  left:100,
+//                                  closed: false,
+//                                  cache: false,
+//                                  href: "/jsp/service/export_config_list.jsp",
+//                                  modal: true,
+//                                  onLoad:function(){
+//                                      $("#choosedList").datagrid("loadData", configResult);
+//                                  }
+//                              });
+//                          }else{
+//                              alert("没有可导出的配置！");
+//                          }
+//                      }
+//                  });
+//
+//              }
+//              else{
+//                  alert("没有选中数据！");
+//              }
+//          }
+//      },
     {
-      text:'详细信息',
+      text:'详细信息&nbsp;&nbsp;&nbsp',
       iconCls:'icon-excel-export',
       handler: function () {
         var checkedItems = $('#resultList').datagrid('getChecked');
         if (checkedItems != null && checkedItems.length == 1) {
           $('#opDialog').dialog({
             title: '详细信息',
-            width: 700,
+            width: 800,
             left:200,
             top:100,
             closed: false,
@@ -400,7 +402,27 @@
           alert("请选中一行数据！");
         }
       }
-    }
+    },
+      {
+          text:'关联服务场景',
+          iconCls:'icon-excel-export',
+          handler: function () {
+              var checkedItems = $('#resultList').datagrid('getChecked');
+              if (checkedItems != null && checkedItems.length == 1) {
+                  var urlPath =  '/jsp/service/servicePage2.jsp?serviceId=' +  checkedItems[0].serviceId + '&operationId=' + checkedItems[0].operationId+"&_t=" + new Date().getTime();
+                  var content = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
+
+                  parent.$('#mainContentTabs').tabs('add', {
+                      title: '服务（'+ checkedItems[0].serviceId+ ":" +checkedItems[0].operationId+")",
+                      content: content,
+                      closable: true
+                  });
+              }
+              else{
+                  alert("请选中一行数据！");
+              }
+          }
+      }
   ];
   function query(){
     var params = {
@@ -449,6 +471,16 @@ function changePageList(){
     $("body").append(form);//将表单放置在web中
     form.submit();//表单提交
   }
+
+    function onDblClickCell(rowIndex, field,value){
+        var texts = '<div style="word-wrap:break-word" >'+value+'</div>';
+        $.messager.show({
+            title:'详细',
+            msg:texts,
+            showType:'show',
+            height:'auto'
+        });
+    }
 </script>
 
 </body>

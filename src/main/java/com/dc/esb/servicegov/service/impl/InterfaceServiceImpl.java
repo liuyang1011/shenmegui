@@ -180,6 +180,7 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
                 }
                 child.setId(si.getInter().getInterfaceId());
                 child.setText(si.getInter().getInterfaceName() + "(" + si.getInter().getInterfaceId() + ")");
+                child.setAppend1(si.getInterfaceId());
                 if (!contains(interfaceTreeChildren, child)) {
                     interfaceTreeChildren.add(child);
                 }
@@ -188,7 +189,7 @@ public class InterfaceServiceImpl extends AbstractBaseService<Interface, String>
 
                 @Override
                 public int compare(TreeNode o1, TreeNode o2) {
-                    return o1.getText().compareToIgnoreCase(o2.getText());
+                    return o1.getAppend1().compareToIgnoreCase(o2.getAppend1());
                 }
             });
         } catch (Exception e) {

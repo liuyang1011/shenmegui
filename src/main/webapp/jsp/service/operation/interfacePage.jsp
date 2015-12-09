@@ -26,7 +26,7 @@
 <body>
 <fieldset>
     <div>
-        <table border="0" cellspacing="0" cellpadding="0">
+        <table border="0" cellspacing="0" cellpadding="0" width="98%">
             <tr>
                 <th>
                     <nobr>服务代码</nobr>
@@ -56,7 +56,7 @@
         </table>
     </div>
     <div>
-        <table id="invokeList" style="height:150px; width:100%;">
+        <table id="invokeList" style="height:150px; width:98%;">
             <thead>
             <tr>
                 <%--<th data-options="field:'invokeId',checkbox:true"></th>--%>
@@ -82,14 +82,17 @@
     </div>--%>
 </fieldset>
 <div id="mm" class="easyui-menu" style="width:120px;">
-    <div onclick="insertRow()" data-options="iconCls:'icon-edit'">插入</div>
+<shiro:hasPermission name="ida-update">
+    <div onclick="insertBef()" data-options="iconCls:'icon-edit'">在上方插入</div>
+    <div onclick="insertAft()" data-options="iconCls:'icon-edit'">在下方插入</div>
     <div onclick="beginRelate()" data-options="iconCls:'icon-edit'">关联字段映射</div>
     <div onclick="delRelate()" data-options="iconCls:'icon-edit'">删除字段映射</div>
+    </shiro:hasPermission>
 </div>
 <div>
     <table title="字段映射操作" id="mappingdatagrid"
            class="easyui-treegrid"
-           width="100%"
+           width="98%"
            data-options="
             iconCls:'icon-edit',
             rownumbers: false,
@@ -114,28 +117,28 @@
         </tr>
         <tr>
             <th data-options="field:'id',checkbox:true"></th>
-            <th data-options="field:'structName',width:'17%',align:'left'">
+            <th data-options="field:'structName',width:'170',align:'left'">
                 字段名称
             </th>
-            <th data-options="field:'structAlias',width:'14%',align:'left'">
+            <th data-options="field:'structAlias',width:'140',align:'left'">
                 字段别名
             </th>
-            <th data-options="field:'type',width:'10%'">
+            <th data-options="field:'type',width:'100'">
                 类型
             </th>
-            <th data-options="field:'remark',title:'IDA备注',width:'10%'"></th>
-            <th data-options="field:'',width:'1%',styler:splitStyle">
+            <th data-options="field:'remark',title:'IDA备注',width:'100'"></th>
+            <th data-options="field:'',width:'10',styler:splitStyle">
             </th>
-            <th data-options="field:'sdastructAlias',width:'12%', editor:{type:'combobox'}">
+            <th data-options="field:'sdastructAlias',width:'120', editor:{type:'combobox'}">
                 对应SDA
             </th>
-            <th data-options="field:'sdametadataId',width:'10%'">
+            <th data-options="field:'sdametadataId',width:'100'">
                 元数据
             </th>
 
-            <th data-options="field:'sdarequired',width:'6%'" >是否必输</th>
-            <th data-options="field:'sdaconstraint',width:'9%'">约束条件</th>
-            <th data-options="field:'sdaremark',title:'SDA备注',width:'15%'"></th>
+            <th data-options="field:'sdarequired',width:'60'" >是否必输</th>
+            <th data-options="field:'sdaconstraint',width:'90'">约束条件</th>
+            <th data-options="field:'sdaremark',title:'SDA备注',width:'150'"></th>
             <th data-options="field:'sdaxpath',hidden:true"></th>
             <th data-options="field:'sdaid',hidden:true"></th>
             <th data-options="field:'interfaceId',hidden:true"></th>
@@ -246,7 +249,7 @@
         });
     }
     //插入行
-    function insertRow(){
+    function insertBef(){
         var node = $('#mappingdatagrid').treegrid('getSelected');
         editingRowId = ""+new Date().getTime();
         $('#mappingdatagrid').treegrid('insert', {
@@ -254,6 +257,22 @@
             data: {
                 id : editingRowId,
                 seq : '' +node.seq,
+                _parentId : node._parentId,
+                interfaceId:node.interfaceId,
+                structName : ''
+            }
+        });
+        $('#mappingdatagrid').treegrid('select', editingRowId);
+    }
+    //插入行
+    function insertAft(){
+        var node = $('#mappingdatagrid').treegrid('getSelected');
+        editingRowId = ""+new Date().getTime();
+        $('#mappingdatagrid').treegrid('insert', {
+            after: node.id,
+            data: {
+                id : editingRowId,
+                seq : '' +(node.seq+1),
                 _parentId : node._parentId,
                 interfaceId:node.interfaceId,
                 structName : ''

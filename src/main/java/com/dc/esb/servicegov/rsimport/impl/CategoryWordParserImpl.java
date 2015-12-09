@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
 
+import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +27,8 @@ import java.util.List;
 public class CategoryWordParserImpl implements IResourceParser {
 
 	private static final Log log = LogFactory.getLog(CategoryWordParserImpl.class);
+	@Autowired
+	LogInfoServiceImpl logInfoService;
 
 	private static final String SHEET_NAME = "表3类别词";
 	private static final int START_ROW_NUM = 1;
@@ -54,7 +57,8 @@ public class CategoryWordParserImpl implements IResourceParser {
 //		categoryWordService.deleteAll();
 		for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
 			Row row = sheet.getRow(rowNum);
-			CategoryWord categoryWord =parseRow(row);
+			CategoryWord categoryWord =parseRow(row, rowNum);
+			if(null == categoryWord) continue;
 			//增加导入修订人和时间
 			String userName = (String) SecurityUtils.getSubject().getPrincipal();
 			categoryWord.setOptUser(userName);
@@ -77,7 +81,8 @@ public class CategoryWordParserImpl implements IResourceParser {
 				log.info("开始导入类别词["+categoryWord.getEsglisgAb()+"]");
 				categoryWordService.save(categoryWord);
 			}catch(NonUniqueObjectException e){
-				log.error("类别词["+categoryWord.getId()+"]重复,执行覆盖！",e);
+				log.error("类别词[" + categoryWord.getId() + "]重复,执行覆盖！", e);
+				logInfoService.saveLog("第" + (rowNum+1) + "行类别词[" + categoryWord.getId() + "]重复,执行覆盖！", "表3类别词");
 				CategoryWord categoryWordToDel = categoryWordService.getById(categoryWord.getId());
 				categoryWordService.delete(categoryWordToDel);
 				categoryWordService.save(categoryWord);
@@ -85,13 +90,19 @@ public class CategoryWordParserImpl implements IResourceParser {
 		}
 	}
 	
-	private CategoryWord parseRow(Row row) {//将对应列的数据插入list
-		CategoryWord categoryWord = new CategoryWord();
-		categoryWord.setChineseWord(ExcelUtils.getValue(row.getCell(CHINESE_WORD_COLUMN)));
-		categoryWord.setEnglishWord(ExcelUtils.getValue(row.getCell(ENGLISH_WORD_COLUMN)));
-		categoryWord.setEsglisgAb(ExcelUtils.getValue(row.getCell(ESGLISGA_COLUMN)));
-		categoryWord.setRemark(ExcelUtils.getValue(row.getCell(REMARK_COLUMN)));
-		return categoryWord;
+	private CategoryWord parseRow(Row row, int rowNum) {//将对应列的数据插入list
+		try {
+			CategoryWord categoryWord = new CategoryWord();
+			categoryWord.setChineseWord(ExcelUtils.getValue(row.getCell(CHINESE_WORD_COLUMN)));
+			categoryWord.setEnglishWord(ExcelUtils.getValue(row.getCell(ENGLISH_WORD_COLUMN)));
+			categoryWord.setEsglisgAb(ExcelUtils.getValue(row.getCell(ESGLISGA_COLUMN)));
+			categoryWord.setRemark(ExcelUtils.getValue(row.getCell(REMARK_COLUMN)));
+			return categoryWord;
+		}catch (Exception e){
+			log.error(e, e);
+			logInfoService.saveLog("第"+(rowNum+1)+"行解析数据失败！", "表3类别词");
+		}
+		return null;
 	}
 
 	/**

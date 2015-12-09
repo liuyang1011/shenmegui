@@ -322,8 +322,8 @@
         <thead>
         <tr>
             <th ></th>
-            <th colspan="5">消费者</th>
-            <th colspan="5">提供者</th>
+            <th colspan="5">调用方</th>
+            <th colspan="5">提供方</th>
         </tr>
         <tr>
             <th data-options="field:'id', width:50, checkbox:true"></th>

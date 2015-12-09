@@ -27,15 +27,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div>
 <fieldset>
  <legend>基本信息</legend>
-<table border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
 
   <tr>
-     <th>服务代码</th>
-    <td>${service.serviceId }</td>
-    <th>服务名称</th>
-    <td>${service.serviceName }</td>
-      <th></th>
-    <td> </td>
+     <th width="15%">服务代码</th>
+    <td width="35%">${service.serviceId }</td>
+    <th width="15%">服务名称</th>
+    <td width="35%">${service.serviceName }</td>
    </tr>
   <%--<tr>
      <th>服务头代码</th>
@@ -50,32 +48,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <td>${operation.operationId }</td>
      <th>场景名称</th>
    		 <td>${operation.operationName }</td>
-   	 <th>版本号</th>
-    <td>${operation.version.code }</td>
+
      </tr>
-  <tr>
-     <th>功能描述</th>
-   		 <td>${operation.operationDesc }</td>
-   	 <th>备注</th>
-    <td>${operation.operationRemark }</td>
-     <th>版本描述</th>
-    <td>${operation.version.remark} </td>
-   </tr>
+    <tr>
+        <th>版本号</th>
+        <td>${operation.version.code }</td>
+        <th>版本描述</th>
+        <td>${operation.version.remark} </td>
+    </tr>
    <tr>
      <th>最后更新时间</th>
    		 <td>${operation.optDate }</td>
    	 <th>最后更新用户</th>
     <td>${operation.optUser }</td>
-     <th></th>
-    <td> </td>
    </tr>
+    <tr>
+        <th>功能描述</th>
+        <td>${operation.operationDesc }</td>
+        <th>备注</th>
+        <td>${operation.operationRemark }</td>
+    </tr>
 </table>
 
 
 </fieldset>
 	<fieldset>
-     <legend>SDA列表</legend>
-         <table class="easyui-treegrid" style=" width:auto;"
+     <legend>SDA</legend>
+         <table class="easyui-treegrid" style=" width:100%;"
                 data-options="
                     iconCls: 'icon-ok',
                     rownumbers: true,
@@ -91,10 +90,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     >
             <thead>
                 <tr>
-                    <th data-options="field:'text',width:180,editor:'text'">字段名</th>
-                    <th data-options="field:'append1',width:120,align:'right',editor:'text'">中文名称</th>
-                    <th data-options="field:'append2',width:100,editor:'text'">功能描述</th>
-                    <th data-options="field:'append6',width:100,editor:'text'">备注</th>
+                    <th data-options="field:'text',width:'25%',editor:'text'">字段名</th>
+                    <th data-options="field:'append1',width:'25%',align:'right',editor:'text'">中文名称</th>
+                    <th data-options="field:'append2',width:'25%',editor:'text'">类型</th>
+                    <th data-options="field:'append6',width:'25%',editor:'text'">备注</th>
                 </tr>
             </thead>
         </table>

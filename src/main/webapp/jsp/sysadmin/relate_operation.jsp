@@ -14,11 +14,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
 
   <body>
-  	<table title="服务场景" class="easyui-treegrid" id="tg" style=" width:auto;"
+  	<table title="服务场景" class="easyui-treegrid" id="tg" style=" width:100%;"
     			data-options="
     				iconCls: 'icon-ok',
     				rownumbers: true,
-    				fitColumns: false,
     				animate: true,
     				collapsible: true,
     				fitColumns: true,
@@ -26,15 +25,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				method: 'get',
     				idField: 'id',
     				treeField: 'text',
-    				onDblClickRow:function(row){
-    					servicePage(row);
-    				}
+    				nowrap:false,
+    				onDblClickRow:servicePage
     				"
                     >
     		<thead>
     			<tr>
-    				<th data-options="field:'text',width:300,editor:'text'">名称</th>
-    				<th data-options="field:'append1',width:250,align:'right',editor:'text'">描述</th>
+    				<th data-options="field:'text',width:500,editor:'text'">名称</th>
+    				<th data-options="field:'append1',width:250,align:'left',editor:'text'" >描述</th>
     			</tr>
     		</thead>
     	</table>
@@ -60,7 +58,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  }
 
 	  }
-
   </script>
   </body>
 </html>

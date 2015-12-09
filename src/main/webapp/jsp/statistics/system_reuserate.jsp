@@ -61,17 +61,15 @@
                  "
                 >
         </td>
-        <!--
         <th>服务类型</th>
         <td>
           <select id="type" class="easyui-combobox" name="type"
                   data-options="width:100,valueField:'value', textField:'text',data:[
-                {'value':'1','text':'消费者'},
-                {'value':'0','text':'提供者'}
+                {'value':'1','text':'调用方'},
+                {'value':'0','text':'提供方'}
                 ]">
           </select>
         </td>
-        -->
         <th>
 
         </th>
@@ -132,15 +130,15 @@
 </body>
 <script type="text/javascript">
   $(document).ready(function () {
-    $("#resultList").datagrid({url:"/statistics/systemReuseRate?type=0"});
+    $("#resultList").datagrid({url:"/statistics/systemReuseRate"});
   });
   var formatter = {
     typeText: function (value, row, index) {
       if ("1" == value) {
-        return "消费者";
+        return "调用方";
       }
       if ("0" == value) {
-        return "提供者";
+        return "提供方";
       }
     }
   };
@@ -183,8 +181,8 @@
     var params = {
       "systemId":$("#systemId").textbox("getValue"),
       "systemName":encodeURI($("#systemName").textbox("getText")),
-//      "type":$("#type").combobox("getValue")
-      "type":"0"
+      "type":$("#type").combobox("getValue")
+//      "type":"0"
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');

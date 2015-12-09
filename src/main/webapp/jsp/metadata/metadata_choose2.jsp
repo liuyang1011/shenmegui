@@ -140,7 +140,6 @@
             }else{
                 xpath  = node.append3.substring(0,node.append3.lastIndexOf('/')) + '/' + row.metadataId;//修改操作xpath=原节点xpath替换metadataId
             }
-
             $('#tg').treegrid('update',{
                 id: node.id,
                 row: {

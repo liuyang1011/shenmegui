@@ -52,7 +52,7 @@ public class ResourceImportController {
         OperationLog operationLog = systemLogService.record("数据字典","导入","文件名称：" + file.getOriginalFilename());
 
         ModelAndView mv = new org.springframework.web.servlet.ModelAndView("message");
-        String url= "/dataTemplate/grid7.jsp";
+        String url= "/jsp/metadata/metadata_import.jsp";
         String msg = "";
         response.setContentType("text/html");
         response.setCharacterEncoding("GB2312");
