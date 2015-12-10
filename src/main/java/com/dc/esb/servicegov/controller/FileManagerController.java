@@ -321,7 +321,17 @@ public class FileManagerController {
         systemLogService.updateResult(operationLog);
         return null;
     }
-
+    @RequiresPermissions({"file-get"})
+    @RequestMapping("hasFiles")
+    public
+    @ResponseBody
+    boolean hasFiles(String systemId) {
+        List<FileManager> list = fileManagerService.findBy("systemId", systemId);
+        if(list.size() > 0){
+            return true;
+        }
+        return false;
+    }
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";

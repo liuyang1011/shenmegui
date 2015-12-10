@@ -676,7 +676,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
      * @return
      */
     public List<TreeNode> querySDATree(String serviceId, String operationId, String keyword){
-        String hql = " from SDA where serviceId= ? and operationId = ? and (structName like '%" + keyword + "%' or structAlias like '%" + keyword + "%' or metadataId  like '%" + keyword + "%')";
+        String hql = " from SDA where serviceId= ? and operationId = ? and (uper(structName) like uper('%" + keyword + "%') or structAlias like '%" + keyword + "%' or uper(metadataId)  like uper('%" + keyword + "%'))";
         List<SDA> list = sdaDAO.find(hql, serviceId, operationId);
         List<SDA> reList = new ArrayList<SDA>();
         reList.addAll(list);

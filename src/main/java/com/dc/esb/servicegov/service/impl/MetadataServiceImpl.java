@@ -208,7 +208,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
             for(String key:values.keySet()){
                 if(key.equals("metadataName") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.metadataName like '%" + values.get(key)[0] + "%' ";
+                        hql += " and upper(a.metadataName) like upper('%" + values.get(key)[0] + "%') ";
                     }
                 }
                 if(key.equals("chineseName") && values.get(key) != null && values.get(key).length > 0 ){
@@ -223,7 +223,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                 }
                 if(key.equals("metadataId") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.metadataId like '%" + values.get(key)[0] + "%' ";
+                        hql += " and upper(a.metadataId) like upper('%" + values.get(key)[0] + "%') ";
                     }
                 }
                 if(key.equals("metadataAlias") && values.get(key) != null && values.get(key).length > 0 ){

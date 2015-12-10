@@ -502,17 +502,17 @@
 					<%--<th data-options="field:'metadataId',width:100,editor:'text'">
 						元数据ID
 					</th>--%>
-					<th data-options="field:'remark',width:100,editor:{type:'combobox',options:{url:'/jsp/service/sda/combobox_data2.json',valueField:'id',textField:'text'}}">
-						约束条件
-					</th>
 					<th data-options="field:'scale',width:100,editor:{type:'validatebox',options:{validType:['integer']}}">
 						精度
 					</th>
 					<th data-options="field:'required',width:100,editor:{type:'combobox',options:{url:'/jsp/service/sda/combobox_data.json',valueField:'id',textField:'text'}}">
 						是否必须
 					</th>
-					<th data-options="field:'seq',width:50">
+					<th data-options="field:'seq', hidden:true">
 						排序
+					</th>
+					<th data-options="field:'remark',width:100,editor:{type:'combobox',options:{url:'/jsp/service/sda/combobox_data2.json',valueField:'id',textField:'text'}}">
+						备注
 					</th>
 					<th data-options="field:'id', hidden:true">id</th>
 					<th data-options="field:'xpath', hidden:true">xpath</th>

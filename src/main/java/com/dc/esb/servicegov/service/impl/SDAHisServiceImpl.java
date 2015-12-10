@@ -30,7 +30,7 @@ public class SDAHisServiceImpl extends AbstractBaseService<SDAHis, String> imple
 	public List<TreeNode> genderSDATree(String autoId) {
 		List<SDAHis> list = getListByOperation(autoId);
 		Map<String, String> fields = new HashMap<String, String>();
-		fields.put("id", "id");
+		fields.put("id", "sdaId");
 		fields.put("text", "structName");
 		fields.put("append1", "structAlias");
 		fields.put("append2", "desc");

@@ -301,16 +301,29 @@ var sysManager = {
     },
     "refreshFile" : function(){
         var node = $('.msinterfacetree').tree("getSelected");
-        var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
-        $('.msinterfacetree').tree('append', {
-            parent: (node?node.target:null),
-            data: [{
-                text: 'new item1'
-            }]
-        });
-        var urlPath = $('.msinterfacetree').tree('options').url;
-        $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id+"_t" + new Date().getTime();
         $('.msinterfacetree').tree("reload", node.target);
-        $('.msinterfacetree').tree('options').url = urlPath;
+
+        var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "/fileManager/hasFiles?systemId=" + systemNode.id,
+            dataType: "json",
+            success: function (result) {
+                if(result){
+                    $('.msinterfacetree').tree('append', {
+                        parent: (node?node.target:null),
+                        data: [{
+                            text: 'new item1'
+                        }]
+                    });
+                    var urlPath = $('.msinterfacetree').tree('options').url;
+                    $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id+"?_t=" + new Date().getTime();
+                    $('.msinterfacetree').tree("reload", node.target);
+                    $('.msinterfacetree').tree('options').url = urlPath;
+                }
+            }
+        });
+
     }
 }

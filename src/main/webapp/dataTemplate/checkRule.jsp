@@ -109,6 +109,15 @@
 %>
 
 <%
+	if(mid.equals("9.5")){
+%>
+{"success":true,"url":"/jsp/metadata/metadata_import.jsp","title":"数据字典导入"}
+<%
+	}
+
+%>
+
+<%
 	if(mid.equals("9.2")){
 %>
 {"success":true,"url":"/jsp/sysadmin/fieldmapping_import.jsp","title":"字段映射导入"}

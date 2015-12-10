@@ -43,12 +43,12 @@
         </form>
 
     </div>--%>
-    <table id="tt"  style="height:420px; width:auto;" title="导入日志">
+    <table id="tt"  style="height:390px; width:100%;" title="导入日志">
         <thead>
         <tr>
             <th data-options="field:'',checkbox:true"></th>
             <th data-options="field:'type'" width="20%" align="left">日志类型</th>
-            <th data-options="field:'detail'" width="60%">日志描述</th>
+            <th data-options="field:'detail'" width="50%">日志描述</th>
             <th data-options="field:'time'" width="20%">日志日期</th>
         </tr>
         </thead>
