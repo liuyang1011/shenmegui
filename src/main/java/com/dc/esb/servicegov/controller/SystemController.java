@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -56,6 +57,7 @@ public class SystemController {
         StringBuffer hql = new StringBuffer("SELECT t1 FROM System t1");
 
         String systemId = req.getParameter("systemId");
+        String systemChineseName = req.getParameter("systemChineseName");
         String systemAb = req.getParameter("systemAb");
         String principal1 = req.getParameter("principal1");
         String featureDesc = req.getParameter("featureDesc");
@@ -77,6 +79,17 @@ public class SystemController {
             hql.append(" and t1.systemId like ?");
             SearchCondition search = new SearchCondition();
             search.setFieldValue("%" + systemId + "%");
+            searchConds.add(search);
+        }
+        if(systemChineseName!=null&&!"".equals(systemChineseName)){
+            try{
+                systemChineseName = URLDecoder.decode(systemChineseName, "utf-8");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            hql.append(" and t1.systemChineseName like ?");
+            SearchCondition search = new SearchCondition();
+            search.setFieldValue("%" + systemChineseName +"%");
             searchConds.add(search);
         }
         if(systemAb!=null&&!"".equals(systemAb)){

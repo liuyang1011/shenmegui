@@ -25,34 +25,39 @@
     </legend>
     <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
         <tr>
-            <th>
+            <th width="100">
                 系统ID
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="systemId">
+                <input class="easyui-textbox" type="text" id="systemId" width="100">
             </td>
-
-            <th>
+            <th width="100">
+                 中文名称
+            </th>
+            <td width="100">
+                <input class="easyui-textbox" type="text" id="systemChineseName" width="100">
+            </td>
+            <th width="100">
                 系统简称
             </th>
-            <td>
-                <input class="easyui-textbox" type="text" id="systemAb">
+            <td width="100">
+                <input class="easyui-textbox" type="text" id="systemAb" width="100">
             </td>
-            <th>
+            <th width="100">
                 联系人
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="principal1">
+                <input class="easyui-textbox" type="text" id="principal1" width="100">
             </td>
+        </tr>
+
+        <tr>
             <th>
                 系统描述
             </th>
             <td>
                 <input class="easyui-textbox" type="text" id="featureDesc">
             </td>
-        </tr>
-
-        <tr>
             <th>
                 系统协议
             </th>
@@ -67,12 +72,7 @@
             <td>
                 &nbsp;
             </td>
-            <td>
-                &nbsp;
-            </td>
-            <td>
-                &nbsp;
-            </td>
+
             <td>
                 &nbsp;
             </td>
@@ -259,12 +259,14 @@
 
         var systemId = $("#systemId").val();
         var systemAb = $("#systemAb").val();
+        var systemChineseName = $("#systemChineseName").val();
         var principal1 = $("#principal1").val();
         var featureDesc = $("#featureDesc").val();
         var protocolId = $("#protocolIdSearch").combobox('getValue');
 
         var queryParams = $('#tg').datagrid('options').queryParams;
         queryParams.systemId = systemId;
+        queryParams.systemChineseName = encodeURI(systemChineseName);
         queryParams.systemAb = systemAb;
         queryParams.principal1 = principal1;
         queryParams.featureDesc = featureDesc;

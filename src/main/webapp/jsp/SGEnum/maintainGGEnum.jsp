@@ -23,7 +23,12 @@
 					id="id" value="${master.id}">
 				</td>
 			</tr>
+
 			<tr>
+				<th><nobr>中文名称</nobr></th>
+				<td><input class="easyui-textbox" type="text" id="remark"
+						   value="${master.remark}">
+				</td>
 				<th><nobr>代码名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" name="name"
 					id="name" readonly="true" value="${master.name}">

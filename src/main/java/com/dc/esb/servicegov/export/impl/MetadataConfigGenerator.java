@@ -40,11 +40,17 @@ public class MetadataConfigGenerator implements IConfigGenerator {
 			Element info = rootElement.addElement(metadatas.get(i)
 					.getMetadataId());
 			//向根节点下面的子节点插入属性
-			addAttribute(info, "type", metadatas.get(i).getType());
+			String typeStr = "";
+			if("array".equalsIgnoreCase(metadatas.get(i).getType())){//常熟ESB业务要求：不需要scale属性，类型除了array全部是string
+				typeStr = "array";
+			}else{
+				typeStr = "string";
+			}
+			addAttribute(info, "type", typeStr);
 			if (!"array".equalsIgnoreCase(metadatas.get(i).getType()) && !"struct".equalsIgnoreCase(metadatas.get(i).getType()) ) {//判断子节点是否为数组
 				addAttribute(info,"length", metadatas.get(i).getLength() );
 				addAttribute(info,"chinese_name", metadatas.get(i).getChineseName());
-				addAttribute(info, "scale", metadatas.get(i).getScale());
+//				addAttribute(info, "scale", metadatas.get(i).getScale());
 			}
 		}
 		try {

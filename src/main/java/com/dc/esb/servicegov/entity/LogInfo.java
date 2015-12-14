@@ -23,7 +23,7 @@ public class LogInfo implements Serializable{
 	@Column(name="LOG_TIME")
 	private String time;
 
-	@Column(name="LOG_DETAIL")
+	@Column(name="LOG_DETAIL", length=2048)
 	private String detail;
 
 	@Column(name="LOG_TYPE")

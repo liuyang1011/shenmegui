@@ -96,7 +96,7 @@ var interfaceManager = {
             //top:"20px",
             //left:"150px",
 			iconCls:'icon-add',
-			title:"编辑报文",
+			title:"编辑接口",
 			url : "/interface/edit/"+sId+"?systemId="+systemId
 		});
     

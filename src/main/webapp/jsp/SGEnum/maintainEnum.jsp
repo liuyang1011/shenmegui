@@ -23,6 +23,10 @@
 					value="${master.id}">
 				</td>
 			</tr>
+			<th><nobr>中文名称</nobr></th>
+			<td><input class="easyui-textbox" type="text" id="remark"
+					   value="${master.remark}">
+			</td>
 			<tr>
 				<th><nobr>代码名称</nobr></th>
 				<td><input class="easyui-textbox" type="text" name="name" id="name"
@@ -51,10 +55,7 @@
 					value="${master.version}">
 				</td>
 				
-				<th><nobr>备注</nobr></th>
-				<td><input class="easyui-textbox" type="text" id="remark"
-					value="${master.remark}">
-				</td>
+
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
