@@ -17,7 +17,7 @@
  <table border="0" cellspacing="0" cellpadding="0">
   <tr>
     <th>基线版本号</th>
-    <td><label for="textfield"></label>
+    <td>
       <input class="easyui-textbox" type="text" name="name" data-options="required:true"></td>
     <th>版本描述</th>
     <td><input class="easyui-textbox" type="text" name="name2" data-options="required:true"></td>

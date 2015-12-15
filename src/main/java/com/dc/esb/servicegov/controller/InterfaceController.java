@@ -104,7 +104,9 @@ public class InterfaceController {
         root.setId("root");
         root.setText("系统");
         root.setClick("system");
-        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAllOrderBySystemId();
+//        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAllOrderBySystemId();
+        String userId = SecurityUtils.getSubject().getPrincipal().toString();
+        List<com.dc.esb.servicegov.entity.System> systems = systemService.getByUserId(userId);//根据用户在usersystemrelation中查找
         List<TreeNode> children = new ArrayList<TreeNode>();
         Map<String, String> fields = new HashMap<String, String>();
         fields.put("id","systemId");

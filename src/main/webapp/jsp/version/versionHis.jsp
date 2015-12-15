@@ -11,6 +11,7 @@
 
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script> 
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/resources/js/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="/jsp/version/version.js"></script>
 	<script type="text/javascript" src="/js/version/versionManager.js"></script>
 <script type="text/javascript">
@@ -37,7 +38,9 @@
 		function verionHisSearch(){
 			var queryParams = $('#operationList').datagrid('options').queryParams;
 			queryParams.keyValue = encodeURI($("#keyValue").textbox("getValue"));
-			if(queryParams.keyValue){
+			queryParams.startDate =  $("#startDate").datebox("getValue");
+			queryParams.endDate =  $("#endDate").datebox("getValue");
+			if(queryParams.keyValue || queryParams.startDate || queryParams.endDate){
 				$("#operationList").datagrid('options').queryParams = queryParams;//传递值
 				$("#operationList").datagrid('reload');
 			}else{
@@ -110,6 +113,7 @@
 </head>
 
 <body>
+<form id="searchForm">
 <fieldset>
  <legend>条件过滤</legend>
  <table border="0" cellspacing="0" cellpadding="0">
@@ -117,13 +121,19 @@
     <th>关键字</th>
     <td>
       <input id="keyValue" class="easyui-textbox" type="text" name="name" ></td>
-   
-    <td><a href="#" onclick="verionHisSearch()" class="easyui-linkbutton" iconcls="icon-search">过滤</a></td>
+	  <th><nobr> 创建起始日期</nobr></th>
+	  <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
+	  <th><nobr> 创建结束日期</nobr></th>
+	  <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
+    <td><a href="#" onclick="verionHisSearch()" class="easyui-linkbutton" iconcls="icon-search">查询</a>
+		<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+	</td>
 
   </tr>
 </table>
 
 </fieldset>
+	</form>
 <table id="operationList" title="版本历史" style="height:525px; width:100%;">
   <thead>
     <tr>

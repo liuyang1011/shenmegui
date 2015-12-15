@@ -24,6 +24,10 @@ public class UserRoleRelation implements Serializable{
 	@Id
 	@Column(name = "USER_ID")
 	private String userId;
+
+	@ManyToOne()
+	@JoinColumn(name = "ROLE_ID", insertable = false, updatable = false)
+	private Role role;
 	
 	public String getRoleId() {
 		return roleId;
@@ -41,5 +45,11 @@ public class UserRoleRelation implements Serializable{
 		this.userId = userId;
 	}
 
-	
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 }

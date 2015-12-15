@@ -80,7 +80,8 @@ public class UserController {
             if(null != org){
                 user.setOrgId(org.getOrgName());
             }
-            userVOs.add(new UserVO(user));
+            List<UserRoleRelation> rs = userRoleRelationService.findBy("userId", user.getId());
+            userVOs.add(new UserVO(user, rs));
         }
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
@@ -103,7 +104,8 @@ public class UserController {
         List<UserVO> userVOs = new ArrayList<UserVO>();
         List<SGUser> users = userServiceImpl.findLikeAnyWhere(params);
         for(SGUser user : users){
-            userVOs.add(new UserVO(user));
+            List<UserRoleRelation> rs = userRoleRelationService.findBy("userId", user.getId());
+            userVOs.add(new UserVO(user, rs));
         }
         return userVOs;
     }
@@ -113,7 +115,7 @@ public class UserController {
     public
     @ResponseBody
     boolean delete(@PathVariable String id) {
-        OperationLog operationLog = systemLogService.record("用户","删除","用户ID:" + id);
+        OperationLog operationLog = systemLogService.record("用户", "删除", "用户ID:" + id);
 
     	userRoleRelationService.deleteRelation(id);
         userServiceImpl.deleteById(id);
@@ -136,7 +138,7 @@ public class UserController {
         for (UserRoleRelation us : rs) {
             roleId += us.getRoleId() + ",";
         }
-        roleId.substring(0, roleId.length() - 1);
+        roleId = roleId.substring(0, roleId.length() - 1);
         model.addObject("roleId", roleId);
         return model;
     }
@@ -204,7 +206,7 @@ public class UserController {
     public
     @ResponseBody
     boolean pwEdit(@PathVariable String id,@PathVariable String passWord) {
-        OperationLog operationLog = systemLogService.record("用户","密码修改","用户ID：" + id);
+        OperationLog operationLog = systemLogService.record("用户", "密码修改", "用户ID：" + id);
 
         userServiceImpl.passWord(passWord, id);
 

@@ -38,7 +38,7 @@ public class VersionHisController {
 	@RequiresPermissions({"versionHis-get"})
 	@RequestMapping("/hisVersionList")
 	@ResponseBody
-	public Map<String, Object> hisVersionList(String keyValue,HttpServletRequest req) {
+	public Map<String, Object> hisVersionList(String keyValue, String startDate,String endDate,HttpServletRequest req) {
 		if(null == keyValue){
 			keyValue = "";
 		}
@@ -53,34 +53,18 @@ public class VersionHisController {
 //		Page page = versionHisServiceImpl.getAll(rowCount);
 
 		Map<String, Object> result = new HashMap<String, Object>();
-		//过滤按钮功能不对。过滤按照服务码，服务名称，场景码，场景名称进行。
-		Map<String,String> map = new HashMap<String, String>();
-		map.put("serviceId",keyValue);
-		List<Service> serviceList = serviceService.findLikeAnyWhere(map);
-		Map<String,String> map2 = new HashMap<String, String>();
-		map2.put("serviceName",keyValue);
-		List<Service> serviceList2 = serviceService.findLikeAnyWhere(map2);
-		serviceList.addAll(serviceList2);
-		String serviceStr = "";
-		for (int i = 0; i < serviceList.size(); i++) {
-			if(i==0){
-				serviceStr += "'" + serviceList.get(i).getServiceId() + "'";
-			}else{
-				serviceStr += ",'" +serviceList.get(i).getServiceId() + "'";
-			}
-		}
 
-		String hql = " from OperationHis oh left join oh.versionHis";
+		String hql = " from OperationHis oh left join oh.versionHis where 1=1 ";
 		if(StringUtils.isNotEmpty(keyValue)){
-			hql += " where oh.operationId like '%"+keyValue+"%' or oh.operationName like '%"+keyValue+"%'";
-			if ("".equals(serviceStr)) {
-				hql += " order by oh.versionHis.optDate desc";
-			}else{
-				hql += " or oh.serviceId in ("+serviceStr+") order by oh.versionHis.optDate desc";
-			}
-		} else {
-			hql += " order by oh.versionHis.optDate desc";
+			hql += " and oh.operationId like '%"+keyValue+"%' or oh.operationName like '%"+keyValue+"%'" + " or oh.serviceId like '%"+keyValue+"%'";
 		}
+		if(StringUtils.isNotEmpty(startDate)){
+			hql += " and oh.optDate >'" + startDate + "' ";
+		}
+		if(StringUtils.isNotEmpty(endDate)){
+			hql += " and oh.optDate <'" + endDate + " 23:59:59' ";
+		}
+		hql += " order by oh.versionHis.optDate desc";
 
 //		String hql = " from VersionHis v left join v.operationHis";
 //		if(StringUtils.isNotEmpty(keyValue)){

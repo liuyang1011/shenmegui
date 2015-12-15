@@ -66,16 +66,21 @@
 				<th field="userMobile" width="130px" align="center">手机号码</th>
 				<th field="userTel" width="130px" align="center">电话号码</th>
 				<th field="orgId" width="130px" align="center">所属机构</th>
+				<th field="roleNames" width="130px" align="center">角色</th>
 				<%--<th field="startdate" width="130px" align="center">生效日期</th>
 				<th field="lastdate" width="130px" align="center">失效日期</th>--%>
 				<th field="remark" width="130px" align="center">备 注</th>
 	</tr>
 	</thead>
 </table>
-
+<div id="systemBar" style="text-align:center;">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="javascript:$('#dlg').dialog('close');">取消</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="addUserSystem()">确定</a>
+</div>
 <div id="w" class="easyui-window" title=""
 	 data-options="modal:true,closed:true,iconCls:'icon-add'"
 	 style="width:500px;height:200px;padding:10px;"></div>
+<div id="dlg"></div>
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.edatagrid.js"></script>
@@ -189,6 +194,53 @@
 		</shiro:hasRole>
 		
 	 ];
+
+	<shiro:hasRole name="admin">
+	toolbar.push(
+	{
+		text : '系统分配',
+				iconCls : 'icon-qxfp',
+			handler : function() {
+		var row = $('#tt').edatagrid('getSelected');
+		var checkedItems = $('#tt').edatagrid('getChecked');
+		if (checkedItems != null && checkedItems.length > 0) {
+			$('#dlg').dialog({
+				title: '系统分配',
+				width: 600,
+				height: 500,
+				closed: false,
+				cache: false,
+				href: '/jsp/user/systemDis.jsp?userId='+row.id,
+				modal: true,
+				toolbar:'#systemBar'
+			});
+		}else {
+			alert("请选中一个用户！");
+		}
+	}
+	}
+	);
+	function addUserSystem(){
+		var rows = $("#systemList").datagrid("getChecked");
+		if(null != rows && rows.length > 0){
+			var systemIds = [];
+			var user = $('#tt').edatagrid('getSelected');
+			for(var i = 0; i < rows.length; i++){
+				systemIds.push(rows[i].systemId);
+			}
+			var systemIdsStr = systemIds.join(",");
+			userManager.saveUserSystem(user.id, systemIdsStr,function(result){
+				if(result){
+					alert("保存成功！")
+					$('#dlg').dialog("close");
+				}
+			})
+		}else{
+			alert("没有选中任何一个系统（如果想要屏蔽用户系统权限请在角色权限管理中设置）！")
+		}
+
+	}
+	</shiro:hasRole>
 	$(function() {
 		$('#tt').edatagrid({
 			autoSave : false,
@@ -217,7 +269,6 @@
 			}
 		});
 	});
-
 </script>
 
 </body>

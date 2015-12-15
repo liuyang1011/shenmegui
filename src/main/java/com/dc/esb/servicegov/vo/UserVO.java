@@ -1,7 +1,11 @@
 package com.dc.esb.servicegov.vo;
 
 
+import com.dc.esb.servicegov.entity.Role;
 import com.dc.esb.servicegov.entity.SGUser;
+import com.dc.esb.servicegov.entity.UserRoleRelation;
+
+import java.util.List;
 
 /**
  * Created by vincentfxz on 15/7/27.
@@ -17,6 +21,7 @@ public class UserVO {
     private String lastdate;
     private String remark;
     private String startdate;
+    private String roleNames;
 
     public UserVO(String id, String name, String userMobile, String userTel, String password, String orgId, String lastdate, String remark, String startdate){
         this.id = id;
@@ -30,7 +35,7 @@ public class UserVO {
         this.startdate = startdate;
     }
 
-    public UserVO(SGUser user){
+    public UserVO(SGUser user, List<UserRoleRelation> rs){
         this.id = user.getId();
         this.name = user.getName();
         this.userMobile = user.getUserMobile();
@@ -40,8 +45,21 @@ public class UserVO {
         this.lastdate = user.getLastdate();
         this.remark = user.getRemark();
         this.startdate = user.getStartdate();
+        this.roleNames = getRoleNames(rs);
     }
 
+    public String getRoleNames(List<UserRoleRelation> rs){
+        String roleNames = "";
+        if(rs != null && rs.size() > 0){
+            for(UserRoleRelation ur : rs){
+                if(null != ur.getRole()){
+                    roleNames += ur.getRole().getName() + ",";
+                }
+            }
+            roleNames = roleNames.substring(0, roleNames.length()-1);
+        }
+        return roleNames;
+    }
 
 
 
@@ -115,5 +133,13 @@ public class UserVO {
 
     public void setStartdate(String startdate) {
         this.startdate = startdate;
+    }
+
+    public String getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(String roleNames) {
+        this.roleNames = roleNames;
     }
 }

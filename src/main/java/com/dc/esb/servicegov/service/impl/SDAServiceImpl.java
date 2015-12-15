@@ -191,9 +191,9 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         //TODO 台行  类型和长度合并显示
         for(SDA per : list){
             SDABean sdaBean = new SDABean(per);
-            if(null != sdaBean.getType() && !"STRUCT".equals(sdaBean.getType()) && !"ARRAY".equals(sdaBean.getType())){
-                sdaBean.setType(sdaBean.getType() + "("+sdaBean.getLength()+")");
-            }
+//            if(null != sdaBean.getType() && !"STRUCT".equals(sdaBean.getType()) && !"ARRAY".equals(sdaBean.getType())){
+//                sdaBean.setType(sdaBean.getType() + "("+sdaBean.getLength()+")");
+//            }
             tempList.add(sdaBean);
         }
         Map<String, String> fields = new HashMap<String, String>();
@@ -676,7 +676,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
      * @return
      */
     public List<TreeNode> querySDATree(String serviceId, String operationId, String keyword){
-        String hql = " from SDA where serviceId= ? and operationId = ? and (uper(structName) like uper('%" + keyword + "%') or structAlias like '%" + keyword + "%' or uper(metadataId)  like uper('%" + keyword + "%'))";
+        String hql = " from SDA where serviceId= ? and operationId = ? and (upper(structName) like upper('%" + keyword + "%') or structAlias like '%" + keyword + "%' or upper(metadataId)  like upper('%" + keyword + "%'))";
         List<SDA> list = sdaDAO.find(hql, serviceId, operationId);
         List<SDA> reList = new ArrayList<SDA>();
         reList.addAll(list);

@@ -18,4 +18,6 @@ public interface SystemService extends BaseService<System, String> {
     public boolean deleteSystemById(String systemId);
 
     public List<System> getAllOrderBySystemId();
+
+    public List<System> getByUserId(String userId);
 }

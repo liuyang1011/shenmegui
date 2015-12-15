@@ -636,7 +636,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             if(null != systemProtocol){
                 protocolId = systemProtocol.getProtocolId();
             }else{
-                logMsg("index页第" + indexVO.getIndexNum() + "条记录，协议[" + indexVO.getProtocolType() + "]在系统["+ indexVO.getInterfaceProId()+"]中未定义！");
+                logMsg("index页第" + indexVO.getIndexNum() + "条记录，协议[" + indexVO.getProtocolType() + "]在系统["+ indexVO.getInterfaceProId() +"]中未定义！");
             }
         }
         Map<String, String> params = new HashMap<String, String>();

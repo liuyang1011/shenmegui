@@ -15,6 +15,7 @@
 
 <body>
 <fieldset>
+    <form id="searchForm">
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -30,12 +31,13 @@
             </td>
             <td align="right"><a href="#" class="easyui-linkbutton"
                                  iconCls="icon-search" id="search">搜索单词</a>
+                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
             </td>
         </tr>
     </table>
-
-
+        </form>
 </fieldset>
+
 <table id="tt" style="height:370px; width:auto;" title="所有单词">
     <thead>
     <tr>
@@ -173,7 +175,7 @@
                     $('#tt').edatagrid('loadData', result);
                 });
             }else{
-                alert("请输入查询条件");
+                $("#tt").datagrid('reload');
             }
         });
     });

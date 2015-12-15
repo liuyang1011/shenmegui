@@ -86,4 +86,11 @@ public class SystemServiceImpl extends AbstractBaseService<System, String> imple
 		System system = systemDAOImpl.findUnique(hql, name, name, name);
 		return system;
 	}
+
+	@Override
+	public List<System> getByUserId(String userId) {
+		String hql = "select s from System s, UserSystemRelation u where s.systemId = u.systemId and u.userId=? order by s.systemId asc";
+		List<System> list = systemDAOImpl.find(hql, userId);
+		return list;
+	}
 }
