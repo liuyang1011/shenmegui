@@ -107,6 +107,9 @@ public class InterfaceController {
 //        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAllOrderBySystemId();
         String userId = SecurityUtils.getSubject().getPrincipal().toString();
         List<com.dc.esb.servicegov.entity.System> systems = systemService.getByUserId(userId);//根据用户在usersystemrelation中查找
+        if(0 == systems.size()){
+            systems = systemService.getAllOrderBySystemId();//如果在用户系统关系表中没有数据，默认为没有设置过，拥有所有系统的权限
+        }
         List<TreeNode> children = new ArrayList<TreeNode>();
         Map<String, String> fields = new HashMap<String, String>();
         fields.put("id","systemId");

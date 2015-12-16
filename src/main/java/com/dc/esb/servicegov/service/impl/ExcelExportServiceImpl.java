@@ -640,10 +640,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 ServiceInvoke serviceInvoke = siList.get(i);
                 if(StringUtils.isNotEmpty(serviceInvoke.getProtocolId())){
                     Protocol protocol = protocolDAO.findUniqueBy("protocolId", serviceInvoke.getProtocolId());
-                    if(!protocols.contains(protocol)){
-                        System system = serviceInvoke.getSystem();
-                        fillProtocolRow(sheet, counter, protocol, system);
-                        protocols.add(protocol);
+                    if(null != protocol){
+                        if(!protocols.contains(protocol)){
+                            System system = serviceInvoke.getSystem();
+                            fillProtocolRow(sheet, counter, protocol, system);
+                            protocols.add(protocol);
+                        }
                     }
                 }
             }
@@ -653,8 +655,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         sheet.createRow(sheet.getLastRowNum() + 1);
         counter.increment();
         sheet.shiftRows(counter.getCount(), sheet.getLastRowNum(), 1, true, false); //插入一行
+        String generatorName = "";
+        if(null != protocol.getGenerator()){
+            generatorName = protocol.getGenerator().getName();
+        }
         String[] values ={system.getSystemChineseName(), protocol.getProtocolName(), protocol.getCommuProtocol(), protocol.getIsEncrypt(), protocol.getIsSync(), protocol.getIsLongCon(),
-                protocol.getEncoding(), protocol.getMsgType(), protocol.getTimeout(), protocol.getSuccCode(), protocol.getErrorCode(), null != protocol.getGenerator() ? protocol.getGenerator().getName() : ""};
+                protocol.getEncoding(), protocol.getMsgType(), protocol.getTimeout(), protocol.getSuccCode(), protocol.getErrorCode(), generatorName};
         HSSFRow row = sheet.getRow(counter.getCount());
         setRowValue(row, commonStyle, values);
     }
