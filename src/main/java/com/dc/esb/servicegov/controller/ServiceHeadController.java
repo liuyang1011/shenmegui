@@ -48,7 +48,7 @@ public class ServiceHeadController {
         result.put("rows", rows);
         return result;
     }
-    @RequiresPermissions({"serviceHead-get"})
+//    @RequiresPermissions({"serviceHead-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/queryAll", headers = "Accept=application/json")
     public
     @ResponseBody

@@ -4,21 +4,25 @@ package com.dc.esb.servicegov.vo;
  * Created by Administrator on 2015/10/26.
  */
 public class ConfigVO {
-    private   String serviceId;
-    private   String serviceName;
-    private   String operationId;
-    private   String operationName;
-    private   String providerId;
-    private   String providerName;
-    private   String customerId;
-    private   String customerName;
-    private   String isStandardPro;
-    private   String isStandardCon;
-    private   String interfaceOrProtocolPro;
-    private   String interfaceIdOrProtocolIdPro;
-    private   String interfaceOrProtocolCon;
-    private   String interfaceIdOrProtocolIdCon;
+    private String serviceId;
+    private String serviceName;
+    private String operationId;
+    private String operationName;
 
+    private String providerServiceInvokeId;
+    private String consumerServiceInvokeId;
+
+    private String providerName;
+    private String consumerName;
+    private String proIsStandard;
+    private String conIsStandard;
+    private String proInterfaceName;
+    private String conInterfaceName;
+
+    private String proGeneratorId;
+    private String conGeneratorId;
+    private String proGeneratorName;
+    private String conGeneratorName;
     public String getServiceId() {
         return serviceId;
     }
@@ -51,55 +55,22 @@ public class ConfigVO {
         this.operationName = operationName;
     }
 
-    public String getIsStandardPro() {
-        return isStandardPro;
+    public String getProIsStandard() {
+        return proIsStandard;
     }
 
-    public void setIsStandardPro(String isStandardPro) {
-        this.isStandardPro = isStandardPro;
+    public void setProIsStandard(String proIsStandard) {
+        this.proIsStandard = proIsStandard;
     }
 
-    public String getIsStandardCon() {
-        return isStandardCon;
+    public String getConIsStandard() {
+        return conIsStandard;
     }
 
-    public void setIsStandardCon(String isStandardCon) {
-        this.isStandardCon = isStandardCon;
+    public void setConIsStandard(String conIsStandard) {
+        this.conIsStandard = conIsStandard;
     }
 
-    public String getInterfaceOrProtocolPro() {
-        return interfaceOrProtocolPro;
-    }
-
-    public void setInterfaceOrProtocolPro(String interfaceOrProtocolPro) {
-        this.interfaceOrProtocolPro = interfaceOrProtocolPro;
-    }
-
-
-    public String getInterfaceOrProtocolCon() {
-        return interfaceOrProtocolCon;
-    }
-
-    public void setInterfaceOrProtocolCon(String interfaceOrProtocolCon) {
-        this.interfaceOrProtocolCon = interfaceOrProtocolCon;
-    }
-
-
-    public String getProviderId() {
-        return providerId;
-    }
-
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
 
     public String getProviderName() {
         return providerName;
@@ -109,27 +80,75 @@ public class ConfigVO {
         this.providerName = providerName;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getProInterfaceName() {
+        return proInterfaceName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setProInterfaceName(String proInterfaceName) {
+        this.proInterfaceName = proInterfaceName;
     }
 
-    public String getInterfaceIdOrProtocolIdPro() {
-        return interfaceIdOrProtocolIdPro;
+    public String getConInterfaceName() {
+        return conInterfaceName;
     }
 
-    public void setInterfaceIdOrProtocolIdPro(String interfaceIdOrProtocolIdPro) {
-        this.interfaceIdOrProtocolIdPro = interfaceIdOrProtocolIdPro;
+    public void setConInterfaceName(String conInterfaceName) {
+        this.conInterfaceName = conInterfaceName;
     }
 
-    public String getInterfaceIdOrProtocolIdCon() {
-        return interfaceIdOrProtocolIdCon;
+    public String getProGeneratorId() {
+        return proGeneratorId;
     }
 
-    public void setInterfaceIdOrProtocolIdCon(String interfaceIdOrProtocolIdCon) {
-        this.interfaceIdOrProtocolIdCon = interfaceIdOrProtocolIdCon;
+    public void setProGeneratorId(String proGeneratorId) {
+        this.proGeneratorId = proGeneratorId;
+    }
+
+    public String getConGeneratorId() {
+        return conGeneratorId;
+    }
+
+    public void setConGeneratorId(String conGeneratorId) {
+        this.conGeneratorId = conGeneratorId;
+    }
+
+    public String getProGeneratorName() {
+        return proGeneratorName;
+    }
+
+    public void setProGeneratorName(String proGeneratorName) {
+        this.proGeneratorName = proGeneratorName;
+    }
+
+    public String getConGeneratorName() {
+        return conGeneratorName;
+    }
+
+    public void setConGeneratorName(String conGeneratorName) {
+        this.conGeneratorName = conGeneratorName;
+    }
+
+    public String getConsumerName() {
+        return consumerName;
+    }
+
+    public void setConsumerName(String consumerName) {
+        this.consumerName = consumerName;
+    }
+
+    public String getProviderServiceInvokeId() {
+        return providerServiceInvokeId;
+    }
+
+    public void setProviderServiceInvokeId(String providerServiceInvokeId) {
+        this.providerServiceInvokeId = providerServiceInvokeId;
+    }
+
+    public String getConsumerServiceInvokeId() {
+        return consumerServiceInvokeId;
+    }
+
+    public void setConsumerServiceInvokeId(String consumerServiceInvokeId) {
+        this.consumerServiceInvokeId = consumerServiceInvokeId;
     }
 }

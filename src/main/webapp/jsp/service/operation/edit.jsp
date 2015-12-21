@@ -308,7 +308,7 @@
 
 
 </form>
-<div  class="easyui-panel" title="消费者-提供者列表" style="width:100%;height:auto;padding:10px;">
+<div  class="easyui-panel" title="调用方-提供方列表" style="width:100%;height:auto;padding:10px;">
     <table id="resultList" class="easyui-datagrid"
            data-options="
 			rownumbers:true,

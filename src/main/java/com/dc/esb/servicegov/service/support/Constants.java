@@ -8,12 +8,13 @@ import org.apache.commons.lang.StringUtils;
 public class Constants {
     public static final String BANK_NAME="ChangShu";
 
-
     public static final String STATE_PASS = "1";
     public static final String STATE_UNPASS = "2";
 
     public static final String DELTED_FALSE = "0";//0:未删除，1：已删除
     public static final String DELTED_TRUE = "1";
+
+    public static final String DEFAULT_GENERATOR_ID = "0";//默认标准XML拆组包生成器
 
     public static final String INTERFACE_STATUS_TC = "0";//0投产  1废弃
     public static final String INTERFACE_STATUS_FQ = "1";
@@ -137,6 +138,9 @@ public class Constants {
             if("已下线".equals(stateName)){
                 return LIFE_CYCLE_STATE_DISCHARGE;
             }
+            if("废弃".equals(stateName)){
+                return  OPT_STATE_ABANDONED;
+            }
             return OPT_STATE_UNAUDIT;//默认服务定义状态
         }
 //    	public static final String LIFE_CYCLE_STATE_TEST = "3";//测试
@@ -182,9 +186,12 @@ public class Constants {
     }
 
     public static class ServiceHead{
-        public static final String DEFAULT_SYSHEAD_ID = "sys_head";
-        public static final String DEFAULT_APPHEAD_ID = "app_head";
-        public static final String DEFAULT_HEAD_ID = "sys_head,app_head";
+        public static final String DEFAULT_SYSHEAD_ID = "SYS_HEAD";
+        public static final String DEFAULT_APPHEAD_ID = "APP_HEAD";
+        public static final String DEFAULT_HEAD_ID = "SYS_HEAD,APP_HEAD";
+
+        public static final String REQUIRED_Y = "Y";
+        public static final String REQUIRED_N = "N";
     }
     public static class ServiceCategory{
         public static final Integer CATEGORY_CHILD_LENGTH = 5;//服务分类id长度

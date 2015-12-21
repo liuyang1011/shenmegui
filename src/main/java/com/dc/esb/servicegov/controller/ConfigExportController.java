@@ -6,6 +6,7 @@ import com.dc.esb.servicegov.export.IMetadataConfigGenerator;
 import com.dc.esb.servicegov.export.IPackerParserConfigGenerator;
 import com.dc.esb.servicegov.export.bean.ExportBean;
 import com.dc.esb.servicegov.export.exception.ExportException;
+import com.dc.esb.servicegov.export.impl.ConfigBathGenerator;
 import com.dc.esb.servicegov.export.impl.StandardSOAPConfigGenerator;
 import com.dc.esb.servicegov.export.impl.StandardXMLConfigGenerator;
 import com.dc.esb.servicegov.export.util.ExportUtil;
@@ -70,6 +71,8 @@ public class ConfigExportController {
     @Autowired
     private InterfaceHeadServiceImpl interfaceHeadService;
 
+    @Autowired
+    ConfigBathGenerator configBathGenerator;
     /**
      * 导出配置文件
      *
@@ -97,9 +100,9 @@ public class ConfigExportController {
                         @PathVariable String providerStandardType, @PathVariable String consumerStandardType,
                         HttpServletResponse response) {
         logger.info("开始导出配置,服务ID:[" + serviceId + "],操作ID:[" + operationId + "],提供者ID:[" + providerSystemId + "" +
-                "j],消费者ID:[" + consumerSystemId + "],提供接口ID:[" + providerInterfaceId + "],消费接口ID:[" + consumerInterfaceId + "]");
+                "],消费者ID:[" + consumerSystemId + "],提供接口ID:[" + providerInterfaceId + "],消费接口ID:[" + consumerInterfaceId + "]");
         OperationLog operationLog = systemLogService.record("服务", "配置导出", "服务ID:[" + serviceId + "],操作ID:[" + operationId + "],提供者ID:[" + providerSystemId + "" +
-                "j],消费者ID:[" + consumerSystemId + "],提供接口ID:[" + providerInterfaceId + "],消费接口ID:[" + consumerInterfaceId + "]");
+                "],消费者ID:[" + consumerSystemId + "],提供接口ID:[" + providerInterfaceId + "],消费接口ID:[" + consumerInterfaceId + "]");
         File in_file = null;
         //构造导出的条件Bean
         ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId,
@@ -349,7 +352,7 @@ public class ConfigExportController {
         try {
             response.setContentType("text/html; charset=utf-8");
             pw = response.getWriter();
-            pw.print("<script language='javascript'>alert('" + message + "')</script>");
+            pw.print("<script language='javascript'>alert('" + message + "');closeDialog();</script>");
         } catch (Exception e) {
             logger.error(e, e);
         } finally {
@@ -374,253 +377,60 @@ public class ConfigExportController {
         return result;
     }
 
+    /**
+     * 批量导出
+     * @param request
+     * @param response
+     * @param list 一条交易配置导出信息
+     * @return
+     */
     @RequiresPermissions({"exportConfig-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportBatch", headers = "Accept=application/json")
     public
     @ResponseBody
     List<String> exportBatch(HttpServletRequest request, HttpServletResponse response, ConfigListVO list) {
-        String path = "";
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            if (list != null) {
-                List<ConfigVO> voList = list.getList();
-                if (voList != null && voList.size() > 0) {
-                    for (ConfigVO configVO : voList) {
-                        String serviceId = configVO.getServiceId();
-                        String operationId = configVO.getOperationId();
-                        String providerSystemId = configVO.getProviderId();
-                        String isStandardPro = configVO.getIsStandardPro();
-                        boolean providerIsStandard = true;
-                        String providerInterfaceId = "no";
-                        String consumerInterfaceId = "no";
-                        String consumerSystemId = configVO.getCustomerId();
-                        String isStandardCon = configVO.getIsStandardCon();
-                        boolean consumerIsStandard = true;
-                        String providerStandardType = configVO.getInterfaceOrProtocolPro();
-                        String consumerStandardType = configVO.getInterfaceOrProtocolCon();
+        OperationLog operationLog = systemLogService.record("导出", "配置文件导出","");
 
-                        if ("1".equals(isStandardPro)) {
-                            providerIsStandard = false;
-                            providerInterfaceId = configVO.getInterfaceIdOrProtocolIdPro();
-                        }
-                        if ("1".equalsIgnoreCase(isStandardCon)) {
-                            consumerIsStandard = false;
-                            consumerInterfaceId = configVO.getInterfaceIdOrProtocolIdCon();
-                        }
-                        File in_file = null;
-                        ExportBean export = new ExportBean(serviceId, operationId, providerSystemId, providerInterfaceId, providerIsStandard, consumerSystemId, consumerInterfaceId, consumerIsStandard);
-                        Map<String, String> sdaMap = new HashMap<String, String>();
-                        sdaMap.put("serviceId", export.getServiceId());
-                        sdaMap.put("operationId", export.getOperationId());
-                        List<SDA> sdas = sdaService.findBy(sdaMap);
-
-                        Map<String, String> idaMap = new HashMap<String, String>();
-                        sdaMap.put("interfaceId", export.getConsumerInterfaceId());
-                        List<Ida> idas = idaService.findBy(idaMap);
-                        SDA SDARequest = null;
-                        SDA SDAResponse = null;
-                        for (SDA sda : sdas) {
-                            if (sda.getStructName().equalsIgnoreCase("request")) {
-                                SDARequest = sda;
-                                continue;
-                            }
-                            if (sda.getStructName().equalsIgnoreCase("response")) {
-                                SDAResponse = sda;
-                            }
-                            if (SDARequest != null && SDAResponse != null) {
-                                break;
-                            }
-                        }
-                        String requestText = "";
-                        String responseText = "";
-                        String requestSOAPText = "";
-                        String responseSOAPText = "";
-
-                        //消费方是否标准接口
-                        if (export.isConsumerIsStandard()) {
-
-                            requestText = ExportUtil.generatorServiceDefineXML(sdas, SDARequest);
-                            responseText = ExportUtil.generatorServiceDefineXML(sdas, SDAResponse);
-                            if (consumerStandardType.equalsIgnoreCase("xml")) {
-                                standardXMLConfigGenerator.init(requestText, responseText);
-                                in_file = standardXMLConfigGenerator.generatorIn(idas, sdas, export);
-                            } else if (consumerStandardType.equalsIgnoreCase("soap")) {
-                                requestSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas, SDARequest);
-                                responseSOAPText = ExportUtil.generatorServiceDefineSOAP(sdas, SDAResponse);
-                                standardSOAPConfigGenerator.init(requestText, responseText, requestSOAPText, responseSOAPText);
-                                in_file = standardSOAPConfigGenerator.generatorIn(idas, sdas, export);
-                            }
-                        } else {
-                            Map<String, String> paramMap = new HashMap<String, String>();
-                            paramMap.put("serviceId", export.getServiceId());
-                            paramMap.put("operationId", export.getOperationId());
-                            paramMap.put("interfaceId", export.getConsumerInterfaceId());
-                            paramMap.put("systemId", export.getConsumerSystemId());
-                            ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
-                            if (invoke != null) {
-                                String protocolId = invoke.getProtocolId();
-                                if (protocolId == null || "".equals(protocolId)) {
-                                    logger.error("消费方接口未关联协议，导出失败");
-                                    //                    return "消费方提供方接口未关联协议，导出失败";
-                                    logInfoService.saveLog("消费方接口未关联协议，导出失败", "导出");
-                                    printMsg(response, "消费方接口未关联协议，导出失败");
-                                    return null;
-                                } else {
-                                    Protocol protocol = protocolService.getById(protocolId);
-                                    String generatorClass = protocol.getGeneratorId();
-
-                                    try {
-                                        Class c = Class.forName(generatorClass);
-                                        try {
-                                            IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
-                                            generator.setSystemService(systemService);
-                                            generator.setInterfaceService(interfaceService);
-                                            generator.setSdaService(sdaService);
-                                            generator.setOperationService(operationService);
-                                            generator.setInterfaceHeadService(interfaceHeadService);
-                                            generator.setIdaService(idaService);
-                                            in_file = generator.generatorIn(idas, sdas, export);
-                                        } catch (InstantiationException e) {
-                                            logger.error("消费方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
-                                            //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
-                                            logInfoService.saveLog("消费方接口协议报文生成类实例化失败,导出失败", "导出");
-                                            printMsg(response, "消费方接口协议报文生成类实例化失败,导出失败");
-                                            return null;
-                                        } catch (IllegalAccessException e) {
-
-                                            logger.error("消费方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
-                                            logInfoService.saveLog("消费方接口协议报文生成类构造方法是不可访问,导出失败", "导出");
-                                            //                            return "消费方接口协议报文生成类构造方法是不可访问,导出失败";
-                                            printMsg(response, "消费方接口协议报文生成类构造方法是不可访问,导出失败");
-                                            return null;
-                                        }
-                                    } catch (ClassNotFoundException e) {
-                                        logger.error("消费方接口协议报文生成类未找到，导出失败");
-                                        logInfoService.saveLog("消费方接口协议报文生成类未找到，导出失败", "导出");
-                                        //                        return "消费方接口协议报文生成类未找到，导出失败";
-                                        printMsg(response, "消费方接口协议报文生成类未找到，导出失败");
-                                        return null;
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                        Map<String, String> providerIDAMap = new HashMap<String, String>();
-                        providerIDAMap.put("interfaceId", export.getProviderInterfaceId());
-                        List<Ida> provideridas = idaService.findBy(providerIDAMap);
-                        //提供方是否标准接口
-                        if (export.isProviderIsStandard()) {
-                            if (providerStandardType.equalsIgnoreCase("xml")) {
-                                standardXMLConfigGenerator.generatorOut(provideridas, sdas, export);
-                            } else if (providerStandardType.equalsIgnoreCase("soap")) {
-                                standardSOAPConfigGenerator.generatorOut(idas, sdas, export);
-                            }
-
-                        } else {
-                            Map<String, String> paramMap = new HashMap<String, String>();
-                            paramMap.put("serviceId", export.getServiceId());
-                            paramMap.put("operationId", export.getOperationId());
-                            paramMap.put("interfaceId", export.getProviderInterfaceId());
-                            paramMap.put("systemId", export.getProviderSystemId());
-                            ServiceInvoke invoke = serviceInvokeService.findUniqueBy(paramMap);
-                            if (invoke != null) {
-
-                                String protocolId = invoke.getProtocolId();
-                                if (protocolId == null || "".equals(protocolId)) {
-                                    logger.error("提供方接口未关联协议，导出失败");
-                                    logInfoService.saveLog("提供方接口未关联协议，导出失败", "导出");
-                                    //                    return "提供方接口未关联协议，导出失败";
-                                    printMsg(response, "提供方接口未关联协议，导出失败");
-                                    return null;
-                                } else {
-
-
-                                    Protocol protocol = protocolService.getById(protocolId);
-                                    String generatorClass = protocol.getGeneratorId();
-
-                                    try {
-                                        Class c = Class.forName(generatorClass);
-                                        try {
-                                            IMetadataConfigGenerator generator = (IMetadataConfigGenerator) c.newInstance();
-                                            generator.setSystemService(systemService);
-                                            generator.setInterfaceService(interfaceService);
-                                            generator.setSdaService(sdaService);
-                                            generator.setOperationService(operationService);
-                                            generator.setInterfaceHeadService(interfaceHeadService);
-                                            generator.setIdaService(idaService);
-                                            generator.generatorOut(provideridas, sdas, export);
-                                        } catch (InstantiationException e) {
-                                            logger.error("提供方接口协议报文生成类实例化失败,导出失败,错误信息：" + e.getMessage());
-                                            //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败，请查看日志!";
-                                            logInfoService.saveLog("提供方接口协议报文生成类实例化失败,导出失败", "导出");
-                                            printMsg(response, "提供方接口协议报文生成类实例化失败,导出失败");
-                                            return null;
-                                        } catch (IllegalAccessException e) {
-                                            logger.error("提供方接口协议报文生成类构造方法是不可访问,导出失败,错误信息：" + e.getMessage());
-                                            //                            return "提供方接口协议报文生成类构造方法是不可访问,导出失败";
-                                            logInfoService.saveLog("提供方接口协议报文生成类构造方法是不可访问,导出失败", "导出");
-                                            printMsg(response, "提供方接口协议报文生成类构造方法是不可访问,导出失败");
-                                            return null;
-                                        }
-                                    } catch (ClassNotFoundException e) {
-                                        e.printStackTrace();
-                                        logger.error("提供方接口协议报文生成类未找到，导出失败");
-                                        logInfoService.saveLog("提供方接口协议报文生成类未找到，导出失败", "导出");
-                                        //                        return "提供方接口协议报文生成类未找到，导出失败";
-                                        printMsg(response, "提供方接口协议报文生成类未找到，导出失败");
-                                        return null;
-                                    }
-
-                                }
-                            }
-                        }
-                        path = in_file.getParentFile().getPath();
-                    }
-
-                }
-            }
+        String path  = configBathGenerator.generate(request, list);;
+        if(StringUtils.isNotEmpty(path)){
             ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
-
-            File metadata = new File(path + "/metadata.zip");
-
-            response.setContentType("application/zip");
-            response.addHeader("Content-Disposition",
-                    "attachment;filename=metadata.zip");
-            in = new BufferedInputStream(new FileInputStream(metadata));
-            out = new BufferedOutputStream(response.getOutputStream());
-            long fileLength = metadata.length();
-            byte[] cache = null;
-            if (fileLength > Integer.MAX_VALUE) {
-                cache = new byte[Integer.MAX_VALUE];
-            } else {
-                cache = new byte[(int) fileLength];
-            }
-            int i = 0;
-            while ((i = in.read(cache)) > 0) {
-                out.write(cache, 0, i);
-            }
-            out.flush();
-
-//            systemLogService.updateResult(operationLog);
-
-        } catch (Exception e) {
-            logger.error(e, e);
-            printMsg(response, "数据错误，导出失败!");
-
-        } finally {
+            InputStream in = null;
+            OutputStream out = null;
             try {
-                in.close();
-                out.close();
-                FileUtil.deleteDirectory(path);
+                File metadata = new File(path + "/metadata.zip");
+
+                response.setContentType("application/zip");
+                response.addHeader("Content-Disposition",
+                        "attachment;filename=metadata.zip");
+                in = new BufferedInputStream(new FileInputStream(metadata));
+                out = new BufferedOutputStream(response.getOutputStream());
+                long fileLength = metadata.length();
+                byte[] cache = null;
+                if (fileLength > Integer.MAX_VALUE) {
+                    cache = new byte[Integer.MAX_VALUE];
+                } else {
+                    cache = new byte[(int) fileLength];
+                }
+                int i = 0;
+                while ((i = in.read(cache)) > 0) {
+                    out.write(cache, 0, i);
+                }
+                out.flush();
             } catch (Exception e) {
-                logger.error("导出文件，关闭流异常," + e.getMessage());
+                logger.error(e,e);
+                printMsg(response, "导出配置文件出现错误,请检查数据！");
+            } finally {
+                try {
+                    in.close();
+                    out.close();
+                    FileUtil.deleteDirectory(new File(path));
+                } catch (Exception e) {
+                    logger.error("导出配置文件，关闭流异常," + e.getMessage(),e);
+                }
+
             }
         }
-
+        systemLogService.updateResult(operationLog);
         return null;
     }
 }

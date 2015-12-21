@@ -254,7 +254,7 @@
         alert("请选择其他节点！");
         return false;
       }
-      var urlPath ="/jsp/metadata/metadata_choose.jsp"
+      var urlPath ="/jsp/metadata/metadata_choose_service_head.jsp?serviceHeadId=${param.serviceHeadId}&optType=append"
       $('#dlg').dialog({
         title: '元数据',
         width: 770,

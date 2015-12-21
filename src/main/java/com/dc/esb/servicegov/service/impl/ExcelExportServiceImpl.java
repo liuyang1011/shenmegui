@@ -163,6 +163,14 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         HSSFWorkbook workbook = fillExcel(siList);
         return workbook;
     }
+    //根据系统id生成excel
+    public HSSFWorkbook genderExcelBySystemId(String systemId) {
+        String hql = " from ServiceInvoke where systemId = ? and operationId is not null and serviceId is not null";
+        List<ServiceInvoke> siList = siDao.find(hql, systemId);
+        HSSFWorkbook workbook = fillExcel(siList);
+        return workbook;
+    }
+
     public HSSFWorkbook fillExcel(List<ServiceInvoke> siList) {
         if (siList.size() > 0) {
             HSSFWorkbook workbook = getTempalteWb(Constants.EXCEL_TEMPLATE_SERVICE);
@@ -223,7 +231,6 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
     public void fillIndexRow(HSSFSheet sheet, int rowNum, ServiceInvoke serviceInvoke, List<ServiceInvoke> consumers, List<ServiceInvoke> providers){
         HSSFRow row = sheet.createRow(rowNum);
         Operation operation = operationDAO.getBySO(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
-
         setCellValue(row.createCell(0), commonStyle, serviceInvoke.getInterfaceId());//接口代码
         Hyperlink hyperlink = new HSSFHyperlink(Hyperlink.LINK_DOCUMENT);
         // "#"表示本文档    "明细页面"表示sheet页名称  "A10"表示第几列第几行
@@ -246,9 +253,15 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             setCellValue(row.createCell(2), commonStyle, null);//交易名称
             setCellValue(row.createCell(20), commonStyle, null);//接口状态
         }
-        setCellValue(row.createCell(3), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
-        setCellValue(row.createCell(4), commonStyle, operation.getOperationId());//场景id
-        setCellValue(row.createCell(5), commonStyle, operation.getOperationName());//场景名称
+        if(null != operation){
+            setCellValue(row.createCell(3), commonStyle, operation.getService().getServiceName() + "(" + operation.getServiceId() + ")");//服务名称
+            setCellValue(row.createCell(4), commonStyle, operation.getOperationId());//场景id
+            setCellValue(row.createCell(5), commonStyle, operation.getOperationName());//场景名称
+
+            String operaStatus = Constants.Operation.getStateName(operation.getState());
+            setCellValue(row.createCell(21), commonStyle, operaStatus);//场景状态
+        }
+
         //用systemAb
 //                setCellValue(row.createCell(5), commonStyle, vo.getConsumers());//调用方
         setCellValue(row.createCell(6), commonStyle, joinServiceInvokeSystemName(consumers, "systemAb"));//调用方
@@ -268,8 +281,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
         setCellValue(row.createCell(17), commonStyle, "");//模块划分
         setCellValue(row.createCell(18), commonStyle, "");//是否穿透
         setCellValue(row.createCell(19), commonStyle, interfaceHeadService.getHeadNames(serviceInvoke.getInterfaceId()));//业务报文头
-        String operaStatus = Constants.Operation.getStateName(operation.getState());
-        setCellValue(row.createCell(21), commonStyle, operaStatus);//场景状态
+
         String isStandard = "";
         if ( Constants.INVOKE_TYPE_STANDARD_Y.equals(serviceInvoke.getIsStandard())){
             isStandard = "是";

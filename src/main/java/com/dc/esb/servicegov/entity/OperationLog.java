@@ -33,6 +33,8 @@ public class OperationLog {
     private String methodName;
     @Column(name = "params", length = 1024)
     private String params;
+    @Column(name = "ip_address")
+    private String ipAddress;
 
     public String getId() {
         return id;
@@ -112,5 +114,13 @@ public class OperationLog {
 
     public void setUser_name(String user_name) {
         this.user_name = user_name;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 }

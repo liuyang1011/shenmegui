@@ -189,6 +189,11 @@
         查看系统
     </div>
     </shiro:hasPermission>
+    <shiro:hasPermission name="excelExport-get">
+        <div onclick="sysManager.exportMappingFile()" data-options="iconCls:'icon-add'">
+            导出映射文档
+        </div>
+    </shiro:hasPermission>
 </div>
 
 <%--<shiro:has name="interface-add,interface-update,interface-delete">--%>

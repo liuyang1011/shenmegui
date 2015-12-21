@@ -3,9 +3,11 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.UserSystemRelationService;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserSystemRelationServiceImpl;
 import com.dc.esb.servicegov.vo.SystemVO;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/userSystemRelation")
 public class UserSystemRelationController {
-
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
     @Autowired
     private UserSystemRelationServiceImpl userSystemRelationService;
     @Autowired
@@ -69,7 +72,11 @@ public class UserSystemRelationController {
     @RequiresRoles({"admin"})
     @RequestMapping("/saveUserSystem")
     public @ResponseBody boolean saveUserSystem(String userId, String systemIdsStr){
+        OperationLog operationLog = systemLogService.record("用户管理", "系统分配", "为用户["+userId+"]重新分配了系统["+systemIdsStr+"]");
+
         boolean result = userSystemRelationService.saveUserSystem(userId, systemIdsStr);
+
+        systemLogService.updateResult(operationLog);
         return result;
     }
 }

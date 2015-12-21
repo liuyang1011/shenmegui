@@ -340,7 +340,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             if(operateFlag){//覆盖
                 operationDB.setOperationName(indexVO.getOperationName());
                 operationDB.setOperationDesc(operationDesc);
-                operationDB.setState(Constants.Operation.getState(indexVO.getOperationState()));
+                operationDB.setState(indexVO.getOperationState());
                 operationDAO.save(operationDB);
                 versionService.editVersion(operationDB.getVersionId());//修改版本号
                 //删除已有sda
@@ -352,7 +352,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             operation.setServiceId(serviceId);
             operation.setOperationId(operationId);
             operation.setOperationDesc(operationDesc);
-            operation.setState(Constants.Operation.getState(indexVO.getOperationState()));
+            operation.setState(indexVO.getOperationState());
             operation.setHeadId(Constants.ServiceHead.DEFAULT_HEAD_ID);
             String versionId = versionService.addVersion(Constants.Version.TARGET_TYPE_OPERATION, operationId, Constants.Version.TYPE_ELSE);//初始化版本信息
             operation.setVersionId(versionId);

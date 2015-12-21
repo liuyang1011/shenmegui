@@ -419,7 +419,7 @@
         text: '修订',
         iconCls: 'icon-audit',
         handler: function () {
-            //审核通过，已上线，已发布 可以变为修订状态
+            //审核通过，已上线，已发布 已废弃可以变为修订状态
             var url = "";
             var items = $('#operationList').datagrid('getSelections');
             if (items != null && items.length > 0) {
@@ -574,12 +574,13 @@
                     alert("请只选中一个要导出的场景！");
                     return false;
                 } else {
+                    var urlPath = "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;
                     uiinit.win({
                         w: 500,
                         iconCls: 'icon-add',
                         title: "配置导出",
                         modal: true,
-                        url: "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId
+                        url:urlPath
                     });
 
                 }
@@ -589,6 +590,46 @@
 
         }
     });
+    toolbar.push({
+        text:'导出配置&nbsp;&nbsp;&nbsp;',
+        iconCls:'icon-excel-export',
+        handler: function () {
+            var checkedItems = $('#operationList').datagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/export/getConfigVo",
+                    "data": JSON.stringify(checkedItems),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result && result.length > 0){
+                            configResult = result;
+                            $('#opDialog').dialog({
+                                title: '导出配置',
+                                width: 1000,
+                                left:50,
+                                closed: false,
+                                cache: false,
+                                href: "/jsp/service/export_config_list.jsp",
+                                modal: true,
+                                onLoad:function(){
+                                    $("#choosedList").datagrid("loadData", configResult);
+                                }
+                            });
+                        }else{
+                            alert("没有可导出的配置！");
+                        }
+                    }
+                });
+
+            }
+            else{
+                alert("没有选中数据！");
+            }
+        }
+    })
     </shiro:hasPermission>
 
     //版本发布

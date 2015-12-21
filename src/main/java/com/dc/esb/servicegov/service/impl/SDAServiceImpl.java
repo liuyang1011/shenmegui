@@ -715,4 +715,98 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             }
         }
     }
+
+    /**
+     * 根据节点名称查询场景下SDA
+     * @param serviceId
+     * @param operationId
+     * @param structName
+     * @return
+     */
+    public SDA getByStructName(String serviceId, String operationId, String structName){
+        String hql = " from SDA where serviceId = ? and operationId = ? and structName = ?";
+        SDA sda = sdaDAO.findUnique(hql, serviceId, operationId, structName);
+        return sda;
+    }
+
+    public SDA getByStructName(String serviceHeadId, String structName){
+        String hql = " from SDA where serviceHeadId = ? and structName = ?";
+        SDA sda = sdaDAO.findUnique(hql, serviceHeadId, structName);
+        return sda;
+    }
+
+    /**
+     * 获取子节点
+     * @param sda
+     * @return
+     */
+    public List<SDA> getChildren(SDA sda){
+        List<SDA> children = sdaDAO.findBy("parentId", sda.getId());
+        return children;
+    }
+
+    /**
+     * 查询服务头某个节点下必输元素
+     * @param serviceHeadId
+     * @param parentId
+     * @return
+     */
+    public List<SDA> getServiceHeadRequired(String serviceHeadId, String parentId){
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("serviceHeadId", serviceHeadId);
+        params.put("parentId", parentId);
+        params.put("required", Constants.ServiceHead.REQUIRED_Y);
+        List<SDA> result = sdaDAO.findBy(params);
+        return result;
+    }
+
+    /**
+     * 获取场景request或response下属于某个服务头的子节点
+     * @param serviceId
+     * @param operationId
+     * @param headId
+     * @return
+     */
+    public List<SDA> getOperationHeadSDAs(String serviceId, String operationId, String headId, String parentId){
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("serviceId", serviceId);
+        params.put("operationId", operationId);
+        params.put("constraint", headId);
+        params.put("parentId", parentId);
+        List<SDA> result = sdaDAO.findBy(params);
+        return result;
+    }
+
+    public List<SDA> getChildExceptServiceHead(String parentId, String serviceHeadIds){
+        String[] headIds = serviceHeadIds.split("\\,");
+        String hql = " from SDA where parentId = :parentId and ( constraint is null or constraint not in(:serviceHeadIds))";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("parentId", parentId);
+        params.put("serviceHeadIds", headIds);
+        List<SDA> result = sdaDAO.find(hql, params);
+        return result;
+    }
+
+    /**
+     * 查询某个服务报文头对应request或response下子节点中约束为syshead或apphead的节点
+     * @param interfaceHeadId
+     * @param structName
+     * @return
+     */
+    public List<SDA> getByInterfaceHeadSDAs(String interfaceHeadId, String structName, String serviceHeadId){
+        String hql = "from SDA a where a.parentId in (select b.id from SDA b where b.headId = ? and b.structName = ?) and constraint = ?";
+        List<SDA> sdas = this.find(hql, interfaceHeadId, structName, serviceHeadId);
+        return sdas;
+    }
+
+    public List<SDA> getByInterfaceHeadBodySDAs(String interfaceHeadId, String structName){
+        List<SDA> list = sdaDAO.findByHead(interfaceHeadId, structName);
+        List<SDA> result = new ArrayList<SDA>();
+        for(SDA sda : list){
+            if(StringUtils.isEmpty(sda.getConstraint())){
+                result.add(sda);
+            }
+        }
+        return result;
+    }
 }

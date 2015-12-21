@@ -84,7 +84,23 @@ public class ExcelExportController {
 
         return result;
     }
+    /**
+     * 根据系统导出字段映射文档
+     **/
+    @RequiresPermissions({"excelExport-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/exportSystem", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    boolean exportService(HttpServletRequest request, HttpServletResponse response, String systemId) {
+        OperationLog operationLog = systemLogService.record("字段映射文档","导出EXCEL","根据系统ID，具体参数：系统编码["+ systemId + "]");
 
+        String fileName = systemId + new Date().getTime();
+        HSSFWorkbook workbook = excelExportServiceImpl.genderExcelBySystemId(systemId);
+        boolean result = export(request, response, fileName, workbook);
+
+        systemLogService.updateResult(operationLog);
+        return result;
+    }
 
     /**
      * 根据服务分类或者服务导出服务视图

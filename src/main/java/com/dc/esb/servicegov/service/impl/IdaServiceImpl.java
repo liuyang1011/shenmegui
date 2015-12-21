@@ -144,7 +144,7 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	}
 
 	public List<IdaMappingBean> findIdaMappingBy(Map<String,String> map,String orderByProperties,String serviceId, String operationId){
-		List<Ida> idas = findBy(map,orderByProperties);
+		List<Ida> idas = findBy(map, orderByProperties);
 		Map<String,String> map2 = new HashMap<String, String>();
 		map2.put("serviceId",serviceId);
 		map2.put("operationId", operationId);
@@ -617,4 +617,29 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		String hql = " delete from Ida where headId = ?";
 		idaDAOImpl.exeHql(hql, headId);
 	}
+
+	/**
+	 * 查询接口下某个名称的节点
+	 * @param interfaceId
+	 * @param structName
+	 * @return
+	 */
+	public Ida getByInterfaceIdStructName(String interfaceId, String structName){
+		String hql = " from Ida where interfaceId = ? and structName = ?";
+		Ida ida = idaDAOImpl.findUnique(hql, interfaceId, structName);
+		return ida;
+	}
+
+	public List<Ida> getNotEmptyByParentId(String parentId){
+		String hql = "from Ida where _parentId = ? order by seq asc";
+		List<Ida> idas = idaDAOImpl.find(hql, parentId);
+		List<Ida> result = new ArrayList<Ida>();
+		for(Ida ida : idas){
+			if(org.apache.commons.lang.StringUtils.isNotEmpty(ida.getStructName())){//过滤名称为空的数据
+				result.add(ida);
+			}
+		}
+		return  result;
+	}
+
 }

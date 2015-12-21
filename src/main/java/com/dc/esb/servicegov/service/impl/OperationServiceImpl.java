@@ -645,9 +645,10 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     }
 
     public boolean judgeCanRevise(Operation operation){
-        //审核通过，审核不通过，已上线，已发布 可以变为修订状态
+        //审核通过，审核不通过，已上线，已发布,已废弃 可以变为修订状态
         String state = operation.getState();
-        if(state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.OPT_STATE_UNPASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+        if(state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.OPT_STATE_UNPASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED)
+                || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE ) || state.equals(Constants.Operation.OPT_STATE_ABANDONED)){
             return true;
         }
         return false;
@@ -680,29 +681,37 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     configVO.setServiceId(operation.getServiceId());
                     configVO.setOperationId(operation.getOperationId());
                     configVO.setOperationName(operation.getOperationName());
-
                     if(ii != null){
                         ServiceInvoke siPro = ii.getProvider();
                         if(siPro != null){
                             if(siPro.getSystem() != null){
-                                configVO.setProviderId(siPro.getSystemId());
+                                configVO.setProviderServiceInvokeId(siPro.getInvokeId());
                                 configVO.setProviderName(siPro.getSystem().getSystemChineseName());
+                                Interface inter = siPro.getInter();
+                                if(null != inter){
+                                    configVO.setProInterfaceName(inter.getInterfaceName());
+                                }
                             }
                         }
                         ServiceInvoke siCon = ii.getConsumer();
                         if(siCon != null){
                             if(siCon.getSystem() != null){
-                                configVO.setCustomerId(siCon.getSystemId());
-                                configVO.setCustomerName(siCon.getSystem().getSystemChineseName());
+                                configVO.setConsumerServiceInvokeId(siCon.getInvokeId());
+                                configVO.setConsumerName(siCon.getSystem().getSystemChineseName());
+                                Interface inter = siCon.getInter();
+                                if(null != inter){
+                                    configVO.setConInterfaceName(inter.getInterfaceName());
+                                }
                             }
                         }
                     }
-                    configVO.setIsStandardPro("0"); //0; 标准， 1：非标
-                    configVO.setInterfaceOrProtocolPro("xml");
-                    configVO.setInterfaceIdOrProtocolIdPro("xml");
-                    configVO.setIsStandardCon("0");
-                    configVO.setInterfaceOrProtocolCon("xml");
-                    configVO.setInterfaceIdOrProtocolIdCon("xml");
+                    configVO.setConIsStandard("0"); //0; 标准， 1：非标
+                    configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                    configVO.setConGeneratorName("XML标准拆组包生成器");
+
+                    configVO.setProIsStandard("0"); //0; 标准， 1：非标
+                    configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                    configVO.setProGeneratorName("XML标准拆组包生成器");
                     result.add(configVO);
                 }
 
