@@ -563,33 +563,33 @@
     });
     </shiro:hasPermission>
     <shiro:hasPermission name="exportConfig-get">
-    toolbar.push({
-        text: '导出配置文件',
-        iconCls: 'icon-qxfp',
-        handler: function () {
+    <%--toolbar.push({--%>
+        <%--text: '导出配置文件',--%>
+        <%--iconCls: 'icon-qxfp',--%>
+        <%--handler: function () {--%>
 
-            var checkedItems = $('#operationList').datagrid('getChecked');
-            if (checkedItems != null && checkedItems.length > 0) {
-                if (checkedItems.length > 1) {
-                    alert("请只选中一个要导出的场景！");
-                    return false;
-                } else {
-                    var urlPath = "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;
-                    uiinit.win({
-                        w: 500,
-                        iconCls: 'icon-add',
-                        title: "配置导出",
-                        modal: true,
-                        url:urlPath
-                    });
+            <%--var checkedItems = $('#operationList').datagrid('getChecked');--%>
+            <%--if (checkedItems != null && checkedItems.length > 0) {--%>
+                <%--if (checkedItems.length > 1) {--%>
+                    <%--alert("请只选中一个要导出的场景！");--%>
+                    <%--return false;--%>
+                <%--} else {--%>
+                    <%--var urlPath = "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;--%>
+                    <%--uiinit.win({--%>
+                        <%--w: 500,--%>
+                        <%--iconCls: 'icon-add',--%>
+                        <%--title: "配置导出",--%>
+                        <%--modal: true,--%>
+                        <%--url:urlPath--%>
+                    <%--});--%>
 
-                }
-            } else {
-                alert("请选中要导出的场景！");
-            }
+                <%--}--%>
+            <%--} else {--%>
+                <%--alert("请选中要导出的场景！");--%>
+            <%--}--%>
 
-        }
-    });
+        <%--}--%>
+    <%--});--%>
     toolbar.push({
         text:'导出配置&nbsp;&nbsp;&nbsp;',
         iconCls:'icon-excel-export',

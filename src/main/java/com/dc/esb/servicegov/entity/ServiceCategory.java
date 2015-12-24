@@ -18,8 +18,8 @@ public class ServiceCategory implements Serializable {
 
 	@Id
 	@Column(name = "CATEGORY_ID")
-	@GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid",strategy="uuid")
+//	@GeneratedValue(generator="system-uuid")
+//    @GenericGenerator(name="system-uuid",strategy="uuid")
 	private String categoryId;
 	
 	@Column(name = "CATEGORY_NAME")
