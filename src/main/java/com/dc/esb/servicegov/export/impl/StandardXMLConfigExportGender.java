@@ -109,18 +109,7 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
         for(String headId : headIds){
             Element headElement = targetElement.addElement(headId.toUpperCase());//添加服务报文头标签 例：<SYS_HEAD> <APP_HEAD>
             SDA reServiceHeadSDA = sdaService.getByStructName(headId, targetName);
-            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
-            SDA reOperationSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), targetName);
-            List<SDA> operationHeadSDAs = sdaService.getOperationHeadSDAs(operation.getServiceId(), operation.getOperationId(), headId, reOperationSDA.getId());//场景sda中约束条件为相应报文头的元素
-//            sdas.addAll(operationHeadSDAs);
-            addListContent(sdas, operationHeadSDAs);
-            if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
-                InterfaceHeadRelate relate =interfaceHeadRelateService.findUniqueBy("interfaceId", interfaceId);
-                if(null != relate){
-                    List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadSDAs(relate.getHeadId(), targetName, headId );
-                    addListContent(sdas, interfaceheadSDAs);
-                }
-            }
+            List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//徽商业务:显示全部syshead，apphead
             fillPackageParserElement(headElement, sdas);
         }
     }
@@ -148,17 +137,17 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
     public void fillPackageParserElement(Element parentElement, List<SDA> children){
         for(SDA child : children){
             if("array".equalsIgnoreCase(child.getType()) || "struct".equalsIgnoreCase(child.getType())){//处理有子节点的情况，CRCB：添加array节点
-                Element childElement = parentElement.addElement(child.getStructName());
-                Element sdoElement = childElement.addElement("sdo");
-                addAttribute(sdoElement, "metadataid", child.getMetadataId());
-                addAttribute(sdoElement, "type", child.getType());
+                Element arrayElement = parentElement.addElement("array");
+                Element childElement = arrayElement.addElement(child.getStructName());
+                addAttribute(childElement, "metadataid", child.getMetadataId());
+                addAttribute(childElement, "type", child.getType());
                 if("struct".equalsIgnoreCase(child.getType().toLowerCase())){
-                    addAttribute(sdoElement, "is_struct", "true");
+                    addAttribute(childElement, "is_struct", "true");
                 }else{
-                    addAttribute(sdoElement, "is_struct", "false");
+                    addAttribute(childElement, "is_struct", "false");
                 }
                 List<SDA> subChildren = sdaService.getChildren(child);
-                fillPackageParserElement(sdoElement, subChildren);
+                fillPackageParserElement(childElement, subChildren);
             }else{
                 Element childElement = parentElement.addElement(child.getStructName());
                 addAttribute(childElement, "metadataid", child.getMetadataId());
