@@ -104,6 +104,10 @@ var delIds = [];
 			if (!$("#sdaForm").form('validate')) {
                 return false;
             }
+			if(newIds.length == 0 && delIds.length == 0){
+				alert("没有修改数据!");
+				return false;
+			}
 			var t = $('#tg');
 			if (editingId != undefined){
 				var editNodes = [];
@@ -144,6 +148,7 @@ var delIds = [];
 			         success: function(data){
 			        	 if(data){
 							 result = true;
+							 newIds = [];
 			        	 }
 			            }
 				 });
@@ -159,6 +164,7 @@ var delIds = [];
 			         success: function(data){
 			        	 if(data){
 			        	 	result = true;
+							 delIds = [];
 						 }
 			            }
 				 });
