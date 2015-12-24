@@ -236,6 +236,7 @@
 				}
 
 			}
+			$('#tg').treegrid("select", row.id);
 		}
 
 	},{
@@ -318,6 +319,7 @@
 				}
 
 			}
+			$('#tg').treegrid("select", row.id);
 		}
 
 	},{

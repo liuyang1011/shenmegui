@@ -3,10 +3,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <form class="formui">
     <table border="0" cellspacing="0" cellpadding="0">
-
+        <tr>
+            <th>分类编码</th>
+            <td><input class="easyui-textbox" required="true" type="text" id="categoryId"></td>
+        </tr>
         <tr>
             <th>服务分类名</th>
-            <td><input class="easyui-textbox" type="text" id="categoryName"></td>
+            <td><input class="easyui-textbox" required="true"  type="text" id="categoryName"></td>
         </tr>
         <tr>
             <th>描述</th>
@@ -33,16 +36,22 @@
     $(function () {
         var node;
         var saveServiceCategory = function saveServiceCategory() {
+            if (!$(".formui").form('validate')) {
+                alert("请完善数据!");
+                return false;
+            }
             var serviceCategory = {};
             var type = node.type;
             if (type == "root") {
                 //新增服务大类
+                serviceCategory.categoryId = $('#categoryId').val();
                 serviceCategory.categoryName = $('#categoryName').val();
                 serviceCategory.desc = $('#discription').val();
                 serviceCategory.remark = $('#remark').val();
             } else {
                 //新增服务小类
                 var parentId = node.serviceCategory.categoryId;
+                serviceCategory.categoryId = $('#categoryId').val();
                 serviceCategory.categoryName = $('#categoryName').val();
                 serviceCategory.desc = $('#discription').val();
                 serviceCategory.parentId = parentId;
