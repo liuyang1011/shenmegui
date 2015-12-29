@@ -47,6 +47,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
         commonStyle =  CellStyleSupport.leftStyle(workbook);
         //填充修订记录页
         HSSFSheet recordSheet = workbook.getSheet(RecordSheetName);
+        fillRecordSheet(recordSheet);
         //填充英文单词页
         HSSFSheet englishWordSheet = workbook.getSheet(EnglishWordSheetName);
         fillEnglishWordSheet(englishWordSheet);
@@ -63,6 +64,10 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
         HSSFSheet outdateSheet = workbook.getSheet(OutdateSheetName);
         fillOutdateSheet(outdateSheet);
         return workbook;
+    }
+    /**填充修订记录页**/
+    public boolean fillRecordSheet(HSSFSheet sheet){
+        return true;
     }
     /**填充英文单词页**/
     public boolean fillEnglishWordSheet(HSSFSheet sheet){

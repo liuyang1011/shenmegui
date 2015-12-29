@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.entity.Version;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
+import com.dc.esb.servicegov.service.impl.CategoryWordServiceImpl;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
@@ -60,6 +61,8 @@ public class MetadataXlsxParserImpl implements IResourceParser {
     private MetadataServiceImpl metadataService;
     @Autowired
     private VersionServiceImpl versionService;
+    @Autowired
+    private CategoryWordServiceImpl categoryWordService;
     @Override
     public void parse(Workbook workbook) {
         Sheet sheet = workbook.getSheet(SHEET_NAME);
@@ -103,12 +106,21 @@ public class MetadataXlsxParserImpl implements IResourceParser {
 
     private Metadata parseRow(Row row, int rowNum) {
         try{
+            String categorywordAb = getValueFromCell(row, CATEGORY_WORD_ID_COLUMN);
+            if(StringUtils.isEmpty(categorywordAb)){
+                categorywordAb = null;
+            }else{
+                if(categoryWordService.uniqueValid(categorywordAb)){
+                    logInfoService.saveLog("第"+(rowNum+1)+"行类别词[" + categorywordAb + "]不存在！", "表4元数据");
+                    return null;
+                }
+            }
             Metadata metadata =  new Metadata();
             metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
             metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
             metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
             metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
-            metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
+            metadata.setDataCategory(categorywordAb);
             metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
             metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
             String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);
@@ -134,7 +146,6 @@ public class MetadataXlsxParserImpl implements IResourceParser {
         }
         return null;
     }
-
     public static String getTypeFromFormula(String formula) {
        /* String type = "String";
         if (null != formula) {
