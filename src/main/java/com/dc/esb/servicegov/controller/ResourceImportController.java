@@ -77,9 +77,9 @@ public class ResourceImportController {
                     try {
                         englishWordXlsxParserImpl.parse(workbook);
                         categoryWordParserImpl.parse(workbook);
+                        metadataOutdatedParserImpl.parse(workbook);
                         metadataXlsxParserImpl.parse(workbook);
                         metadataArrayParserImpl.parse(workbook);
-                        metadataOutdatedParserImpl.parse(workbook);
                     }catch (Exception e){
                         log.error(e, e);
                         msg =  "数据转换过程中出现错误！";

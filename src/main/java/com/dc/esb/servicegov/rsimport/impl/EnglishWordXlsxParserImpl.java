@@ -1,5 +1,6 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -44,13 +45,18 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 		for (int rowNum = START_ROW_NUM; rowNum <= sheet.getLastRowNum(); rowNum++) {
 			Row row = sheet.getRow(rowNum);
 			EnglishWord englishWord =parseRow(row);
-			englishWordService.save(englishWord);
+			if(null != englishWord){
+				englishWordService.save(englishWord);
+			}
 		}
 		
 	}
 
 	private EnglishWord parseRow(Row row) {
 		EnglishWord englishWord = new EnglishWord();
+		if(StringUtils.isEmpty(ExcelUtils.getValue(row.getCell(ENGLISH_WORD_COLUMN)))){//如果第一列为空，返回null
+			return null;
+		}
 		englishWord.setChineseWord(ExcelUtils.getValue(row.getCell(CHINESE_WORD_COLUMN)));
 		englishWord.setEnglishWord(ExcelUtils.getValue(row.getCell(ENGLISH_WORD_COLUMN)));
 		englishWord.setWordAb(ExcelUtils.getValue(row.getCell(WORDA_COLUMN)));

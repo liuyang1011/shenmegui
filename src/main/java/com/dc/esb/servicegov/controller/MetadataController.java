@@ -6,6 +6,7 @@ import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.logging.Log;
@@ -36,6 +37,8 @@ public class MetadataController {
     private static final Log log = LogFactory.getLog(MetadataController.class);
     @Autowired
     private MetadataServiceImpl metadataService;
+    @Autowired
+    private SDAServiceImpl sdaService;
 
     @Autowired
     private MetadataConfigGenerator metadataConfigGenerator;
@@ -225,7 +228,7 @@ public class MetadataController {
     @RequestMapping(method = RequestMethod.POST, value = "/modify/{oldMetadataId}", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean modify(Metadata metadata,@PathVariable String oldMetadataId) {
+    boolean modify(Metadata metadata,@PathVariable String oldMetadataId, boolean updateSDAFlag) {
         OperationLog operationLog = systemLogService.record("元数据","修改","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
 
         //TZB要求元数据能修改
@@ -241,6 +244,9 @@ public class MetadataController {
         metadata.setOptUser(userName);
         metadata.setOptDate(DateUtils.format(new Date()));
         metadataService.modifyMetadata(metadata);
+        if(updateSDAFlag){
+            sdaService.updateMetadataRelate(metadata);
+        }
 
         systemLogService.updateResult(operationLog);
         return true;

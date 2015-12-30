@@ -116,11 +116,11 @@ public class MetadataXlsxParserImpl implements IResourceParser {
                 }
             }
             Metadata metadata =  new Metadata();
+            metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
             metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
             metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
             metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
-            metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
-            metadata.setDataCategory(categorywordAb);
+            metadata.setCategoryWordId(categorywordAb);
             metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
             metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
             String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);

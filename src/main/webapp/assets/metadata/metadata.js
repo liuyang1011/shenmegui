@@ -29,8 +29,29 @@ function modify(formId,oldMetadataId){
 	if(!$("#"+formId).form('validate')){
 		return false;
 	}
+	var result = false;
+	var checkedItems = $('#metadataList').datagrid('getChecked');
+	$.ajax({
+		type: "get",
+		async: false,
+		url: "/operation/judgeByMetadataId/" + checkedItems[0].metadataId,
+		dataType: "json",
+		success: function (data) {
+			if (data) {//如果有关联的场景
+				if(confirm("该元数据已经关联了服务场景，是否同步更新?")){
+					result = true;
+				}
+				//$.messager.defaults = {ok:"是", cancel:"否", async:"false"};
+				//$.messager.confirm('关联','该元数据已经关联了服务场景，是否同步更新 ',function(r){
+				//	result = r;
+				//});
+			}
+		}
+	});
+
 	var params = $("#"+formId).serialize();
 	params = decodeURIComponent(params, true);
+	params += "&updateSDAFlag="+result;
 	$.ajax({
 		type: "post",
 		async: false,
@@ -40,6 +61,7 @@ function modify(formId,oldMetadataId){
 		success: function(data){
 			if(data){
 				//关闭窗口
+				alert("保存成功！");
 				$("#w").window("close");
 				//刷新查询列表
 				$('#metadataList').datagrid('reload');
@@ -57,7 +79,25 @@ function modify(formId,oldMetadataId){
 		}
 	});
 }
-
+function judegeOperation(){
+	var result = false;
+	var checkedItems = $('#metadataList').datagrid('getChecked');
+	$.ajax({
+		type: "get",
+		async: false,
+		url: "/operation/judgeByMetadataId/" + checkedItems[0].metadataId,
+		dataType: "json",
+		success: function (data) {
+			if (data) {//如果有关联的场景
+				$.messager.defaults = {ok:"是", cancel:"否"};
+				$.messager.confirm('Confirm','该元数据已经关联了服务场景，是否同步更新 ',function(r){
+					result = r;
+				});
+			}
+		}
+	});
+	return result;
+}
 function save(formId){
 	if(!$("#"+formId).form('validate')){
 		return false;

@@ -809,4 +809,13 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         }
         return result;
     }
+
+    /**
+     * 修改元数据后选择更新相关的SDA
+     */
+    public boolean updateMetadataRelate(Metadata metadata){
+        String hql = " update SDA set structName = ?, structAlias = ? , type = ? where metadataId = ?";
+        boolean result = sdaDAO.exeHql(hql, metadata.getMetadataId(), metadata.getChineseName(), metadata.getFormula(), metadata.getMetadataId());
+        return result;
+    }
 }

@@ -103,7 +103,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
-                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                String values[] = {metadata.getDataCategory(), "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
                 "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
@@ -118,7 +118,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
-                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                String values[] = {metadata.getDataCategory(), "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
                         "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
@@ -133,7 +133,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
-                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                String values[] = {metadata.getDataCategory(), "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
                         "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
