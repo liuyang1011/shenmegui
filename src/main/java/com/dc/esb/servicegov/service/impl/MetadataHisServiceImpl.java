@@ -391,7 +391,16 @@ public class MetadataHisServiceImpl extends AbstractBaseService<MetadataHis,Stri
         }
     }
 
-
+    public void addMetadataHis(MetadataHis metadataHis){
+        List<MetadataHis> list = metadataHisDAOImpl.findBy("metadataId", metadataHis.getMetadataId());
+        if(list.size() > 0){
+            for(MetadataHis metadataHisExsit : list){
+                String hql = " delete from MetadataHis where autoId = ?";
+                metadataHisDAOImpl.exeHql(hql, metadataHisExsit.getAutoId());
+            }
+        }
+        metadataHisDAOImpl.save(metadataHis);
+    }
     @Override
     public HibernateDAO<MetadataHis, String> getDAO() {
         return metadataHisDAOImpl;

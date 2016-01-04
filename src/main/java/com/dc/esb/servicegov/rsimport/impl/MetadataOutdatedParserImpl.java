@@ -9,6 +9,7 @@ import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +21,7 @@ import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -77,15 +79,15 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
             if(null == metadata) continue;
             String userName = (String) SecurityUtils.getSubject().getPrincipal();
             metadata.setOptUser(userName);
+            metadata.setOptDate(DateUtils.format(new Date() ));
             try {
-                List<MetadataHis> list = metadataHisService.findBy("metadataId", metadata.getMetadataId());
-                if(list.size() > 0){
-                    for(MetadataHis metadataHis : list){
-                        metadataHisService.delete(metadataHis);
-                    }
+                Metadata metadataExsit = metadataService.getById(metadata.getMetadataId());
+                if(null == metadataExsit){
+                    metadataService.save(metadata);
                 }
+
                 MetadataHis metadataHis = new MetadataHis(metadata);
-                metadataHisService.save(metadataHis);
+                metadataHisService.addMetadataHis(metadataHis);
             } catch(Exception e ){
                 log.error("元数据[" + metadata.getMetadataId() + "]导入出错");
                 logInfoService.saveLog("第" + (rowNum+1) + "行导入[" + metadata.getMetadataId() + "]失败！"+e.getMessage(), "表7过时元数据");

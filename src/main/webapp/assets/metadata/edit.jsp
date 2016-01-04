@@ -103,11 +103,15 @@
                         value="${entity.status }"
                         class="easyui-combobox"
                         data-options="valueField: 'value',textField: 'label',
-						data: [{label: '正常',value: '正常'},
+						data: [{label: '正式',value: '正式'},
 						{label: '过时',value: '过时'}
 							]"
                         />
             </td>
+        </tr>
+        <tr>
+            <th>备注</th>
+            <td><input class="easyui-textbox" type="text" name="remark" value="${entity.remark }"></td>
         </tr>
         <tr>
             <td>&nbsp;</td>

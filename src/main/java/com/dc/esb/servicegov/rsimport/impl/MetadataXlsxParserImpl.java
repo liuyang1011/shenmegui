@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
+import com.dc.esb.servicegov.controller.MetadataController;
+import com.dc.esb.servicegov.controller.ResourceImportController;
 import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.entity.Version;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
@@ -9,6 +11,7 @@ import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.BatchUpdateException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class MetadataXlsxParserImpl implements IResourceParser {
@@ -81,22 +87,19 @@ public class MetadataXlsxParserImpl implements IResourceParser {
             Row row = sheet.getRow(rowNum);
             Metadata metadata = parseRow(row, rowNum);
             if(null == metadata) continue;
-            String userName = (String) SecurityUtils.getSubject().getPrincipal();
-            metadata.setOptUser(userName);
-            try {
-                metadataService.addMetadata(metadata);
-                versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
-            } catch (NonUniqueObjectException e) {
-                log.error("元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", e);
-                logInfoService.saveLog("第" + (rowNum+1) + "行导入元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", "表4元数据");
+            if(ResourceImportController.metadataIdList.contains(metadata.getMetadataId())){//如果同一页中有重复元素
                 Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
                 metadataService.delete(metadataToDel);
+                logInfoService.saveLog("第" + (rowNum+1) + "行导入元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", "表4元数据");
+            }else{
+                ResourceImportController.metadataIdList.add(metadata.getMetadataId());
+            }
+            try {
+                String userName = (String) SecurityUtils.getSubject().getPrincipal();
+                metadata.setOptUser(userName);
+                metadata.setOptDate(DateUtils.format(new Date()));
                 metadataService.save(metadata);
-                if(StringUtils.isEmpty(metadataToDel.getVersionId())){
-                    versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
-                }else{
-                    versionService.editVersion(metadata.getVersionId());//编辑版本
-                }
+//                versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
             } catch (Exception e) {
                 log.error("导入元数据[" + metadata.getMetadataId() + "]失败", e);
                 logInfoService.saveLog("第"+(rowNum+1)+"行导入[" + metadata.getMetadataId() + "]失败！"+e.getMessage(), "表4元数据");

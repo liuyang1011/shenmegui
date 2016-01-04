@@ -8,6 +8,7 @@ import com.dc.esb.servicegov.dao.impl.CategoryWordDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.entity.MetadataHis;
 import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -37,7 +38,8 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     private OperationServiceImpl operationServiceImpl;
     @Autowired
     private VersionServiceImpl versionService;
-
+    @Autowired
+    private MetadataHisServiceImpl metadataHisService;
     public List<Metadata> getAllMetadata() {
         String hql = " from " + Metadata.class.getName() + " order by METADATA_ID asc";
     	List<Metadata> list = metadataDAOImpl.find(hql);
@@ -182,6 +184,10 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     public boolean modifyMetadata(Metadata metadata) {
         metadataDAOImpl.save(metadata);
         versionService.editVersion(metadata.getVersionId());
+        if(Constants.Metadata.STATUS_OUTDATED.equals(metadata.getStatus())){//过时
+            MetadataHis metadataHis = new MetadataHis(metadata);
+            metadataHisService.addMetadataHis(metadataHis);
+        }
         return true;
     }
 
@@ -616,7 +622,10 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     }
     
     public boolean uniqueValid(String metadataId){
-    	List<Metadata> list = this.getByMetadataId(metadataId);
+        Map<String, String > params = new HashMap<String, String>();
+        params.put("metadataId", metadataId);
+        params.put("status", Constants.Metadata.STATUS_FORMAL);
+    	List<Metadata> list = metadataDAOImpl.findBy(params);
     	if(list != null && list.size() > 0){
     		return false;
     	}
@@ -624,7 +633,10 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     }
 
     public boolean uniqueChineseNameValid(String chineseName){
-        List<Metadata> list = this.findBy("chineseName", chineseName);
+        Map<String, String > params = new HashMap<String, String>();
+        params.put("chineseName", chineseName);
+        params.put("status", Constants.Metadata.STATUS_FORMAL);
+        List<Metadata> list = metadataDAOImpl.findBy(params);
         if(list != null && list.size() > 0){
             return false;
         }

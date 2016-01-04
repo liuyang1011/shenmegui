@@ -304,4 +304,12 @@ public class MetadataHis implements Serializable {
         }
         return formula;
     }
+
+    public String getAutoId() {
+        return autoId;
+    }
+
+    public void setAutoId(String autoId) {
+        this.autoId = autoId;
+    }
 }

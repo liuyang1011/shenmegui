@@ -3,8 +3,10 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.entity.Metadata;
+import com.dc.esb.servicegov.entity.MetadataHis;
 import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
+import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
@@ -39,6 +41,9 @@ public class MetadataController {
     private MetadataServiceImpl metadataService;
     @Autowired
     private SDAServiceImpl sdaService;
+
+    @Autowired
+    private MetadataHisServiceImpl metadataHisService;
 
     @Autowired
     private MetadataConfigGenerator metadataConfigGenerator;
@@ -218,6 +223,12 @@ public class MetadataController {
     boolean add(Metadata metadata) {
         OperationLog operationLog = systemLogService.record("元数据","新增","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
 
+        Metadata metadataExsit = metadataService.findUniqueBy("metadataId", metadata.getMetadataId());//查询过时数据，将过时元素移至历史表，删除过时元素
+        if(null != metadataExsit){
+            MetadataHis metadataHis = new MetadataHis(metadataExsit);
+            metadataHisService.addMetadataHis(metadataHis);
+            metadataService.delete(metadataExsit);
+        }
         metadataService.addMetadata(metadata);
 
         systemLogService.updateResult(operationLog);
@@ -459,6 +470,13 @@ public class MetadataController {
         systemLogService.updateResult(operationLog);
         return true;
     }
+
+    public ModelAndView releasePage(){
+        ModelAndView mv = new ModelAndView("metadata/releasePage");
+
+        return mv;
+    }
+
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
