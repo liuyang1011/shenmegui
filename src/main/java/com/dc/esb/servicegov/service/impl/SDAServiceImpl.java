@@ -37,6 +37,9 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     private MetadataServiceImpl metadataService;
     @Autowired
     private VersionServiceImpl versionService;
+    @Autowired
+    private SDAAttrbuteServiceImpl sdaAttrbuteService;
+
     public List<SDA> genderSDAAuto(String serviceId, String operationId){
         List<SDA> result = new ArrayList<SDA>();
         SDA sdaRoot = new SDA();
@@ -147,6 +150,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         //TODO 台行  类型和长度合并显示
         for(SDA per : list){
             SDABean sdaBean = new SDABean(per);
+            sdaBean.setAttrFlag(judgeAttr(sdaBean.getId()));
             tempList.add(sdaBean);
         }
         Map<String, String> fields = new HashMap<String, String>();
@@ -162,6 +166,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         fields.put("append8", "serviceId");
         fields.put("append9", "operationId");
         fields.put("attributes", "seq");
+        fields.put("append10", "attrFlag");//属性标识，代表该sda是否有附加属性
 
         EasyUiTreeUtil eUtil = new EasyUiTreeUtil();
 
@@ -274,6 +279,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         private String constraint;
 
         private String xpath;
+        private boolean attrFlag;
 
         public SDABean(SDA sda){
             setId(sda.getId());
@@ -296,7 +302,6 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
             setArgType(sda.getArgType());
             setConstraint(sda.getConstraint());
             setXpath(sda.getXpath());
-
         }
 
         public String getId() {
@@ -457,6 +462,14 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
 
         public void setXpath(String xpath) {
             this.xpath = xpath;
+        }
+
+        public boolean isAttrFlag() {
+            return attrFlag;
+        }
+
+        public void setAttrFlag(boolean attrFlag) {
+            this.attrFlag = attrFlag;
         }
     }
 
@@ -817,5 +830,9 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         String hql = " update SDA set structName = ?, structAlias = ? , type = ? where metadataId = ?";
         boolean result = sdaDAO.exeHql(hql, metadata.getMetadataId(), metadata.getChineseName(), metadata.getFormula(), metadata.getMetadataId());
         return result;
+    }
+
+    public boolean judgeAttr(String sdaId){
+        return sdaAttrbuteService.judgeAttr(sdaId);
     }
 }

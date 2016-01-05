@@ -22,6 +22,7 @@
 
     <script type="text/javascript" src="/resources/js/ui.js"></script>
     <script type="text/javascript" src="/js/version/versionManager.js"></script>
+    <script type="text/javascript" src="/resources/js/datagrid-detailview.js"></script>
 </head>
 <body>
 <div id="mm" class="easyui-menu" style="width:120px;">
@@ -41,6 +42,9 @@
     <%--<shiro:hasPermission name="sda-update">--%>
         <%--<div onclick="editIt()" data-options="iconCls:'icon-edit'">移动</div>--%>
     <%--</shiro:hasPermission>--%>
+    <shiro:hasPermission name="sda-update">
+        <div onclick="appendAttribute()" data-options="iconCls:'icon-edit'">添加属性</div>
+    </shiro:hasPermission>
 </div>
 <fieldset>
     <legend>基础信息</legend>
@@ -115,6 +119,7 @@
                 约束条件
             </th>
             <th data-options="field:'append6',width:80,editor:'text'">备注</th>
+            <th data-options="field:'append10',width:30,formatter:attrFormat">属性</th>
         </tr>
         </thead>
     </table>
@@ -296,6 +301,14 @@
         return s;
 
     }
+    function attrFormat(value,row,index) {
+        if(value == "true") {
+            var s = '<img src="/resources/themes/icons/edit_add.png" onclick="showAttr()"/> ';
+            return s;
+        }else{
+            return '';
+        }
+    }
     //节点上移
     function moveUp() {
         var node = $('#tg').treegrid('getSelected');
@@ -448,6 +461,32 @@
         });
         $("#tg").treegrid("refresh", parent.parentId);
         $("#tg").treegrid("select", node.id);
+    }
+    //添加属性
+    function appendAttribute(){
+        var row = $('#tg').treegrid('getSelected');
+        var urlPath = "/jsp/service/sda/sdaAttributeAdd.jsp?sdaId=" + row.id;
+        $('#dlg').dialog({
+            title: '添加属性',
+            width: 770,
+            left: 100,
+            closed: false,
+            href: urlPath,
+            modal: true
+        });
+    }
+    //展示属性子表
+    function showAttr(){
+        var row = $('#tg').treegrid('getSelected');
+        var urlPath = "/jsp/service/sda/sdaAttributeList.jsp?sdaId=" + row.id;
+        $('#dlg').dialog({
+            title: row.text + '属性列表',
+            width: 770,
+            left: 100,
+            closed: false,
+            href: urlPath,
+            modal: true
+        });
     }
 </script>
 </body>

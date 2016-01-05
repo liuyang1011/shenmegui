@@ -1,10 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.CategoryWord;
-import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.MetadataHis;
-import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
 import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
@@ -470,13 +467,6 @@ public class MetadataController {
         systemLogService.updateResult(operationLog);
         return true;
     }
-
-    public ModelAndView releasePage(){
-        ModelAndView mv = new ModelAndView("metadata/releasePage");
-
-        return mv;
-    }
-
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";

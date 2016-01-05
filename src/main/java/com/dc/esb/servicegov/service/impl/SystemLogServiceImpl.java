@@ -118,11 +118,16 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
 
     /**
      * 获取数据字典修订记录
+     * 英文单词、类别词、元数据、数据字典导入记录
      * @return
      */
     public List<OperationLog> getDataDectionaryRecord(String startDate, String endDate){
         List<OperationLog> result = new ArrayList<OperationLog>();
         Map<String, Object> params = new HashMap<String, Object>();
+        endDate += " 23:59:59";
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+
         params.put("chineseName", "元数据");
         List<String> optType = new ArrayList<String>();
         optType.add("新增");
@@ -131,7 +136,8 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
         optType.add("批量删除");
         params.put("optType", optType);
         List<OperationLog> metadataRecordList = getByParams(params);
-        params.clear();
+        result.addAll(metadataRecordList);
+
         params.put("chineseName", "类别词");
         optType.clear();
         optType.add("添加");
@@ -141,8 +147,24 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
         optType.add("批量删除");
         params.put("optType", optType);
         List<OperationLog> categorywordRecordList = getByParams(params);
+        result.addAll(categorywordRecordList);
 
-        return null;
+        params.put("chineseName", "英文单词");
+        optType.clear();
+        optType.add("添加");
+        optType.add("修改");
+        optType.add("删除");
+        params.put("optType", optType);
+        List<OperationLog> englishwordRecordList = getByParams(params);
+        result.addAll(englishwordRecordList);
+
+        params.put("chineseName", "数据字典");
+        optType.clear();
+        optType.add("导入");
+        params.put("optType", optType);
+        List<OperationLog> importRecordList = getByParams(params);
+        result.addAll(importRecordList);
+        return result;
     }
 
     /**
@@ -150,9 +172,8 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
      * @return
      */
     public List<OperationLog> getByParams(Map<String, Object> params){
-        String hql = " from OperationLog where chineseName=:chineseName and optType in(:optType)";
+        String hql = " from OperationLog where chineseName=:chineseName and optType in(:optType) and optDate>:startDate and optDate<:endDate";
         List<OperationLog> result = operationLogDAO.find(hql, params);
-
         return result;
     }
 }

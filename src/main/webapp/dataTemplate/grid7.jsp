@@ -92,7 +92,7 @@
      style="width:500px;height:200px;padding:10px;">
 </div>
 <div id="opDialog" class="easyui-dialog"
-     style="width:400px;height:280px;padding:10px 20px" closed="true"
+     style="width:700px;height:280px;padding:10px 20px" closed="true"
      resizable="true"></div>
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
@@ -271,21 +271,22 @@
         }
     });
     </shiro:hasPermission>
-    toolbar.push({
-        text: '发布版本',
-        iconCls: 'icon-save',
-        handler: function () {
-            var urlPath = "/metadata/releasePage";
-            $('#opDialog').dialog({
-                title: '版本发布',
-                width: 500,
-                closed: false,
-                cache: false,
-                href: urlPath,
-                modal: true
-            });
-        }
-    });
+//    toolbar.push({
+//        text: '发布版本',
+//        iconCls: 'icon-save',
+//        handler: function () {
+//            var urlPath = "/metadataVersion/releasePage";
+//            $('#opDialog').dialog({
+//                title: '版本发布',
+//                width: 500,
+//                left:200,
+//                closed: false,
+//                cache: false,
+//                href: urlPath,
+//                modal: true
+//            });
+//        }
+//    });
 </script>
 
 

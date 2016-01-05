@@ -22,6 +22,7 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 	private static final String CHINESE_WORD = "词汇中文名称";
 	private static final String ENGLISH_WORD = "词汇英文名称";
 	private static final String WORDA = "词汇英文缩写";
+	private static final String REMARK = "备注";
 	private static final String OPT_DATE = "修订日期";
 	private static final String OPT_USER = "修订人";
 
@@ -30,6 +31,7 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 	private static int WORDA_COLUMN = 2;
 	private static int OPT_DATE_COLUMN = 3;
 	private static int OPT_USER_COLUMN = 4;
+	private static int REMARK_COLUMN = 5;
 	@Autowired
     private EnglishWordServiceImpl englishWordService;
 	@Override
@@ -62,6 +64,7 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 		englishWord.setWordAb(ExcelUtils.getValue(row.getCell(WORDA_COLUMN)));
 		englishWord.setOptDate(ExcelUtils.getValue(row.getCell(OPT_DATE_COLUMN)));
 		englishWord.setOptUser(ExcelUtils.getValue(row.getCell(OPT_USER_COLUMN)));
+		englishWord.setRemark(ExcelUtils.getValue(row.getCell(REMARK_COLUMN)));
 		return englishWord;
 	}
 
@@ -90,6 +93,9 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 				}
 				if(OPT_USER.equals(content)){
 					OPT_USER_COLUMN = i;
+				}
+				if(REMARK.equals(content)){
+					REMARK_COLUMN = i;
 				}
 			}
 		}
