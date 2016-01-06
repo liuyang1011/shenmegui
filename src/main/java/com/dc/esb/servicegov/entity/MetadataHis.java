@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "METADATA_HIS")
@@ -68,6 +69,35 @@ public class MetadataHis implements Serializable {
     @OneToOne(cascade={CascadeType.REFRESH}, optional=true)
     @JoinColumn(name="VERSION_HIS_ID", insertable = false, updatable = false)
     private VersionHis versionHis;
+
+    public MetadataHis(){}
+
+    public MetadataHis(Metadata metadata){
+        this.autoId = UUID.randomUUID().toString();
+        this.metadataId = metadata.getMetadataId();
+        this.metadataName = metadata.getMetadataName();
+        this.chineseName = metadata.getChineseName();
+        this.categoryWordId = metadata.getCategoryWordId();
+        this.remark = metadata.getRemark();
+        this.type = metadata.getType();
+        this.length = metadata.getLength();
+        this.scale = metadata.getScale();
+        this.enumId = metadata.getEnumId();
+        this.metadataAlias = metadata.getMetadataAlias();
+        this.bussDefine = metadata.getBussDefine();
+        this.bussRule = metadata.getBussRule();
+        this.dataSource = metadata.getDataSource();
+        this.templateId = metadata.getTemplateId();
+        this.status = metadata.getStatus();
+        this.optUser = metadata.getOptUser();
+        this.optDate = metadata.getOptDate();
+        this.auditUser = metadata.getAuditUser();
+        this.auditDate = metadata.getAuditDate();
+        this.processId = metadata.getProcessId();
+        this.dataFormula = metadata.getDataFormula();
+        this.buzzCategory = metadata.getBuzzCategory();
+        this.dataCategory = metadata.getDataCategory();
+    }
 
     public CategoryWord getCategoryWord() {
         return categoryWord;
@@ -273,5 +303,13 @@ public class MetadataHis implements Serializable {
             }
         }
         return formula;
+    }
+
+    public String getAutoId() {
+        return autoId;
+    }
+
+    public void setAutoId(String autoId) {
+        this.autoId = autoId;
     }
 }

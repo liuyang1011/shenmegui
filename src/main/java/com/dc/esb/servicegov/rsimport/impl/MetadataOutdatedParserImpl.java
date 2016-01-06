@@ -1,12 +1,15 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
 import com.dc.esb.servicegov.entity.Metadata;
+import com.dc.esb.servicegov.entity.MetadataHis;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
+import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
+import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +20,9 @@ import org.apache.shiro.SecurityUtils;
 import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class MetadataOutdatedParserImpl implements IResourceParser {
@@ -52,6 +58,8 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
     @Autowired
     private MetadataServiceImpl metadataService;
     @Autowired
+    private MetadataHisServiceImpl metadataHisService;
+    @Autowired
     private VersionServiceImpl versionService;
     @Override
     public void parse(Workbook workbook) {
@@ -71,20 +79,15 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
             if(null == metadata) continue;
             String userName = (String) SecurityUtils.getSubject().getPrincipal();
             metadata.setOptUser(userName);
+            metadata.setOptDate(DateUtils.format(new Date() ));
             try {
-                metadataService.addMetadata(metadata);
-                versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
-            } catch (NonUniqueObjectException e) {
-                log.error("元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", e);
-                logInfoService.saveLog("第" + (rowNum+1) + "行导入元数据[" + metadata.getMetadataId() + "]重复,执行覆盖！", "表7过时元数据");
-                Metadata metadataToDel = metadataService.getById(metadata.getMetadataId());
-                metadataService.delete(metadataToDel);
-                metadataService.save(metadata);
-                if(StringUtils.isEmpty(metadataToDel.getVersionId())){
-                    versionService.addVersion(Constants.Version.TARGET_TYPE_METADATA, metadata.getMetadataId(), Constants.Version.TYPE_ELSE);//创建版本
-                }else{
-                    versionService.editVersion(metadata.getVersionId());//编辑版本
+                Metadata metadataExsit = metadataService.getById(metadata.getMetadataId());
+                if(null == metadataExsit){
+                    metadataService.save(metadata);
                 }
+
+                MetadataHis metadataHis = new MetadataHis(metadata);
+                metadataHisService.addMetadataHis(metadataHis);
             } catch(Exception e ){
                 log.error("元数据[" + metadata.getMetadataId() + "]导入出错");
                 logInfoService.saveLog("第" + (rowNum+1) + "行导入[" + metadata.getMetadataId() + "]失败！"+e.getMessage(), "表7过时元数据");
@@ -95,11 +98,11 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
     private Metadata parseRow(Row row, int rowNum) {
         try{
             Metadata metadata =  new Metadata();
+            metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
             metadata.setMetadataId(getValueFromCell(row, METADATA_ID_COLUMN));
             metadata.setChineseName(getValueFromCell(row, CHINESE_NAME_COLUMN));
             metadata.setMetadataName(getValueFromCell(row, METADATA_NAME_COLUMN));
             metadata.setCategoryWordId(getValueFromCell(row, CATEGORY_WORD_ID_COLUMN));
-            metadata.setDataCategory(getValueFromCell(row, DATA_CATEGORY_COLUMN));
             metadata.setBuzzCategory(getValueFromCell(row, BUZZ_CATEGORY_COLUMN));
             metadata.setRemark(getValueFromCell(row, REMARK_COLUMN));
             String dataFormula = getValueFromCell(row, DATA_FORMULA_COLUMN);

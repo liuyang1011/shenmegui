@@ -2,6 +2,8 @@ package com.dc.esb.servicegov.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +46,8 @@ public class ResourceImportController {
     @Autowired
     private MetadataOutdatedParserImpl metadataOutdatedParserImpl;
 
+    public static List<String> metadataIdList = new ArrayList<String>();// 元数据缓存，用于处理重复元素
+
     @RequiresPermissions({"importMetadata-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/import")
     public ModelAndView importMetadata(HttpServletRequest request, HttpServletResponse response,
@@ -77,12 +81,14 @@ public class ResourceImportController {
                     try {
                         englishWordXlsxParserImpl.parse(workbook);
                         categoryWordParserImpl.parse(workbook);
+                        metadataOutdatedParserImpl.parse(workbook);
                         metadataXlsxParserImpl.parse(workbook);
                         metadataArrayParserImpl.parse(workbook);
-                        metadataOutdatedParserImpl.parse(workbook);
                     }catch (Exception e){
                         log.error(e, e);
                         msg =  "数据转换过程中出现错误！";
+                    }finally {
+                        metadataIdList.clear();
                     }
 
                 }

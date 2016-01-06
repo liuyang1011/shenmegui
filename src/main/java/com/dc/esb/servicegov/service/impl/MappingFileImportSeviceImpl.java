@@ -208,6 +208,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
     }
     public boolean importIndexExRecord(Workbook workbook, MappingImportIndexRowVO indexVO){
         if(indexRecordDataValidate(workbook, indexVO, true)){
+            importService(workbook, indexVO);//建立服务、场景
             if(!importExdServiceInvoke(indexVO)){//建立关系
                 return false;
             }
@@ -295,11 +296,13 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         com.dc.esb.servicegov.entity.Service service = null;
         String serviceId = indexVO.getServiceId();
         String interfaceId = indexVO.getInterfaceId();
-        String serviceDesc = null;
         Sheet mappingSheet = workbook.getSheet(interfaceId);
-        Row row = mappingSheet.getRow(SERVICE_DESC_ROW);//获取服务描述
-        if(null != row){
-            serviceDesc = getCell(row, SERVICE_DESC_COL);
+        String serviceDesc = null;
+        if(null != mappingSheet){
+            Row row = mappingSheet.getRow(SERVICE_DESC_ROW);//获取服务描述
+            if(null != row){
+                serviceDesc = getCell(row, SERVICE_DESC_COL);
+            }
         }
         //检查服务是否存在
         com.dc.esb.servicegov.entity.Service serviceDB = serviceDAO.getEntity(serviceId);
@@ -331,9 +334,11 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         String interfaceId = indexVO.getInterfaceId();
         Sheet mappingSheet = workbook.getSheet(interfaceId);
         String operationDesc = null;
-        Row row = mappingSheet.getRow(OPERATION_DESC_ROW);//获取服务操作描述所在行
-        if(null != row){
-            operationDesc = getCell(row, OPERATION_DESC_COL);//获取服务操作描述
+        if(null != mappingSheet){
+            Row row = mappingSheet.getRow(OPERATION_DESC_ROW);//获取服务操作描述所在行
+            if(null != row){
+                operationDesc = getCell(row, OPERATION_DESC_COL);//获取服务操作描述
+            }
         }
         Operation operationDB = operationDAO.getBySO(serviceId, operationId);
         if(null != operationDB){//已存在该服务

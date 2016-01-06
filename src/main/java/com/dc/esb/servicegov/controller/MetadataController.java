@@ -1,11 +1,11 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.CategoryWord;
-import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
+import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.logging.Log;
@@ -36,6 +36,11 @@ public class MetadataController {
     private static final Log log = LogFactory.getLog(MetadataController.class);
     @Autowired
     private MetadataServiceImpl metadataService;
+    @Autowired
+    private SDAServiceImpl sdaService;
+
+    @Autowired
+    private MetadataHisServiceImpl metadataHisService;
 
     @Autowired
     private MetadataConfigGenerator metadataConfigGenerator;
@@ -215,6 +220,12 @@ public class MetadataController {
     boolean add(Metadata metadata) {
         OperationLog operationLog = systemLogService.record("元数据","新增","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
 
+        Metadata metadataExsit = metadataService.findUniqueBy("metadataId", metadata.getMetadataId());//查询过时数据，将过时元素移至历史表，删除过时元素
+        if(null != metadataExsit){
+            MetadataHis metadataHis = new MetadataHis(metadataExsit);
+            metadataHisService.addMetadataHis(metadataHis);
+            metadataService.delete(metadataExsit);
+        }
         metadataService.addMetadata(metadata);
 
         systemLogService.updateResult(operationLog);
@@ -225,7 +236,7 @@ public class MetadataController {
     @RequestMapping(method = RequestMethod.POST, value = "/modify/{oldMetadataId}", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean modify(Metadata metadata,@PathVariable String oldMetadataId) {
+    boolean modify(Metadata metadata,@PathVariable String oldMetadataId, boolean updateSDAFlag) {
         OperationLog operationLog = systemLogService.record("元数据","修改","元数据名称：" + metadata.getChineseName() + "; 英文名称：" + metadata.getMetadataId());
 
         //TZB要求元数据能修改
@@ -241,6 +252,9 @@ public class MetadataController {
         metadata.setOptUser(userName);
         metadata.setOptDate(DateUtils.format(new Date()));
         metadataService.modifyMetadata(metadata);
+        if(updateSDAFlag){
+            sdaService.updateMetadataRelate(metadata);
+        }
 
         systemLogService.updateResult(operationLog);
         return true;

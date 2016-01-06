@@ -1177,7 +1177,13 @@ $(function () {
             url: "/jsp/task/completeTask.jsp"
         });
     });
-
+    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/search.jsp" style="width:100%;height:98%;"></iframe>';
+    var title = "服务检索"
+    $('#mainContentTabs').tabs('add', {
+        title: title,
+        content: content,
+        closable: true
+    });
     ////TODO TZB不用我的任务
     //var content = '<iframe scrolling="yes" frameborder="0"  src="/jsp/task/mytask.jsp" style="width:100%;height:98%;"></iframe>';
     //var title = "我的任务"
@@ -1186,13 +1192,7 @@ $(function () {
     //    content: content
     //});
 
-    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/search.jsp" style="width:100%;height:98%;"></iframe>';
-    var title = "服务检索"
-    $('#mainContentTabs').tabs('add', {
-        title: title,
-        content: content,
-        closable: true
-    });
+
 
 
 });

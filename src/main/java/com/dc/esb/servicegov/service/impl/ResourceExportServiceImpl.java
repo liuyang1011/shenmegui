@@ -47,6 +47,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
         commonStyle =  CellStyleSupport.leftStyle(workbook);
         //填充修订记录页
         HSSFSheet recordSheet = workbook.getSheet(RecordSheetName);
+        fillRecordSheet(recordSheet);
         //填充英文单词页
         HSSFSheet englishWordSheet = workbook.getSheet(EnglishWordSheetName);
         fillEnglishWordSheet(englishWordSheet);
@@ -63,6 +64,10 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
         HSSFSheet outdateSheet = workbook.getSheet(OutdateSheetName);
         fillOutdateSheet(outdateSheet);
         return workbook;
+    }
+    /**填充修订记录页**/
+    public boolean fillRecordSheet(HSSFSheet sheet){
+        return true;
     }
     /**填充英文单词页**/
     public boolean fillEnglishWordSheet(HSSFSheet sheet){
@@ -98,7 +103,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
-                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                String values[] = {metadata.getDataCategory(), "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
                 "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
@@ -113,7 +118,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
-                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                String values[] = {metadata.getDataCategory(), "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
                         "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }
@@ -128,7 +133,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             Metadata metadata = list.get(i);
             if(metadata != null){
                 HSSFRow row = sheet.createRow(i + 2);
-                String values[] = {"", "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
+                String values[] = {metadata.getDataCategory(), "", metadata.getBuzzCategory(), metadata.getMetadataId(), metadata.getChineseName(), metadata.getMetadataName(), metadata.getCategoryWordId(),
                         "", metadata.getFormula(), "", "", "", "", metadata.getOptDate(), metadata.getOptUser(), metadata.getRemark()};
                 setRowValue(row, commonStyle, values);
             }

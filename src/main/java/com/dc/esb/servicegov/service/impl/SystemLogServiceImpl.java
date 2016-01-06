@@ -19,10 +19,7 @@ import org.jboss.seam.annotations.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wang on 2015/8/18.
@@ -117,5 +114,66 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
     public void updateResult(OperationLog operationLog){
         operationLog.setOptResult("成功");
         operationLogDAO.save(operationLog);
+    }
+
+    /**
+     * 获取数据字典修订记录
+     * 英文单词、类别词、元数据、数据字典导入记录
+     * @return
+     */
+    public List<OperationLog> getDataDectionaryRecord(String startDate, String endDate){
+        List<OperationLog> result = new ArrayList<OperationLog>();
+        Map<String, Object> params = new HashMap<String, Object>();
+        endDate += " 23:59:59";
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+
+        params.put("chineseName", "元数据");
+        List<String> optType = new ArrayList<String>();
+        optType.add("新增");
+        optType.add("修改");
+        optType.add("删除");
+        optType.add("批量删除");
+        params.put("optType", optType);
+        List<OperationLog> metadataRecordList = getByParams(params);
+        result.addAll(metadataRecordList);
+
+        params.put("chineseName", "类别词");
+        optType.clear();
+        optType.add("添加");
+        optType.add("修改");
+        optType.add("删除");
+        optType.add("批量保存");
+        optType.add("批量删除");
+        params.put("optType", optType);
+        List<OperationLog> categorywordRecordList = getByParams(params);
+        result.addAll(categorywordRecordList);
+
+        params.put("chineseName", "英文单词");
+        optType.clear();
+        optType.add("添加");
+        optType.add("修改");
+        optType.add("删除");
+        params.put("optType", optType);
+        List<OperationLog> englishwordRecordList = getByParams(params);
+        result.addAll(englishwordRecordList);
+
+        params.put("chineseName", "数据字典");
+        optType.clear();
+        optType.add("导入");
+        params.put("optType", optType);
+        List<OperationLog> importRecordList = getByParams(params);
+        result.addAll(importRecordList);
+        return result;
+    }
+
+    /**
+     * 获取元数据增删改查记录
+     * @return
+     */
+    public List<OperationLog> getByParams(Map<String, Object> params){
+        String hql = " from OperationLog where chineseName=:chineseName and optType in(:optType) and optDate>:startDate and optDate<:endDate";
+        List<OperationLog> result = operationLogDAO.find(hql, params);
+        return result;
     }
 }

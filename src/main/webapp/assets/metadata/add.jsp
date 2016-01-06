@@ -95,12 +95,16 @@
                 <input
                         name = "status"
                         class="easyui-combobox"
-                        data-options="valueField: 'value',textField: 'label',
-						data: [{label: '正常',value: '正常'},
-						{label: '过时',value: '过时'}
+                        value="正式"
+                        data-options="valueField: 'value',textField: 'label',editable:false,
+						data: [{label: '正式',value: '正式'}
 							]"
                         />
             </td>
+        </tr>
+        <tr>
+            <th>备注</th>
+            <td><input class="easyui-textbox" type="remark" name="length"></td>
         </tr>
         <tr style="display:none;">
             <th>任务id</th>
