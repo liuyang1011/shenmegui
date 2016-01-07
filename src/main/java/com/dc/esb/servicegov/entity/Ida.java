@@ -76,6 +76,7 @@ public class Ida extends IExportableNode {
     @JoinColumn(name = "HEAD_ID",referencedColumnName = "HEAD_ID",insertable = false,updatable = false)
     private InterfaceHead heads;
 
+    private String attrFlag;//判断是否有附加属性，不存储到数据库
     public String getId() {
         return id;
     }
@@ -282,5 +283,13 @@ public class Ida extends IExportableNode {
 
     public void set_parentId(String _parentId) {
         this._parentId = _parentId;
+    }
+
+    public String getAttrFlag() {
+        return attrFlag;
+    }
+
+    public void setAttrFlag(String attrFlag) {
+        this.attrFlag = attrFlag;
     }
 }

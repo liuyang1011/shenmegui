@@ -1,10 +1,11 @@
 package com.dc.esb.servicegov.service.impl;
 
+import com.dc.esb.servicegov.dao.impl.IdaAttrbuteDAOImpl;
 import com.dc.esb.servicegov.dao.impl.SDAAttrbuteDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
-import com.dc.esb.servicegov.entity.ErrorCode;
+import com.dc.esb.servicegov.entity.Ida;
+import com.dc.esb.servicegov.entity.IdaAttribute;
 import com.dc.esb.servicegov.entity.SDAAttribute;
-import com.dc.esb.servicegov.service.ErrorCodeService;
 import com.dc.esb.servicegov.service.SDAAttrbuteService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +16,21 @@ import java.util.List;
 
 @Service
 @Transactional
-public class SDAAttrbuteServiceImpl extends AbstractBaseService<SDAAttribute,String> implements SDAAttrbuteService {
+public class IdaAttrbuteServiceImpl extends AbstractBaseService<IdaAttribute,String> implements SDAAttrbuteService {
     @Autowired
-    private SDAAttrbuteDAOImpl sdaAttrbuteDAO;
+    private IdaAttrbuteDAOImpl idaAttrbuteDAO;
     @Override
-    public HibernateDAO<SDAAttribute, String> getDAO() {
-        return sdaAttrbuteDAO;
+    public HibernateDAO<IdaAttribute, String> getDAO() {
+        return idaAttrbuteDAO;
     }
 
     /**
-     * 判断sda是否有附加属性
-     * @param sdaId
+     * 判断ida是否有附加属性
+     * @param idaId
      * @return
      */
-    public boolean judgeAttr(String sdaId){
-        List<SDAAttribute> list = sdaAttrbuteDAO.findBy("sdaId", sdaId);
+    public boolean judgeAttr(String idaId){
+        List<IdaAttribute> list = idaAttrbuteDAO.findBy("idaId", idaId);
         if(null != list && 0 < list.size()){
             return true;
         }
