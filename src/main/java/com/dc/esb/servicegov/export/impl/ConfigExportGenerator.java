@@ -29,7 +29,7 @@ import java.util.List;
  * Created by Administrator on 2015/12/17.
  */
 @Component
-public class ConfigExportGenerator{
+public class ConfigExportGenerator {
     private Log log = LogFactory.getLog(ConfigExportGenerator.class);
     @Autowired
     OperationServiceImpl operationService;
@@ -119,7 +119,8 @@ public class ConfigExportGenerator{
         for(String headId : headIds){
             Element headElement = targetElement.addElement(headId.toUpperCase());//添加服务报文头标签 例：<SYS_HEAD> <APP_HEAD>
             SDA reServiceHeadSDA = sdaService.getByStructName(headId, targetName);
-            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
+//            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
+            List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//徽商服务头全量;
             SDA reOperationSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), targetName);
             List<SDA> operationHeadSDAs = sdaService.getOperationHeadSDAs(operation.getServiceId(), operation.getOperationId(), headId, reOperationSDA.getId());//场景sda中约束条件为相应报文头的元素
 //            sdas.addAll(operationHeadSDAs);

@@ -662,15 +662,15 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 serviceInvokeDAO.save(serviceInvoke);
             }
         }else{
-            String hql2 = " from ServiceInvoke where operationId=? and serviceId=? and systemId=? and type=? and isStandard = ? and interfaceId is null and protocolId is null";
-            serviceInvoke = serviceInvokeDAO.findUnique(hql2, indexVO.getOperationId(), indexVO.getServiceId(), systemId, indexVO.getType(), Constants.INVOKE_TYPE_STANDARD_U); //从自动生成的映射中查询
+            String hql2 = " from ServiceInvoke where operationId=? and serviceId=? and systemId=? and type=? and isStandard = ? and interfaceId is null and ecode=? and protocolId is null";
+            serviceInvoke = serviceInvokeDAO.findUnique(hql2, indexVO.getOperationId(), indexVO.getServiceId(), systemId, indexVO.getType(), Constants.INVOKE_TYPE_STANDARD_U, indexVO.getInterfaceName()); //从自动生成的映射中查询
             if(null != serviceInvoke){
                 serviceInvoke.setInterfaceId(indexVO.getInterfaceId());
                 serviceInvoke.setIsStandard(indexVO.getIsStandard());
                 serviceInvoke.setRemark(indexVO.getRemark());
                 serviceInvoke.setProtocolId(protocolId);
             }else{
-                serviceInvoke = new ServiceInvoke(systemId, indexVO.getIsStandard(), indexVO.getServiceId(), indexVO.getOperationId(), indexVO.getInterfaceId(), indexVO.getType(), null, indexVO.getRemark(), protocolId);
+                serviceInvoke = new ServiceInvoke(systemId, indexVO.getIsStandard(), indexVO.getServiceId(), indexVO.getOperationId(), indexVO.getInterfaceId(), indexVO.getInterfaceName(), indexVO.getType(), null, indexVO.getRemark(), protocolId);
             }
             serviceInvokeDAO.save(serviceInvoke);
         }
@@ -696,15 +696,15 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             systemAbsStr = systemAbsStr.replaceAll("，", ",");
             String[] systemAbs = systemAbsStr.split("\\,");
             if(null != systemAbs && systemAbs.length > 0){
-                String hql2 = " from ServiceInvoke where operationId=? and serviceId=? and systemId=? and type=?";
+                String hql2 = " from ServiceInvoke where operationId=? and serviceId=? and systemId=? and type=? and ecode=?";
                 int i = 0;
                 do{
                     String systemId = systemService.findUniqueByName(systemAbs[i]).getSystemId();
-                    List<ServiceInvoke> list = serviceInvokeDAO.find(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType);
+                    List<ServiceInvoke> list = serviceInvokeDAO.find(hql2, serviceInvoke.getOperationId(), serviceInvoke.getServiceId(), systemId, otherType, serviceInvoke.getEcode());
                     if(list.size() == 0){
                         //如果不存在可以匹配的映射关系
                         //生成一条调用的映射关系，接口id为空，是否标准属性为未知
-                        ServiceInvoke serviceInvoke2 = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_U, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), null, otherType, null, null, null);
+                        ServiceInvoke serviceInvoke2 = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_U, serviceInvoke.getServiceId(), serviceInvoke.getOperationId(), null, serviceInvoke.getEcode(), otherType, null, null, null);
                         serviceInvokeDAO.save(serviceInvoke2);
                         list.add(serviceInvoke2);
                     }
@@ -777,7 +777,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             serviceInvoke.setProtocolId(protocolId);
         }
         else{
-            serviceInvoke = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_Y, indexVO.getServiceId(), indexVO.getOperationId(), null, type, null, indexVO.getRemark(), protocolId);
+            serviceInvoke = new ServiceInvoke(systemId, Constants.INVOKE_TYPE_STANDARD_Y, indexVO.getServiceId(), indexVO.getOperationId(), null, indexVO.getInterfaceName(), type, null, indexVO.getRemark(), protocolId);
         }
         serviceInvokeDAO.save(serviceInvoke);
         return true;

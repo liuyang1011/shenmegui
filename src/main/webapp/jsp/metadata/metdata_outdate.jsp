@@ -104,7 +104,7 @@
         $("#metadataList").datagrid({
             rownumbers:true,
             singleSelect:false,
-            url:'/metadataHis/query',
+            url:'/metadataOutdate/query',
             method:'get',
             pagination:true,
             pageSize:20,

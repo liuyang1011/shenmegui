@@ -59,9 +59,9 @@
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.edatagrid.js"></script>
 <script type="text/javascript" src="/resources/js/ui.js"></script>
-<script type="text/javascript" src="/plugin/json/json2.js"></script>
 <script type="text/javascript"
         src="/assets/englishWord/js/englishWordManager.js"></script>
+<script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
     $(function () {
         var editedRows = [];
@@ -70,7 +70,14 @@
                 text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
-                    $('#tt').edatagrid('addRow');
+                    uiinit.win({
+                        top:"20px",
+                        left:"150px",
+                        w: 500,
+                        iconCls: 'icon-add',
+                        title: "新增英文单词",
+                        url: "/jsp/englishword/add.jsp"
+                    });
                 }
             },
             {

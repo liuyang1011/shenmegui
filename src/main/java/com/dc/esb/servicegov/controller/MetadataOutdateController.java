@@ -1,8 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
-import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
+import com.dc.esb.servicegov.service.impl.MetadataOutdateServiceImpl;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,10 +18,10 @@ import java.util.Map;
  * Created by Administrator on 2015/12/30.
  */
 @Controller
-@RequestMapping("/metadataHis")
-public class MetadataHisController {
+@RequestMapping("/metadataOutdate")
+public class MetadataOutdateController {
     @Autowired
-    public MetadataHisServiceImpl metadataHisService;
+    public MetadataOutdateServiceImpl metadataHisService;
     @RequiresPermissions({"metadata-get"})
     @RequestMapping(method = RequestMethod.GET, value = "/query", headers = "Accept=application/json")
     @ResponseBody
@@ -33,7 +32,7 @@ public class MetadataHisController {
         page.setPage(pageNo);
 //        List<Metadata> rows = metadataService.queryByCondition(req.getParameterMap(), page);
         //关联categoryWord表，显示chineseWord
-        List<MetadataHisServiceImpl.MetadataBean> rows = metadataHisService.queryByCondition2(req.getParameterMap(), page);
+        List<MetadataOutdateServiceImpl.MetadataBean> rows = metadataHisService.queryByCondition2(req.getParameterMap(), page);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
         result.put("rows", rows);

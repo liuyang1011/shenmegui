@@ -3,7 +3,7 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.export.impl.MetadataConfigGenerator;
-import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
+import com.dc.esb.servicegov.service.impl.MetadataOutdateServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
@@ -40,7 +40,7 @@ public class MetadataController {
     private SDAServiceImpl sdaService;
 
     @Autowired
-    private MetadataHisServiceImpl metadataHisService;
+    private MetadataOutdateServiceImpl metadataHisService;
 
     @Autowired
     private MetadataConfigGenerator metadataConfigGenerator;

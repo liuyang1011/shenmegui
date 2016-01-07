@@ -1,8 +1,7 @@
 package com.dc.esb.servicegov.service.impl;
 
 import com.dc.esb.servicegov.dao.impl.CategoryWordDAOImpl;
-import com.dc.esb.servicegov.dao.impl.MetadataDAOImpl;
-import com.dc.esb.servicegov.dao.impl.MetadataHisDAOImpl;
+import com.dc.esb.servicegov.dao.impl.MetadataOutdateDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
@@ -10,12 +9,9 @@ import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.entity.MetadataHis;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
-import com.dc.esb.servicegov.service.support.Constants;
-import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +22,10 @@ import java.util.*;
 
 @Service
 @Transactional
-public class MetadataHisServiceImpl extends AbstractBaseService<MetadataHis,String>{
-    private static final Log log = LogFactory.getLog(MetadataHisServiceImpl.class);
+public class MetadataOutdateServiceImpl extends AbstractBaseService<MetadataHis,String>{
+    private static final Log log = LogFactory.getLog(MetadataOutdateServiceImpl.class);
     @Autowired
-    private MetadataHisDAOImpl metadataHisDAOImpl;
+    private MetadataOutdateDAOImpl metadataOutdateDAOImpl;
     @Autowired
     private CategoryWordDAOImpl categoryWordDAO;
     @Autowired
@@ -106,12 +102,12 @@ public class MetadataHisServiceImpl extends AbstractBaseService<MetadataHis,Stri
     public long queryCount(Map<String, String[]> values){
         String hql = "select count(*) from MetadataHis a where 1=1 ";
         hql += genderHql(values);
-        return (Long)metadataHisDAOImpl.findUnique(hql);
+        return (Long) metadataOutdateDAOImpl.findUnique(hql);
     }
     public List<Metadata> queryByCondition(Map<String, String[]> values, Page page){
     	String hql = " from MetadataHis a where 1=1 ";
         hql += genderHql(values);
-    	return metadataHisDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
+    	return metadataOutdateDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
     }
     //关联categoryWord表，显示chineseWord
     public List<MetadataBean> queryByCondition2(Map<String, String[]> values, Page page){
@@ -119,7 +115,7 @@ public class MetadataHisServiceImpl extends AbstractBaseService<MetadataHis,Stri
         String hql = "from MetadataHis a left join a.categoryWord where 1=1 ";
         hql += genderHql(values);
         hql += " order by a.categoryWordId";
-        List<Object[]> list = metadataHisDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
+        List<Object[]> list = metadataOutdateDAOImpl.findBy(hql, page, new ArrayList<SearchCondition>());
         List<MetadataBean> metadataBeanList = new ArrayList<MetadataBean>();
         for (Object[] per : list){
             if(per[1] != null){
@@ -392,17 +388,17 @@ public class MetadataHisServiceImpl extends AbstractBaseService<MetadataHis,Stri
     }
 
     public void addMetadataHis(MetadataHis metadataHis){
-        List<MetadataHis> list = metadataHisDAOImpl.findBy("metadataId", metadataHis.getMetadataId());
+        List<MetadataHis> list = metadataOutdateDAOImpl.findBy("metadataId", metadataHis.getMetadataId());
         if(list.size() > 0){
             for(MetadataHis metadataHisExsit : list){
                 String hql = " delete from MetadataHis where autoId = ?";
-                metadataHisDAOImpl.exeHql(hql, metadataHisExsit.getAutoId());
+                metadataOutdateDAOImpl.exeHql(hql, metadataHisExsit.getAutoId());
             }
         }
-        metadataHisDAOImpl.save(metadataHis);
+        metadataOutdateDAOImpl.save(metadataHis);
     }
     @Override
     public HibernateDAO<MetadataHis, String> getDAO() {
-        return metadataHisDAOImpl;
+        return metadataOutdateDAOImpl;
     }
 }

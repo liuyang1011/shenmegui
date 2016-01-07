@@ -166,7 +166,15 @@ public class EnglishWordController {
         systemLogService.updateResult(operationLog);
         return true;
     }
-
+    @RequestMapping(method = RequestMethod.POST, value = "/uniqueValid", headers = "Accept=application/json")
+    public @ResponseBody
+    boolean uniqueValid(String propertyName, String propertyValue){
+        List<EnglishWord> list = englishWordService.findBy(propertyName, propertyValue);
+        if(null != list && 0 < list.size()){
+            return false;
+        }
+        return true;
+    }
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
