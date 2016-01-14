@@ -1,13 +1,7 @@
 package com.dc.esb.servicegov.export.impl;
 
-import com.dc.esb.servicegov.entity.InterfaceHeadRelate;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.SDA;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
-import com.dc.esb.servicegov.service.impl.InterfaceHeadRelateServiceImpl;
-import com.dc.esb.servicegov.service.impl.InterfaceServiceImpl;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -39,23 +33,26 @@ public class ConfigExportGenerator {
     InterfaceServiceImpl interfaceService;
     @Autowired
     InterfaceHeadRelateServiceImpl interfaceHeadRelateService;
+    @Autowired
+    IdaServiceImpl idaService;
     public void generate(ServiceInvoke serviceInvoke, String path){
         if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
+            //生成文件路径
             path = path + File.separator + "in_config";
         }
         if(Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())){
             path = path + File.separator + "out_config";
         }
-        genrateSystemServiceFile(serviceInvoke, path);
+        generateRequest(serviceInvoke, path);
         genrateServiceFile(serviceInvoke, path);
-        genrateServiceSystemFile(serviceInvoke, path);
+        generateResponse(serviceInvoke, path);
     }
     /**
-     * 生成系统请求文件
+     * 生成in_config文件
      * @param serviceInvoke
      * @param path
      */
-    public void  genrateSystemServiceFile(ServiceInvoke serviceInvoke, String path){
+    public void  generateRequest(ServiceInvoke serviceInvoke, String path){
     }
 
     /**
@@ -63,7 +60,7 @@ public class ConfigExportGenerator {
      * @param serviceInvoke
      * @param path
      */
-    public void  genrateServiceSystemFile(ServiceInvoke serviceInvoke, String path){
+    public void  generateResponse(ServiceInvoke serviceInvoke, String path){
     }
 
     /**
@@ -79,10 +76,6 @@ public class ConfigExportGenerator {
             Operation operation = operationService.getOperation(serviceId, operationId);
             com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
             String fileName = path + File.separator + "service_" + serviceId + operationId + ".xml";
-            File file = new File(fileName);
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
 
             Document doc = DocumentHelper.createDocument();
             Element rootElement = doc.addElement("S" + serviceId + operationId);//根节点
@@ -94,16 +87,8 @@ public class ConfigExportGenerator {
             fillServiceHead(operation, serviceInvoke.getInterfaceId(),resSdoRoottElement, Constants.ElementAttributes.RESPONSE_NAME, true);
             fillBody(operation, serviceInvoke.getInterfaceId(), reqSdoRoottElement, Constants.ElementAttributes.REQUEST_NAME, true);
             fillBody(operation, serviceInvoke.getInterfaceId(), resSdoRoottElement, Constants.ElementAttributes.RESPONSE_NAME, true);
-            try {
-                OutputFormat format = OutputFormat.createPrettyPrint();
-                format.setEncoding("utf-8");
-                FileOutputStream fos = new FileOutputStream(fileName);
-                XMLWriter writer = new XMLWriter(fos, format);
-                writer.write(doc);
-                writer.close();
-            } catch (IOException e) {
-                log.error(e, e);
-            }
+
+            createFile(doc, fileName);
         }catch (Exception e){
             log.error("生成服务定义文件失败！", e);
         }
@@ -121,17 +106,19 @@ public class ConfigExportGenerator {
             SDA reServiceHeadSDA = sdaService.getByStructName(headId, targetName);
 //            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
             List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//徽商服务头全量;
-            SDA reOperationSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), targetName);
-            List<SDA> operationHeadSDAs = sdaService.getOperationHeadSDAs(operation.getServiceId(), operation.getOperationId(), headId, reOperationSDA.getId());//场景sda中约束条件为相应报文头的元素
-//            sdas.addAll(operationHeadSDAs);
-            addListContent(sdas, operationHeadSDAs);
-            if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
-                InterfaceHeadRelate relate =interfaceHeadRelateService.findUniqueBy("interfaceId", interfaceId);
-                if(null != relate){
-                    List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadSDAs(relate.getHeadId(), targetName, headId );
-                    addListContent(sdas, interfaceheadSDAs);
-                }
-            }
+//            SDA reOperationSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), targetName);
+//            List<SDA> operationHeadSDAs = sdaService.getOperationHeadSDAs(operation.getServiceId(), operation.getOperationId(), headId, reOperationSDA.getId());//场景sda中约束条件为相应报文头的元素
+////            sdas.addAll(operationHeadSDAs);
+//            addListContent(sdas, operationHeadSDAs);
+//            if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
+//                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+//
+//                InterfaceHeadRelate relate =interfaceHeadRelateService.findUniqueBy("interfaceId", interfaceId);
+//                if(null != relate){
+//                    List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadSDAs(relate.getHeadId(), targetName, headId );
+//                    addListContent(sdas, interfaceheadSDAs);
+//                }
+//            }
             fillElement(headElement, sdas, arrayFlag);
         }
     }
@@ -146,9 +133,10 @@ public class ConfigExportGenerator {
         SDA reSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), structName);
         List<SDA> sdas = sdaService.getChildExceptServiceHead(reSDA.getId(), operation.getHeadId());
         if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
-            InterfaceHeadRelate relate =interfaceHeadRelateService.findUniqueBy("interfaceId", interfaceId);
-            if(null != relate){
-                List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadBodySDAs(relate.getHeadId(), structName);
+            List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+            for(InterfaceHeadRelate relate : relates){
+                InterfaceHead interfaceHead = relate.getInterfaceHead();
+                List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadBodySDAs(relate.getHeadId(), reSDA.getStructName() );
                 addListContent(sdas, interfaceheadSDAs);
             }
         }
@@ -200,6 +188,40 @@ public class ConfigExportGenerator {
                 }
                 if(!exsitFlag) parentList.add(child);
             }
+        }
+    }
+    public String getReqFilePath(ServiceInvoke serviceInvoke, String path){
+        String serviceId = serviceInvoke.getServiceId();
+        String operationId = serviceInvoke.getOperationId();
+        com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
+
+        String fileName = path + File.separator + "channel_" + system.getSystemAb() + "_service_" + serviceId + operationId + ".xml";
+        return  fileName;
+    }
+
+    public String getResFilePath(ServiceInvoke serviceInvoke, String path){
+        String serviceId = serviceInvoke.getServiceId();
+        String operationId = serviceInvoke.getOperationId();
+        com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
+
+        String fileName = path + File.separator + "service_" + serviceId + operationId + "_system_" + system.getSystemAb() + ".xml";
+        return  fileName;
+    }
+
+    public void createFile(Document doc, String fileName){
+        try {
+            File file = new File(fileName);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            format.setEncoding("utf-8");
+            FileOutputStream fos = new FileOutputStream(fileName);
+            XMLWriter writer = new XMLWriter(fos, format);
+            writer.write(doc);
+            writer.close();
+        } catch (IOException e) {
+            log.error(e, e);
         }
     }
 }

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixmessage package_type="iso8583" encoding="gbk">
+	<!-- 
+	type: 
+		string:表示不压缩ASCII 
+		bcd:表示BCD压缩 
+		binary:表示BINARY 
+	len_type: 
+		0:表示不压缩ASCII 
+		1:表示EBCDIC 
+		2:表示左靠BCD压缩 
+		3:表示右靠BCD压缩 
+		4:表示BINARY 
+		5:表示16进制压缩,并左去0,如012变成了0C 
+		6:表示16进制压缩,如012变成了000C 
+	align:默认left
+		right:右对齐
+		left:左对齐
+	-->
+	<F1 chinese_name="F1" type="binary" length="16"/>
+	<F2 chinese_name="F2" type="bcd" length="19" variable_flag="2" len_type="5" align="right"/>
+	<F3 chinese_name="F3" type="bcd" length="6" align="right"/>
+	<F4 chinese_name="F4" type="bcd" length="12" align="right"/>
+	<F5 chinese_name="F5" type="string" length="12"/>
+	<F6 chinese_name="F6" type="string" length="12"/>
+	<F7 chinese_name="F7" type="bcd" length="10" align="left"/>
+	<F9 chinese_name="F9" type="string" length="8"/>
+	<F10 chinese_name="F10" type="string" length="8"/>
+	<F11 chinese_name="F11" type="bcd" length="6" align="right"/>
+	<F12 chinese_name="F12" type="bcd" length="6" align="right"/>
+	<F13 chinese_name="F13" type="bcd" length="4" align="right"/>
+	<F14 chinese_name="F14" type="bcd" length="4" align="right"/>
+	<F15 chinese_name="F15" type="bcd" length="4" align="right"/>
+	<F16 chinese_name="F16" type="string" length="4"/>
+	<F18 chinese_name="F18" type="bcd" length="4" align="left"/>
+	<F19 chinese_name="F19" type="string" length="3"/>
+	<F20 chinese_name="F20" type="string" length="3"/>
+	<F21 chinese_name="F21" type="string" length="3"/>
+	<F22 chinese_name="F22" type="bcd" length="3" align="right"/>
+	<F23 chinese_name="F23" type="bcd" length="3" align="right"/>
+	<F25 chinese_name="F25" type="bcd" length="2" align="left"/>
+	<F26 chinese_name="F26" type="bcd" length="2" align="right"/>
+	<F28 chinese_name="F28" type="string" length="8"/>
+	<F29 chinese_name="F29" type="string" length="9"/>
+	<F30 chinese_name="F30" type="string" length="9"/>
+	<F31 chinese_name="F31" type="string" length="9"/>
+	<F32 chinese_name="F32" type="bcd" length="11" variable_flag="2" len_type="5" align="right"/>
+	<F33 chinese_name="F33" type="bcd" length="11" variable_flag="2" len_type="5" align="right"/>
+	<F35 chinese_name="F35" type="bcd" length="37" variable_flag="2" len_type="5" align="right"/>
+	<F36 chinese_name="F36" type="bcd" length="104" variable_flag="3" len_type="6" align="right"/>
+	<F37 chinese_name="F37" type="string" length="12"/>
+	<F38 chinese_name="F38" type="string" length="6"/>
+	<F39 chinese_name="F39" type="string" length="2"/>
+	<F41 chinese_name="F41" type="string" length="8"/>
+	<F42 chinese_name="F42" type="string" length="15"/>
+	<F43 chinese_name="F43" type="string" length="40"/>
+	<F44 chinese_name="F44" type="binary" length="25" variable_flag="2" len_type="5"/>
+	<F45 chinese_name="F45" type="string" length="79" variable_flag="2"/>
+	<F46 chinese_name="F46" type="binary" length="255" variable_flag="3" len_type="3"/>
+	<F48 chinese_name="F48" type="string" length="512" variable_flag="3" len_type="6"/>
+	<F49 chinese_name="F49" type="bcd" length="3" align="right"/>
+	<F50 chinese_name="F50" type="string" length="3"/>
+	<F51 chinese_name="F51" type="string" length="3"/>
+	<F52 chinese_name="F52" type="binary" length="8"/>
+	<F53 chinese_name="F53" type="bcd" length="16" align="right"/>
+	<F54 chinese_name="F54" type="string" length="120" variable_flag="3" len_type="6"/>
+	<F55 chinese_name="F55" type="binary" length="255" variable_flag="3" len_type="6"/>
+	<F57 chinese_name="F57" type="binary" length="100" variable_flag="3" len_type="3"/>
+	<F58 chinese_name="F58" type="bcd" length="100" variable_flag="3" len_type="3" align="right"/>
+	<F60 chinese_name="F60" type="string" length="100" variable_flag="3" len_type="6"/>
+	<F61 chinese_name="F61" type="string" length="200" variable_flag="3" len_type="6"/>
+	<F62 chinese_name="F62" type="string" length="512" variable_flag="3" len_type="3"/>
+	<F63 chinese_name="F63" type="string" length="200" variable_flag="3" len_type="3"/>
+	<F64 chinese_name="F64" type="binary" length="8"/>
+	<F66 chinese_name="F66" type="string" length="1"/>
+	<F68 chinese_name="F68" type="string" length="3"/>
+	<F69 chinese_name="F69" type="bcd" length="3" align="right"/>
+	<F70 chinese_name="F70" type="bcd" length="3" align="right"/>
+	<F74 chinese_name="F74" type="string" length="10"/>
+	<F75 chinese_name="F75" type="string" length="10"/>
+	<F76 chinese_name="F76" type="string" length="10"/>
+	<F77 chinese_name="F77" type="string" length="10"/>
+	<F78 chinese_name="F78" type="string" length="10"/>
+	<F79 chinese_name="F79" type="string" length="10"/>
+	<F80 chinese_name="F80" type="string" length="10"/>
+	<F81 chinese_name="F81" type="string" length="10"/>
+	<F82 chinese_name="F82" type="string" length="12"/>
+	<F84 chinese_name="F84" type="string" length="12"/>
+	<F86 chinese_name="F86" type="string" length="16"/>
+	<F87 chinese_name="F87" type="string" length="16"/>
+	<F88 chinese_name="F88" type="string" length="16"/>
+	<F89 chinese_name="F89" type="string" length="16"/>
+	<F90 chinese_name="F90" type="bcd" length="42" align="left"/>
+	<F93 chinese_name="F93" type="1" length="5" align="1"/>
+	<F94 chinese_name="F94" type="1" length="7" align="1"/>
+	<F95 chinese_name="F95" type="string" length="42"/>
+	<F96 chinese_name="F96" type="binary" length="8"/>
+	<F97 chinese_name="F97" type="string" length="17"/>
+	<F99 chinese_name="F99" type="string" length="11" variable_flag="2"/>
+	<F100 chinese_name="F100" type="bcd" length="11" variable_flag="2" len_type="3" align="right"/>
+	<F102 chinese_name="F102" type="string" length="28" variable_flag="2" len_type="5"/>
+	<F103 chinese_name="F103" type="string" length="28" variable_flag="2" len_type="5"/>
+	<F104 chinese_name="F104" type="string" length="100" variable_flag="3" len_type="6"/>
+	<F105 chinese_name="F105" type="binary" length="16"/>
+	<F115 chinese_name="F115" type="string" length="24" variable_flag="2"/>
+	<F121 chinese_name="F121" type="string" length="100" variable_flag="3"/>
+	<F122 chinese_name="F122" type="string" length="100" variable_flag="3" len_type="6"/>
+	<F123 chinese_name="F123" type="string" length="100" variable_flag="3"/>
+	<F125 chinese_name="F125" type="binary" length="50" variable_flag="3" len_type="5"/>
+	<F126 chinese_name="F126" type="string" length="50" variable_flag="3"/>
+	<F127 chinese_name="F127" type="string" length="50" variable_flag="3"/>
+	<F128 chinese_name="F128" type="string" length="8"/>
+	<F129 chinese_name="F129" type="string" length="3"/>
+	<F130 chinese_name="F130" type="binary" length="4"/>
+	<F131 chinese_name="F131" type="string" length="46"/>
+</fixmessage>

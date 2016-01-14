@@ -391,7 +391,7 @@ public class ConfigExportController {
     List<String> exportBatch(HttpServletRequest request, HttpServletResponse response, ConfigListVO list) {
         OperationLog operationLog = systemLogService.record("导出", "配置文件导出","");
 
-        String path  = configBathGenerator.generate(request, list);;
+        String path  = configBathGenerator.generate(request, list);
         if(StringUtils.isNotEmpty(path)){
             ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
             InputStream in = null;

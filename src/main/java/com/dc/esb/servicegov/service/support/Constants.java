@@ -126,7 +126,7 @@ public class Constants {
             if("审核通过".equals(stateName)){
                 return OPT_STATE_PASS;
             }
-            if("审核不通过".equals(stateName)){
+            if("审核未通过".equals(stateName)){
                 return OPT_STATE_UNPASS;
             }
             if("已发布".equals(stateName)){

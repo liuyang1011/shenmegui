@@ -266,6 +266,16 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                         hql += " and a.categoryWordId ='" + values.get(key)[0] + "' ";
                     }
                 }
+                if(key.equals("dataCategory") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        try {
+                            hql += " and a.dataCategory like '%" + URLDecoder.decode(values.get(key)[0], "utf-8") + "%' ";
+                        }catch (UnsupportedEncodingException e) {
+                            log.error(e,e);
+                            log.error("数据项分类转码错误！");
+                        }
+                    }
+                }
             }
         }
         return hql;

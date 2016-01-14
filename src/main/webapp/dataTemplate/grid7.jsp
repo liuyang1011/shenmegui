@@ -39,6 +39,9 @@
 							this.value=newValue;
 						}
 					"></td>
+            <th><nobr>数据项分类</nobr></th>
+            <td><input class="easyui-textbox" type="text" style="width:100px" name="dataCategory" id="dataCategory"></td>
+
         </tr>
         <tr>
             <th><nobr> 创建人</nobr></th>
@@ -47,10 +50,14 @@
             <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
             <th><nobr> 创建结束日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
+            <th></th>
+            <td></td>
+            <th></th>
+            <td></td>
             <td align="right">
                 <shiro:hasPermission name="metadata-get">
-                <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                    <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+                    <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
                 </shiro:hasPermission>
             </td>
         </tr>

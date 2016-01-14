@@ -188,10 +188,12 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                             return false;
                         }
                         if (StringUtils.isNotEmpty(indexVO.getInterfaceHeadName())) {
-                            InterfaceHead interfaceHead = importInterfaceHead(workbook, indexVO);//导入报文头
-                            if (null != interfaceHead) {
-                                if (!importInterfaceHeadRelate(indexVO, interfaceHead)) {//关联接口和报文头
-                                    return false;
+                            List<InterfaceHead> interfaceHeadList = importInterfaceHead(workbook, indexVO);//导入报文头
+                            if (null != interfaceHeadList && 0 < interfaceHeadList.size()) {
+                                for(InterfaceHead interfaceHead : interfaceHeadList){
+                                    if (!importInterfaceHeadRelate(indexVO, interfaceHead)) {//关联接口和报文头
+                                        return false;
+                                    }
                                 }
                             } else {
                                 return false;//错误信息已经在importInterfaceHead方法中注入
@@ -280,11 +282,16 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 }
             }
         }
-        String headName = indexVO.getInterfaceHeadName();
-        if(StringUtils.isNotEmpty(headName) && !isIndexEx){
-            if(null == workbook.getSheet(headName)){
-                logMsg( m + indexVO.getIndexNum() + "条记录导入失败，原因：未找到报文头页[" + headName + "]！");
-                return false;
+        String headNameStr = indexVO.getInterfaceHeadName();
+        if(StringUtils.isNotEmpty(headNameStr)){
+            String[] headNames = headNameStr.split("\\,");
+            for(String headName : headNames){
+                if(StringUtils.isNotEmpty(headName) && !isIndexEx){
+                    if(null == workbook.getSheet(headName)){
+                        logMsg( m + indexVO.getIndexNum() + "条记录导入失败，原因：未找到报文头页[" + headName + "]！");
+                        return false;
+                    }
+                }
             }
         }
         return true;
@@ -404,48 +411,47 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
     /**
      * 导入报文头信息
      */
-    public InterfaceHead importInterfaceHead(Workbook workbook, MappingImportIndexRowVO indexVO){
-        InterfaceHead interfaceHead = null;
-        String headName = indexVO.getInterfaceHeadName();//处理报文头页
-        interfaceHead = interfaceHeads.get(headName);
-        if(null == interfaceHead){//该报文头未导入过
-            String systemId = systemService.findUniqueByName(indexVO.getInterfaceProId()).getSystemId();
-            Map<String, String> param = new HashMap<String, String>();
-            param.put("systemId", systemId);
-            param.put("headName", headName);
-            interfaceHead = interfaceHeadDAO.findUniqureBy(param);
-            if(null != interfaceHead){//如果系统中已有该报文头
-                interfaceHeads.put(headName, interfaceHead);
-                if(operateFlag){
-                    //删除报文头ida，sda
-                    idaService.deleteByHeadId(interfaceHead.getHeadId());
-                    sdaService.deleteByHeadId(interfaceHead.getHeadId());
-                    if(!insertHeadContent(workbook, indexVO)){//插入新的ida，sda
-                        return null;
-                    };
-                }else{//不需要覆盖
-                    return interfaceHead;
-                }
-            }else{
-                Sheet headSheet = workbook.getSheet(headName);
-                if(null != headSheet){
-                    //导入一条报文头
-                    interfaceHead = new InterfaceHead();
-                    interfaceHead.setHeadName(headName);
-                    interfaceHead.setSystemId(systemId);
-                    interfaceHeadDAO.save(interfaceHead);
+    public  List<InterfaceHead> importInterfaceHead(Workbook workbook, MappingImportIndexRowVO indexVO){
+        List<InterfaceHead> list = new ArrayList<InterfaceHead>();
+        String[] headNames = indexVO.getInterfaceHeadName().split("\\,");//处理报文头页
+        for(String headName : headNames){
+            InterfaceHead interfaceHead = null;
+            interfaceHead = interfaceHeads.get(headName);
+            if(null == interfaceHead){//该报文头未导入过
+                String systemId = systemService.findUniqueByName(indexVO.getInterfaceProId()).getSystemId();
+                Map<String, String> param = new HashMap<String, String>();
+                param.put("systemId", systemId);
+                param.put("headName", headName);
+                interfaceHead = interfaceHeadDAO.findUniqureBy(param);
+                if(null != interfaceHead){//如果系统中已有该报文头
                     interfaceHeads.put(headName, interfaceHead);
-                    if(!insertHeadContent(workbook, indexVO)){
-                        return null;
-                    };
+                    if(operateFlag){
+                        //删除报文头ida，sda
+                        idaService.deleteByHeadId(interfaceHead.getHeadId());
+                        sdaService.deleteByHeadId(interfaceHead.getHeadId());
+                        insertHeadContent(workbook, indexVO, headName);
+                    }
                 }else{
-                    logMsg( "index页第" + indexVO.getIndexNum() + "条记录导入失败，原因：未找到对应报文头[" + headName +"]页！");
-                    logInfoService.saveLog(msg, "导入");
-                    return null;
+                    Sheet headSheet = workbook.getSheet(headName);
+                    if(null != headSheet){
+                        //导入一条报文头
+                        interfaceHead = new InterfaceHead();
+                        interfaceHead.setHeadName(headName);
+                        interfaceHead.setSystemId(systemId);
+                        interfaceHeadDAO.save(interfaceHead);
+                        interfaceHeads.put(headName, interfaceHead);
+                        insertHeadContent(workbook, indexVO, headName);
+                    }else{
+                        logMsg( "index页第" + indexVO.getIndexNum() + "条记录导入失败，原因：未找到对应报文头[" + headName +"]页！");
+                        logInfoService.saveLog(msg, "导入");
+                        return null;
+                    }
                 }
             }
+            list.add(interfaceHead);
         }
-        return  interfaceHead;
+
+        return  list;
     }
     /**
      * 关联接口和报文头
@@ -464,8 +470,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         return true;
 
     }
-    public boolean insertHeadContent(Workbook workbook, MappingImportIndexRowVO indexVO){
-        String headName = indexVO.getInterfaceHeadName();
+    public boolean insertHeadContent(Workbook workbook, MappingImportIndexRowVO indexVO, String headName){
         InterfaceHead interfaceHead = interfaceHeads.get(headName);//报文头已经存入缓存
         Sheet headSheet = workbook.getSheet(headName);
         Map<String, Ida> idas = idaService.genderHeadIdaAuto(interfaceHead.getHeadId());//自动生成根节点

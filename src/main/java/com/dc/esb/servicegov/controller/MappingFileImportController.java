@@ -105,7 +105,7 @@ public class MappingFileImportController {
                     try {
                         if (mappingFileImportSevice.imoportIndexRecord(workbook, indexVO)) {
                             //根据版本信息发布版本
-                            if (Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equalsIgnoreCase(indexVO.getOperationState()) || Constants.Operation.LIFE_CYCLE_STATE_ONLINE.equalsIgnoreCase(indexVO.getOperationState())) {
+                            if (Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equalsIgnoreCase(indexVO.getOperationState())) {
                                 operationService.release(indexVO.getOperationId(), indexVO.getServiceId(), "导入发布");
                             }
                             long useTime = java.lang.System.currentTimeMillis() - time;

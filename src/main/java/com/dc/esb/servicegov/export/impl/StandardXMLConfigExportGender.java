@@ -1,9 +1,6 @@
 package com.dc.esb.servicegov.export.impl;
 
-import com.dc.esb.servicegov.entity.InterfaceHeadRelate;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.SDA;
-import com.dc.esb.servicegov.entity.ServiceInvoke;
+import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -27,22 +24,18 @@ import java.util.List;
 public class StandardXMLConfigExportGender extends ConfigExportGenerator{
     private Log log = LogFactory.getLog(StandardXMLConfigExportGender.class);
     /**
-     * 生成系统请求文件
+     * 生成请求文件
      * @param serviceInvoke
      * @param path
      */
     @Override
-    public void  genrateSystemServiceFile(ServiceInvoke serviceInvoke, String path){
+    public void  generateRequest(ServiceInvoke serviceInvoke, String path){
         try {
             String serviceId = serviceInvoke.getServiceId();
             String operationId = serviceInvoke.getOperationId();
             Operation operation = operationService.getOperation(serviceId, operationId);
-            com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
-            String fileName = path + File.separator + "channel_" + system.getSystemAb() + "_service_" + serviceId + operationId + ".xml";
-            File file = new File(fileName);
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
+
+            String fileName = getReqFilePath(serviceInvoke, path);
 
             Document doc = DocumentHelper.createDocument();
             Element serviceElement = doc.addElement("service");//根节点
@@ -50,38 +43,26 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
             addAttribute(serviceElement, "store-mode", "UTF-8");
             fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
             fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
-            try {
-                OutputFormat format = OutputFormat.createPrettyPrint();
-                format.setEncoding("utf-8");
-                FileOutputStream fos = new FileOutputStream(fileName);
-                XMLWriter writer = new XMLWriter(fos, format);
-                writer.write(doc);
-                writer.close();
-            } catch (IOException e) {
-                log.error(e, e);
-            }
+
+            createFile(doc, fileName);
         }catch (Exception e){
             log.error("生成请求文件失败！", e);
         }
     }
 
     /**
-     * 生成esb响应文件
+     * 生成out文件
      * @param serviceInvoke
      * @param path
      */
     @Override
-    public void  genrateServiceSystemFile(ServiceInvoke serviceInvoke, String path){
+    public void  generateResponse(ServiceInvoke serviceInvoke, String path){
         try {
             String serviceId = serviceInvoke.getServiceId();
             String operationId = serviceInvoke.getOperationId();
             Operation operation = operationService.getOperation(serviceId, operationId);
-            com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
-            String fileName = path + File.separator + "service_" + serviceId + operationId + "_system_" + system.getSystemAb() + ".xml";
-            File file = new File(fileName);
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
+
+            String fileName = getResFilePath(serviceInvoke, path);
 
             Document doc = DocumentHelper.createDocument();
             Element serviceElement = doc.addElement("service");//根节点
@@ -89,16 +70,8 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
             addAttribute(serviceElement, "store-mode", "UTF-8");
             fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.RESPONSE_NAME, false);
             fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.RESPONSE_NAME, false);
-            try {
-                OutputFormat format = OutputFormat.createPrettyPrint();
-                format.setEncoding("utf-8");
-                FileOutputStream fos = new FileOutputStream(fileName);
-                XMLWriter writer = new XMLWriter(fos, format);
-                writer.write(doc);
-                writer.close();
-            } catch (IOException e) {
-                log.error(e, e);
-            }
+
+            createFile(doc,fileName);
         }catch (Exception e){
             log.error("生成响应文件失败！", e);
         }
@@ -124,12 +97,11 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
         SDA reSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), structName);
         List<SDA> sdas = sdaService.getChildExceptServiceHead(reSDA.getId(), operation.getHeadId());
         if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
-            InterfaceHeadRelate relate =interfaceHeadRelateService.findUniqueBy("interfaceId", interfaceId);
-            if(null != relate){
+            List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+            for(InterfaceHeadRelate relate : relates){
                 List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadBodySDAs(relate.getHeadId(), structName);
                 addListContent(sdas, interfaceheadSDAs);
             }
-
         }
         fillPackageParserElement(bodyElement, sdas);
     }
