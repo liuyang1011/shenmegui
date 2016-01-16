@@ -28,6 +28,9 @@ public class ServiceInvoke {
 	@Column(name = "INTERFACE_ID")
 	private String interfaceId;
 
+	@Column(name = "ecode")
+	private String ecode;//交易码
+
 	@Column(name = "TYPE")
 	private String type;
 
@@ -144,6 +147,15 @@ public class ServiceInvoke {
 	public void setSystem(System system) {
 		this.system = system;
 	}
+
+	public String getEcode() {
+		return ecode;
+	}
+
+	public void setEcode(String ecode) {
+		this.ecode = ecode;
+	}
+
 	public static  String[] simpleFields(){
 		String[] names = {"invokeId",
 				"systemId",
@@ -163,12 +175,13 @@ public class ServiceInvoke {
 		return names;
 	}
 	public ServiceInvoke(){}
-	public ServiceInvoke(String systemId, String isStandard, String serviceId, String operationId, String interfaceId, String type, String desc, String remark, String protocolId) {
+	public ServiceInvoke(String systemId, String isStandard, String serviceId, String operationId, String interfaceId, String ecode, String type, String desc, String remark, String protocolId) {
 		this.systemId = systemId;
 		this.isStandard = isStandard;
 		this.serviceId = serviceId;
 		this.operationId = operationId;
 		this.interfaceId = interfaceId;
+		this.ecode = ecode;
 		this.type = type;
 		this.desc = desc;
 		this.remark = remark;

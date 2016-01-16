@@ -629,7 +629,41 @@
                 alert("没有选中数据！");
             }
         }
-    })
+    });
+    toolbar.push({
+        text:'导出WSDL',
+        iconCls:'icon-excel-export',
+        handler: function () {
+            var checkedItems = $('#operationList').datagrid('getChecked');
+            if (checkedItems != null && checkedItems.length > 0) {
+                var form=$("<form>");//定义一个form表单
+                form.attr("style","display:none");
+                form.attr("target","");
+                form.attr("method","post");
+                form.attr("action","/wsdlExport/exportOperation");
+
+                for(var i=0; i < checkedItems.length; i++){
+                    var input1=$("<input>");
+                    input1.attr("type","hidden");
+                    input1.attr("name","pks["+i+"].serviceId");
+                    input1.attr("value",checkedItems[i].serviceId);
+                    var input2=$("<input>");
+                    input2.attr("type","hidden");
+                    input2.attr("name","pks["+i+"].operationId");
+                    input2.attr("value",checkedItems[i].operationId);
+
+                    form.append(input1);
+                    form.append(input2);
+                }
+
+                $("body").append(form);//将表单放置在web中
+                form.submit();//表单提交
+            }
+            else{
+                alert("没有选中数据！");
+            }
+        }
+    });
     </shiro:hasPermission>
 
     //版本发布

@@ -166,7 +166,7 @@
           type: "post",
           async: false,
           contentType:"application/json; charset=utf-8",
-          url: "/sda/deleteSDA",
+          url: "/serviceHeadSda/deleteSDA",
           dataType: "json",
           data: JSON.stringify(delIds),
           success: function(data){

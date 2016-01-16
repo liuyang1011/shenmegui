@@ -82,7 +82,7 @@
         }
         var categoryWord = {};
         categoryWord.chineseWord = $('#chineseWord_').textbox("getValue");
-        categoryWord.esglisgAb = $('#englishWord').textbox("getValue");
+        categoryWord.englishWord = $('#englishWord').textbox("getValue");
         categoryWord.esglisgAb = $('#esglisgAb_').textbox("getValue");
         categoryWord.remark = $('#remark_').textbox("getValue");
         $.ajax({
