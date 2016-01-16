@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixmessage package_type="iso8583" store-mode="gbk">
+	<MSG_HEAD metadataid="MSG_HEAD" type="string" length="6" isSdoHeader="true" expression="'100000'"/>
+	<MsgTyp metadataid="MsgTyp" type="string" length="4"/>
+	<IB1 metadataid="IB1" type="bitmap" length="8"/>
+</fixmessage>

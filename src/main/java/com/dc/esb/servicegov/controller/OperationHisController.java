@@ -91,13 +91,13 @@ public class OperationHisController {
 
 
 
-		String hql = "from OperationHis a where a.state = '"+Constants.Operation.OPT_STATE_PASS+"'";
+		String hql = "from OperationHis a where a.state = '"+Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED+"'";
 		hql += " and a.service.serviceId like ? and a.service.serviceName like ?";
 		hql += " and a.operationId like ? and a.operationName like ?";
 		Page page = operationHisServiceImpl.getPageBy(hql, rowCount,"%"+serviceId+"%","%"+serviceName+"%","%"+operationId+"%","%"+operationName+"%");
 		page.setPage(pageNo);
 		Map<String, Object> result = new HashMap<String, Object>();
-		hql = "from OperationHis a where a.state = '"+Constants.Operation.OPT_STATE_PASS+"'" +
+		hql = "from OperationHis a where a.state = '"+Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED+"'" +
 				" and a.service.serviceId like ? and a.service.serviceName like ?"+
 				" and a.operationId like ? and a.operationName like ?"+
 				" order by a.versionHis.optDate desc";

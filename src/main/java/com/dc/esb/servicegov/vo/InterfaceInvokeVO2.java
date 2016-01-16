@@ -14,6 +14,7 @@ public class InterfaceInvokeVO2 {
     private String conId;
     private String conName;
     private String conInterId;
+    private String conEcode;
     private String conInterName;
     private String conType;
     private String conIsStandard;
@@ -21,6 +22,7 @@ public class InterfaceInvokeVO2 {
     private String proId;
     private String proName;
     private String proInterId;
+    private String proEcode;
     private String proInterName;
     private String proType;
     private String proIsStandard;
@@ -41,6 +43,7 @@ public class InterfaceInvokeVO2 {
                 this.conInterId = consumer.getInterfaceId();
                 if(consumer.getInter() != null){
                     this.conInterName = consumer.getInter().getInterfaceName();
+                    this.conEcode = consumer.getInter().getEcode();
                 }
                 this.conType = consumer.getType();
                 this.conIsStandard = consumer.getIsStandard();
@@ -54,6 +57,7 @@ public class InterfaceInvokeVO2 {
                 this.proInterId = provider.getInterfaceId();
                 if(provider.getInter() != null){
                     this.proInterName = provider.getInter().getInterfaceName();
+                    this.proEcode = provider.getInter().getEcode();
                 }
                 this.proType = provider.getType();
                 this.proIsStandard = provider.getIsStandard();
@@ -164,5 +168,21 @@ public class InterfaceInvokeVO2 {
 
     public void setProIsStandard(String proIsStandard) {
         this.proIsStandard = proIsStandard;
+    }
+
+    public String getConEcode() {
+        return conEcode;
+    }
+
+    public void setConEcode(String conEcode) {
+        this.conEcode = conEcode;
+    }
+
+    public String getProEcode() {
+        return proEcode;
+    }
+
+    public void setProEcode(String proEcode) {
+        this.proEcode = proEcode;
     }
 }

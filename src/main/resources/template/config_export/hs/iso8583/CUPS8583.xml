@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fixmessage package_type="iso8583" encoding="gbk">
+	<MSG_TYPE type="string" length="4" metadataid="MSG_TYPE" />  
+	<F2 length="19" type="string"  metadataid="PriAccNum"  chinese_name="F2" variable_flag="2"/> 
+	<F3 length="6" type="string"  metadataid="ProcessCode"  chinese_name="F3" /> 
+	<F4 length="12" type="string"  metadataid="TransaAmount"  fill_char="0" align="right" scale="2" /> 
+	<F5 length="12" type="string"  metadataid="SettleAmount"  fill_char="0" align="right" scale="2" /> 
+	<F6 length="12" type="string"  metadataid="CardholdBill"  fill_char="0" align="right" scale="2" /> 
+	<F7 length="10" type="string"  metadataid="TransmissionTime"  chinese_name="F7" /> 
+	<F9 length="8" type="string"  metadataid="SettleRate"  chinese_name="F9" /> 
+	<F10 length="8" type="string"  metadataid="CardholdRate"  chinese_name="F10" />
+	<F11 length="6" type="string"  metadataid="SysTraceNum"  chinese_name="F11" /> 
+	<F12 length="6" type="string"  metadataid="LocalTime"  chinese_name="F12" /> 
+	<F13 length="4" type="string"  metadataid="LocalDate"  chinese_name="F13" /> 
+	<F14 length="4" type="string"  metadataid="ExpirDate"  chinese_name="F14" />
+	<F15 length="4" type="string"  metadataid="SettleDate"  chinese_name="F15" /> 
+	<F16 length="4" type="string"  metadataid="ConverDate"  chinese_name="F16" />
+	<!-- <F17 length="" type="string"  metadataid=""  chinese_name="F17" /> -->
+	<F18 length="4" type="string"  metadataid="MerchantType"  chinese_name="F18" /> 
+	<F19 length="3" type="string"  metadataid="CountryCode"  chinese_name="F19" /> 
+	<!-- <F20 length="" type="string"  metadataid=""  chinese_name="F20" /> -->
+	<!-- <F21 length="" type="string"  metadataid=""  chinese_name="F21" /> -->
+	<F22 length="3" type="string"  metadataid="ServiceModeCode"  chinese_name="F22" /> 
+	<F23 length="3" type="string"  metadataid="CardSeqNum"  chinese_name="F23" /> 
+	<!-- <F24 length="" type="string"  metadataid=""  chinese_name="F24" /> -->
+	<F25 length="2" type="string"  metadataid="ServiceCondiCode"  chinese_name="F25" /> 
+	<F26 length="2" type="string"  metadataid="PinCode"  chinese_name="F26" /> 
+	<!-- <F27 length="" type="string"  metadataid=""  chinese_name="F27" /> -->
+	<F28 length="9" type="string"  metadataid="FeeAmount"  chinese_name="F28" /> 
+	<!-- <F29 length="" type="string"  metadataid=""  chinese_name="F29" /> -->
+	<!-- <F30 length="" type="string"  metadataid=""  chinese_name="F30" /> -->
+	<!-- <F31 length="" type="string"  metadataid=""  chinese_name="F31" /> -->
+	<F32 length="11" type="string"  metadataid="AcquirIdentiCode"  chinese_name="F32" variable_flag="2"/> 
+	<F33 length="11" type="string"  metadataid="ForwardIdentiCode"  chinese_name="F33" variable_flag="2"/> 
+	<!-- <F34 length="" type="string"  metadataid=""  chinese_name="F34" /> -->
+	<F35 length="37" type="string"  metadataid="Track2"  chinese_name="F35" variable_flag="2"/> 
+	<F36 length="104" type="string"  metadataid="Track3"  chinese_name="F36" variable_flag="3"/> 
+	<F37 length="12" type="string"  metadataid="ReferNo"  chinese_name="F37" /> 
+	<F38 length="6" type="string"  metadataid="AuthIdentiResp"  chinese_name="F38" /> 
+	<F39 length="2" type="string"  metadataid="RespCode"  chinese_name="F39" /> 
+	<!-- <F40 length="" type="string"  metadataid=""  chinese_name="F40" /> -->
+	<F41 length="8" type="string"  metadataid="CardAccTermCode"  chinese_name="F41" /> 
+	<F42 length="15" type="string"  metadataid="CardAccIdentiCode"  chinese_name="F42" /> 
+	<F43 length="40" type="string"  metadataid="CardAccName"  chinese_name="F43" /> 
+	<F44 length="25" type="string"  metadataid="AddRespData"  chinese_name="F44" variable_flag="2"/> 
+	<F45 length="79" type="string"  metadataid="Track1Data"  chinese_name="F45" variable_flag="2"/> 
+	<F48 length="512" type="string"  metadataid="PrivAddData"  chinese_name="F48" variable_flag="3"/> 
+	<F49 length="3" type="string"  metadataid="TransCcy"  chinese_name="F49" /> 
+	<F50 length="3" type="string"  metadataid="SettlCcy"  chinese_name="F50" /> 
+	<F51 length="3" type="string"  metadataid="CardholderCcy"  chinese_name="F51" /> 
+	<F52 type="binary" length="8"  metadataid="PinData"  chinese_name="F52" /> 
+	<F53 length="16" type="string"  metadataid="SecurCtlInfo"  chinese_name="F53" /> 
+	<F54 length="40" type="string"  metadataid="ActualAmt"  chinese_name="F54" variable_flag="3"/> 
+	<F55 length="255" type="string"  metadataid="DcRelateData"  chinese_name="F55" variable_flag="3"/>
+	<!-- <F56 length="" type="string"  metadataid=""  chinese_name="F56" /> -->
+	<F57 length="100" type="string"  metadataid="PrivAddTransData"  chinese_name="F57" variable_flag="3"/>
+	<F58 length="100" type="string"  metadataid="MbRelateData"  chinese_name="F58" variable_flag="3"/>
+	<F59 length="600" type="string"  metadataid="DetailDate"  chinese_name="F59" variable_flag="3"/>
+	<F60 length="100" type="string"  metadataid="Reserved"  chinese_name="F60" variable_flag="3"/> 
+	<F61 length="200" type="string"  metadataid="CardhldAuthInfo"  chinese_name="F61" variable_flag="3"/> 
+	<F62 length="200" type="string"  metadataid="SwitchingData"  chinese_name="F62" variable_flag="3"/> 
+	<F63 length="200" type="string"  metadataid="FinaNetData"  chinese_name="F63" variable_flag="3"/> 
+	<!-- <F64 length="" type="string"  metadataid=""  chinese_name="F64" /> -->
+	<!-- <F65 length="" type="string"  metadataid=""  chinese_name="F65" /> -->
+	<!-- <F66 length="" type="string"  metadataid=""  chinese_name="F66" /> -->
+	<!-- <F67 length="" type="string"  metadataid=""  chinese_name="F67" /> -->
+	<!-- <F68 length="" type="string"  metadataid=""  chinese_name="F68" /> -->
+	<!-- <F69 length="" type="string"  metadataid=""  chinese_name="F69" /> -->
+	<F70 length="3" type="string"  metadataid="NetManaInfCode"  chinese_name="F70" /> 
+	<!-- <F71 length="" type="string"  metadataid=""  chinese_name="F71" /> -->
+	<!-- <F72 length="" type="string"  metadataid=""  chinese_name="F72" /> -->
+	<!-- <F73 length="" type="string"  metadataid=""  chinese_name="F73" /> -->
+	<!-- <F74 length="" type="string"  metadataid=""  chinese_name="F74" /> -->
+	<!-- <F75 length="" type="string"  metadataid=""  chinese_name="F75" /> -->
+	<!-- <F76 length="" type="string"  metadataid=""  chinese_name="F76" /> -->
+	<!-- <F77 length="" type="string"  metadataid=""  chinese_name="F77" /> -->
+	<!-- <F78 length="" type="string"  metadataid=""  chinese_name="F78" /> -->
+	<!-- <F79 length="" type="string"  metadataid=""  chinese_name="F79" /> -->
+	<!-- <F80 length="" type="string"  metadataid=""  chinese_name="F80" /> -->
+	<!-- <F81 length="" type="string"  metadataid=""  chinese_name="F81" /> -->
+	<!-- <F82 length="" type="string"  metadataid=""  chinese_name="F82" /> -->
+	<!-- <F83 length="" type="string"  metadataid=""  chinese_name="F83" /> -->
+	<!-- <F84 length="" type="string"  metadataid=""  chinese_name="F84" /> -->
+	<!-- <F85 length="" type="string"  metadataid=""  chinese_name="F85" /> -->
+	<!-- <F86 length="" type="string"  metadataid=""  chinese_name="F86" /> -->
+	<!-- <F87 length="" type="string"  metadataid=""  chinese_name="F87" /> -->
+	<!-- <F88 length="" type="string"  metadataid=""  chinese_name="F88" /> -->
+	<!-- <F89 length="" type="string"  metadataid=""  chinese_name="F89" /> -->
+	<F90 length="42" type="string"  metadataid="OriData"  chinese_name="F90" />
+	<!-- <F91 length="" type="string"  metadataid=""  chinese_name="F91" /> -->
+	<!-- <F92 length="" type="string"  metadataid=""  chinese_name="F92" /> -->
+	<!-- <F93 length="" type="string"  metadataid=""  chinese_name="F93" /> -->
+	<!-- <F94 length="" type="string"  metadataid=""  chinese_name="F94" /> -->
+	<!-- <F95 length="" type="string"  metadataid=""  chinese_name="F95" /> -->
+	<F96 type="binary"  length="8" metadataid="MsgSecuCode"  chinese_name="F96" />
+	<!-- <F97 length="" type="string"  metadataid=""  chinese_name="F97" /> -->
+	<!-- <F98 length="" type="string"  metadataid=""  chinese_name="F98" /> -->
+	<!-- <F99 length="" type="string"  metadataid=""  chinese_name="F99" /> -->
+	<F100 length="11" type="string"  metadataid="RecInstIdenCode "  chinese_name="F100" variable_flag="2" /> 
+	<!-- <F101 length="" type="string"  metadataid=""  chinese_name="F101" /> -->
+	<F102 length="28" type="string"  metadataid="AcctIdentif1"  chinese_name="F102" variable_flag="2"/> 
+	<F103 length="28" type="string"  metadataid="AcctIdentif2"  chinese_name="F103" variable_flag="2"/> 
+	<!-- 徽商银行添加ATMP识别域 -->
+	<F104 length="999" type="string"  metadataid="HsbIdentiCode"  chinese_name="F104" variable_flag="3" />
+	<!-- <F105 length="" type="string"  metadataid=""  chinese_name="F105" /> -->
+	<!-- <F106 length="" type="string"  metadataid=""  chinese_name="F106" /> -->
+	<!-- <F107 length="" type="string"  metadataid=""  chinese_name="F107" /> -->
+	<!-- <F108 length="" type="string"  metadataid=""  chinese_name="F108" /> -->
+	<!-- <F109 length="" type="string"  metadataid=""  chinese_name="F109" /> -->
+	<!-- <F110 length="" type="string"  metadataid=""  chinese_name="F110" /> -->
+	<!-- <F111 length="" type="string"  metadataid=""  chinese_name="F111" /> -->
+	<!-- <F112 length="" type="string"  metadataid=""  chinese_name="F112" /> -->
+	<!-- <F113 length="" type="string"  metadataid=""  chinese_name="F113" /> -->
+	<!-- <F114 length="" type="string"  metadataid=""  chinese_name="F114" /> -->
+	<!-- <F115 length="" type="string"  metadataid=""  chinese_name="F115" /> -->
+	<!-- <F116 length="" type="string"  metadataid=""  chinese_name="F116" /> -->
+	<!-- <F117 length="" type="string"  metadataid=""  chinese_name="F117" /> -->
+	<!-- <F118 length="" type="string"  metadataid=""  chinese_name="F118" /> -->
+	<!-- <F119 length="" type="string"  metadataid=""  chinese_name="F119" /> -->
+	<!-- <F120 length="" type="string"  metadataid=""  chinese_name="F120" /> -->
+	<F121 length="100" type="string"  metadataid="CUPSReserved"  chinese_name="F121" variable_flag="3"/> 
+	<F122 length="100" type="string"  metadataid="AcqInstiReserved"  chinese_name="F122" variable_flag="3"/> 
+	<F123 length="100" type="string"  metadataid="IssInstiReserved"  chinese_name="F123" variable_flag="3"/>
+	<!-- <F124 length="" type="string"  metadataid=""  chinese_name="F124" /> -->
+	<!-- <F125 length="" type="string"  metadataid=""  chinese_name="F125" /> -->
+	<!-- <F126 length="" type="string"  metadataid=""  chinese_name="F126" /> -->
+	<!-- <F127 length="" type="string"  metadataid=""  chinese_name="F127" /> -->
+	<F128 type="binary" length="8" metadataid="MsgAuthCode"  chinese_name="F128" /> 
+</fixmessage>

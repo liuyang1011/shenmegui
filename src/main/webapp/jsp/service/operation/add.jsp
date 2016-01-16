@@ -266,14 +266,16 @@
         </tr>
         <tr>
             <th data-options="field:'id', width:50, checkbox:true"></th>
-            <th data-options="field:'conName',width:120">系统名称</th>
-            <th data-options="field:'conId',width:120">系统编码</th>
-            <th data-options="field:'conInterName',width:120">接口名称</th>
-            <th data-options="field:'conInterId',width:120">接口代码</th>
+            <th data-options="field:'conName',width:120 ">系统名称</th>
+            <th data-options="field:'conInterId',width:120,styler:consumerStyle">接口代码</th>
+            <th data-options="field:'conInterName',width:120,styler:consumerStyle">接口名称</th>
+            <th data-options="field:'conEcode',width:70">交易码</th>
+            <th data-options="field:'conIsStandard',width:70,styler:consumerStyle " formatter='ff.isStandardText'>是否标准</th>
             <th data-options="field:'proName',width:120">系统名称</th>
-            <th data-options="field:'proId',width:120">系统编码</th>
-            <th data-options="field:'proInterName',width:120">接口名称</th>
-            <th data-options="field:'proInterId',width:120">接口代码</th>
+            <th data-options="field:'proInterId',width:120,styler:providerStyle ">接口代码</th>
+            <th data-options="field:'proInterName',width:120,styler:providerStyle ">接口名称</th>
+            <th data-options="field:'proEcode',width:70">交易码</th>
+            <th data-options="field:'proIsStandard',width:70,styler:providerStyle " formatter='ff.isStandardText'>是否标准</th>
 
         </tr>
         </thead>

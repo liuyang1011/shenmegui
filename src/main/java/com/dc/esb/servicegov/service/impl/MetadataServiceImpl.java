@@ -9,10 +9,8 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.MetadataHis;
-import com.dc.esb.servicegov.service.VersionService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
-import com.dc.esb.servicegov.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +37,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     @Autowired
     private VersionServiceImpl versionService;
     @Autowired
-    private MetadataHisServiceImpl metadataHisService;
+    private MetadataOutdateServiceImpl metadataHisService;
     public List<Metadata> getAllMetadata() {
         String hql = " from " + Metadata.class.getName() + " order by METADATA_ID asc";
     	List<Metadata> list = metadataDAOImpl.find(hql);
@@ -266,6 +264,16 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
                 if(key.equals("categoryWordId") && values.get(key) != null && values.get(key).length > 0 ){
                     if(StringUtils.isNotEmpty(values.get(key)[0])){
                         hql += " and a.categoryWordId ='" + values.get(key)[0] + "' ";
+                    }
+                }
+                if(key.equals("dataCategory") && values.get(key) != null && values.get(key).length > 0 ){
+                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+                        try {
+                            hql += " and a.dataCategory like '%" + URLDecoder.decode(values.get(key)[0], "utf-8") + "%' ";
+                        }catch (UnsupportedEncodingException e) {
+                            log.error(e,e);
+                            log.error("数据项分类转码错误！");
+                        }
                     }
                 }
             }

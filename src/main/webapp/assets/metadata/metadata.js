@@ -10,7 +10,7 @@ $(function(){
 			"metadataAlias" : $("#metadataAlias").textbox("getValue"),
 	//		"status" : $("#status").combobox("getValue"),
 			"categoryWordId" : $("#categoryWordId").combobox("getValue"),
-	//		"version" : $("#version").textbox("getValue"),
+			"dataCategory" : encodeURI($("#dataCategory").textbox("getValue")),
 			"optUser" : $("#optUser").textbox("getValue"),
 			"startDate" : $("#startDate").datebox("getValue"),
 			"endDate" : $("#endDate").datebox("getValue")

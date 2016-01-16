@@ -6,5 +6,5 @@ import com.dc.esb.servicegov.entity.MetadataHis;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MetadataHisDAOImpl extends HibernateDAO<MetadataHis, String> {
+public class MetadataOutdateDAOImpl extends HibernateDAO<MetadataHis, String> {
 }

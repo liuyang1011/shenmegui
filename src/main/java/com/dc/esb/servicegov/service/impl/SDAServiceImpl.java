@@ -772,6 +772,14 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         List<SDA> result = sdaDAO.findBy(params);
         return result;
     }
+    //获取syshead、apphead节点下元素
+    public List<SDA> getServiceHeadAll(String serviceHeadId, String parentId){
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("serviceHeadId", serviceHeadId);
+        params.put("parentId", parentId);
+        List<SDA> result = sdaDAO.findBy(params);
+        return result;
+    }
 
     /**
      * 获取场景request或response下属于某个服务头的子节点

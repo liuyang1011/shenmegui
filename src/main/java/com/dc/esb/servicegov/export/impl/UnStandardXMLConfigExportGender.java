@@ -29,23 +29,15 @@ import java.util.Map;
 public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
     private Log log = LogFactory.getLog(UnStandardXMLConfigExportGender.class);
 
-    @Autowired
-    IdaServiceImpl idaService;
-    @Autowired
-    SDAServiceImpl sdaService;
     @Override
-    public void  genrateSystemServiceFile(ServiceInvoke serviceInvoke, String path){
+    public void  generateRequest(ServiceInvoke serviceInvoke, String path){
         try {
             Interface inter = serviceInvoke.getInter();
-            if(null != inter){
+            if(null != inter) {
                 String serviceId = serviceInvoke.getServiceId();
                 String operationId = serviceInvoke.getOperationId();
-                com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
-                String fileName = path + File.separator + "channel_" + system.getSystemAb() + "_service_" + serviceId + operationId + ".xml";
-                File file = new File(fileName);
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
+
+                String fileName = getReqFilePath(serviceInvoke, path);
 
                 Document doc = DocumentHelper.createDocument();
                 Element serviceElement = doc.addElement("service");//根节点
@@ -56,16 +48,7 @@ public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
                 List<Ida> children = idaService.getNotEmptyByParentId(reqestIda.getId());
                 fillContent(serviceElement, children, serviceId, operationId);
 
-                try {
-                    OutputFormat format = OutputFormat.createPrettyPrint();
-                    format.setEncoding("utf-8");
-                    FileOutputStream fos = new FileOutputStream(fileName);
-                    XMLWriter writer = new XMLWriter(fos, format);
-                    writer.write(doc);
-                    writer.close();
-                } catch (IOException e) {
-                    log.error(e, e);
-                }
+                createFile(doc, fileName);
             }
         }catch (Exception e){
             log.error(e, e);
@@ -73,18 +56,14 @@ public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
     }
 
     @Override
-    public void  genrateServiceSystemFile(ServiceInvoke serviceInvoke, String path) {
+    public void  generateResponse(ServiceInvoke serviceInvoke, String path) {
         try {
             Interface inter = serviceInvoke.getInter();
             if (null != inter) {
                 String serviceId = serviceInvoke.getServiceId();
                 String operationId = serviceInvoke.getOperationId();
-                com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
-                String fileName = path + File.separator + "service_" + serviceId + operationId + "_system_" + system.getSystemAb() + ".xml";
-                File file = new File(fileName);
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
+
+                String fileName = getResFilePath(serviceInvoke, path);
 
                 Document doc = DocumentHelper.createDocument();
                 Element serviceElement = doc.addElement("service");//根节点
@@ -95,16 +74,7 @@ public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
                 List<Ida> children = idaService.getNotEmptyByParentId(reqsponseIda.getId());
                 fillContent(serviceElement, children, serviceId, operationId);
 
-                try {
-                    OutputFormat format = OutputFormat.createPrettyPrint();
-                    format.setEncoding("utf-8");
-                    FileOutputStream fos = new FileOutputStream(fileName);
-                    XMLWriter writer = new XMLWriter(fos, format);
-                    writer.write(doc);
-                    writer.close();
-                } catch (IOException e) {
-                    log.error(e, e);
-                }
+                createFile(doc, fileName);
             }
 
         } catch (Exception e) {

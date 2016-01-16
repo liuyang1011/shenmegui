@@ -39,6 +39,9 @@
 							this.value=newValue;
 						}
 					"></td>
+            <th><nobr>数据项分类</nobr></th>
+            <td><input class="easyui-textbox" type="text" style="width:100px" name="dataCategory" id="dataCategory"></td>
+
         </tr>
         <tr>
             <th><nobr> 创建人</nobr></th>
@@ -47,10 +50,14 @@
             <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
             <th><nobr> 创建结束日期</nobr></th>
             <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
+            <th></th>
+            <td></td>
+            <th></th>
+            <td></td>
             <td align="right">
                 <shiro:hasPermission name="metadata-get">
-                <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                    <a href="#" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+                    <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
                 </shiro:hasPermission>
             </td>
         </tr>
@@ -223,7 +230,7 @@
         text: '过时数据',
         iconCls: 'icon-save',
         handler: function () {
-            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/metadata/metdata_his.jsp?_t=' + new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
+            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/metadata/metdata_outdate.jsp?_t=' + new Date().getTime() + '" style="width:100%;height:98%;"></iframe>';
             parent.$('#mainContentTabs').tabs('add', {
                 title: "过时元数据",
                 content: content,
@@ -271,22 +278,35 @@
         }
     });
     </shiro:hasPermission>
-//    toolbar.push({
-//        text: '发布版本',
-//        iconCls: 'icon-save',
-//        handler: function () {
-//            var urlPath = "/metadataVersion/releasePage";
-//            $('#opDialog').dialog({
-//                title: '版本发布',
-//                width: 500,
-//                left:200,
-//                closed: false,
-//                cache: false,
-//                href: urlPath,
-//                modal: true
-//            });
-//        }
-//    });
+    toolbar.push({
+        text: '历史版本',
+        iconCls: 'icon-save',
+        handler: function () {
+            var urlPath = "/jsp/metadata/metadata_his.jsp";
+            var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:98%;"></iframe>'
+            parent.$('#mainContentTabs').tabs('add', {
+                title: '数据字典历史版本',
+                content: opeAuditContent,
+                closable: true
+            });
+        }
+    });
+    toolbar.push({
+        text: '发布版本',
+        iconCls: 'icon-save',
+        handler: function () {
+            var urlPath = "/metadataVersion/releasePage";
+            $('#opDialog').dialog({
+                title: '版本发布',
+                width: 500,
+                left:200,
+                closed: false,
+                cache: false,
+                href: urlPath,
+                modal: true
+            });
+        }
+    });
 </script>
 
 

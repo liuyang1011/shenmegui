@@ -5,7 +5,7 @@ import com.dc.esb.servicegov.entity.MetadataHis;
 import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
-import com.dc.esb.servicegov.service.impl.MetadataHisServiceImpl;
+import com.dc.esb.servicegov.service.impl.MetadataOutdateServiceImpl;
 import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.VersionServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -17,12 +17,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.SecurityUtils;
-import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class MetadataOutdatedParserImpl implements IResourceParser {
@@ -58,7 +56,7 @@ public class MetadataOutdatedParserImpl implements IResourceParser {
     @Autowired
     private MetadataServiceImpl metadataService;
     @Autowired
-    private MetadataHisServiceImpl metadataHisService;
+    private MetadataOutdateServiceImpl metadataHisService;
     @Autowired
     private VersionServiceImpl versionService;
     @Override
