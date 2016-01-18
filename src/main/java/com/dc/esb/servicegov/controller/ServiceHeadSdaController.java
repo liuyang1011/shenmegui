@@ -1,13 +1,17 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.entity.ServiceHead;
 import com.dc.esb.servicegov.service.impl.ServiceHeadSdaServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceHeadServiceImpl;
+import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,6 +23,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/serviceHeadSda")
 public class ServiceHeadSdaController {
+    @Autowired
+    private SystemLogServiceImpl systemLogService;
+
     @Autowired
     private ServiceHeadServiceImpl serviceHeadService;
     @Autowired
@@ -40,5 +47,19 @@ public class ServiceHeadSdaController {
     @ResponseBody
     public List<TreeNode> getSDATree(String serviceHeadId){
         return serviceHeadSdaService.genderSDATree(serviceHeadId);
+    }
+
+//    @RequiresPermissions({"serviceHead-delete"})
+    //删除数据
+    @RequestMapping(method = RequestMethod.POST, value = "/deleteSDA", headers = "Accept=application/json")
+    @ResponseBody
+    public boolean deleteSDA(@RequestBody String[] delIds){
+        OperationLog operationLog = systemLogService.record("SDA", "批量删除", "数量：" + delIds.length);
+
+        String logParam = serviceHeadSdaService.delete(delIds);
+
+        operationLog.setParams(logParam);
+        systemLogService.updateResult(operationLog);
+        return true;
     }
 }

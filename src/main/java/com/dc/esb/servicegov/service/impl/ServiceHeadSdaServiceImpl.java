@@ -88,4 +88,14 @@ public class ServiceHeadSdaServiceImpl extends AbstractBaseService<SDA, String>{
         return nodeList;
 
     }
+
+    public String delete(String[] ids){
+        String str = "";
+        for(String id : ids){
+            SDA sda = sdaDAO.findUniqueBy("id", id);
+            str += " {服务头ID:" + sda.getHeadId() + ", SDA名称:" + sda.getStructName()+"}";
+            sdaDAO.delete(sda);
+        }
+        return str;
+    }
 }

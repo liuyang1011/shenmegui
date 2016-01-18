@@ -34,6 +34,8 @@ public class IDAController {
 	OperationServiceImpl operationService;
 	@Autowired
 	SDAServiceImpl sdaService;
+	@Autowired
+	IdaAttrbuteServiceImpl idaAttrbuteService;
 
 	@RequiresPermissions({"system-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getHeads/{headId}", headers = "Accept=application/json")
@@ -68,6 +70,11 @@ public class IDAController {
 
 		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){
+			if(idaAttrbuteService.judgeAttr(ida.getId())){
+				ida.setAttrFlag("true");
+			}else{
+				ida.setAttrFlag("false");
+			}
 			ida.setHeads(null);
 		}
 		map.put("total", idas.size());

@@ -548,6 +548,44 @@
             });
 
         });
+        //添加属性
+        function appendAttribute(){
+            var row = $('#tg').treegrid('getSelected');
+            if(row.id == ""){
+                alert("请先保存后再添加属性!");
+                return ;
+            }
+            var urlPath = "/jsp/interface/ida_attribute_add.jsp?idaId=" + row.id;
+            $('#releaseDlg').dialog({
+                title: '添加属性',
+                width: 770,
+                left: 100,
+                closed: false,
+                href: urlPath,
+                modal: true
+            });
+        }
+        //展示属性子表
+        function showAttr(){
+            var row = $('#tg').treegrid('getSelected');
+            var urlPath = "/jsp/interface/ida_attribute_list.jsp?idaId=" + row.id;
+            $('#releaseDlg').dialog({
+                title: row.structName + '属性列表',
+                width: 770,
+                left: 100,
+                closed: false,
+                href: urlPath,
+                modal: true
+            });
+        }
+        function attrFormat(value,row,index) {
+            if(value == "true") {
+                var s = '<img src="/resources/themes/icons/edit_add.png" onclick="showAttr()"/> ';
+                return s;
+            }else{
+                return '';
+            }
+        }
     </script>
 </head>
 
@@ -629,6 +667,7 @@
     <div onclick="removeIt()" data-options="iconCls:'icon-remove'">
         删除
     </div>
+    <div onclick="appendAttribute()" data-options="iconCls:'icon-edit'">添加属性</div>
 </div>
 <table title="接口定义信息" id="tg"
        style="height: 440px; width: 100%;"
@@ -679,6 +718,7 @@
         <th data-options="field:'seq',width:50,hidden:true">
             排序
         </th>
+        <th data-options="field:'attrFlag',width:30,formatter:attrFormat">属性</th>
     </tr>
     </thead>
 </table>

@@ -13,10 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * TODO no DAO
- *
- */
 @Service
 @Transactional
 public class SDAAttrbuteServiceImpl extends AbstractBaseService<SDAAttribute,String> implements SDAAttrbuteService {

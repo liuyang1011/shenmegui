@@ -7,15 +7,18 @@ import com.dc.esb.servicegov.dao.impl.SystemDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
+import com.dc.esb.servicegov.excel.support.CellStyleSupport;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.Counter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,8 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     protected Log logger = LogFactory.getLog(getClass());
 
     private static final String INTERFACE = "interface";
+
+    private CellStyle cellStyle;
 
     @Autowired
     private InterfaceDAOImpl interfaceDAO;
@@ -80,6 +85,7 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     private HSSFWorkbook fillExcel(List<Interface> interList,System system){
         if(null  != interList){
             HSSFWorkbook workbook =  getTempalteWb(Constants.EXCEL_TEMPLATE_INTERFACE);
+            cellStyle = CellStyleSupport.leftStyle(workbook);
             fillIndex(workbook, interList,system);
             fillMapings(workbook, interList);
             //List<InterfaceHeadVO> ihvList = getByInterfaceHeadVOServiceId(serviceId);
@@ -185,12 +191,29 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
     }
 
     public void fillIda(HSSFSheet sheet, HSSFRow row, Ida ida){
-        row.createCell(0).setCellValue(ida.getStructName());//英文名称
-        row.createCell(1).setCellValue(ida.getStructAlias());//中文名称
-        row.createCell(2).setCellValue(ida.getType());//类型
-        row.createCell(3).setCellValue(ida.getLength());//长度
-        row.createCell(4).setCellValue(ida.getRequired());//是否必输
-        row.createCell(5).setCellValue(ida.getRemark());//备注
+        if(null != cellStyle){
+
+        }
+        fillCell(row, 0, ida.getStructName());
+        fillCell(row, 1, ida.getStructAlias());
+        fillCell(row, 2, ida.getType());
+        fillCell(row, 3, ida.getLength());
+        fillCell(row, 4, ida.getRequired());
+        fillCell(row, 5, ida.getRemark());
+//        row.createCell(0).setCellValue(ida.getStructName());//英文名称
+//        row.createCell(1).setCellValue(ida.getStructAlias());//中文名称
+//        row.createCell(2).setCellValue(ida.getType());//类型
+//        row.createCell(3).setCellValue(ida.getLength());//长度
+//        row.createCell(4).setCellValue(ida.getRequired());//是否必输
+//        row.createCell(5).setCellValue(ida.getRemark());//备注
+    }
+
+    public void fillCell(HSSFRow row, int i , String value){
+        HSSFCell cell = row.createCell(i);
+        if(null != cellStyle){
+            cell.setCellStyle(cellStyle);
+        }
+        cell.setCellValue(value);
     }
 
     public List<Ida> getIdaChildren(String id){

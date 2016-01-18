@@ -164,6 +164,16 @@
             row.interfaceId= interfaceId;
             return row;
         }
+        function consumerStyle(value, row, index) {
+            if(row.conIsStandard == '99'){
+                return 'background-color:#d9d2e9;color:white';
+            }
+        }
+        function providerStyle(value, row, index) {
+            if(row.proIsStandard == '99'){
+                return 'background-color:#d9d2e9;color:white';
+            }
+        }
     </script>
 
 </head>
