@@ -76,7 +76,7 @@
                         w: 500,
                         iconCls: 'icon-add',
                         title: "新增英文单词",
-                        url: "/jsp/englishword/add.jsp"
+                        url: "/jsp/englishWord/add.jsp"
                     });
                 }
             },
