@@ -278,35 +278,35 @@
         }
     });
     </shiro:hasPermission>
-    toolbar.push({
-        text: '历史版本',
-        iconCls: 'icon-save',
-        handler: function () {
-            var urlPath = "/jsp/metadata/metadata_his.jsp";
-            var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:98%;"></iframe>'
-            parent.$('#mainContentTabs').tabs('add', {
-                title: '数据字典历史版本',
-                content: opeAuditContent,
-                closable: true
-            });
-        }
-    });
-    toolbar.push({
-        text: '发布版本',
-        iconCls: 'icon-save',
-        handler: function () {
-            var urlPath = "/metadataVersion/releasePage";
-            $('#opDialog').dialog({
-                title: '版本发布',
-                width: 500,
-                left:200,
-                closed: false,
-                cache: false,
-                href: urlPath,
-                modal: true
-            });
-        }
-    });
+//    toolbar.push({
+//        text: '历史版本',
+//        iconCls: 'icon-save',
+//        handler: function () {
+//            var urlPath = "/jsp/metadata/metadata_his.jsp";
+//            var opeAuditContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:98%;"></iframe>'
+//            parent.$('#mainContentTabs').tabs('add', {
+//                title: '数据字典历史版本',
+//                content: opeAuditContent,
+//                closable: true
+//            });
+//        }
+//    });
+//    toolbar.push({
+//        text: '发布版本',
+//        iconCls: 'icon-save',
+//        handler: function () {
+//            var urlPath = "/metadataVersion/releasePage";
+//            $('#opDialog').dialog({
+//                title: '版本发布',
+//                width: 500,
+//                left:200,
+//                closed: false,
+//                cache: false,
+//                href: urlPath,
+//                modal: true
+//            });
+//        }
+//    });
 </script>
 
 

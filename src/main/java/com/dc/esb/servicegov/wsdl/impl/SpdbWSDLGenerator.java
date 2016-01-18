@@ -280,7 +280,7 @@ public class SpdbWSDLGenerator  {
             Schema schema = (Schema) extReg.createExtension(Types.class, new QName(XSD_NAMESPACE, "schema", XSD_PREFIX));
             schema.setTargetNamespace("http://esb.spdbbiz.com/services/" + serviceId + "/wsdl");
             SchemaImport schemaImport = schema.createImport();
-            schemaImport.setSchemaLocationURI("http://10.112.20.145:8080/Publish/WSDLfilePath/"+serviceId + ".xsd");
+            schemaImport.setSchemaLocationURI(serviceId + ".xsd");
             schemaImport.setNamespaceURI("http://esb.spdbbiz.com/services/" + serviceId);
             schema.addImport(schemaImport);
             types.addExtensibilityElement(schema);

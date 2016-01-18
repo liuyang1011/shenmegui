@@ -104,7 +104,7 @@
         </tr>
         <tr>
             <th>备注</th>
-            <td><input class="easyui-textbox" type="remark" name="length"></td>
+            <td><input class="easyui-textbox" type="remark" name="remark"></td>
         </tr>
         <tr style="display:none;">
             <th>任务id</th>

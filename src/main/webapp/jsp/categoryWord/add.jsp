@@ -13,15 +13,15 @@
         </tr>
         <tr>
             <th>英文全称</th>
-            <td><input class="easyui-textbox" type="text" id="englishWord"></td>
+            <td><input class="easyui-textbox" type="text" id="englishWord_"></td>
         </tr>
         <tr>
-            <th>类别词英文</th>
+            <th>英文缩写</th>
             <td><input class="easyui-textbox" type="text" id="esglisgAb_" data-options="required:true, validType:['uniqueAb','englishB']"></td>
         </tr>
         <tr>
             <th>备注</th>
-            <td><input class="easyui-textbox" type="text" id="remark_" data-options="validType:['chineseB']"></td>
+            <td><input class="easyui-textbox" type="text" id="remark_"></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -82,7 +82,7 @@
         }
         var categoryWord = {};
         categoryWord.chineseWord = $('#chineseWord_').textbox("getValue");
-        categoryWord.englishWord = $('#englishWord').textbox("getValue");
+        categoryWord.englishWord = $('#englishWord_').textbox("getValue");
         categoryWord.esglisgAb = $('#esglisgAb_').textbox("getValue");
         categoryWord.remark = $('#remark_').textbox("getValue");
         $.ajax({

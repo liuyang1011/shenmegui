@@ -20,7 +20,7 @@
 <form id="searchForm">
     <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
                                                        onClick="javascript:$('#dlg').dialog('close');">取消</a><a href="javascript:void(0)" id="saveBtn"
-                                                                                  onclick="saveAdd('${param.optType}')"
+                                                                                  onclick="saveOperation('${param.optType}')"
                                                                                   class="easyui-linkbutton"
                                                                                   iconCls="icon-save">确定</a></div>
 <fieldset>
@@ -121,7 +121,7 @@
         $("#metadataList").datagrid('options').queryParams = params;
         $("#metadataList").datagrid('reload');
     };
-    function saveAdd(optType){
+    function saveOperation(optType){
         if('insertBef' == optType){
             insertBef();
         }
@@ -130,6 +130,9 @@
         }
         if('insertAft' == optType){
             insertAft()
+        }
+        if('edit' == optType){
+            edit();
         }
     }
     function insertBef(){
@@ -228,6 +231,39 @@
         $('#tg').treegrid('select', editingId);
         $('#dlg').dialog("close");
     }
+
+    function edit(){
+        var row =  $('#metadataList').datagrid('getSelected');
+        if(row){
+            var node = $('#tg').treegrid('getSelected');
+            var typeStr = row.type;
+            if(row.length){
+                typeStr += "(" + row.length;
+                if(row.scale){
+                    typeStr += "," + row.scale;
+                }
+                typeStr += ")";
+            }
+            $('#tg').treegrid('endEdit', node.id);
+            var xpath  = node.append3.substring(0,node.append3.lastIndexOf('/')) + '/' + row.metadataId;//修改操作xpath=原节点xpath替换metadataId
+            $('#tg').treegrid('update',{
+                id: node.id,
+                row: {
+                    text: row.metadataId,
+                    append1: row.chineseName,
+                    append2: typeStr,
+                    append3: xpath,
+                    append4: row.metadataId
+                }
+            });
+            $('#tg').treegrid('reloadFooter');
+            $('#tg').treegrid('select', node.id);
+            $('#dlg').dialog("close");
+        }else{
+            alert('请选中一行数据!');
+        }
+    }
+
     function getSeq(nodeId){
         var children = $('#tg').treegrid('getChildren', nodeId);
         if(null != children && children.length > 0){

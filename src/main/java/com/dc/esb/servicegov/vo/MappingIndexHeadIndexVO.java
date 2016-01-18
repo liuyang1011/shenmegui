@@ -11,8 +11,8 @@ public class MappingIndexHeadIndexVO {
     final String  interfaceIdHead = "接口代码";
     final String  interfaceNameHead = "交易名称";
     final String  serviceNameHead = "服务名称";
-    final String  operationIdHead = "服务操作ID";
-    final String  operationNameHead = "服务操作名称";
+    final String  operationIdHead = "原子服务ID";
+    final String  operationNameHead = "原子服务名称";
     final String  consumerNamesHead = "调用方系统名称";
     final String  consumerAbsHead = "调用方";
     final String  providerAbsHead = "提供方";

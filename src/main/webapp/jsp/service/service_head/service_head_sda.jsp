@@ -138,7 +138,7 @@
             editNodes.push(node);
           }
         }
-
+        console.log(editNodes);
         editingId = undefined;
         var result = false;
         $.ajax({
@@ -249,12 +249,15 @@
     });
     //弹出元数据选择界面
     function appendByMetadata(){
+      showMetadata("append");
+    }
+    function showMetadata(optType){
       var node = $('#tg').treegrid('getSelected');
       if(node.text == "root" && node.parentId == null){
         alert("请选择其他节点！");
         return false;
       }
-      var urlPath ="/jsp/metadata/metadata_choose_service_head.jsp?serviceHeadId=${param.serviceHeadId}&optType=append"
+      var urlPath ="/jsp/metadata/metadata_choose_service_head.jsp?serviceHeadId=${param.serviceHeadId}&optType="+optType;
       $('#dlg').dialog({
         title: '元数据',
         width: 770,
