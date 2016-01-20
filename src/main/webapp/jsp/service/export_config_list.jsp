@@ -26,20 +26,30 @@
 
 <body>
 <form class="easyui-form" id="exportForm" >
+    <div id="exportTB">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-excel-export" plain="true" onclick="exportBath()">导出配置文件</a>
+        （默认导出标准XML配置，鼠标右键选择其他选项)&nbsp;&nbsp;&nbsp;
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-excel-export" plain="true" onclick="tranToEsb()">发布到ESB</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-config" plain="true" onclick="tranConfig()">发布选项</a>
+    </div>
+    <div id="mm" class="easyui-menu" style="width:120px;">
+        <div onclick="chooseUnStandard()" data-options="iconCls:'icon-edit'">选择非标导出</div>
+    </div>
+    <div id="tranConfigDialog" class="easyui-dialog"
+         style="width:400px;height:280px;padding:10px 20px" closed="true"
+         resizable="true"></div>
+    <%--部署选项开关标志， 默认false--%>
+    <input type="hidden" id="optionFlag" value="false" />
+    <%--数据字典同步标志， 默认不同步--%>
+    <input type="hidden" id="dicSync" value="false"/>
+    <%--esb服务器id字符串--%>
+    <input type="hidden" id="serverStr" value=""/>
     <table id="choosedList" class="easyui-datagrid"
            data-options="
                 rownumbers:true,
 			      singleSelect:false,
 			      fitColumns:true,
-                toolbar:[{
-                    iconCls: 'icon-excel-export',
-                    text:'导出配置',
-                     handler: exportBath
-                },
-                {
-                    text:'（默认导出标准XML配置，鼠标右键选择其他选项)'
-                }
-                ],
+                toolbar:'#exportTB',
                 method:'get',
                 onLoadSuccess:function(row){//当表格成功加载时执行
                     $(this).datagrid('selectAll');
@@ -78,9 +88,6 @@
 
     </table>
 </form>
-<div id="mm" class="easyui-menu" style="width:120px;">
-    <div onclick="chooseUnStandard()" data-options="iconCls:'icon-edit'">选择非标导出</div>
-</div>
 <script type="text/javascript">
     var formatter={
         standard : function (value, row, index) {
@@ -92,48 +99,6 @@
             }
         }
     }
-//    var standardEditor = {
-//        type:'combobox',
-//        options:{
-//            required:true,
-//            valueField:'id',
-//            textField:'text',
-//            data:[{
-//                id: '1',
-//                text: '否'
-//            },{
-//                id: '0',
-//                text: '是'
-//            }],
-//            onSelect:function(record){
-//                var row = $('#choosedList').datagrid('getSelected');
-//                var index =  $('#choosedList').datagrid('getRowIndex', row);
-//                var ed = $('#choosedList').datagrid('getEditor', {index:index,field:'conGeneratorName'});
-//                $(ed.target).combobox('setValue',null);
-//                if(record.id == '1'){
-//                    var url = '/generator/getAllList?type';
-//                    $(ed.target).combobox({
-//                        valueField: 'id',
-//                        textField: 'name',
-//                        url: url,
-//                        onSelect:function(record){
-//                            row.interfaceIdOrProtocolIdPro = record.id;
-//                        }
-//                    })
-//                }
-//                if(record.id == '0'){
-//                    var data = [{
-//                        id: 'xml',
-//                        text: 'xml'
-//                    },{
-//                        id: 'soap',
-//                        text: 'soap'
-//                    }];
-//                    $(ed.target).combobox('loadData',data);
-//                }
-//            }
-//        }
-//    }
     var conGeneratorEditor = {
         type:'combobox',
         options: {
@@ -223,7 +188,89 @@
 
     }
 
+    function tranToEsb(){
+        if(!$("#exportForm").form('validate')){
+            alert("请完善数据！");
+            return false;
+        }
+        var rows = $("#choosedList").datagrid('getChecked');
+        var configVOs = [];
+        if(null != rows && 0 < rows.length){
+            var configVO = {};
+            for(var i = 0; i < rows.length; i++){
+                configVO.consumerServiceInvokeId = rows[i].consumerServiceInvokeId;
+                configVO.providerServiceInvokeId = rows[i].providerServiceInvokeId;
+                configVO.conGeneratorId = rows[i].conGeneratorId;
+                configVO.proGeneratorId = rows[i].proGeneratorId;
+                configVOs.push(configVO)
+            }
+            var serverIdStr = $("#serverStr").attr("value");
+            if(null == serverIdStr || "" == serverIdStr);
+            serverIdStr="all";
+            var urlPath = "/esbServer/configSync/" + $("#optionFlag").attr("value") + "/" + $("#dicSync").attr("value") + "/" + serverIdStr;
+            $.ajax({
+                type: "post",
+                contentType: "application/json; charset=utf-8",
+                url: urlPath,
+                dataType: "json",
+                data: JSON.stringify(configVOs),
+                success: function (data) {
+                    if(data){
+                        alert("操作成功");
+                    }else{
+                        alert("配置文件发布到ESB服务器失败");
+                    }
 
+                    $('#operationList').datagrid('reload');
+                }
+            });
+        }else{
+            alert("没有选中数据!");
+        }
+    }
+    //设置部署选项
+    function tranConfig(){
+        $('#tranConfigDialog').dialog({
+            title: '发布配置',
+            width: 600,
+            height: 300,
+            top:$(document).scrollTop() + ($(window).height()-250) * 0.5,
+            closed: false,
+            closable:false,
+            cache: false,
+            href: "/jsp/esb/server_config_option.jsp",
+            modal: true
+        });
+    }
+
+    function tranConfigClose(){
+        $("#optionFlag").attr("value", "false");
+        $("#tranConfigDialog").dialog("close");
+    }
+    function tranConfigSave(){
+        $("#optionFlag").attr("value", "true");
+        var rows = $("#esbServerList").datagrid("getChecked");
+        if(null != rows && 0 < rows.length){
+            var serviceIds = new Array();
+            for(var i = 0; i < rows.length; i ++){
+                serviceIds.push(rows[i].serverId);
+            }
+            var serviceStr = serviceIds.join(",");
+            $("#serverStr").attr("value", serviceStr);
+            $("#tranConfigDialog").dialog("close");
+        }else{
+            alert("请至少选择一个服务器！");
+        }
+    }
+    //更新数据字典值
+    function changeDicSyncValue(){
+        var dicSyncValue = $("#dicSync").attr("value");
+        if(dicSyncValue == "true"){
+            $("#dicSync").attr("value", "false");
+        }else{
+            $("#dicSync").attr("value", "true");
+        }
+    }
 </script>
 </body>
 </html>

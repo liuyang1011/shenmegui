@@ -1,0 +1,6 @@
+<soapenv:Envelope encoding="UTF-8"  package_type="soap" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:d="http://esb.dcitsbiz.com/metadata">
+  <soapenv:Header>
+  </soapenv:Header>
+  <soapenv:Body>
+  </soapenv:Body>
+</soapenv:Envelope>

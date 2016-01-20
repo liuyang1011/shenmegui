@@ -190,7 +190,7 @@ public class ConfigExportGenerator {
             }
         }
     }
-    public String getReqFilePath(ServiceInvoke serviceInvoke, String path){
+    public static String getReqFilePath(ServiceInvoke serviceInvoke, String path){
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
         com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
@@ -199,7 +199,7 @@ public class ConfigExportGenerator {
         return  fileName;
     }
 
-    public String getResFilePath(ServiceInvoke serviceInvoke, String path){
+    public static String getResFilePath(ServiceInvoke serviceInvoke, String path){
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
         com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();

@@ -82,7 +82,7 @@ public class SDA extends IExportableNode implements Serializable {
 		this.xpath = xpath;
 	}
 
-	@Column(name = "CONSTRAINT_ALIAS")
+	@Column(name = "CONSTRAINT_ALIAS", length = 2048)
 
 	private String constraint;//约束条件 如：SYS_HEAD  APP_HEAD
 

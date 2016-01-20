@@ -26,8 +26,8 @@
             <li><a href="javascript:;" class="openable" mid="1.12">系统日志</a></li>
         </ul>
     </li>
-    <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a>
-    </li>
+    <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a></li>
+        <li><a href="javascript:;" class="openable" mid="1.14">ESB服务器管理</a></li>
 </ul>
 <%
     }

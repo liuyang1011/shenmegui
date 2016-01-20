@@ -236,7 +236,7 @@
                     <input
                             name = "headId"
                             class="easyui-combobox"
-                            value="sys_head,app_head"
+                            value="SYS_HEAD,APP_HEAD"
                             data-options="
                        panelHeight:'200px',
                        multiple:true,

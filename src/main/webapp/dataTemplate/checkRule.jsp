@@ -60,6 +60,15 @@
 
 %>
 <%
+	if(mid.equals("1.14")){
+%>
+{"success":true,"url":"/jsp/esb/server_list.jsp","title":"ESB服务器管理"}
+<%
+	}
+
+%>
+
+<%
 	if(mid.equals("2.3")){
 %>
 {"success":true,"url":"/dataTemplate/grid4.jsp","title":"任务管理"}
