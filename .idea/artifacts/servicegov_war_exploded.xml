@@ -124,6 +124,7 @@
           <element id="library" level="project" name="Maven: asm:asm-util:3.3.1" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.8.3" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjrt:1.6.11" />
+          <element id="library" level="project" name="Maven: ch.ethz.ganymed:ganymed-ssh2:build210" />
         </element>
       </element>
       <element id="directory" name="META-INF">
