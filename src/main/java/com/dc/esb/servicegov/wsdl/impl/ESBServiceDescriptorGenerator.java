@@ -43,9 +43,9 @@ public class ESBServiceDescriptorGenerator {
                 operationElement.addText(operationId);
             }
             Element fileElement = wsdlElement.addElement("file");
-            fileElement.addText("S"+serviceDO.getServiceId() + ".wsdl");
+            fileElement.addText(serviceDO.getServiceId() + ".wsdl");
             Element xsdElement = metadataElement.addElement("xsd");
-            xsdElement.addElement("common").addText("S"+serviceDO.getServiceId() + ".xsd");
+            xsdElement.addElement("common").addText(serviceDO.getServiceId() + ".xsd");
 
             Element instanceElement = metadataElement.addElement("instance");
             instanceElement.addElement("in");

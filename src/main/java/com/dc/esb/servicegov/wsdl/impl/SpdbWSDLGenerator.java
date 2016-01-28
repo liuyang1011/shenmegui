@@ -77,7 +77,7 @@ public class SpdbWSDLGenerator  {
     public File generate(com.dc.esb.servicegov.entity.Service serviceDO, String dirPath) {
         BufferedOutputStream wsdlOut = null;
         String serviceId = serviceDO.getServiceId();
-        String tmpServiceId = "S" + serviceId;
+        String tmpServiceId = serviceId;
 //        String workspacePath = getWorkSpace();
 //        String dirPath = workspacePath + File.separator + serviceId;
         if(log.isInfoEnabled()){

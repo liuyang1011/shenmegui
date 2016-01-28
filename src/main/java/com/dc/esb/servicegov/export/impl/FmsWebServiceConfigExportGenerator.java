@@ -16,8 +16,8 @@ import java.util.List;
  * Created by Administrator on 2015/12/17.
  */
 @Component
-public class StandardWebServiceConfigExportGenerator extends ConfigExportGenerator{
-    private Log log = LogFactory.getLog(StandardWebServiceConfigExportGenerator.class);
+public class FmsWebServiceConfigExportGenerator extends ConfigExportGenerator{
+    private Log log = LogFactory.getLog(FmsWebServiceConfigExportGenerator.class);
     //模板文件
     private  String reqPath = "template/config_export/soap/channel_service_standard_soap.xml";
     private  String resPath = "template/config_export/soap/service_system_standard_soap.xml";
@@ -35,6 +35,7 @@ public class StandardWebServiceConfigExportGenerator extends ConfigExportGenerat
     private String RspBody = "Body";
     private String RspAppHead = "RspAppHead";
     private String RspAppBody = "RspAppBody";
+
     /**
      * 生成in_config文件
      * @param serviceInvoke

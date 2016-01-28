@@ -42,10 +42,14 @@ public class IDAController {
 	public @ResponseBody
 	Map<String,Object> getHeads(@PathVariable String headId) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		Map<String,String> reqMap = new HashMap<String,String>();
-		reqMap.put("headId", headId);
-		reqMap.put("state", Constants.IDA_STATE_COMMON);
-		List<Ida> idas = idaService.findBy(reqMap, "seq");
+//		Map<String,String> reqMap = new HashMap<String,String>();
+//		reqMap.put("headId", headId);
+//		reqMap.put("state", Constants.IDA_STATE_COMMON);
+//		List<Ida> idas = idaService.findBy(reqMap, "seq");
+		String hql = "from Ida t where t.headId = '"+headId+"'";
+		hql += " and (t.xpath is not null or t.structName is not null) order by t.seq";
+
+		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){
 			ida.setHeads(null);
 		}
@@ -66,7 +70,7 @@ public class IDAController {
 //		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		//TODO 空和0都要显示
 		String hql = "from Ida t where t.interfaceId = '"+interfaceId+"'";
-		hql += " and (t.state = '"+Constants.IDA_STATE_COMMON+"' or t.state is null) and (structName is not null or structAlias is not null) order by seq";
+		hql += " and (t.xpath is not null or s.structName is not null) order by t.seq";
 
 		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){

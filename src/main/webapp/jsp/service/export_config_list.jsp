@@ -208,6 +208,10 @@
             if(null == serverIdStr || "" == serverIdStr);
             serverIdStr="all";
             var urlPath = "/esbServer/configSync/" + $("#optionFlag").attr("value") + "/" + $("#dicSync").attr("value") + "/" + serverIdStr;
+            $.messager.progress({
+                title:'请稍后',
+                msg:'正在发布...'
+            });
             $.ajax({
                 type: "post",
                 contentType: "application/json; charset=utf-8",
@@ -215,13 +219,13 @@
                 dataType: "json",
                 data: JSON.stringify(configVOs),
                 success: function (data) {
+                    $.messager.progress("close");
                     if(data){
                         alert("操作成功");
                     }else{
                         alert("配置文件发布到ESB服务器失败");
                     }
-
-                    $('#operationList').datagrid('reload');
+                    $("#opDialog").dialog("close");
                 }
             });
         }else{

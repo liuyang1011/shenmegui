@@ -100,7 +100,7 @@
     var sourceId = "<%=request.getParameter("sourceId")%>";
     var context = "";
     $(function () {
-
+        alert(-2)
 
         /**
          * 初始化图表
@@ -116,7 +116,7 @@
          * @param result
          */
         var initConnections = function initConnections(result) {
-
+aler(-1)
             var nodes = result.nodes;
             var edges = result.edges;
             if(nodes){
@@ -184,7 +184,8 @@
          */
         var constructBlock = function constructBlock(row) {
             var columns = row.columns;
-            context += '<div class=\"table node\" id="'+row.id+'" style="left:'+row.left+'px;top:'+row.top+'px;">'
+            alert(0)
+            context += '<div id="test01" oncontextmenu="alert(1)" class=\"table node\" id="'+row.id+'" style="left:'+row.left+'px;top:'+row.top+'px;">'
                     + '     <div class=\"name\">'
                     + '         <span>'+row.name+'</span>'
                     + '         <div class="ep" style="display:none"></div>'

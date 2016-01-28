@@ -62,7 +62,7 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
     public boolean generate(Service serviceDO, String dirPath) {
 
         String serviceId = serviceDO.getServiceId();
-        String tmpServiceId = "S" + serviceId;
+        String tmpServiceId = serviceId;
         BufferedOutputStream schemaOut = null;
         try {
 //            List<Service> sHeadServices = serviceManager.getServiceById("SHEAD");

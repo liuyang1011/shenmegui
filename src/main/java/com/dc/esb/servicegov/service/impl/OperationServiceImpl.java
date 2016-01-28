@@ -347,9 +347,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             String operationHisAutoId = operationHis.getAutoId();
             sdaService.backUpSdaByCondition(params, operationHisAutoId);
             //备份SLA
-            slaService.backUpSLAByCondition(params, operationHisAutoId);
+            //slaService.backUpSLAByCondition(params, operationHisAutoId);
             //备份OLA
-            olaService.backUpByCondition(params, operationHisAutoId);
+            //olaService.backUpByCondition(params, operationHisAutoId);
             operation.setState(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED);
             operationDAOImpl.save(operation);
         }

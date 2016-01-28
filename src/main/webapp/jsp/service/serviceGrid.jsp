@@ -591,7 +591,7 @@
         <%--}--%>
     <%--});--%>
     toolbar.push({
-        text:'导出配置&nbsp;&nbsp;&nbsp;',
+        text:'导出配置&nbsp;',
         iconCls:'icon-excel-export',
         handler: function () {
             var checkedItems = $('#operationList').datagrid('getChecked');

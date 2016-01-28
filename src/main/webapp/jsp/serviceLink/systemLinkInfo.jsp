@@ -179,7 +179,7 @@
     var toolbar = [];
     <shiro:hasPermission name="link-get">
     toolbar.push({
-                text: '预览',
+                text: '预览1',
                 iconCls: 'icon-qxfp',
                 handler: function () {
                     var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
@@ -195,8 +195,10 @@
                             var ieVersion = "undefined" != typeof navigator && /MSIE\s([\d.]+)/.test(navigator.userAgent) ? new Number(RegExp.$1) : -1, oldIE = ieVersion > -1 && 9 > ieVersion;
                             var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink2.0/serviceLink.jsp?sourceId=' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
                             if(oldIE){
+                                alert(11);
                                 content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                             }
+                            alert(22);
 //                        //测试
 //                        content= '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/previewLink.jsp?sourceId='+checkedItem.id+'" style="width:100%;height:100%;"></iframe>';
                             selectTab('预览', content);

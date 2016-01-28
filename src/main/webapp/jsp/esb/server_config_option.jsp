@@ -14,9 +14,9 @@
                                                                               onclick="tranConfigSave()"
                                                                               class="easyui-linkbutton"
                                                                               iconCls="icon-save">确定</a></div>
-<fieldset>
-    <input id="dicUpdate" type="checkbox" onclick="changeDicSyncValue()"/>更新数据字典
-</fieldset>
+<%--<fieldset>--%>
+    <%--<input id="dicUpdate" type="checkbox" onclick="changeDicSyncValue()"/>更新数据字典--%>
+<%--</fieldset>--%>
 <table id="esbServerList" style="height:500px; width:auto;" title="ESB应用服务器"
        class="easyui-datagrid"
        data-options="rownumbers:true,singleSelect:false,url:'/esbServer/getServerList',method:'get',pagination:true,

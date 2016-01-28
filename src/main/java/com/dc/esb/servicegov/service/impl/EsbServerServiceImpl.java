@@ -39,38 +39,42 @@ public class EsbServerServiceImpl extends AbstractBaseService<EsbServer, String>
     private MetadataConfigGenerator metadataConfigGenerator;
 
     public void tranConfig(String path,String optionFlag, String dicSync, String serverStr){
-        List<EsbServer> esbServers;
-        if("false".equals(optionFlag)){
-            esbServers = esbServerDAO.getAll();
-        }else {
-            if("all".equals(serverStr)){
+        try{
+            List<EsbServer> esbServers;
+            if("false".equals(optionFlag)){
                 esbServers = esbServerDAO.getAll();
-            }else{
-                String hql = " from EsbServer where serverId in (?)";
-                esbServers = esbServerDAO.find(hql, serverStr);
+            }else {
+                if("all".equals(serverStr)){
+                    esbServers = esbServerDAO.getAll();
+                }else{
+                    String hql = " from EsbServer where serverId in (?)";
+                    esbServers = esbServerDAO.find(hql, serverStr);
+                }
             }
-        }
-        String inPath = path + File.separator + "in_config";
-        String outPath =  path + File.separator + "out_config";
-        try {
-            //TODO 选择更新数据字典
+            String inPath = path + File.separator + "in_config";
+            String outPath =  path + File.separator + "out_config";
+                //TODO 选择更新数据字典
             File metadataFile = metadataConfigGenerator.generate();
             File inMetadataFile = new File(inPath + File.separator + metadataFile.getName());
             File outMetadataFile = new File(outPath + File.separator + metadataFile.getName());
             FileUtils.copyFile(metadataFile, inMetadataFile);
             FileUtils.copyFile(metadataFile, outMetadataFile);
-        }catch (IOException e){
-            log.error("复制数据字典据失败！", e);
-        }
-        File[] inFiles = new File(inPath).listFiles();
-        File[] outFiles = new File(outPath).listFiles();
+            File[] inFiles = new File(inPath).listFiles();
+            File[] outFiles = new File(outPath).listFiles();
 
-        for(EsbServer esbServer : esbServers){
-            try {
-                tranConfigToServer(inFiles, outFiles, esbServer);
-            }catch (Exception e){
-                log.error("文件传入[" + esbServer.getServerIp()+"]失败!", e);
+            for(EsbServer esbServer : esbServers){
+                try {
+                    tranConfigToServer(inFiles, outFiles, esbServer);
+                }catch (Exception e){
+                    log.error("文件传入[" + esbServer.getServerIp()+"]失败!", e);
+                }
             }
+            //删除数字字典
+            metadataFile.delete();
+            //删除inout文件夹
+            FileUtil.deleteFile(path);
+        }catch (Exception e){
+            log.error("发布配置文件到ESB出现异常！",e);
         }
 
     }
