@@ -31,7 +31,6 @@
 </head>
 
 <body>
-
 <script type="text/x-jtk-templates" src="/assets/serviceLink2.0/template.html"></script>
 
 <div class="full-width-container">
@@ -58,7 +57,15 @@
         </div>
     </div>
 </div>
-
+<div id="mm" class="easyui-menu" style="width:120px;">
+    <div onclick="insertBef()" data-options="iconCls:'icon-edit'">基本信息</div>
+    <div onclick="insertAft()" data-options="iconCls:'icon-edit'">报文格式</div>
+    <div onclick="beginRelate()" data-options="iconCls:'icon-edit'">通讯协议</div>
+    <div onclick="delRelate()" data-options="iconCls:'icon-edit'">服务信息</div>
+    <div onclick="delRelate()" data-options="iconCls:'icon-edit'">接口信息</div>
+    <div onclick="delRelate()" data-options="iconCls:'icon-edit'">打开节点</div>
+    <div onclick="delRelate()" data-options="iconCls:'icon-edit'">关闭节点</div>
+</div>
 <script src="/assets/serviceLink2.0/jsPlumb-1.7.10.js"></script>
 <script src="/assets/serviceLink2.0/jsPlumbToolkit-1.0.5.js"></script>
 <script src="/assets/serviceLink2.0/app.js"></script>
@@ -66,7 +73,12 @@
 <script src="/resources/js/jquery.validate.js"></script>
 <script src="/resources/js/additional-methods.js"></script>
 <script src="/plugin/braintree.js"></script>
-
+<link rel="stylesheet" type="text/css"
+      href="/resources/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
+<link href="/resources/css/css.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 
 </body>
 </html>
