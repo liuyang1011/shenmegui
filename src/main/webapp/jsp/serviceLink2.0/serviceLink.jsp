@@ -66,14 +66,5 @@
 <script src="/resources/js/jquery.validate.js"></script>
 <script src="/resources/js/additional-methods.js"></script>
 <script src="/plugin/braintree.js"></script>
-<script type="text/javascript">
-    $(window).load(function() {
-        var d = $("#jsPlumb_2_1");
-        console.log(d);
-        $("#jsPlumb_2_1").click(function(){   //比如说：
-            alert(0)
-        });
-    });
-</script>
 </body>
 </html>
