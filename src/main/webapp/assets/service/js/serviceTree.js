@@ -29,6 +29,9 @@ $(function(){
     $("#servicePdf").click(function(){
         serviceUIHelper.exportPdf();
     });
+    $("#serviceWord").click(function(){
+        serviceUIHelper.exportWord();
+    });
     $("#serviceExcel").click(function(){
         serviceUIHelper.exportExcel();
     });

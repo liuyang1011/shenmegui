@@ -144,6 +144,7 @@
     </shiro:hasPermission>
     <shiro:hasPermission name="exportPdf-get">
     <div id="servicePdf" data-options="iconCls:'icon-excel-export'">导出白皮书PDF</div>
+    <div id="serviceWord" data-options="iconCls:'icon-excel-export'">导出白皮书Word</div>
     </shiro:hasPermission>
     <shiro:hasPermission name="excelExport-get">
     <div id="serviceExcel" data-options="iconCls:'icon-excel-export'">导出字段映射Excel</div>
