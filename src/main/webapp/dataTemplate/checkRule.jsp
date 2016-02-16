@@ -60,6 +60,14 @@
 
 %>
 <%
+if(mid.equals("1.14")){
+%>
+{"success":true,"url":"/jsp/generator/generator.jsp","title":"菜单管理"}
+<%
+	}
+
+%>
+<%
 	if(mid.equals("2.3")){
 %>
 {"success":true,"url":"/dataTemplate/grid4.jsp","title":"任务管理"}
