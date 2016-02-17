@@ -31,8 +31,6 @@
     </li>
         <li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>
     </li>
-        <li><a href="javascript:;" class="openable" mid="2.4">我的任务</a>
-        </li>
 </ul>
 <%
     }
