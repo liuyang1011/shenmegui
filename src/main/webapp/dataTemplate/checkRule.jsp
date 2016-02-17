@@ -62,7 +62,7 @@
 <%
 	if(mid.equals("2.3")){
 %>
-{"success":true,"url":"/dataTemplate/grid4.jsp","title":"任务管理"}
+{"success":true,"url":"/jsp/manageTask/manageTask.jsp","title":"流程任务管理"}
 <%
 	}
 	
@@ -153,6 +153,15 @@
 	if(mid.equals("5.2")){
 %>
 {"success":true,"url":"/jsp/role/roleMaintain.jsp","title":"角色维护"}
+<%
+	}
+
+%>
+
+<%
+	if(mid.equals("5.3")){
+%>
+{"success":true,"url":"/jsp/organiz/organizManage.jsp","title":"机构管理"}
 <%
 	}
 

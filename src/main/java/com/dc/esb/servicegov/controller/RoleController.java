@@ -62,7 +62,12 @@ public class RoleController {
         resMap.put("rows", role);
         return resMap;
     }
-
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllRole", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<Role> getAllRole() {
+        return roleServiceImpl.getAll();
+    }
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getById/{id}", headers = "Accept=application/json")
     public
@@ -70,7 +75,7 @@ public class RoleController {
     ModelAndView getById(@PathVariable String id) {
         Role role= roleServiceImpl.getById(id);
         ModelAndView model = new ModelAndView();
-        model.addObject("role",role);
+        model.addObject("role", role);
         model.setViewName("role/roleEdit");
         return model;
     }
@@ -118,7 +123,7 @@ public class RoleController {
     public
     @ResponseBody
     boolean checkRoleNameUnique(@PathVariable("name") String name) {
-        List<Role> roles = roleServiceImpl.findBy("name",name);
+        List<Role> roles = roleServiceImpl.findBy("name", name);
         if(roles.size() > 0){
             return false;
         }
@@ -127,15 +132,14 @@ public class RoleController {
 
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getRelation/{id}", headers = "Accept=application/json")
-    public @ResponseBody
+    @ResponseBody
     boolean getRelation(@PathVariable String id) {
     	List<UserRoleRelation> urr= userRoleRelationService.findBy("roleId", id);
     	if(urr.size()==0){
-    		 return false;
-    	} 
+            return false;
+        }
         return true;
     }
-
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
         return "403";
