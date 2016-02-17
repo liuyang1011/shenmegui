@@ -57,7 +57,7 @@ $(function () {
         data.responsibility =$('#responsibility').combobox('getValue');
         data.taskDescribe = $("#taskDescribe2").val();
         data.urgencyDegree = taskFormatter.formatPriority("0");
-        data.status = taskFormatter.formatStatus("Finished");
+        data.status = taskFormatter.formatStatus("Reserved");
         data.startDate = taskFormatter.formatStartDate("0");
         data.endDate = taskFormatter.formatEndDate("0");
         if(data.workFlow == "" || data.taskPoint==""){
