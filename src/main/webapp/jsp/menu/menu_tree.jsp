@@ -31,21 +31,20 @@
 				animate: true,
 				collapsible: true,
 				fitColumns: true,
-				url: '/statistics/serviceReuseRate?t='+ new Date().getTime(),
+				url: '/menu/menuTree?t='+ new Date().getTime(),
 				method: 'get',
 				idField: 'id',
 				treeField: 'text',
 				onBeforeExpand: function(node){
-				    expandServiceCategory(node)
+				    expandMenuCategory(node)
 				}
                "
             >
         <thead>
         <tr>
-            <th data-options="field:'id',width:'200'">菜单名称</th>
-            <th data-options="field:'texttext',width:'200'">菜单名称</th>
-            <th data-options="field:'id',width:'150'">排序</th>
-            <th data-options="field:'append6',width:'100'">操作</th>
+            <th data-options="field:'id',width:'200', hidden:true"></th>
+            <th data-options="field:'text',width:'200'">菜单名称</th>
+            <th data-options="field:'append1',width:'200', formatter:operationCell">操作</th>
 
         </tr>
         </thead>
@@ -59,13 +58,31 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
-
-    function expandServiceCategory(node){
+    //操作按钮
+    var operationCell = function(value, row){
+        var s = '<a onclick="add(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+                '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[新增子菜单]</span></span></a>';
+        if(value == 'category'){
+            s += '<a onclick="edit(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+                    '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[修改]</span></span></a>';
+            s += '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+                    '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[删除]</span></span></a>';
+        }
+        if(value == 'menu'){
+            s = "";
+            s += '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+                    '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[修改]</span></span></a>';
+            s += '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+                    '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[删除]</span></span></a>';
+        }
+        return s;
+    }
+    function expandMenuCategory(node){
         if(node.children == null){
             $.ajax({
                 type: "get",
                 async: false,
-                url: "/statistics/serviceReuseRate/expandServiceCategory?serviceCategoryId="+node.id,
+                url: "/menu/nodeContent?id="+node.id,
                 dataType: "json",
                 success: function (result) {
                     $('#resultList').treegrid('append',{
@@ -77,61 +94,15 @@
             });
         }
     }
-    function exportExcel(){
-        //var data = $("#resultList").treegrid("getData");
-                //appendTreeNode(form, data[0],"");
-        var form = $("<form>");//定义一个form表单
-        form.attr("style", "display:none");
-        form.attr("target", "");
-        form.attr("method", "post");
-        form.attr("action", "/excelExporter/exportServiceReuserate");
-        $("body").append(form);//将表单放置在web中
-        form.submit();//表单提交
-    }
-    function appendTreeNode(form, node, nodename){
-        var fields = ["id", "text", "append2", "append3", "append4", "append5"];
-        for (var j = 0; j < fields.length; j++) {
-            try {
-                var input1 = $("<input>");
-                input1.attr("type", "hidden");
-                input1.attr("name", nodename + fields[j]);
-                input1.attr("value", node[fields[j]]);
-                form.append(input1);
-            } catch (exception) {
-                continue;
-            }
-        }
-        var children = node['children'];
-        if(children != null){
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i];
-                var childName;
-                if(nodename == ""){
-                    childName = "children[" + i + "]";
-                }else{
-                    child =  childName+"[children[" + i + "]]";
-                }
-
-                appendTreeNode(form, child,childName);
-            }
-        }
-
-    }
-
-    function query() {
-        var params = {
-            "categoryId": $("#categoryId").textbox("getValue")
-        }
-        $("#resultList").datagrid('options').queryParams = params;
-        var p = $("#resultList").datagrid('getPager');
-        var total = $(p).pagination("options").total;
-        if (total < 100) {
-            total = 100;
-        }
-        $(p).pagination({
-            pageList: [10, 20, 50, total]
+    function add(){
+        $('#opDialog').dialog({
+            title: '新增菜单',
+            width: 500,
+            closed: false,
+            cache: false,
+            href: '/jsp/menu/menucategory_add.jsp',
+            modal: true
         });
-        $("#resultList").datagrid('reload');
     }
 </script>
 

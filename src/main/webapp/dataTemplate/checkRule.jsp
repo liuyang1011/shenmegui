@@ -62,7 +62,7 @@
 <%
 if(mid.equals("1.14")){
 %>
-{"success":true,"url":"/jsp/generator/generator.jsp","title":"菜单管理"}
+{"success":true,"url":"/jsp/menu/menu_tree.jsp","title":"菜单管理"}
 <%
 	}
 
