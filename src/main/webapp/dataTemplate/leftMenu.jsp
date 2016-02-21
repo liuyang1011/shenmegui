@@ -26,6 +26,7 @@
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
             <li><a href="javascript:;" class="openable" mid="5.2">角色维护</a></li>
+            <li><a href="javascript:;" class="openable" mid="5.3">机构管理</a></li>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="1.11">日志管理</a>
@@ -34,6 +35,8 @@
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a>
+    </li>
+        <li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>
     </li>
 </ul>
 <%
