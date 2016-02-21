@@ -26,24 +26,25 @@
 <body>
 
 <form class="formui" id="form" action="/metadata/add" method="post">
-    <input type="hidden" id="categoryId" value="${param.categoryId}">
+    <input type="hidden" id="menuId" value="${menuId}">
+    <input type="hidden" id="categoryId" value="${categoryId}">
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
             <th>菜单名称</th>
-            <td><input class="easyui-textbox" type="text" id="menuName" style="width:200px"
+            <td><input class="easyui-textbox" type="text" id="menuName" value="${menuName}" style="width:200px"
                        data-options="required:true"></td>
         </tr>
         <tr>
             <th>上级菜单</th>
             <td>
-                <%=URLDecoder.decode(request.getParameter("categoryName"), "utf-8")%>
+                ${categoryName}
             </td>
         </tr>
         <tr>
             <th>类型</th>
             <td><input class="easyui-combobox" style="width:200px" id="menuType"
                        type="text" id="type"
-                       value="category"
+                       value="${type}"
                        data-options="
                        required:true,
                      textField:'text',
@@ -64,7 +65,7 @@
         </tr>
         <tr>
             <th>权限</th>
-            <td><input id="permission" class='easyui-textbox' type='text' id='permission' style='width:200px'>&nbsp;例：user-get</td>
+            <td><input id="permission" class='easyui-textbox' type='text' id='permission' value="${permission}" style='width:200px'>&nbsp;例：user-get</td>
         </tr>
         <tr>
             <th></th>
@@ -73,17 +74,18 @@
         <tr>
             <td colspan="2" style="text-align:center">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#opDialog').dialog('close')">取消</a>
-                <a href="#" onclick="saveAdd()" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+                <a href="#" onclick="saveEdit()" class="easyui-linkbutton" iconCls="icon-save">保存</a>
             </td>
         </tr>
     </table>
 </form>
 <script type="text/javascript" src="/plugin/validate.js"></script>
 <script type="text/javascript">
-function saveAdd(){
+function saveEdit(){
     if (!$("#form").form('validate')) {
         return false;
     }
+    var menuId = $("#menuId").val();
     var categoryId = $("#categoryId").val();
     var menuName = $("#menuName").val();
     var menuType = $("#menuType").combobox("getValue");
@@ -97,16 +99,16 @@ function saveAdd(){
     $.ajax({
         type: "post",
         async: false,
-        url: "/menu/saveAdd",
+        url: "/menu/saveEdit",
         dataType: "json",
         data:{
+            "menuId":menuId,
             "categoryId":categoryId,
             "menuName":menuName,
             "menuType":menuType,
             "permission":permission
         },
         success: function (result) {
-            alert("操作成功!");
             $('#opDialog').dialog('close')
             var treeObj = $('#resultList');
             var selectNode = treeObj.treegrid("getSelected");

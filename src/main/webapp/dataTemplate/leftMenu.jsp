@@ -15,11 +15,13 @@
             &lt;%&ndash;<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>&ndash;%&gt;
         </ul>
     </li>--%>
+    <shiro:hasRole name="admin">
         <li><a href="javascript:;" class="openable" mid="1.14">权限管理</a>
             <ul>
                 <li><a href="javascript:;" class="openable" mid="1.14">菜单管理</a></li>
             </ul>
         </li>
+    </shiro:hasRole>
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>

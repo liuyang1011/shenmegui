@@ -31,7 +31,7 @@
 				animate: true,
 				collapsible: true,
 				fitColumns: true,
-				url: '/menu/menuTree?t='+ new Date().getTime(),
+				url: '/menu/menuTree?_t='+ new Date().getTime(),
 				method: 'get',
 				idField: 'id',
 				treeField: 'text',
@@ -60,19 +60,19 @@
 <script type="text/javascript">
     //操作按钮
     var operationCell = function(value, row){
-        var s = '<a onclick="add(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+        var s = '<a onclick="add(\'' + row.text + '\', \'' + row.id +'\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
                 '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[新增子菜单]</span></span></a>';
         if(value == 'category'){
-            s += '<a onclick="edit(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+            s += '<a onclick="editPage(\'' + row.id + '\', \'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
                     '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[修改]</span></span></a>';
-            s += '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+            s += '<a onclick="deleteOp(\'' + row.id + '\', \'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
                     '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[删除]</span></span></a>';
         }
         if(value == 'menu'){
             s = "";
-            s += '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+            s += '<a onclick="editPage(\'' + row.id + '\', \'' + value + '\')")" class="easyui-linkbutton" href="javascript:void(0)" >' +
                     '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[修改]</span></span></a>';
-            s += '<a onclick="detailPage(\'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
+            s += '<a onclick="deleteOp(\'' + row.id + '\', \'' + value + '\')" class="easyui-linkbutton" href="javascript:void(0)" >' +
                     '<span class="l-btn-left l-btn-icon-left"><span class="l-btn-text">[删除]</span></span></a>';
         }
         return s;
@@ -85,6 +85,7 @@
                 url: "/menu/nodeContent?id="+node.id,
                 dataType: "json",
                 success: function (result) {
+                    console.log(result);
                     $('#resultList').treegrid('append',{
                         parent: node.id,
                         data: result
@@ -94,14 +95,45 @@
             });
         }
     }
-    function add(){
+    function add(text, id){
+        $("#resultList").treegrid("select", id);
         $('#opDialog').dialog({
             title: '新增菜单',
             width: 500,
             closed: false,
             cache: false,
-            href: '/jsp/menu/menucategory_add.jsp',
+            href: '/jsp/menu/menucategory_add.jsp?categoryName=' + encodeURI(encodeURI(text)) + '&categoryId=' + id ,
             modal: true
+        });
+    }
+    function editPage(id, type){
+        $("#resultList").treegrid("select", id);
+        $('#opDialog').dialog({
+            title: '修改菜单',
+            width: 500,
+            closed: false,
+            cache: false,
+            href: '/menu/editPage?menuId=' + id + "&menuType=" + type,
+            modal: true
+        });
+    }
+    function deleteOp(id, type){
+        $.ajax({
+            type: "get",
+            async: false,
+            url: "/menu/delete",
+            dataType: "json",
+            data:{
+                "menuId":id,
+                "menuType":type
+            },
+            success: function (result) {
+                if(result){
+                    alert("操作成功！");
+                    $("#resultList").treegrid("reload");
+                }
+            }
+
         });
     }
 </script>
