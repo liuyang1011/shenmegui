@@ -60,6 +60,14 @@
 
 %>
 <%
+if(mid.equals("1.14")){
+%>
+{"success":true,"url":"/jsp/menu/menu_tree.jsp","title":"菜单管理"}
+<%
+	}
+
+%>
+<%
 	if(mid.equals("2.3")){
 %>
 {"success":true,"url":"/jsp/manageTask/manageTask.jsp","title":"流程任务管理"}

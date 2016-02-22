@@ -15,6 +15,13 @@
             &lt;%&ndash;<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>&ndash;%&gt;
         </ul>
     </li>--%>
+    <shiro:hasRole name="admin">
+        <li><a href="javascript:;" class="openable" mid="1.14">权限管理</a>
+            <ul>
+                <li><a href="javascript:;" class="openable" mid="1.14">菜单管理</a></li>
+            </ul>
+        </li>
+    </shiro:hasRole>
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
@@ -40,12 +47,8 @@
 <ul id="menu-tree">
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
-            <shiro:hasPermission name="englishWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.2">英文单词及缩写管理</a></li>
-            </shiro:hasPermission>
-            <shiro:hasPermission name="categoryWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
-            </shiro:hasPermission>
             <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>
         </ul>

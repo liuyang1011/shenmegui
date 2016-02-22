@@ -76,6 +76,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 					value = String.valueOf(df.format(cell.getNumericCellValue())).toString().trim();
 				}catch(Exception e){
 					log.info("处理公式单元格失败！");
+					value = cell.getStringCellValue();
+					return value;
 				}
 				break;
 			case Cell.CELL_TYPE_STRING:
