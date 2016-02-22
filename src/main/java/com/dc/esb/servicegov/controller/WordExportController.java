@@ -93,7 +93,7 @@ public class WordExportController {
         systemLogService.updateResult(operationLog);
     }
 
-    @RequiresPermissions({"exportPdf-get"})
+    @RequiresPermissions({"exportWord-get"})
     @RequestMapping(method = RequestMethod.POST, value = "/exportOperation", headers = "Accept=application/json")
     public void exportOperation(HttpServletRequest request, HttpServletResponse response, OperationPKVO pkvo) {
         OperationLog operationLog = systemLogService.record("服务白皮书","导出Word","根据选中场景节点导出，数量:" + pkvo.getPks().size());
