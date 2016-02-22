@@ -91,7 +91,7 @@
     var params = {
       "optUser":$("#optUser").textbox("getValue"),
       "startDate":$("#startDate").datebox("getValue"),
-      "endDate":$("#endDate").datebox("getValue")+1
+      "endDate":$("#endDate").datebox("getValue") + 1
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');
