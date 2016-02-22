@@ -420,16 +420,15 @@
       handler: function () {
         var checkedItems = $('#resultList').datagrid('getChecked');
         if (checkedItems != null && checkedItems.length == 1) {
-          $('#opDialog').dialog({
-            title: '详细信息',
-            width: 800,
-            left:200,
-            top:100,
-            closed: false,
-            cache: false,
-            href: '/operation/detailPage?serviceId=' +  checkedItems[0].serviceId + '&operationId=' + checkedItems[0].operationId,
-            modal: true
-          });
+
+            var url = '/operation/detailPage?serviceId=' +  checkedItems[0].serviceId + '&operationId=' + checkedItems[0].operationId
+            var content = ' <iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>'
+            parent.$('#mainContentTabs').tabs('add', {
+                title: '服务（'+ checkedItems[0].serviceId+ ":" +checkedItems[0].operationId+")详细信息",
+                content: content,
+                closable: true
+            });
+
         }
         else{
           alert("请选中一行数据！");
