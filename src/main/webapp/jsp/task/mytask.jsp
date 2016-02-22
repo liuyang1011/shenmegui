@@ -43,6 +43,9 @@
                     if (data == "InProgress") {
                         return "处理中";
                     }
+                    if (data == "Obsolete") {
+                        return "已删除";
+                    }
                 }
             },
             "formatPriority": function (data, row) {
@@ -265,7 +268,40 @@
                         alert("请选中要修改的数据！");
                     }
                 }
-            }, {
+            },
+            {
+                text: '删除',
+                iconCls: 'icon-remove',
+                handler: function () {
+                    var checkedItems = $('#taskTable').datagrid('getChecked');
+                    var checkedItem;
+                    if (checkedItems != null && checkedItems.length > 0) {
+                        if (checkedItems.length > 1) {
+                            alert("请选择一个任务进行删除！");
+                            return false;
+                        }
+                        else {
+                            checkedItem = checkedItems[0];
+                            Global.taskId = checkedItem.id;
+                            var url = "/process/" + $("#userId").text() + "/obsolete/" + checkedItem.id;
+                            $.ajax({
+                                "type": "get",
+                                "contentType": "application/json; charset=utf-8",
+                                "url": url,
+                                "dataType": "json",
+                                "success": function (result) {
+                                    alert("操作成功!");
+                                    $('#taskTable').datagrid('reload');
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        alert("请选中要修改的数据！");
+                    }
+                }
+            }
+            , {
                 text: '查看详情',
                 iconCls: 'icon-edit',
                 handler: function () {

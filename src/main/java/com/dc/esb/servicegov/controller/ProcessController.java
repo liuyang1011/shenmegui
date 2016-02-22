@@ -3,14 +3,18 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.entity.ProcessContext;
 import com.dc.esb.servicegov.process.impl.JbpmSupport;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
+import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -113,7 +117,13 @@ public class ProcessController {
         }
         return true;
     }
-
+    @RequestMapping(value = "{user}/obsolete/{taskId}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    boolean obsolete(@PathVariable("user") String user, @PathVariable("taskId") Long taskId, Model model) {
+        processContextService.obsolete(taskId);
+        return true;
+    }
     @RequestMapping(value = "{user}/work/{task}", method = RequestMethod.POST)
     public
     @ResponseBody
