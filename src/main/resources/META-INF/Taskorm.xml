@@ -162,7 +162,7 @@
 			) and
 
 			t.taskData.status in ('Created', 'Ready',
-			'Reserved', 'InProgress', 'Suspended') and
+			'Reserved', 'InProgress', 'Suspended', 'Obsolete') and
 
 			t.taskData.expirationTime
 			is null

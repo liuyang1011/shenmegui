@@ -22,6 +22,10 @@ public class SGMenuCategory implements Serializable {
     @Column(name="PARENT_ID")
     private String parentId;
 
+    //构建菜单树时使用的属性
+    private String type;
+    private String state;
+
     public String getId() {
         return Id;
     }
@@ -52,5 +56,21 @@ public class SGMenuCategory implements Serializable {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

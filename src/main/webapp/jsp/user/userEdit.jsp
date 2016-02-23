@@ -98,7 +98,7 @@
         });
 
         $('#orgEdit').combobox({
-            url: '/org/getAll',
+            url: '/org/getAllOrg',
             method: 'get',
             mode: 'remote',
             editable:false,
@@ -175,6 +175,7 @@
             }
         });
         $('#w').window('close');
+
     });
 
 </script>

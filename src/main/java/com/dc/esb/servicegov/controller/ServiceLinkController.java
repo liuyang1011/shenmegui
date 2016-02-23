@@ -76,14 +76,18 @@ public class ServiceLinkController {
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
         if (null != interfaceId) {
-            name = interfaceId + "(" + interfaceName + ")";
+            name = interfaceId;
+            //敏姐说简单就是美
+//            name = interfaceId + "(" + interfaceName + ")";
+            sourceGraphNode.setType("table");
         } else {
             name = serviceId + operationId;
+            sourceGraphNode.setType("rootnode");
         }
         sourceGraphNode.setName(name);
         sourceGraphNode.setLeft(String.valueOf(initX));
         sourceGraphNode.setTop(String.valueOf(initY));
-        sourceGraphNode.setType("table");
+
         return sourceGraphNode;
     }
 
@@ -115,6 +119,9 @@ public class ServiceLinkController {
         Interface inter = serviceInvoke.getInter();
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
+        //李敏说把图标列和服务场景列去掉
+        /*
+        //如果存在服务场景，添加服务场景
         if (null != serviceId && null != operationId && null != inter) {
             Service service = serviceService.getById(serviceId);
             Operation operation = operationService.getOperation(serviceId, operationId);
@@ -126,7 +133,7 @@ public class ServiceLinkController {
                 graphColumns.add(serviceGraphColumn);
             }
         }
-
+        //添加图标列
         GraphColumn iconColumn = new GraphColumn();
         iconColumn.setId("");
         List<GraphColumn.Icon> icons = new ArrayList<GraphColumn.Icon>();
@@ -140,18 +147,23 @@ public class ServiceLinkController {
             serviceIcon.setIcon("flag");
             icons.add(serviceIcon);
         }
+        */
+        //添加系统列
         System system = serviceInvoke.getSystem();
         if (null != system) {
             String systemAB = system.getSystemAb();
             String systemName = system.getSystemChineseName();
             GraphColumn systemGraphColumn = new GraphColumn();
-            systemGraphColumn.setId("系统:" + systemAB + "(" + systemName + ")");
+//            systemGraphColumn.setId("系统:" + systemAB + "(" + systemName + ")");
+            systemGraphColumn.setId( systemName);
             graphColumns.add(systemGraphColumn);
         }
+        /*
         if (icons.size() > 0) {
             iconColumn.setIcons(icons);
         }
         graphColumns.add(iconColumn);
+        */
         return graphColumns;
     }
 

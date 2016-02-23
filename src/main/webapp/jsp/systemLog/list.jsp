@@ -31,9 +31,9 @@
         <td><input id="optUser" class="easyui-textbox"/>
         </td>
         <th><nobr> 起始日期</nobr></th>
-        <td><input class="easyui-datebox" style="width:80px" type="text" name="startDate" id="startDate"></td>
+        <td><input class="easyui-datebox" style="width:100px" type="text" name="startDate" id="startDate"></td>
         <th><nobr> 结束日期</nobr></th>
-        <td><input class="easyui-datebox" style="width:80px" type="text" name="endDate" id="endDate"></td>
+        <td><input class="easyui-datebox" style="width:100px" type="text" name="endDate" id="endDate"></td>
         <th style="width:200px">
           <nobr>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
@@ -91,7 +91,7 @@
     var params = {
       "optUser":$("#optUser").textbox("getValue"),
       "startDate":$("#startDate").datebox("getValue"),
-      "endDate":$("#endDate").datebox("getValue")
+      "endDate":$("#endDate").datebox("getValue") + 1
     }
     $("#resultList").datagrid('options').queryParams = params;
     var p = $("#resultList").datagrid('getPager');
