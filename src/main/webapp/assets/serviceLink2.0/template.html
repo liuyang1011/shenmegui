@@ -112,6 +112,21 @@
     </div>
 
 </script>
+<script type="jtk" id="tmplRoot">
+    <div class="table node rootnode">
+        <div class="name">
+            <span>${name}</span>
+        </div>
+        <ul class="table-columns">
+            <r-each in="columns">
+                <r-tmpl id="tmplColumn"/>
+            </r-each>
+        </ul>
+        <jtk-source port-type="source" filter=".outer"/>
+        <jtk-target port-type="target"/>
+    </div>
+</script>
+
 
 <!-- view node type -->
 <script type="jtk" id="tmplView">

@@ -21,7 +21,7 @@
             nodePalette = mainElement.querySelector(".node-palette"),
             controls = mainElement.querySelector(".controls");
 
-        console.log(canvasElement);
+        //console.log(canvasElement);
 
         // Declare an instance of the Toolkit, and supply the functions we will use to get ids and types from nodes.
         var toolkit = jsPlumbToolkit.newInstance({
@@ -81,10 +81,23 @@
         // Instruct the toolkit to render to the 'canvas' element. We pass in a view of nodes, edges and ports, which
         // together define the look and feel and behaviour of this renderer.  Note that we can have 0 - N renderers
         // assigned to one instance of the Toolkit..
+
         var renderer = window.renderer = toolkit.render({
             container: canvasElement,
             view: {
                 nodes: {
+                    "rootnode": {
+                        template: "tmplRoot",
+                        events: {
+                            "contextmenu": function (params) {
+                                $('#mm').menu('show', {
+                                    left: params.e.clientX,
+                                    top: params.e.clientY
+                                });
+                                seelectedNode = params.node;
+                            }
+                        }
+                    },
                     "table": {
                         template: "tmplTable",
                         events: {
@@ -104,9 +117,7 @@
                                     left: params.e.clientX,
                                     top: params.e.clientY
                                 });
-                                $("#baseInfo").click(function(){
-                                    baseInfo(params.node);
-                                });
+                                seelectedNode = params.node;
                             }
                         }
                     },
@@ -142,7 +153,7 @@
                         },
                         overlays: [
                             ["Arrow", {location: 1, width: 10, length: 10}],
-                            ["Arrow", {location: 0.3, width: 10, length: 10}]
+                            //["Arrow", {location: 0.3, width: 10, length: 10}]
                         ]
                     },
                     "connection": {
@@ -163,11 +174,12 @@
                 },
                 ports: {
                     "default": {
-                        //endpoint: "Blank",
-                        endpoint: ["Dot", {radius: 5}],		// the type of the endpoint
+                        endpoint: "Blank",
+                        //endpoint: ["Dot", {radius: 5}],		// the type of the endpoint
                         paintStyle: {fillStyle: "#f76258"},		// the endpoint's appearance
                         hoverPaintStyle: {fillStyle: "#434343"}, // appearance when mouse hovering on endpoint or connection
-                        anchor: ["Left", "Right"], // anchors for the endpoint
+                        //anchor: ["Bottom"], // anchors for the endpoint
+                        anchor: ["Top", "Bottom"], // anchors for the endpoint
                         edgeType: "common", // the type of edge for connections from this port type
                         maxConnections: -1, // no limit on connections
                         isSource: true, // indicates new connections can be dragged from this port type
@@ -187,7 +199,10 @@
             },
             // Layout the nodes using an absolute layout
             layout: {
-                type: "Absolute"
+                type: "Hierarchical",
+                parameters:{
+                    padding:[ 200, 100 ]
+                }
             },
             events: {
                 canvasClick: function (e) {
@@ -214,6 +229,8 @@
             url: "/serviceLink/getServiceLink/start/node/" + sourceId,
             onload: function () {
                 _updateDataset();
+                //console.log(toolkit.getNodes());
+                //console.log(toolkit.getNode("5c7ac06152f23f9a0152f2442611063f"));
             }
         });
 
@@ -253,7 +270,7 @@
         });
 
         jsPlumb.on(canvasElement, "tap", ".table", function () {
-           console.log("jjjjjjjj");
+            console.log("jjjjjjjj");
         });
 
         // change a question or action's label
