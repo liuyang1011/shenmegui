@@ -26,7 +26,9 @@
 
     <link rel="stylesheet" href="/assets/serviceLink2.0/jsPlumbToolkit-defaults.css">
     <link rel="stylesheet" href="/assets/serviceLink2.0/jsPlumbToolkit-demo.css">
-
+<script type="text/javascript" >
+    var selectedNode;
+</script>
 
 </head>
 
@@ -58,18 +60,18 @@
     </div>
 </div>
 <div id="mm" class="easyui-menu" style="width:120px;">
-    <div onclick="baseInfo(param)" data-options="iconCls:'icon-edit'">基本信息</div>
-    <div onclick="messagegType()" data-options="iconCls:'icon-edit'">报文格式</div>
-    <div onclick="commProtocol()" data-options="iconCls:'icon-edit'">通讯协议</div>
-    <div onclick="serviceInfo()" data-options="iconCls:'icon-edit'">服务信息</div>
-    <div onclick="interfaceInfo()" data-options="iconCls:'icon-edit'">接口信息</div>
-    <div onclick="openNode()" data-options="iconCls:'icon-edit'">打开节点</div>
-    <div onclick="closeNode()" data-options="iconCls:'icon-edit'">关闭节点</div>
+    <div id="baseInfo" data-options="iconCls:'icon-edit'">基本信息</div>
+    <div id="messageType" data-options="iconCls:'icon-edit'">报文格式</div>
+    <div id="commProtocol" data-options="iconCls:'icon-edit'">通讯协议</div>
+    <div id="serviceInfo" data-options="iconCls:'icon-edit'">服务信息</div>
+    <div id="interfaceInfo" data-options="iconCls:'icon-edit'">接口信息</div>
+    <div id="openNode" data-options="iconCls:'icon-edit'">打开节点</div>
+    <div id="closeNode"  data-options="iconCls:'icon-edit'">关闭节点</div>
 </div>
 <div id="opDialog" class="easyui-dialog"
      style="width:400px;height:280px;padding:10px 20px" closed="true"
      resizable="true"></div>
-
+<script type="text/javascript" src="/assets/serviceLink2.0/contextMenu.js"></script>
 <script src="/assets/serviceLink2.0/jsPlumb-1.7.10.js"></script>
 <script src="/assets/serviceLink2.0/jsPlumbToolkit-1.0.5.js"></script>
 <script src="/assets/serviceLink2.0/app.js"></script>
@@ -83,7 +85,5 @@
 <link href="/resources/css/css.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/assets/serviceLink2.0/contextMenu.js"></script>
-
 </body>
 </html>

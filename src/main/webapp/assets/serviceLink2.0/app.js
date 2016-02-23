@@ -100,10 +100,12 @@
                                 });
                             },
                             "contextmenu":function (params) {
-                                console.log(params);
                                 $('#mm').menu('show', {
                                     left: params.e.clientX,
                                     top: params.e.clientY
+                                });
+                                $("#baseInfo").click(function(){
+                                    baseInfo(params.node);
                                 });
                             }
                         }

@@ -1,6 +1,5 @@
 //交易节点基本信息
-function baseInfo(text, id){
-    //console.log(text);
+function baseInfo(node){
     $("#resultList").treegrid("select", id);
     $('#opDialog').dialog({
         title: '新增菜单',
