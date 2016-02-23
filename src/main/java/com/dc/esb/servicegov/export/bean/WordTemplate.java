@@ -1209,8 +1209,8 @@ public class WordTemplate {
             "                    <a:latin typeface=\"Cambria\"/>\n" +
             "                    <a:ea typeface=\"\"/>\n" +
             "                    <a:cs typeface=\"\"/>\n" +
-            "                    <a:font script=\"Jpan\" typeface=\"ＭＳ ゴシック\"/>\n" +
-            "                    <a:font script=\"Hang\" typeface=\"맑은 고딕\"/>\n" +
+//            "                    <a:font script=\"Jpan\" typeface=\"ＭＳ ゴシック\"/>\n" +
+//            "                    <a:font script=\"Hang\" typeface=\"맑은 고딕\"/>\n" +
             "                    <a:font script=\"Hans\" typeface=\"宋体\"/>\n" +
             "                    <a:font script=\"Hant\" typeface=\"新細明體\"/>\n" +
             "                    <a:font script=\"Arab\" typeface=\"Times New Roman\"/>\n" +
@@ -1243,8 +1243,8 @@ public class WordTemplate {
             "                    <a:latin typeface=\"Calibri\"/>\n" +
             "                    <a:ea typeface=\"\"/>\n" +
             "                    <a:cs typeface=\"\"/>\n" +
-            "                    <a:font script=\"Jpan\" typeface=\"ＭＳ 明朝\"/>\n" +
-            "                    <a:font script=\"Hang\" typeface=\"맑은 고딕\"/>\n" +
+//            "                    <a:font script=\"Jpan\" typeface=\"ＭＳ 明朝\"/>\n" +
+//            "                    <a:font script=\"Hang\" typeface=\"맑은 고딕\"/>\n" +
             "                    <a:font script=\"Hans\" typeface=\"宋体\"/>\n" +
             "                    <a:font script=\"Hant\" typeface=\"新細明體\"/>\n" +
             "                    <a:font script=\"Arab\" typeface=\"Arial\"/>\n" +
