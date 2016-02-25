@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
+import com.dc.esb.servicegov.service.ServiceInvokeService;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.GraphColumn;
 import com.dc.esb.servicegov.util.GraphConnection;
@@ -53,7 +54,6 @@ public class ServiceLinkController {
     private ServiceLinkPropertyServiceImpl serviceLinkPropertyService;
     @Autowired
     private InterfaceInvokeServiceImpl interfaceInvokeService;
-
     private int initX = 50;
     private int initY = 100;
 
@@ -76,18 +76,14 @@ public class ServiceLinkController {
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
         if (null != interfaceId) {
-            name = interfaceId;
-            //敏姐说简单就是美
-//            name = interfaceId + "(" + interfaceName + ")";
-            sourceGraphNode.setType("table");
+            name = interfaceId + "(" + interfaceName + ")";
         } else {
             name = serviceId + operationId;
-            sourceGraphNode.setType("rootnode");
         }
         sourceGraphNode.setName(name);
         sourceGraphNode.setLeft(String.valueOf(initX));
         sourceGraphNode.setTop(String.valueOf(initY));
-
+        sourceGraphNode.setType("table");
         return sourceGraphNode;
     }
 
@@ -119,9 +115,6 @@ public class ServiceLinkController {
         Interface inter = serviceInvoke.getInter();
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
-        //李敏说把图标列和服务场景列去掉
-        /*
-        //如果存在服务场景，添加服务场景
         if (null != serviceId && null != operationId && null != inter) {
             Service service = serviceService.getById(serviceId);
             Operation operation = operationService.getOperation(serviceId, operationId);
@@ -133,7 +126,7 @@ public class ServiceLinkController {
                 graphColumns.add(serviceGraphColumn);
             }
         }
-        //添加图标列
+
         GraphColumn iconColumn = new GraphColumn();
         iconColumn.setId("");
         List<GraphColumn.Icon> icons = new ArrayList<GraphColumn.Icon>();
@@ -147,23 +140,18 @@ public class ServiceLinkController {
             serviceIcon.setIcon("flag");
             icons.add(serviceIcon);
         }
-        */
-        //添加系统列
         System system = serviceInvoke.getSystem();
         if (null != system) {
             String systemAB = system.getSystemAb();
             String systemName = system.getSystemChineseName();
             GraphColumn systemGraphColumn = new GraphColumn();
-//            systemGraphColumn.setId("系统:" + systemAB + "(" + systemName + ")");
-            systemGraphColumn.setId( systemName);
+            systemGraphColumn.setId("系统:" + systemAB + "(" + systemName + ")");
             graphColumns.add(systemGraphColumn);
         }
-        /*
         if (icons.size() > 0) {
             iconColumn.setIcons(icons);
         }
         graphColumns.add(iconColumn);
-        */
         return graphColumns;
     }
 
@@ -271,7 +259,6 @@ public class ServiceLinkController {
                 interIds += ",'" + interfaceList.get(i).getInterfaceId() + "'";
             }
         }
-
         String serviceId = req.getParameter("serviceId");
         String serviceName = req.getParameter("serviceName");
 
@@ -332,89 +319,327 @@ public class ServiceLinkController {
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         String interfaceId = req.getParameter("interfaceId");
         String interfaceName = req.getParameter("interfaceName");
-        if (null != interfaceName) {
+        String serviceId = req.getParameter("serviceId");
+        String serviceName = req.getParameter("serviceName");
+        String status=req.getParameter("status");
+        String display=req.getParameter("display");
+        if(display==null||"".equals(display)){
+            display="0";
+        }
+        if("0".equals(display)) {
+            if (null != interfaceName) {
+                try {
+                    interfaceName = URLDecoder.decode(interfaceName, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e, e);
+                }
+            }
+            //根据接口名查交易码
+            Map<String, String> map1 = new HashMap<String, String>();
+            map1.put("interfaceName", interfaceName);
+            List<Interface> interfaceList = interfaceService.findLikeAnyWhere(map1);
+            String interIds = "";
+            for (int i = 0; i < interfaceList.size(); i++) {
+                if (i == 0) {
+                    interIds = "'" + interfaceList.get(i).getInterfaceId() + "'";
+                } else {
+                    interIds += ",'" + interfaceList.get(i).getInterfaceId() + "'";
+                }
+            }
+
+
+            if (null == serviceName) serviceName = "";
             try {
-                interfaceName = URLDecoder.decode(interfaceName, "utf-8");
+                serviceName = URLDecoder.decode(serviceName, "utf-8");
             } catch (UnsupportedEncodingException e) {
                 log.error(e, e);
             }
-        }
-        //根据接口名查交易码
-        Map<String, String> map1 = new HashMap<String, String>();
-        map1.put("interfaceName", interfaceName);
-        List<Interface> interfaceList = interfaceService.findLikeAnyWhere(map1);
-        String interIds = "";
-        for (int i = 0; i < interfaceList.size(); i++) {
-            if (i == 0) {
-                interIds = "'" + interfaceList.get(i).getInterfaceId() + "'";
-            } else {
-                interIds += ",'" + interfaceList.get(i).getInterfaceId() + "'";
+            //根据服务名查服务码
+            Map<String, String> map2 = new HashMap<String, String>();
+            map2.put("serviceName", serviceName);
+            List<Service> serviceList = serviceService.findLikeAnyWhere(map2);
+            String serviceIds = "";
+            for (int i = 0; i < serviceList.size(); i++) {
+                if (i == 0) {
+                    serviceIds = "'" + serviceList.get(i).getServiceId() + "'";
+                } else {
+                    serviceIds += ",'" + serviceList.get(i).getServiceId() + "'";
+                }
             }
-        }
-
-        String serviceId = req.getParameter("serviceId");
-        String serviceName = req.getParameter("serviceName");
-        if(null == serviceName) serviceName="";
-        try {
-            serviceName = URLDecoder.decode(serviceName, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error(e,e);
-        }
-        //根据服务名查服务码
-        Map<String,String> map2 = new HashMap<String, String>();
-        map2.put("serviceName",serviceName);
-        List<Service> serviceList = serviceService.findLikeAnyWhere(map2);
-        String serviceIds = "";
-        for (int i = 0; i < serviceList.size(); i++) {
-            if(i==0){
-                serviceIds = "'"+serviceList.get(i).getServiceId()+"'";
-            }else{
-                serviceIds += ",'"+serviceList.get(i).getServiceId()+"'";
+            //根据状态查询
+            String hql1 = "from ServiceLinkProperty i where i.propertyName like 'status' and i.propertyValue='"+status+"'";
+            List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy(hql1);
+            String invokeIds = "";
+            for (int i = 0; i < serviceLinkProperties.size(); i++) {
+                if (i == 0) {
+                    invokeIds = "'" + serviceLinkProperties.get(i).getInvokeId() + "'";
+                } else {
+                    invokeIds += ",'" + serviceLinkProperties.get(i).getInvokeId() + "'";
+                }
             }
-        }
-
-        List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
-        StringBuffer hql = new StringBuffer("select c from ServiceInvoke c where systemId='" + systemId + "' ");
-        if (null != interfaceId && !"".equals(interfaceId)) {
-            hql.append(" and interfaceId like ?");
-            searchConds.add(new SearchCondition("interfaceId", "%" + interfaceId + "%"));
-        }
-        if (null != serviceId && !"".equals(serviceId)) {
-            hql.append(" and serviceId like ?");
-            searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
-        }
-
-        if(null != interfaceName && !"".equals(interfaceName)){
-            if(interIds.equals("")){
-                hql.append(" and 1=2");
-            }else{
-                hql.append(" and interfaceId in("+interIds+")");
+            List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
+            StringBuffer hql = new StringBuffer("select c from ServiceInvoke c where systemId='" + systemId + "' ");
+            if (null != interfaceId && !"".equals(interfaceId)) {
+                hql.append(" and interfaceId like ?");
+                searchConds.add(new SearchCondition("interfaceId", "%" + interfaceId + "%"));
             }
-        }
-        if(null != serviceName && !"".equals(serviceName)){
-            if(serviceIds.equals("")){
-                hql.append(" and 1=2");
-            }else{
-                hql.append(" and serviceId in("+serviceIds+")");
+            if (null != serviceId && !"".equals(serviceId)) {
+                hql.append(" and serviceId like ?");
+                searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
             }
+            if (null != interfaceName && !"".equals(interfaceName)) {
+                if (interIds.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    hql.append(" and interfaceId in(" + interIds + ")");
+                }
+            }
+            if (null != serviceName && !"".equals(serviceName)) {
+                if (serviceIds.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    hql.append(" and serviceId in(" + serviceIds + ")");
+                }
+            }
+            if (null != status && !"".equals(status)) {
+                if (status.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    if(serviceLinkProperties.size()!=0) {
+                        hql.append(" and invokeId in(" + invokeIds + ")");
+                    }else{
+                        hql.append(" and invokeId is null");
+                    }
+                }
+            }
+
+            Page page = serviceInvokeService.findPage(hql.toString(), rowCount, searchConds);
+            page.setPage(pageNo);
+
+            List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql.toString(), page, searchConds);
+            List<ServiceLinkNodeVO> serviceLinkNodeVOs = new ArrayList<ServiceLinkNodeVO>();
+            List<ServiceLinkNode> serviceLinkNodes = serviceLinkNodeService.getAll();
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                if(serviceLinkNodeVO.getInterfaceId()!=null&&!"".equals(serviceLinkNodeVO.getInterfaceId())){
+                    if(serviceLinkNodeVO.getNodeType()!=null&&!"".equals(serviceLinkNodeVO.getNodeType())) {
+                        serviceLinkNodeVOs.add(serviceLinkNodeVO);
+                    }
+                }
+            }
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("total", page.getResultCount());
+            map.put("rows", serviceLinkNodeVOs);
+            return map;
+        }else if("1".equals(display)){
+            if (null != interfaceName) {
+                try {
+                    interfaceName = URLDecoder.decode(interfaceName, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e, e);
+                }
+            }
+            //根据接口名查交易码
+            Map<String, String> map1 = new HashMap<String, String>();
+            map1.put("interfaceName", interfaceName);
+            List<Interface> interfaceList = interfaceService.findLikeAnyWhere(map1);
+            String interIds = "";
+            for (int i = 0; i < interfaceList.size(); i++) {
+                if (i == 0) {
+                    interIds = "'" + interfaceList.get(i).getInterfaceId() + "'";
+                } else {
+                    interIds += ",'" + interfaceList.get(i).getInterfaceId() + "'";
+                }
+            }
+
+
+            if (null == serviceName) serviceName = "";
+            try {
+                serviceName = URLDecoder.decode(serviceName, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                log.error(e, e);
+            }
+            //根据服务名查服务码
+            Map<String, String> map2 = new HashMap<String, String>();
+            map2.put("serviceName", serviceName);
+            List<Service> serviceList = serviceService.findLikeAnyWhere(map2);
+            String serviceIds = "";
+            for (int i = 0; i < serviceList.size(); i++) {
+                if (i == 0) {
+                    serviceIds = "'" + serviceList.get(i).getServiceId() + "'";
+                } else {
+                    serviceIds += ",'" + serviceList.get(i).getServiceId() + "'";
+                }
+            }
+            //根据状态查询
+            String hql1 = "from ServiceLinkProperty i where i.propertyName like 'status' and i.propertyValue='"+status+"'";
+            List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy(hql1);
+            String invokeIds = "";
+            for (int i = 0; i < serviceLinkProperties.size(); i++) {
+                if (i == 0) {
+                    invokeIds = "'" + serviceLinkProperties.get(i).getInvokeId() + "'";
+                } else {
+                    invokeIds += ",'" + serviceLinkProperties.get(i).getInvokeId() + "'";
+                }
+            }
+            List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
+            StringBuffer hql = new StringBuffer("select c from ServiceInvoke c where systemId='" + systemId + "' ");
+            if (null != interfaceId && !"".equals(interfaceId)) {
+                hql.append(" and interfaceId like ?");
+                searchConds.add(new SearchCondition("interfaceId", "%" + interfaceId + "%"));
+            }
+            if (null != serviceId && !"".equals(serviceId)) {
+                hql.append(" and serviceId like ?");
+                searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
+            }
+            if (null != interfaceName && !"".equals(interfaceName)) {
+                if (interIds.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    hql.append(" and interfaceId in(" + interIds + ")");
+                }
+            }
+            if (null != serviceName && !"".equals(serviceName)) {
+                if (serviceIds.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    hql.append(" and serviceId in(" + serviceIds + ")");
+                }
+            }
+            if (null != status && !"".equals(status)) {
+                if (status.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    if(serviceLinkProperties.size()!=0) {
+                        hql.append(" and invokeId in(" + invokeIds + ")");
+                    }else{
+                        hql.append(" and invokeId is null");
+                    }
+                }
+            }
+
+            Page page = serviceInvokeService.findPage(hql.toString(), rowCount, searchConds);
+            page.setPage(pageNo);
+
+            List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql.toString(), page, searchConds);
+            List<ServiceLinkNodeVO> serviceLinkNodeVOs = new ArrayList<ServiceLinkNodeVO>();
+            List<ServiceLinkNode> serviceLinkNodes = serviceLinkNodeService.getAll();
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                if(serviceLinkNodeVO.getServiceId()!=null&&!"".equals(serviceLinkNodeVO.getServiceId())) {
+                    if(serviceLinkNodeVO.getNodeType()!=null&&!"".equals(serviceLinkNodeVO.getNodeType())) {
+                        serviceLinkNodeVOs.add(serviceLinkNodeVO);
+                    }
+                }
+            }
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("total", page.getResultCount());
+            map.put("rows", serviceLinkNodeVOs);
+            return map;
+        }else{
+            if (null != interfaceName) {
+                try {
+                    interfaceName = URLDecoder.decode(interfaceName, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error(e, e);
+                }
+            }
+            //根据接口名查交易码
+            Map<String, String> map1 = new HashMap<String, String>();
+            map1.put("interfaceName", interfaceName);
+            List<Interface> interfaceList = interfaceService.findLikeAnyWhere(map1);
+            String interIds = "";
+            for (int i = 0; i < interfaceList.size(); i++) {
+                if (i == 0) {
+                    interIds = "'" + interfaceList.get(i).getInterfaceId() + "'";
+                } else {
+                    interIds += ",'" + interfaceList.get(i).getInterfaceId() + "'";
+                }
+            }
+
+
+            if (null == serviceName) serviceName = "";
+            try {
+                serviceName = URLDecoder.decode(serviceName, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                log.error(e, e);
+            }
+            //根据服务名查服务码
+            Map<String, String> map2 = new HashMap<String, String>();
+            map2.put("serviceName", serviceName);
+            List<Service> serviceList = serviceService.findLikeAnyWhere(map2);
+            String serviceIds = "";
+            for (int i = 0; i < serviceList.size(); i++) {
+                if (i == 0) {
+                    serviceIds = "'" + serviceList.get(i).getServiceId() + "'";
+                } else {
+                    serviceIds += ",'" + serviceList.get(i).getServiceId() + "'";
+                }
+            }
+            //根据状态查询
+            String hql1 = "from ServiceLinkProperty i where i.propertyName like 'status' and i.propertyValue='"+status+"'";
+            List<ServiceLinkProperty> serviceLinkProperties = serviceLinkPropertyService.findBy(hql1);
+            String invokeIds = "";
+            for (int i = 0; i < serviceLinkProperties.size(); i++) {
+                if (i == 0) {
+                    invokeIds = "'" + serviceLinkProperties.get(i).getInvokeId() + "'";
+                } else {
+                    invokeIds += ",'" + serviceLinkProperties.get(i).getInvokeId() + "'";
+                }
+            }
+            List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
+            StringBuffer hql = new StringBuffer("select c from ServiceInvoke c where systemId='" + systemId + "' ");
+            if (null != interfaceId && !"".equals(interfaceId)) {
+                hql.append(" and interfaceId like ?");
+                searchConds.add(new SearchCondition("interfaceId", "%" + interfaceId + "%"));
+            }
+            if (null != serviceId && !"".equals(serviceId)) {
+                hql.append(" and serviceId like ?");
+                searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
+            }
+            if (null != interfaceName && !"".equals(interfaceName)) {
+                if (interIds.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    hql.append(" and interfaceId in(" + interIds + ")");
+                }
+            }
+            if (null != serviceName && !"".equals(serviceName)) {
+                if (serviceIds.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    hql.append(" and serviceId in(" + serviceIds + ")");
+                }
+            }
+            if (null != status && !"".equals(status)) {
+                if (status.equals("")) {
+                    hql.append(" and 1=2");
+                } else {
+                    if(serviceLinkProperties.size()!=0) {
+                        hql.append(" and invokeId in(" + invokeIds + ")");
+                    }else{
+                        hql.append(" and invokeId is null");
+                    }
+                }
+            }
+
+            Page page = serviceInvokeService.findPage(hql.toString(), rowCount, searchConds);
+            page.setPage(pageNo);
+
+            List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql.toString(), page, searchConds);
+            List<ServiceLinkNodeVO> serviceLinkNodeVOs = new ArrayList<ServiceLinkNodeVO>();
+            List<ServiceLinkNode> serviceLinkNodes = serviceLinkNodeService.getAll();
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                if(serviceLinkNodeVO.getNodeType()!=null&&!"".equals(serviceLinkNodeVO.getNodeType())) {
+                    serviceLinkNodeVOs.add(serviceLinkNodeVO);
+                }
+            }
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("total", page.getResultCount());
+            map.put("rows", serviceLinkNodeVOs);
+            return map;
         }
-
-        Page page = serviceInvokeService.findPage(hql.toString(), rowCount, searchConds);
-        page.setPage(pageNo);
-
-        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql.toString(), page, searchConds);
-        List<ServiceLinkNodeVO> serviceLinkNodeVOs = new ArrayList<ServiceLinkNodeVO>();
-        List<ServiceLinkNode> serviceLinkNodes = serviceLinkNodeService.getAll();
-
-        for (ServiceInvoke serviceInvoke : serviceInvokes) {
-            ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
-            serviceLinkNodeVOs.add(serviceLinkNodeVO);
-        }
-
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("total", page.getResultCount());
-        map.put("rows", serviceLinkNodeVOs);
-        return map;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getServiceLink", headers = "Accept=application/json")
@@ -551,7 +776,6 @@ public class ServiceLinkController {
                 invokeConnectionService.save(connection);
             }
         }
-
         systemLogService.updateResult(operationLog);
         return true;
     }
@@ -656,6 +880,238 @@ public class ServiceLinkController {
             }
         }
         return true;
+    }
+
+    /**
+     *节点添加操作时调用的查询方法
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/getServiceLinkNode/{systemId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    HashMap<String, Object> getServiceLinkNodes1(@PathVariable("systemId") String systemId, HttpServletRequest req) {
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        String interfaceId = req.getParameter("interfaceId");
+        String serviceId = req.getParameter("serviceId");
+        String type=req.getParameter("type");
+        String condition=req.getParameter("condition");
+        if("0".equals(type)){
+            interfaceId=condition;
+        }else{
+            serviceId=condition;
+        }
+        List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
+        StringBuffer hql = new StringBuffer("select c from ServiceInvoke c where systemId='" + systemId+"'");
+        if (null != interfaceId && !"".equals(interfaceId)) {
+            hql.append(" and interfaceId like ?");
+            searchConds.add(new SearchCondition("interfaceId", "%" + interfaceId + "%"));
+        }
+        if (null != serviceId && !"".equals(serviceId)) {
+            hql.append(" and serviceId like ?");
+            searchConds.add(new SearchCondition("serviceId", "%" + serviceId + "%"));
+        }
+        Page page = serviceInvokeService.findPage(hql.toString(), rowCount, searchConds);
+        page.setPage(pageNo);
+
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql.toString(), page, searchConds);
+        List<ServiceLinkNodeVO> serviceLinkNodeVOs = new ArrayList<ServiceLinkNodeVO>();
+        for (ServiceInvoke serviceInvoke : serviceInvokes) {
+            ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+            serviceLinkNodeVOs.add(serviceLinkNodeVO);
+        }
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("total", page.getResultCount());
+        map.put("rows", serviceLinkNodeVOs);
+        return map;
+
+    }
+    @RequiresPermissions({"link-update"})
+    @RequestMapping(method = RequestMethod.GET, value = "/nodeInfoProperties/{nodeId}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    ServiceLinkNodeVO nodeInfoProperties(@PathVariable("nodeId") String nodeId) {
+        ServiceInvoke serviceInvoke = serviceInvokeService.getById(nodeId);
+        ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+        return serviceLinkNodeVO;
+    }
+    @RequiresPermissions({"link-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/getNodeInfoByNodeType1", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getNodeInfoByNodeType1(HttpServletRequest req) {
+        String systemId = req.getParameter("systemId");
+        String nodeType=req.getParameter("nodeType");
+        String hql = "from ServiceInvoke where systemId=" + systemId;
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql);
+        List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
+        List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
+        if("0".equals(nodeType)){
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                if(serviceInvoke.getType().equals("1")) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+                }
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getInterfaceId()!=null&&!"".equals(vo.getInterfaceId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }else if("1".equals(nodeType)){
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                if(serviceInvoke.getType().equals("0")) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+                }
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getInterfaceId()!=null&&!"".equals(vo.getInterfaceId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }else{
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getInterfaceId()!=null&&!"".equals(vo.getInterfaceId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }
+    }
+    @RequiresPermissions({"link-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/getNodeInfoByNodeType2", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getNodeInfoByNodeType2(HttpServletRequest req) {
+        String systemId = req.getParameter("systemId");
+        String nodeType=req.getParameter("nodeType");
+        String hql = "from ServiceInvoke where systemId=" + systemId;
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql);
+        List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
+        List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
+        if("0".equals(nodeType)){
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                if(serviceInvoke.getType().equals("1")) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+                }
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getServiceId()!=null&&!"".equals(vo.getServiceId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }else if("1".equals(nodeType)){
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                if(serviceInvoke.getType().equals("0")) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+                }
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getServiceId()!=null&&!"".equals(vo.getServiceId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }else{
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                newList1.add(serviceLinkNodeVO);
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getServiceId()!=null&&!"".equals(vo.getServiceId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }
+    }
+
+
+    @RequiresPermissions({"link-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/getNodeInfoByNodeType3", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List getNodeInfoByNodeType3(HttpServletRequest req) {
+        String systemId = req.getParameter("systemId");
+        String nodeType=req.getParameter("nodeType");
+        String hql = "from ServiceInvoke where systemId=" + systemId;
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql);
+        List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
+        List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
+        if("0".equals(nodeType)){
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                if(serviceInvoke.getType().equals("1")) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+                }
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getOperationId()!=null&&!"".equals(vo.getOperationId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }else if("1".equals(nodeType)){
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                if(serviceInvoke.getType().equals("0")) {
+                    ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                    newList1.add(serviceLinkNodeVO);
+                }
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getOperationId()!=null&&!"".equals(vo.getOperationId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }else{
+            for (ServiceInvoke serviceInvoke : serviceInvokes) {
+                ServiceLinkNodeVO serviceLinkNodeVO = serviceLinkNodeService.getServiceLinkNode(serviceInvoke);
+                newList1.add(serviceLinkNodeVO);
+            }
+            for(ServiceLinkNodeVO vo:newList1){
+                if(vo.getOperationId()!=null&&!"".equals(vo.getOperationId())){
+                    newList2.add(vo);
+                }
+            }
+            return newList2;
+        }
+    }
+
+        //检查是否正确
+    @RequestMapping(method = RequestMethod.POST, value = "/checkCorrect", headers = "Accept=application/json")
+    @ResponseBody
+    public
+    Map<String,String> checkCorrect(HttpServletRequest req) {
+        String systemId=req.getParameter("systemId");
+        String interfaceId = req.getParameter("interfaceId");
+        String serviceId = req.getParameter("serviceId");
+        String operationId=req.getParameter("operationId");
+        Map<String,String> param=new HashMap<String, String>();
+        param.put("systemId",systemId);
+        if(interfaceId!=null&&!"".equals(interfaceId)){param.put("interfaceId",interfaceId);}
+        if(serviceId!=null&&!"".equals(serviceId)){param.put("serviceId",serviceId);}
+        if(operationId!=null&&!"".equals(operationId)){param.put("operationId", operationId);}
+        List<ServiceInvoke> invokes=serviceInvokeService.findBy(param);
+        Map<String,String> result=new HashMap<String, String>();
+        if(invokes.size()>1||invokes.isEmpty()){
+            result.put("data","false");
+            return result;
+        }else {
+            result.put("data",invokes.get(0).getInvokeId());
+            return result;
+        }
     }
 
 
