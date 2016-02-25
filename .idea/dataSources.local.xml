@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal">
-    <data-source name="MySQL - sg@localhost" uuid="29557b29-ce04-46b4-ab58-a143692d2e5d" />
-    <data-source name="DB2 - sg@127.0.0.1" uuid="9086fff0-91f0-47f0-89bd-64e6174bb014" />
+    <data-source name="Oracle - tx1@192.168.195.128" uuid="fe0b1187-1b26-41f8-ac7f-545168467ed9" />
+    <data-source name="MySQL - eam@localhost" uuid="69a64047-ef18-49b4-900d-cf6c552085cb" />
+    <data-source name="Oracle - orcl@192.168.195.129" uuid="b14829a7-1750-4ffb-a019-450afc1bc827" />
+    <data-source name="MySQL - esbsg@localhost" uuid="8f279b14-2934-4a9f-8e13-490ef3cc2bc5" />
   </component>
 </project>
