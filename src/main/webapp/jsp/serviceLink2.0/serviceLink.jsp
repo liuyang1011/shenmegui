@@ -64,8 +64,8 @@
     <div id="messageProtocol" onclick="contextMenuManager.messageProtocol()" data-options="iconCls:'icon-detail'">报文协议</div>
     <div id="serviceInfo" onclick="contextMenuManager.serviceInfo()" data-options="iconCls:'icon-detail'">服务信息</div>
     <div id="interfaceInfo" onclick="contextMenuManager.interfaceInfo()" data-options="iconCls:'icon-detail'">接口信息</div>
-    <div id="openNode" onclick="contextMenuManager.openNode();" data-options="iconCls:'icon-detail'">打开节点</div>
-    <div id="closeNode" onclick="contextMenuManager.closeNode()" data-options="iconCls:'icon-detail'">关闭节点</div>
+    <%--<div id="openNode" onclick="contextMenuManager.openNode();" data-options="iconCls:'icon-detail'">打开节点</div>--%>
+    <%--<div id="closeNode" onclick="contextMenuManager.closeNode()" data-options="iconCls:'icon-detail'">关闭节点</div>--%>
 </div>
 <div id="opDialog" class="easyui-dialog"
      style="width:400px;height:280px;padding:10px 20px" closed="true"

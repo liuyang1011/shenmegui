@@ -72,13 +72,21 @@
             pageList: [13,30,50],
             columns:[[
                 {field:'productid',title:'',width:10,checkbox:'true'},
-                {field:'interfaceId',title:'交易码',width:100,align:'right'},
-                {field:'interfaceName',title:'交易名称',width:100,align:'right'},
+                {field:'interfaceId',title:'交易码',width:80,align:'right'},
+                {field:'interfaceName',title:'交易名称',width:80,align:'right'},
+                {field:'serviceId',title:'服务码',width:80,align:'right'},
+                {field:'serviceName',title:'服务名称',width:80,align:'right'},
+                {field:'operationId',title:'场景码',width:80,align:'right'},
+                {field:'operationName',title:'场景名称',width:80,align:'right'},
+                {field:'invokeType',title:'调用类型',width:60,align:'right'},
                 {field:'bussCategory',title:'业务分类',width:100,align:'right'},
-                {field:'invokeType',title:'调用类型',width:100,align:'right'},
                 {field:'location',title:'交易属性标识',width:100,align:'right',formatter:function (value, row, index) {if (value == 1) {return "本系统发起";}if (value == 2) {return "上游系统调用";}}},
-                {field:'status',title:'节点状态',width:100,align:'right',formatter:function (value, row, index) {if (value == 0) {return "草稿";}if (value == 1) {return "生效";}if (value == 2) {return "废弃";}}},
-                {field:'nodeType',title:'节点类型',width:100,align:'right',formatter:function (value, row, index) {if (value == 0) {return "消费方节点";}if (value == 1) {return "提供方节点";}if (value == 2) {return "复合型节点";}}}
+                {field:'status',title:'节点状态',width:80,align:'right',formatter:function (value, row, index) {if (value == 0) {return "草稿";}if (value == 1) {return "生效";}if (value == 2) {return "废弃";}}},
+                {field:'nodeType',title:'节点类型',width:80,align:'right',formatter:function (value, row, index) {if (value == 0) {return "消费方节点";}if (value == 1) {return "提供方节点";}if (value == 2) {return "复合型节点";}}},
+                {field:'esbAccessPattern',title:'ESB调用方式',width:150,align:'right',formatter:function (value, row, index) {if (value == 0) {return "0-穿透模式";}if (value == 1) {return "1-代理模式";}if (value == 2) {return "2-寻址模式";}if (value == 4) {return "4-组合模式";}}},
+                {field:'condition',title:'条件位',width:80,align:'right'},
+                {field:'connectionDesc',title:'条件信息',width:80,align:'right'},
+                {field:'linkCondition',title:'组合位',width:80,align:'right'},
             ]],
             onLoadSuccess:function(data){
                 $.each(data.rows, function (index, item) {
@@ -265,34 +273,34 @@
                 text: '添加节点',
                 iconCls: 'icon-add',
                 handler: function () {
-                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/addNode.jsp?systemId=<%=request.getParameter("systemId") %>' + '" style="width:100%;height:100%;"></iframe>';
-                            selectTab('节点添加', content);
-                            selectTab('节点添加', content);
+                    var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/serviceLink/addNode.jsp?systemId=<%=request.getParameter("systemId") %>' + '" style="width:100%;height:100%;"></iframe>';
+                    selectTab('节点添加', content);
+                    selectTab('节点添加', content);
                 }
             }
             ,{
-        text: '节点维护',
-        iconCls: 'icon-edit',
-        handler: function () {
-            var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-            var checkedItem;
-            if (checkedItems != null && checkedItems.length > 0) {
-                if (checkedItems.length > 1) {
-                    alert("请选择一个节点进行预览！");
-                    return false;
-                }
-                else {
-                    checkedItem = checkedItems[0];
-                    var content = '<iframe scrolling="auto" frameborder="0"  src="/serviceLink/nodeInfo/' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
-                    selectTab('节点维护', content);
-                    selectTab('节点维护', content);
+                text: '节点维护',
+                iconCls: 'icon-edit',
+                handler: function () {
+                    var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+                    var checkedItem;
+                    if (checkedItems != null && checkedItems.length > 0) {
+                        if (checkedItems.length > 1) {
+                            alert("请选择一个节点进行预览！");
+                            return false;
+                        }
+                        else {
+                            checkedItem = checkedItems[0];
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/serviceLink/nodeInfo/' + checkedItem.id + '" style="width:100%;height:100%;"></iframe>';
+                            selectTab('节点维护', content);
+                            selectTab('节点维护', content);
+                        }
+                    }
+                    else {
+                        alert("请选中要预览的节点！");
+                    }
                 }
             }
-            else {
-                alert("请选中要预览的节点！");
-            }
-        }
-    }
     );
     </shiro:hasPermission>
     <shiro:hasPermission name="link-get">
@@ -354,34 +362,34 @@
     </shiro:hasPermission>
 
 
-//        ,{
-//            text: '编辑节点',
-//            iconCls: 'icon-qxfp',
-//            handler: function () {
-//                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-//                var checkedItem;
-//                if (checkedItems != null && checkedItems.length > 0) {
-//                    if (checkedItems.length > 1) {
-//                        alert("请选择一个节点进行预览！");
-//                        return false;
-//                    }
-//                    else {
-//                        checkedItem = checkedItems[0];
-//                        invokeId = checkedItem.id;
-//                        uiinit.win({
-//                            w:500,
-//                            iconCls:'icon-add',
-//                            title:"编辑",
-//                            url : "/jsp/serviceLink/serviceLinkModifyDialog.jsp"
-//                        });
-//
-//                    }
-//                }
-//                else {
-//                    alert("请选中要预览的节点！");
-//                }
-//            }
-//        }
+    //        ,{
+    //            text: '编辑节点',
+    //            iconCls: 'icon-qxfp',
+    //            handler: function () {
+    //                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
+    //                var checkedItem;
+    //                if (checkedItems != null && checkedItems.length > 0) {
+    //                    if (checkedItems.length > 1) {
+    //                        alert("请选择一个节点进行预览！");
+    //                        return false;
+    //                    }
+    //                    else {
+    //                        checkedItem = checkedItems[0];
+    //                        invokeId = checkedItem.id;
+    //                        uiinit.win({
+    //                            w:500,
+    //                            iconCls:'icon-add',
+    //                            title:"编辑",
+    //                            url : "/jsp/serviceLink/serviceLinkModifyDialog.jsp"
+    //                        });
+    //
+    //                    }
+    //                }
+    //                else {
+    //                    alert("请选中要预览的节点！");
+    //                }
+    //            }
+    //        }
     $('#status').combobox({
         valueField: 'value',
         textField: 'label',
@@ -403,18 +411,19 @@
     $('#display').combobox({
         valueField: 'value',
         textField: 'label',
-        data: [{
-            label: '交易码',
-            value: '0'
-        },{
-            label: '服务码',
-            value: '1'
-        },{
+        data: [
+            {
                 label: '全部',
                 value: '2'
+            } ,{
+                label: '交易码',
+                value: '0'
+            },{
+                label: '服务码',
+                value: '1'
             }]
     });
-    var display = "0"
+    var display = "2"
     if(display != ""){
         $('#display').combobox('setValue',display);
     }

@@ -943,8 +943,8 @@ public class ServiceLinkController {
     List getNodeInfoByNodeType1(HttpServletRequest req) {
         String systemId = req.getParameter("systemId");
         String nodeType=req.getParameter("nodeType");
-        String hql = "from ServiceInvoke where systemId=" + systemId;
-        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql);
+        String hql = "from ServiceInvoke where systemId=?";
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId);
         List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
         List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
         if("0".equals(nodeType)){
@@ -993,8 +993,8 @@ public class ServiceLinkController {
     List getNodeInfoByNodeType2(HttpServletRequest req) {
         String systemId = req.getParameter("systemId");
         String nodeType=req.getParameter("nodeType");
-        String hql = "from ServiceInvoke where systemId=" + systemId;
-        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql);
+        String hql = "from ServiceInvoke where systemId=?";
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId);
         List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
         List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
         if("0".equals(nodeType)){
@@ -1045,8 +1045,8 @@ public class ServiceLinkController {
     List getNodeInfoByNodeType3(HttpServletRequest req) {
         String systemId = req.getParameter("systemId");
         String nodeType=req.getParameter("nodeType");
-        String hql = "from ServiceInvoke where systemId=" + systemId;
-        List<ServiceInvoke> serviceInvokes = serviceInvokeService.findBy(hql);
+        String hql = "from ServiceInvoke where systemId=?";
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId);
         List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
         List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
         if("0".equals(nodeType)){
