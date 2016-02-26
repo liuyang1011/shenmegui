@@ -70,7 +70,7 @@ public class IDAController {
 //		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		//TODO 空和0都要显示
 		String hql = "from Ida t where t.interfaceId = '"+interfaceId+"'";
-		hql += " and (t.xpath is not null or s.structName is not null) order by t.seq";
+		hql += " and (t.xpath is not null or t.structName is not null) order by t.seq";
 
 		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){

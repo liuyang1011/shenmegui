@@ -69,7 +69,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/getAll", headers = "Accept=application/json")
     public
     @ResponseBody
-    Map<String, Object> getAll( @RequestParam("page") int pageNo, @RequestParam("rows") int rowCount) {
+         Map<String, Object> getAll( @RequestParam("page") int pageNo, @RequestParam("rows") int rowCount) {
         List<UserVO> userVOs = new ArrayList<UserVO>();
         Page page = userServiceImpl.getAll(rowCount);
         page.setPage(pageNo);
@@ -95,7 +95,6 @@ public class UserController {
     List<SGUser> getAllUser() {
         return userServiceImpl.getAll();
     }
-
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/query", headers = "Accept=application/json")
     public

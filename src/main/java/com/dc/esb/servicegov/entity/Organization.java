@@ -19,6 +19,36 @@ public class Organization implements Serializable {
     private String orgAB;
     @Column(name = "ORG_STATUS")
     private String orgStatus;
+    @Column(name = "ORG_RESPONSE")
+    private String orgResponsibility;
+    @Column(name = "ORG_REMARK")
+    private String orgRemark;
+    @Column(name = "ORG_UPDATE")
+    private String orgUpDate;
+
+    public String getOrgResponsibility() {
+        return orgResponsibility;
+    }
+
+    public void setOrgResponsibility(String orgResponsibility) {
+        this.orgResponsibility = orgResponsibility;
+    }
+
+    public String getOrgRemark() {
+        return orgRemark;
+    }
+
+    public void setOrgRemark(String orgRemark) {
+        this.orgRemark = orgRemark;
+    }
+
+    public String getOrgUpDate() {
+        return orgUpDate;
+    }
+
+    public void setOrgUpDate(String orgUpDate) {
+        this.orgUpDate = orgUpDate;
+    }
 
     public String getOrgId() {
         return orgId;

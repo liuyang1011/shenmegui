@@ -59,7 +59,7 @@
 </div>
 
 <script type="text/javascript" src="/plugin/validate.js"></script>
-
+<script src="/newui/bootstrap/js/md5.js" type="text/javascript" ></script>
 <script type="text/javascript">
     $(function () {
         $('#roleTable').datagrid({
@@ -78,7 +78,7 @@
             }
         });
         $('#org').combobox({
-            url: '/org/getAll',
+            url: '/org/getAllOrg',
             method: 'get',
             mode: 'remote',
             editable:false,
@@ -93,6 +93,7 @@
         var isValid = $("#userId").validatebox("isValid");
         var name=$('#userName').val();
         var password=$('#password').val();
+        password=hex_md5(password);
         var org=$('#org').combobox('getValue');
   		/*var str1 = $('#startdate').datebox('getValue');
         var str2 = $('#lastdate').datebox('getValue');

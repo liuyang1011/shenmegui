@@ -15,11 +15,19 @@
             &lt;%&ndash;<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>&ndash;%&gt;
         </ul>
     </li>--%>
-<shiro:hasRole name="admin">
+    <shiro:hasRole name="admin">
+        <li><a href="javascript:;" class="openable" mid="1.15">权限管理</a>
+            <ul>
+                <li><a href="javascript:;" class="openable" mid="1.15">菜单管理</a></li>
+            </ul>
+        </li>
+    </shiro:hasRole>
+        <shiro:hasRole name="admin">
     <li><a href="javascript:;" class="openable" mid="4.1">用户管理</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="4.2">用户维护</a></li>
             <li><a href="javascript:;" class="openable" mid="5.2">角色维护</a></li>
+            <li><a href="javascript:;" class="openable" mid="5.3">机构管理</a></li>
         </ul>
     </li>
     </shiro:hasRole>
@@ -32,6 +40,8 @@
     <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a></li>
         <li><a href="javascript:;" class="openable" mid="1.14">ESB服务器管理</a></li>
     </shiro:hasRole>
+        <li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>
+    </li>
 </ul>
 <%
     }
@@ -41,12 +51,8 @@
 <ul id="menu-tree">
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
-            <shiro:hasPermission name="englishWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.2">英文单词及缩写管理</a></li>
-            </shiro:hasPermission>
-            <shiro:hasPermission name="categoryWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
-            </shiro:hasPermission>
             <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>
         </ul>

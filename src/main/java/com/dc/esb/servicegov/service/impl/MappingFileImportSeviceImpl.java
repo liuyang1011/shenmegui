@@ -595,7 +595,24 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         if(null != sda && StringUtils.isNotEmpty(sda.getMetadataId())) {//判断元数据是否存在
             Metadata metadata = metadataDAO.findUniqueBy("metadataId", sda.getMetadataId());
             if (null == metadata) {
-                return false;
+                metadata = new Metadata();
+                metadata.setMetadataId(sda.getMetadataId().trim());
+                metadata.setChineseName(sda.getStructAlias().trim());
+                String type = sda.getType();
+                type.replaceAll("（", "(").replaceAll("）", ")");
+                if(type.indexOf("(") >= 0){
+                    metadata.setType(type.split("[()]+")[0]);
+                    String lengthAndScale = type.split("[()]+")[1];
+                    if(StringUtils.isNotEmpty(lengthAndScale)){
+                        String strs[] = lengthAndScale.split("\\,");
+                        metadata.setLength(strs[0]);
+                        if(strs.length > 1){
+                            metadata.setScale(strs[1]);
+                        }
+                    }
+                }else {
+                    metadata.setType(type);
+                }
             }
         }else{
             return true;

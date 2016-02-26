@@ -22,6 +22,8 @@ public class SGMenu implements Serializable {
     @Column(name="PERMISSION_ID")
     private String permissionId;
 
+    private String type;
+
     public String getId() {
         return Id;
     }
@@ -52,5 +54,13 @@ public class SGMenu implements Serializable {
 
     public void setPermissionId(String permissionId) {
         this.permissionId = permissionId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

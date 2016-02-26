@@ -342,6 +342,39 @@
       }
     },
       {
+          text:'导出Word&nbsp;&nbsp;&nbsp;',
+          iconCls:'icon-excel-export',
+          handler: function () {
+              var checkedItems = $('#resultList').datagrid('getChecked');
+              if (checkedItems != null && checkedItems.length > 0) {
+                  var form=$("<form>");//定义一个form表单
+                  form.attr("style","display:none");
+                  form.attr("target","");
+                  form.attr("method","post");
+                  form.attr("action","/wordExport/exportOperation");
+                  for(var i=0; i < checkedItems.length; i++){
+                      var input1=$("<input>");
+                      input1.attr("type","hidden");
+                      input1.attr("name","pks["+i+"].serviceId");
+                      input1.attr("value",checkedItems[i].serviceId);
+                      var input2=$("<input>");
+                      input2.attr("type","hidden");
+                      input2.attr("name","pks["+i+"].operationId");
+                      input2.attr("value",checkedItems[i].operationId);
+
+                      form.append(input1);
+                      form.append(input2);
+                  }
+
+                  $("body").append(form);//将表单放置在web中
+                  form.submit();//表单提交
+              }
+              else{
+                  alert("没有选中数据！");
+              }
+          }
+      },
+      {
           text:'导出配置&nbsp;&nbsp;&nbsp;',
           iconCls:'icon-excel-export',
           handler: function () {
@@ -387,16 +420,16 @@
       handler: function () {
         var checkedItems = $('#resultList').datagrid('getChecked');
         if (checkedItems != null && checkedItems.length == 1) {
-          $('#opDialog').dialog({
-            title: '详细信息',
-            width: 800,
-            left:200,
-            top:100,
-            closed: false,
-            cache: false,
-            href: '/operation/detailPage?serviceId=' +  checkedItems[0].serviceId + '&operationId=' + checkedItems[0].operationId,
-            modal: true
-          });
+
+            var url = '/operation/detailPage?serviceId=' +  checkedItems[0].serviceId + '&operationId=' + checkedItems[0].operationId
+            var content = ' <iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>'
+            parent.$('#mainContentTabs').tabs('add', {
+                title: '服务（'+ checkedItems[0].serviceId+ ":" +checkedItems[0].operationId+")详细信息",
+                content: content,
+                closable: true
+            });
+
+
         }
         else{
           alert("请选中一行数据！");

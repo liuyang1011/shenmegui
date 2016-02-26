@@ -197,4 +197,8 @@ public abstract class AbstractBaseService<T, PK extends Serializable> {
         List<T> list = getDAO().findBy(params);
         return (list.size()==0);
     }
+
+    public List<T> exeSql(String sql, Object ... values){
+        return getDAO().exeSQL(sql, values);
+    }
 }
