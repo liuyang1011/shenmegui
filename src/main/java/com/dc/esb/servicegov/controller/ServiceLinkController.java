@@ -943,8 +943,10 @@ public class ServiceLinkController {
     List getNodeInfoByNodeType1(HttpServletRequest req) {
         String systemId = req.getParameter("systemId");
         String nodeType=req.getParameter("nodeType");
-        String hql = "from ServiceInvoke where systemId=?";
-        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId);
+        String serviceId=req.getParameter("serviceId");
+        String operationId=req.getParameter("operationId");
+        String hql = "from ServiceInvoke where systemId=? and serviceId=? and operationId=?";
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId, serviceId, operationId);
         List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
         List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
         if("0".equals(nodeType)){
@@ -1045,8 +1047,9 @@ public class ServiceLinkController {
     List getNodeInfoByNodeType3(HttpServletRequest req) {
         String systemId = req.getParameter("systemId");
         String nodeType=req.getParameter("nodeType");
-        String hql = "from ServiceInvoke where systemId=?";
-        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId);
+        String serviceId=req.getParameter("serviceId");
+        String hql = "from ServiceInvoke where systemId=? and serviceId=?";
+        List<ServiceInvoke> serviceInvokes = serviceInvokeService.find(hql, systemId, serviceId);
         List<ServiceLinkNodeVO> newList1=new LinkedList<ServiceLinkNodeVO>();
         List<ServiceLinkNodeVO> newList2=new LinkedList<ServiceLinkNodeVO>();
         if("0".equals(nodeType)){

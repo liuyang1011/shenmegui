@@ -48,25 +48,6 @@
           </tr>
           <tr>
             <th>
-              <NOBR>交易码</NOBR>
-            </th>
-            <td><input  style="width: 180px" class="easyui-combobox"  name="interfaceId"
-                       id="interfaceId" data-options="
-                       valueField:'interfaceId',
-                       textField:'interfaceId',
-                      onChange:function(newValue, oldValue){
-							this.value=newValue;
-							var values = $('#interfaceId').combobox('getData');
-							 $.each(values, function (index, item) {
-							   if( $.trim(item.interfaceId) == $.trim(newValue)){
-							        $('#interfaceId').combobox('setValue',item.interfaceId);
-							        }
-							 });
-				    }
-				    "/></td>
-          </tr>
-          <tr>
-            <th>
               <NOBR>服务码</NOBR>
             </th>
             <td><input  style="width: 180px" class="easyui-combobox"  name="serviceId" id="serviceId"
@@ -75,12 +56,9 @@
                         textField:'serviceId',
                             onChange:function(newValue, oldValue){
 							this.value=newValue;
-							var values = $('#serviceId').combobox('getData');
-							 $.each(values, function (index, item) {
-							   if( $.trim(item.serviceId) == $.trim(newValue)){
-							        $('#serviceId').combobox('setValue',item.serviceId);
-							        }
-							 });
+							var nodeType = $('#nodeType').combobox('getValue');
+							var url3='/serviceLink/getNodeInfoByNodeType3?systemId=${param.systemId}&nodeType='+ nodeType + '&serviceId='+newValue;
+                        $('#operationId').combobox('reload',url3);
 				           }
                         "/></td>
           </tr>
@@ -89,19 +67,35 @@
               <NOBR>场景码</NOBR>
             </th>
             <td><input  style="width: 180px" class="easyui-combobox"  name="operationId"
-                       id="operationId" data-options="valueField:'operationId',textField:'operationId',
+                        id="operationId" data-options="valueField:'operationId',textField:'operationId',
                        onChange:function(newValue, oldValue){
 							this.value=newValue;
-							var values = $('#operationId').combobox('getData');
-							 $.each(values, function (index, item) {
-							   if( $.trim(item.operationId) == $.trim(newValue)){
-							        $('#operationId').combobox('setValue',item.operationId);
-							        }
-							 });
+							var nodeType = $('#nodeType').combobox('getValue');
+							var serviceId = $('#serviceId').combobox('getValue');
+							var url1='/serviceLink/getNodeInfoByNodeType1?systemId=${param.systemId}&nodeType='+ nodeType + '&serviceId='+serviceId + '&operationId=' + newValue;
+                        $('#interfaceId').combobox('reload',url1);
 				           }"/></td>
           </tr>
+          <tr>
+            <th>
+              <NOBR>交易码</NOBR>
+            </th>
+            <td><input  style="width: 180px" class="easyui-combobox"  name="interfaceId"
+                       id="interfaceId" data-options="
+                       valueField:'interfaceId',
+                       textField:'interfaceId',
+                      onChange:function(newValue, oldValue){
+							this.value=newValue
+											    }
+				    "/></td>
+          </tr>
         </table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
         <input type="hidden" value="<%=systemId%>" id="systemId1"/>
+        <%--操作步骤：1.节点类型> 2.服务码> 3.场景码> 4.接口--%>
         <a href="javascript:;" id="saveNodeDepBtn" class="easyui-linkbutton" iconCls="icon-save"
            style="margin-left:0em">保存</a>
       </td>
