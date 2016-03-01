@@ -65,15 +65,21 @@ public class ProcessController {
             log.info(tasks.get(i).getId() + " :: " + tasks.get(i).getActualOwner());
             String  newPid=String.valueOf(tasks.get(i).getProcessInstanceId());
             String  newTid=String.valueOf(tasks.get(i).getId());
-            if(processInstanceId!=null||taskId != null) {
+            if(processInstanceId!=null&&!"null".equals(processInstanceId)){
+                if(newPid.equals(processInstanceId)){
+                    newTasks.add(tasks.get(i));
+                    return newTasks;
+                }
+
+              }else if(taskId!=null&&!"null".equals(taskId)){
                 if(newTid.equals(taskId)){
                     newTasks.add(tasks.get(i));
-                }else if(newPid.equals(processInstanceId)){
-                    newTasks.add(tasks.get(i));
+                    return newTasks;
                 }
-                return newTasks;
 
             }
+
+
         }
         return tasks;
     }
