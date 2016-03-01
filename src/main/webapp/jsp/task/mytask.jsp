@@ -71,6 +71,37 @@
 </head>
 
 <body>
+<form id="taskForm">
+    <fieldset>
+        <legend>条件搜索</legend>
+        <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th><nobr>
+                    流程ID
+                </nobr>
+                </th>
+                <td>
+                    <input class="easyui-textbox" type="text" id="processInstanceId" name="processInstanceId">
+                </td>
+
+                <th><nobr>
+                    任务ID
+                </nobr>
+                </th>
+                <td>
+                    <input class="easyui-textbox" type="text" id="taskId" name="taskId">
+                </td>
+
+                <td align="right">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchTask();">搜索</a>
+                    <a href="#" id="clean" onclick=" $('#taskForm').form('clear')" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                </td>
+            </tr>
+        </table>
+
+
+    </fieldset>
+</form>
 <div id="userId" style="display: none"><shiro:principal/></div>
 <div class="easyui-tabs" id="taskTabs" style="width:100%;height:auto">
     <div title="未完成任务" style="padding:0px">
@@ -78,6 +109,7 @@
             <thead>
             <tr>
                 <th data-options="field:'productid',checkbox:true"></th>
+                <th data-options="field:'processInstanceId'">任务ID</th>
                 <th data-options="field:'id'">任务ID</th>
                 <th data-options="field:'name'">任务名称</th>
                 <th data-options="field:'subject'">主题</th>
@@ -193,7 +225,12 @@
                                     $("#w").window("close");
                                     $('#taskTable').datagrid('reload');
                                     parent.SYSMENU.changeLeftMenu(4);
-                                    alert("请在左侧服务目录菜单中新增服务。");
+                                    if(task.processId=="com.dc.esb.servicegov.process.service"){
+                                        alert("请在左侧服务目录菜单中新增服务。");
+                                    }else{
+                                        alert("请在左侧服务目录菜单中对识别服务进行服务定义。");
+                                    }
+
                                 }
                                 if (task.name == "创建公共代码") {
                                     var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/SGEnum/task/common.jsp?processId=' + task.processInstanceId + '&taskId=' + task.taskId + '" style="width:100%;height:100%;"></iframe>';
@@ -352,6 +389,15 @@
                 }
             }
         ];
+        function searchTask(){
+            var processInstanceId = $("#processInstanceId").textbox('getValue');
+            var taskId = $("#taskId").textbox('getValue');
+            var queryParams = $('#taskTable').datagrid('options').queryParams;
+            queryParams.processInstanceId = processInstanceId;
+            queryParams.taskId = taskId;
+            $('#taskTable').datagrid('options').queryParams = queryParams;//传递值
+            $("#taskTable").datagrid('reload');//重新加载table
+        }
     </script>
 
 </body>
