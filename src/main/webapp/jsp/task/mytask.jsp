@@ -109,7 +109,7 @@
             <thead>
             <tr>
                 <th data-options="field:'productid',checkbox:true"></th>
-                <th data-options="field:'processInstanceId'">任务ID</th>
+                <th data-options="field:'processInstanceId'">流程ID</th>
                 <th data-options="field:'id'">任务ID</th>
                 <th data-options="field:'name'">任务名称</th>
                 <th data-options="field:'subject'">主题</th>
