@@ -51,6 +51,16 @@ var SYSMENU = {
                     },
                     prompt: '请输入关键词'
                 });
+                $('#serviceidentifytreefilter').searchbox({
+                    "searcher": function (value, name) {
+                        if(value && value != ''){
+                            $('.mxserviceidentifytree').tree('doFilter', value);
+                        }else{
+                            $('.mxserviceidentifytree').tree({url:'/service/getTree?_t=' + new Date().getTime()});
+                        }
+                    },
+                    prompt: '请输入服务名'
+                });
 
                 var tab = $('#mainContentTabs').tabs('getSelected');
                 var index = $('#mainContentTabs').tabs('getTabIndex', tab);
@@ -410,6 +420,34 @@ var SYSMENU = {
                         }
                     }
                 });
+                //服务识别
+                $('.mxserviceidentifytree').tree({
+                    onClick: function (node) {
+                        if (node.type == 'service') {//打开服务场景
+                            if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
+                                var mid = node.id;
+                                var title = node.text;
+                                if ($('#mainContentTabs').tabs('exists', title)) {
+                                    $('#mainContentTabs').tabs('select', title);
+                                } else {
+                                    var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
+                                    $('#mainContentTabs').tabs('add', {
+                                        title: title,
+                                        content: content,
+                                        closable: true,
+                                        fit:true
+                                    });
+                                }
+                            } else {
+                                var mid = node.id;
+                                var title = node.text;
+                                if ($('#mainContentTabs').tabs('exists', title)) {
+                                    $('#mainContentTabs').tabs('select', title);
+                                }
+                            }
+                        }
+                    }
+                });
                 SYSTABMENU.init();
             });
         });
@@ -439,6 +477,12 @@ var SYSMENU = {
                     $('.mxsysadmintree').tree('doFilter', value);
                 },
                 prompt: '请输入关键词'
+            });
+            $('#serviceidentifytreefilter').searchbox({
+                "searcher": function (value, name) {
+                    $('.mxserviceidentifytree').tree('doFilter', value);
+                },
+                prompt: '请输入服务名'
             });
 
             //报文管理
@@ -728,6 +772,34 @@ var SYSMENU = {
                     }
                 }
             });
+            //服务识别
+            $('.mxserviceidentifytree').tree({
+                onClick: function (node) {
+                    if (node.type == 'service') {//打开服务场景
+                        if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {
+                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true,
+                                    fit:true
+                                });
+                            }
+                        } else {
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            }
+                        }
+                    }
+                }
+            });
             SYSTABMENU.init();
         });
     },
@@ -759,7 +831,12 @@ var SYSMENU = {
                 },
                 prompt: '请输入关键词'
             });
-
+            $('#serviceidentifytreefilter').searchbox({
+                "searcher": function (value, name) {
+                    $('.mxserviceidentifytree').tree('doFilter', value);
+                },
+                prompt: '请输入服务名'
+            });
             //报文管理
             $('.mxsysadmintree').tree({
                 onContextMenu: function (e, node) {
@@ -1045,6 +1122,34 @@ var SYSMENU = {
                                     content: content,
                                     closable: true,
                                     fit: true
+                                });
+                            }
+                        } else {
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            }
+                        }
+                    }
+                }
+            });
+            //服务识别
+            $('.mxserviceidentifytree').tree({
+                onClick: function (node) {
+                    if (node.type == 'service') {//打开服务场景
+                        if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
+                            var mid = node.id;
+                            var title = node.text;
+                            if ($('#mainContentTabs').tabs('exists', title)) {
+                                $('#mainContentTabs').tabs('select', title);
+                            } else {
+                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
+                                $('#mainContentTabs').tabs('add', {
+                                    title: title,
+                                    content: content,
+                                    closable: true,
+                                    fit:true
                                 });
                             }
                         } else {
