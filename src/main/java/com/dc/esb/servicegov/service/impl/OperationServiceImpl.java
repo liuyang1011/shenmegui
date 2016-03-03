@@ -1,5 +1,6 @@
 package com.dc.esb.servicegov.service.impl;
 
+import com.dc.esb.servicegov.dao.impl.InterfaceDAOImpl;
 import com.dc.esb.servicegov.dao.impl.InterfaceInvokeDAOImpl;
 import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
 import com.dc.esb.servicegov.dao.impl.ServiceCategoryDAOImpl;
@@ -19,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.lang.System;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -62,6 +65,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     private ServiceCategoryDAOImpl scDao;
     @Autowired
     private InterfaceInvokeDAOImpl interfaceInvokeDAO;
+    @Autowired
+    private InterfaceDAOImpl interfaceDAOImpl;
 
     public List<Operation> getOperationByServiceId(String serviceId) {
         return operationDAOImpl.findBy("serviceId", serviceId);
@@ -534,6 +539,20 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     }
                 }
 
+                //by jq
+//                if (key.equals("interfaceId") && values.get(key) != null && values.get(key).length > 0
+//                        || key.equals("interfaceName") && values.get(key) != null && values.get(key).length > 0) {
+//                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+//                        if (StringUtils.isNotEmpty(values.get(key)[0])) {
+//                            hql += " and ii.consumer.systemId like '%" + values.get(key)[0] + "%' ";
+//                            hql += " and ii.consumer.type like '%" +Constants.INVOKE_TYPE_CONSUMER+ "%' ";
+////                            a.operationId in () and a.serviceId in
+//
+//                        }
+//                    }
+//                }
+                //end
+
             }
         }
         return hql;
@@ -551,15 +570,39 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return operationDAOImpl.find(hql).size();
     }
     public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page) throws  Throwable{
-        StringBuffer hql = new StringBuffer("select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ");
+        //by jq
+        String interfaceIds = "";
+        if((values.get("interfaceName") != null && values.get("interfaceName").length > 0 && StringUtils.isNotEmpty(values.get("interfaceName")[0]))
+                || (values.get("interfaceId") != null && values.get("interfaceId").length > 0 && StringUtils.isNotEmpty(values.get("interfaceId")[0]))){
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("interfaceName", URLDecoder.decode(values.get("interfaceName")[0]));
+            params.put("interfaceId", values.get("interfaceId")[0]);
+            //接口
+            List<Interface> interfaceList = interfaceDAOImpl.findLike(params, MatchMode.ANYWHERE);
+            for (int i = 0; i < interfaceList.size(); i++) {
+                if(i==0){
+                    interfaceIds = "'" + interfaceList.get(i).getInterfaceId() + "'";
+                }else{
+                    interfaceIds += ",'" + interfaceList.get(i).getInterfaceId() + "'";
+                }
+            }
+        }
+        StringBuffer hql = new StringBuffer("select a.serviceId, a.operationId from " +  Operation.class.getName() +" as a ");
         if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
-                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) ) ){
-            hql.append( ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ");
+                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) )
+                ||(values.get("interfaceName") != null && values.get("interfaceName").length > 0 && StringUtils.isNotEmpty(values.get("interfaceName")[0]))
+                || (values.get("interfaceId") != null && values.get("interfaceId").length > 0 && StringUtils.isNotEmpty(values.get("interfaceId")[0]))){
+            hql.append( ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId");
+            if (!interfaceIds.equals("")){
+                hql.append(" and ii.provider.inter.interfaceId in ("+interfaceIds+") ");
+            }
         }else{
             hql.append(" where 1=1 ");
         }
         hql.append(genderQueryHql(values));
         hql.append("  group by a.serviceId, a.operationId order by a.serviceId, a.operationId");
+        //end
+
         List<Object[]> strsArray =  operationDAOImpl.findBy(hql.toString(), page, new ArrayList<SearchCondition>());
         List<OperationExpVO> voList =  new ArrayList<OperationExpVO>();
         for(Object[] strs : strsArray){

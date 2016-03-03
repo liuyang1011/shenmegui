@@ -151,7 +151,8 @@
                  textField:'chineseName',
                  valueField:'id',
                  onChange:function(newValue, oldValue){
-							this.value=newValue;
+                                this.value=newValue;							this.value=newValue;
+
 				    }
                  "
                 >
@@ -169,13 +170,18 @@
                  "
                 >
         </td>
+        <th><nobr>原始接口id</nobr></th>
+        <td><input name="interfaceId" id="interfaceId"  class="easyui-textbox" style="width:150px">
+        </td>
+        <th><nobr>原始接口名称</nobr></th>
+        <td><input name="interfaceName" id="interfaceName"  class="easyui-textbox" style="width:150px">
+        </td>
       <th>
 
       </th>
       <td></td>
-      <th>
-
-      </th>
+      </tr>
+      <tr>
       <td></td>
       <th style="width:200px">
           <nobr>
@@ -415,7 +421,10 @@
       "operationDesc":encodeURI($("#operationDesc").textbox("getValue")),
       "operationState":$("#operationState").combobox("getValue"),
       "providerId":$("#providerId").combobox("getValue"),
-      "consumerId":$("#consumerId").combobox("getValue")
+      "consumerId":$("#consumerId").combobox("getValue"),
+        "interfaceId":$("#interfaceId").textbox("getValue"),
+        "interfaceName":encodeURI($("#interfaceName").textbox("getValue"))
+
     }
     $("#resultList").datagrid('options').queryParams = params;
       changePageList()
