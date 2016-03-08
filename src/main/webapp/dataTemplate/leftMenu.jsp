@@ -40,7 +40,7 @@
     <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a></li>
         <li><a href="javascript:;" class="openable" mid="1.14">ESB服务器管理</a></li>
     </shiro:hasRole>
-        <li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>
+        <%--<li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>--%>
     </li>
 </ul>
 <%

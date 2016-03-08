@@ -30,9 +30,9 @@ public class Metadata implements Serializable {
     private String enumId;
     @Column(name = "METADATA_ALIAS", length = 255)
     private String metadataAlias;
-    @Column(name = "BUSS_DEFINE", length = 1023)
+    @Column(name = "BUSS_DEFINE", length = 255)
     private String bussDefine;
-    @Column(name = "BUSS_RULE", length = 1023)
+    @Column(name = "BUSS_RULE", length = 255)
     private String bussRule;
     @Column(name = "DATA_SOURCE", length = 255)
     private String dataSource;

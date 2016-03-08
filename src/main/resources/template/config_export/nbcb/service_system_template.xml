@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service package_type="xml" store-mode="UFF-8">
+	<SYS_HEAD>
+		${SYS_HEAD}$
+	</SYS_HEAD>
+	<APP_HEAD>
+		${APP_HEAD}$
+	</APP_HEAD>
+	<LOCAL_HEAD>
+		${LOCAL_HEAD}$
+	</LOCAL_HEAD>
+	<BODY>
+		${response}$
+	</BODY>
+</service>

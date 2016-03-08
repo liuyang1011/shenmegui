@@ -188,7 +188,7 @@ public class Constants {
     public static class ServiceHead{
         public static final String DEFAULT_SYSHEAD_ID = "SYS_HEAD";
         public static final String DEFAULT_APPHEAD_ID = "APP_HEAD";
-        public static final String DEFAULT_HEAD_ID = "SYS_HEAD,APP_HEAD";
+        public static final String DEFAULT_HEAD_ID = "SYS_HEAD,APP_HEAD,LOCAL_HEAD";
 
         public static final String REQUIRED_Y = "Y";
         public static final String REQUIRED_N = "N";

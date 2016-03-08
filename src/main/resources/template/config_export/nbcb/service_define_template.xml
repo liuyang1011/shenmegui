@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<esb_xml>
+    <request>
+        <sdoroot>
+            <SYS_HEAD>
+                ${sysHead}$
+            </SYS_HEAD>
+            <APP_HEAD>
+                ${appHead}$
+            </APP_HEAD>
+            <LOCAL_HEAD>
+                ${localHead}$
+            </LOCAL_HEAD>
+            <BODY>
+                ${request}$
+            </BODY>
+        </sdoroot>
+    </request>
+    <response>
+        <sdoroot>
+            <SYS_HEAD>
+                ${sysHead}$
+            </SYS_HEAD>
+            <APP_HEAD>
+                ${appHead}$
+            </APP_HEAD>
+            <LOCAL_HEAD>
+                ${localHead}$
+            </LOCAL_HEAD>
+            <BODY>
+                ${response}$
+            </BODY>
+        </sdoroot>
+    </response>
+</esb_xml>

@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.export.impl;
 
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +18,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.System;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/12/17.
@@ -35,24 +39,78 @@ public class ConfigExportGenerator {
     InterfaceHeadRelateServiceImpl interfaceHeadRelateService;
     @Autowired
     IdaServiceImpl idaService;
+    @Autowired
+    ServiceHeadServiceImpl serviceHeadService;
+
+    String channel_service_path = "template/config_export/nbcb/channel_service_template.xml";//默认请求文件模板路径
+    String service_channel_path = "template/config_export/nbcb/service_system_template.xml";//默认响应文件模板路径
+
+    String sysHeadReq;
+    String appHeadReq;
+    String localHeadReq;
+    String requestText;
+    String responseText;
+
     public void generate(ServiceInvoke serviceInvoke, String path){
+        genrateServiceFile(serviceInvoke, path);
         if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
             //生成文件路径
-            path = path + File.separator + "in_config";
+            path = path + File.separator + "in_config" + File.separator + serviceInvoke.getSystem().getSystemAb();
+            generateInChannelServiceFile(serviceInvoke, path);
+            generateInServiceChannelFile(serviceInvoke, path);
         }
         if(Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())){
-            path = path + File.separator + "out_config";
+            path = path + File.separator + "out_config" + File.separator + serviceInvoke.getSystem().getSystemAb();
+            generateOutChannelServiceFile(serviceInvoke, path);
+            generateOutServiceChannelFile(serviceInvoke, path);
         }
-        generateRequest(serviceInvoke, path);
-        genrateServiceFile(serviceInvoke, path);
-        generateResponse(serviceInvoke, path);
     }
+    /**
+     *例： channel_ANHUI_service_anhuiServiceV1.xml
+     * @param serviceInvoke
+     * @param path
+     */
+    public void  generateInChannelServiceFile(ServiceInvoke serviceInvoke, String path){
+        String filePath = getReqFilePath(serviceInvoke, path);
+        generateRequest(serviceInvoke, filePath);
+    }
+    //例：service_2001300000101_system_NWVS.xml
+    public void  generateInServiceChannelFile(ServiceInvoke serviceInvoke, String path){
+        String filePath = getResFilePath(serviceInvoke, path);
+        generateResponse(serviceInvoke, filePath);
+    }
+    public void  generateOutChannelServiceFile(ServiceInvoke serviceInvoke, String path){
+        String filePath = getReqFilePath(serviceInvoke, path);
+        generateResponse(serviceInvoke, filePath);
+    }
+    //例：service_2001300000101_system_NWVS.xml
+    public void  generateOutServiceChannelFile(ServiceInvoke serviceInvoke, String path){
+        String filePath = getResFilePath(serviceInvoke, path);
+        generateRequest(serviceInvoke, filePath);
+    }
+
+
     /**
      * 生成in_config文件
      * @param serviceInvoke
      * @param path
      */
     public void  generateRequest(ServiceInvoke serviceInvoke, String path){
+        Map<String, String> map = new HashMap<String, String>();
+        Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
+        String[] headIds = operation.getHeadId().split("\\,");//服务报文头
+        for(String headId : headIds){
+            ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
+            map.put("${" + serviceHead.getHeadName() + "}$", getsServiceHeadStr(headId, Constants.ElementAttributes.REQUEST_NAME));//模板内容替换按照名称+$
+        }
+        map.put("${request}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
+        try{
+            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + channel_service_path;
+            FileUtil.copyFile(srcPath, path, map);
+        }catch (Exception e){
+            log.error("生成请求文件出错", e);
+        }
+
     }
 
     /**
@@ -61,8 +119,94 @@ public class ConfigExportGenerator {
      * @param path
      */
     public void  generateResponse(ServiceInvoke serviceInvoke, String path){
+        Map<String, String> map = new HashMap<String, String>();
+        Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
+        String[] headIds = operation.getHeadId().split("\\,");//服务报文头
+        for(String headId : headIds){
+            ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
+            map.put("${" + serviceHead.getHeadName() + "}$", getsServiceHeadStr(headId, Constants.ElementAttributes.RESPONSE_NAME));//模板内容替换按照名称+$
+        }
+        map.put("${response}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
+        try{
+            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + service_channel_path;
+            FileUtil.copyFile(srcPath, path, map);
+        }catch (Exception e){
+            log.error("生成response文件出错", e);
+        }
+
     }
 
+    //根据服务报文头获取字符串
+    public String getsServiceHeadStr(String headId, String targetName){
+        ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+        Element element = doc.addElement(serviceHead.getHeadName());
+
+        SDA reServiceHeadSDA = sdaService.getByStructName(headId, targetName);
+//            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
+        List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//服务头全量;
+        for(SDA sda : sdas){
+            renderSDA(element, sda);
+        }
+        String str = getElementChildrenStr(element);
+        return str;
+    }
+
+
+    //根据接口报文头获取字符串
+    public String getsInterfaceHeadStr(String headId){
+        return null;
+    }
+    //获取标准body
+    public String getsStandardBodyStr(ServiceInvoke serviceInvoke, String structName){
+        Document doc = DocumentHelper.createDocument();
+        doc.setXMLEncoding("utf-8");
+        Element element = doc.addElement("BODY");
+
+        String serviceId = serviceInvoke.getServiceId();
+        String operationId = serviceInvoke.getOperationId();
+        SDA sda = sdaService.getByStructName(serviceId, operationId, structName);
+        List<SDA> children = sdaService.getChildren(sda);
+        for(SDA child : children){
+            renderSDA(element, child);
+        }
+        String result = getElementChildrenStr(element);
+        return result;
+    }
+    //获取非标body
+    public String getUnStandardBodyStr(ServiceInvoke serviceInvoke){
+
+        return null;
+    }
+    public void renderSDA(Element parentElement, SDA sda){
+        Element element = parentElement.addElement(sda.getStructName());
+        element.addAttribute("metadataid", sda.getMetadataId());
+        List<SDA> children = sdaService.getChildren(sda);
+        if(null != children &&  0 < children.size()){
+            for(SDA child : children){
+                renderSDA(element, child);
+            }
+        }
+    }
+    //获取节点内容生成字符串
+    public String getElementChildrenStr(Element element){
+        String str = "";
+        if(null != element){
+            List<Element> children = element.elements();
+            if(null != children && 0 < children.size()){
+                String elementName = element.getName();
+                str = element.asXML();
+                String startStr = "<" + elementName +">";
+                String endStr = "</" + elementName + ">";
+                str = str.substring(startStr.length());//从前端截取
+                str = str.substring(0, str.length() - endStr.length());//从尾端截取
+            }
+        }
+
+
+        return str;
+    }
     /**
      * 生成服务定义文件
      * @param serviceInvoke

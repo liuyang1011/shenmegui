@@ -23,59 +23,53 @@ import java.util.List;
 @Component
 public class StandardXMLConfigExportGender extends ConfigExportGenerator{
     private Log log = LogFactory.getLog(StandardXMLConfigExportGender.class);
-    /**
-     * 生成请求文件
-     * @param serviceInvoke
-     * @param path
-     */
-    @Override
-    public void  generateRequest(ServiceInvoke serviceInvoke, String path){
-        try {
-            String serviceId = serviceInvoke.getServiceId();
-            String operationId = serviceInvoke.getOperationId();
-            Operation operation = operationService.getOperation(serviceId, operationId);
-
-            String fileName = getReqFilePath(serviceInvoke, path);
-
-            Document doc = DocumentHelper.createDocument();
-            Element serviceElement = doc.addElement("service");//根节点
-            addAttribute(serviceElement, "package_type", "xml");
-            addAttribute(serviceElement, "store-mode", "UTF-8");
-            fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
-            fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
-
-            createFile(doc, fileName);
-        }catch (Exception e){
-            log.error("生成请求文件失败！", e);
-        }
-    }
-
-    /**
-     * 生成out文件
-     * @param serviceInvoke
-     * @param path
-     */
-    @Override
-    public void  generateResponse(ServiceInvoke serviceInvoke, String path){
-        try {
-            String serviceId = serviceInvoke.getServiceId();
-            String operationId = serviceInvoke.getOperationId();
-            Operation operation = operationService.getOperation(serviceId, operationId);
-
-            String fileName = getResFilePath(serviceInvoke, path);
-
-            Document doc = DocumentHelper.createDocument();
-            Element serviceElement = doc.addElement("service");//根节点
-            addAttribute(serviceElement, "package_type", "xml");
-            addAttribute(serviceElement, "store-mode", "UTF-8");
-            fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.RESPONSE_NAME, false);
-            fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.RESPONSE_NAME, false);
-
-            createFile(doc,fileName);
-        }catch (Exception e){
-            log.error("生成响应文件失败！", e);
-        }
-    }
+//    /**
+//     * 生成请求文件
+//     * @param serviceInvoke
+//     */
+//    @Override
+//    public void  generateRequest(ServiceInvoke serviceInvoke, String fileName){
+//        try {
+//            String serviceId = serviceInvoke.getServiceId();
+//            String operationId = serviceInvoke.getOperationId();
+//            Operation operation = operationService.getOperation(serviceId, operationId);
+//
+//            Document doc = DocumentHelper.createDocument();
+//            Element serviceElement = doc.addElement("service");//根节点
+//            addAttribute(serviceElement, "package_type", "xml");
+//            addAttribute(serviceElement, "store-mode", "UTF-8");
+//            fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
+//            fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
+//
+//            createFile(doc, fileName);
+//        }catch (Exception e){
+//            log.error("生成请求文件失败！", e);
+//        }
+//    }
+//
+//    /**
+//     * 生成out文件
+//     * @param serviceInvoke
+//     */
+//    @Override
+//    public void  generateResponse(ServiceInvoke serviceInvoke, String fileName){
+//        try {
+//            String serviceId = serviceInvoke.getServiceId();
+//            String operationId = serviceInvoke.getOperationId();
+//            Operation operation = operationService.getOperation(serviceId, operationId);
+//
+//            Document doc = DocumentHelper.createDocument();
+//            Element serviceElement = doc.addElement("service");//根节点
+//            addAttribute(serviceElement, "package_type", "xml");
+//            addAttribute(serviceElement, "store-mode", "UTF-8");
+//            fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.RESPONSE_NAME, false);
+//            fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.RESPONSE_NAME, false);
+//
+//            createFile(doc,fileName);
+//        }catch (Exception e){
+//            log.error("生成响应文件失败！", e);
+//        }
+//    }
 
     public void fillPackageParserServiceHead(Operation operation, String interfaceId, Element targetElement, String targetName, boolean arrayFlag){
         String[] headIds = operation.getHeadId().split("\\,");//服务报文头
