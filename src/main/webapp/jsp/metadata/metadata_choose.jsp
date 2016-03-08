@@ -4,6 +4,9 @@
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+
+
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -15,53 +18,43 @@
     <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
     <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
-    </head>
+</head>
 <body>
 <form id="searchForm">
     <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
                                                        onClick="javascript:$('#dlg').dialog('close');">取消</a><a href="javascript:void(0)" id="saveBtn"
-                                                                                  onclick="saveAdd('${param.optType}')"
-                                                                                  class="easyui-linkbutton"
-                                                                                  iconCls="icon-save">确定</a></div>
-<fieldset>
-    <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
-        <tr>
-            <th><nobr>元数据名称</nobr></th>
-            <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
-            <th><nobr>中文名称</nobr></th>
-            <td><input class="easyui-textbox" type="text" style="width:100px" name="chineseName" id="chineseName">
-            </td>
-           <%-- <th>英文名称</th>--%>
-            <td style="display: none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataName" id="metadataName">
-            </td>
-            <%--<th style="text-align:right">别名</th>--%>
-            <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
-            </td>
-            <th><nobr>类别词</nobr></th>
-            <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px"
-                       class="easyui-combobox"
-                       data-options="
-						url:'/metadata/categoryWord',
-				 		 method:'get',
-				 		 valueField: 'englishWord',
-				 		 textField: 'chineseWord',
-				 		 onChange:function(newValue, oldValue){
-							this.value=newValue;
-						}
-					"></td>
-            <td align="right">
-                <shiro:hasPermission name="metadata-get">
+                                                                                                                onclick="saveAdd('append')"
+                                                                                                                class="easyui-linkbutton"
+                                                                                                                iconCls="icon-save">确定</a></div>
+    <fieldset>
+        <legend>条件搜索</legend>
+        <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
+            <tr>
+                <th><nobr>元数据名称</nobr></th>
+                <td><input class="easyui-textbox" type="text" style="width:100px" name="metadataId" id="metadataId"></td>
+                <th><nobr>中文名称</nobr></th>
+                <td><input class="easyui-textbox" type="text" style="width:100px" name="chineseName" id="chineseName">
+                </td>
+
+                <td style="display: none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataName" id="metadataName">
+                </td>
+
+                <td style="display:none"><input class="easyui-textbox" type="text" style="width:100px" name="metadataAlias" id="metadataAlias">
+                </td>
+                <th><nobr>类别词</nobr></th>
+                <td><input type="text" name="categoryWordId" id="categoryWordId" style="width: 100px"></td>
+                <td align="right">
+
                     <a href="javascript:void(0)" onclick="queryMetadata()" id="queryMetadataBtn" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
-                    <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
-                </shiro:hasPermission>
-            </td>
-        </tr>
-    </table>
-</fieldset>
+                    <a href="javascript:;" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+
+                </td>
+            </tr>
+        </table>
+    </fieldset>
 </form>
 <table id="metadataList" title="元数据列表"
-        style="height:620px; width:100%;">
+       style="height:620px; width:100%;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"  width="5%"></th>
@@ -96,17 +89,18 @@
                 }
             }
         });
-
         $("#categoryWordId").combobox({
             panelHeight:'130px',
             url:'/metadata/categoryWord',
             method:'get',
-            valueField: 'englishWord',
-            textField: 'chineseWord',
-            onChange:function(newValue, oldValue){
+            valueField:'esglisgAb',
+            textField:'chineseWord',
+            onChange:function(newValue,oldValue){
                 this.value=newValue;
             }
         });
+
+
     });
 
     function queryMetadata() {
@@ -116,8 +110,9 @@
         var params = {
             "metadataId" : $("#metadataId").textbox("getValue"),
             "chineseName" : encodeURI($("#chineseName").textbox("getValue")),
-            "categoryWordId" : $("#categoryWordId").combobox("getValue"),
+            "categoryWordId" : $("#categoryWordId").combobox("getValue")
         };
+
         $("#metadataList").datagrid('options').queryParams = params;
         $("#metadataList").datagrid('reload');
     };
@@ -155,7 +150,7 @@
                 append2: typeStr,
                 append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/"+row.metadataId,
                 append4: row.metadataId,
-                attributes:getSeq(node.id),
+                attributes:getSeq(node.id)
             }
         });
         $('#tg').treegrid('reloadFooter');
@@ -220,7 +215,7 @@
                 append2: typeStr,
                 append3 : node.append3.substring(0,node.append3.lastIndexOf('/')) + "/"+row.metadataId,
                 append4: row.metadataId,
-                attributes:getSeq(node.id)+1,
+                attributes:getSeq(node.id)
             }
         });
         $('#tg').treegrid('reloadFooter');

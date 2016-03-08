@@ -233,4 +233,46 @@
 </script>
 <%
     }
+    if (mid.equals("17")) {
+%>
+<div class="tree-filter">
+    <input class="easyui-searchbox" id="serviceidentifytreefilter" style="width:100%">
+
+</div>
+<ul class="easyui-tree mxserviceidentifytree" style="overflow:scroll;height:90%"></ul>
+<script>
+    $('.mxserviceidentifytree').tree({
+        url:'/service/getTree',
+        method:'get',
+        animate:true,
+        onLoadSuccess:function(node, data){
+            parse(data);
+            var title = "服务识别";
+            var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="/jsp/serviceIdentify/interface_search.jsp" style="width:100%;height:98%;"></iframe>';
+            if ($('#mainContentTabs').tabs('exists',title)) {
+                $('#mainContentTabs').tabs('select',title);
+            }else{
+                $('#mainContentTabs').tabs('add', {
+                    title: title,
+                    content: content,
+                    closable: true
+                });
+            }
+        }
+    });
+    function parse(data){
+        $.each(data, function (index, item) {
+            if(item.children.length > 1){
+                parse(item.children);
+            }else{
+                if(item.type == "serviceCategory"){
+                    item.iconCls = "icon-add";
+                }
+            }
+        });
+    }
+
+</script>
+<%
+    }
 %>

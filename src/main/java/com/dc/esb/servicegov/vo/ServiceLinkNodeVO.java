@@ -72,8 +72,41 @@ public class ServiceLinkNodeVO {
      * 条件信息
      */
     private String connectionDesc;
+    /**
+     * 组合位
+     */
+    private String linkCondition;
 
+    /**
+     * 系统ID
+     */
+    private String systemId;
+    /**
+     * 系统名称
+     */
+    private String systemName;
 
+    public String getSystemName() {
+        return systemName;
+    }
+
+    public void setSystemName(String systemName) {
+        this.systemName = systemName;
+    }
+
+    public String getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(String systemId) {
+        this.systemId = systemId;
+    }
+    public String getLinkCondition(){
+        return linkCondition;
+    }
+    public void setLinkCondition(String linkCondition){
+        this.linkCondition=linkCondition;
+    }
     public String getInterfaceId() {
         return interfaceId;
     }
