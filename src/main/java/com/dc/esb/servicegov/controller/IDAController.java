@@ -54,7 +54,7 @@ public class IDAController {
 		return map;
 	}
 
-//	@RequiresPermissions({"system-get"})
+	//	@RequiresPermissions({"system-get"})
 	@RequiresPermissions({"ida-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getInterfaces/{interfaceId}", headers = "Accept=application/json")
 	public @ResponseBody
@@ -69,25 +69,38 @@ public class IDAController {
 		hql += " and (t.state = '"+Constants.IDA_STATE_COMMON+"' or t.state is null) and (structName is not null or structAlias is not null) order by seq";
 
 		List<Ida> idas = idaService.findBy(hql);
-		for(Ida ida:idas){
-			if(idaAttrbuteService.judgeAttr(ida.getId())){
-				ida.setAttrFlag("true");
-			}else{
-				ida.setAttrFlag("false");
+		boolean sucFlag = false;
+		while (!sucFlag) {
+			boolean delFlag = false;
+			for(Ida ida:idas){
+				if(ida.getStructName().equals("null")){
+					idas.remove(ida);
+					delFlag = true;
+					break;
+				}
+				if(idaAttrbuteService.judgeAttr(ida.getId())){
+					ida.setAttrFlag("true");
+				}else{
+					ida.setAttrFlag("false");
+				}
+				ida.setHeads(null);
 			}
-			ida.setHeads(null);
+			if (!delFlag) {
+				sucFlag = true;
+			}
 		}
+
 		map.put("total", idas.size());
 		map.put("rows", idas);
 		return map;
 	}
 
-//	@RequiresPermissions({"system-add"})
+	//	@RequiresPermissions({"system-add"})
 	@RequiresPermissions({"ida-add"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean save(@RequestBody
-	Ida [] idas) {
+				 Ida [] idas) {
 		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
 		String logParam = "列表:";
 		for(int i=0; i < idas.length; i++){
@@ -104,7 +117,7 @@ public class IDAController {
 	@RequestMapping(method = RequestMethod.POST, value = "/headAdd", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean headAdd(@RequestBody
-				 Ida [] idas) {
+					Ida [] idas) {
 		OperationLog operationLog = systemLogService.record("IDA","批量保存","" );
 		String logParam = "列表:";
 
@@ -141,12 +154,12 @@ public class IDAController {
 		return idaService.uniqueValid(structName,headId);
 	}
 
-//	@RequiresPermissions({"system-delete"})
+	//	@RequiresPermissions({"system-delete"})
 	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.POST, value = "/delete", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean delete(@RequestBody
-	String [] ids) {
+				   String [] ids) {
 		OperationLog operationLog = systemLogService.record("IDA","批量删除","删除ida数：" + ids.length );
 
 		idaService.deletes(ids);
@@ -168,8 +181,8 @@ public class IDAController {
 	@RequestMapping(method = RequestMethod.GET, value = "/modifySEQ/{id}/{seq}/{id2}/{seq2}", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean modifySEQ(@PathVariable
-	String id,@PathVariable int seq,@PathVariable String id2,@PathVariable int seq2) {
-		
+					  String id,@PathVariable int seq,@PathVariable String id2,@PathVariable int seq2) {
+
 		String hql = "update Ida set seq = ? where id=?";
 //		idaService.exeHql(hql, seq,id);
 //		idaService.exeHql(hql, seq2,id2);
@@ -211,7 +224,7 @@ public class IDAController {
 		return modelAndView;
 	}
 
-//	@RequiresPermissions({"system-update"})
+	//	@RequiresPermissions({"system-update"})
 	@RequiresPermissions({"ida-get"})
 	@RequestMapping(method = RequestMethod.GET, value = "/getIdaMapping/{interfaceId}/{serviceId}/{operationId}", headers = "Accept=application/json")
 	public @ResponseBody Map<String,Object> getIdaMapping(@PathVariable String interfaceId, @PathVariable String serviceId, @PathVariable String operationId){
@@ -241,7 +254,7 @@ public class IDAController {
 		return sdaList;
 	}
 
-//	@RequiresPermissions({"system-update"})
+	//	@RequiresPermissions({"system-update"})
 	@RequiresPermissions({"ida-update"})
 	@RequestMapping(method = RequestMethod.POST, value = "/saveIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean saveIdaMapping(@RequestBody List list){
@@ -288,7 +301,7 @@ public class IDAController {
 		return true;
 	}
 
-//	@RequiresPermissions({"system-update"})
+	//	@RequiresPermissions({"system-update"})
 	@RequiresPermissions({"ida-delete"})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/deleteIdaMapping", headers = "Accept=application/json")
 	public @ResponseBody boolean deleteIdaMapping(@RequestBody List list){
