@@ -157,7 +157,12 @@
 				iconCls:'icon-edit',
 				handler:function(){
 					var row = $("#tg").treegrid("getSelected");
+					var checkedItems = $('#tg').datagrid('getChecked');
 					if(row){
+						if (checkedItems.length > 1) {
+		                    alert("请只选中一行");
+		                    return false;
+		                }
 						interfaceManager.edit(row.interfaceId,"${param.systemId}");
 					}else{
 						alert("请选择要修改的行");
@@ -174,8 +179,12 @@
 						return false;
 					}
 					var row = $("#tg").treegrid("getSelected");
+					var rows = $("#tg").datagrid("getSelections");
 					if(row){
-						remove(row.interfaceId,row.interfaceName);
+						for(var per in rows){
+							remove(rows[per].interfaceId,rows[per].interfaceName);
+						}
+
 					}else{
 						alert("请选择要删除的行");
 					}
@@ -188,7 +197,12 @@
 				iconCls:'icon-save',
 				handler:function(){
 					var row = $("#tg").treegrid("getSelected");
+					var checkedItems = $('#tg').datagrid('getChecked');
 					if(row){
+						if (checkedItems.length > 1) {
+		                    alert("请只选中一行");
+		                    return false;
+		                }
 						var interfaceId = row.interfaceId;
 						uiinit.win({
 							w:500,
@@ -268,7 +282,7 @@
 						form.submit();//表单提交
 
 					}else{
-						alert("请选择要关联的行");
+						alert("请选择要导出的行");
 					}
 
 				}
@@ -280,7 +294,12 @@
 				iconCls: 'icon-qxfp',
 				handler: function () {
 					var row = $("#tg").datagrid("getSelected");
+					var checkedItems = $('#tg').datagrid('getChecked');
 					if(row){
+						if (checkedItems.length > 1) {
+		                    alert("请只选中一个来查看");
+		                    return false;
+		                }
 						var urlPath =  '/jsp/interface/interface_history.jsp?interfaceId='+row.interfaceId;
 						var hisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + urlPath + '" style="width:100%;height:100%;"></iframe>'
 
@@ -302,22 +321,33 @@
 				iconCls: 'icon-save',
 				handler: function () {
 					var row = $("#tg").datagrid("getSelected");
+					var checkedItems = $('#tg').datagrid('getChecked');
 					if(row){
+						if (checkedItems.length > 1) {
+		                    alert("请只选中一个要发布的接口");
+		                    return false;
+		                }
 						var versionCode="";
 						if(row.version != null){
 							versionCode=row.version.code;
 						}
 						var urlPath = "/jsp/interface/interface_release.jsp?interfaceId="+row.interfaceId+"&interfaceName="+encodeURI(encodeURI(row.interfaceName))+
 								"&versionCode="+versionCode;
-						$('#releaseDlg').dialog({
-							title: '版本发布',
-							width: 500,
-							left:150,
-							top:50,
-							closed: false,
-							cache: false,
-							href: urlPath,
-							modal: true
+//						$('#releaseDlg').dialog({
+//							title: '版本发布',
+//							width: 500,
+//							left:150,
+//							top:50,
+//							closed: false,
+//							cache: false,
+//							href: urlPath,
+//							modal: true
+//						});
+						uiinit.win({
+							w:500,
+							iconCls:'icon-add',
+							title:"版本发布",
+							url : urlPath
 						});
 					}else{
 						alert("请先选一个接口");
@@ -332,7 +362,12 @@
 				iconCls: 'icon-cfp',
 				handler: function () {
 					var row = $("#tg").datagrid("getSelected");
+					var checkedItems = $('#tg').datagrid('getChecked');
 					if(row){
+						if (checkedItems.length > 1) {
+		                    alert("请只选中一行");
+		                    return false;
+		                }
 						//判断接口是否有服务调用
 						$.ajax({
 							type: "get",
@@ -344,15 +379,21 @@
 							success: function (data) {
 								if(data){
 									var urlPath = "/jsp/sysadmin/relate_operation.jsp?interfaceId="+row.interfaceId;
-									$('#releaseDlg').dialog({
-										title: '关联的服务场景',
-										width: 500,
-										left:150,
-										top:50,
-										closed: false,
-										cache: false,
-										href: urlPath,
-										modal: true
+//									$('#releaseDlg').dialog({
+//										title: '关联的服务场景',
+//										width: 500,
+//										left:150,
+//										top:50,
+//										closed: false,
+//										cache: false,
+//										href: urlPath,
+//										modal: true
+//									});
+									uiinit.win({
+										w:500,
+										iconCls:'icon-add',
+										title:"关联的服务场景",
+										url : urlPath
 									});
 								}else{
 									alert("该接口没有被调用!");
@@ -377,7 +418,7 @@
 	        method:'post',
 	        collapsible: true,
 	        url:'/interface/getInterface/${param.systemId }',
-	        singleSelect:true,//是否单选
+	        singleSelect:false,//是否单选
 	        pagination:true,//分页控件 
 	        pageSize: 15,//每页显示的记录条数，默认为10
 		    pageList: [15,20,30],//可以设置每页记录条数的列表

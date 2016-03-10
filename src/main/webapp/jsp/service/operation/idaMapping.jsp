@@ -203,7 +203,15 @@
       }
   });
   </shiro:hasPermission>
-
+  <shiro:hasPermission name="ida-get">
+  toolbar.push({
+      text : '撤销',
+      iconCls : 'icon-undo',
+      handler : function() {
+          $('#mappingdatagrid').treegrid('reload');
+      }
+  });
+  </shiro:hasPermission>
 </script>
 </body>
 </html>

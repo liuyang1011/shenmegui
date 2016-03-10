@@ -159,7 +159,8 @@ var interfaceManager = {
                     },
             success: function(result) {
                 if(result){
-                    $('#releaseDlg').dialog('close');
+                    //$('#releaseDlg').dialog('close');
+                    $('#w').window('close');
                     alert("发布成功");
                     try{
                         $("#tg").datagrid("reload");

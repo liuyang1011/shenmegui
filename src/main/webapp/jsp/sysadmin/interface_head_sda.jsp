@@ -191,6 +191,9 @@ var delIds = [];
 		    	return s;
 	    	
 		}
+		function reload(){
+			$('#tg').treegrid('reload');
+		}
 		//节点上移
 		function moveUp(){
 			var node = $('#tg').treegrid('getSelected');
@@ -388,6 +391,7 @@ var delIds = [];
 	    <a href="javascript:void(0)" onclick="addNode()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>&nbsp;&nbsp;
 	    -->
 	    <a href="javascript:void(0)" onclick="saveSDA()" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
+		<a href="javascript:void(0)" onclick="reload()" class="easyui-linkbutton" iconCls="icon-undo" plain="true">撤销</a>
 		</shiro:hasPermission>
 		<!--
 		<shiro:hasPermission name="sda-get">

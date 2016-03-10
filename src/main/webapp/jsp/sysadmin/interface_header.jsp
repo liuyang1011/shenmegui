@@ -335,7 +335,13 @@
 				fit:true
 			});
 		}
-	}
+	},{
+				text:'撤销&nbsp;&nbsp;',
+				iconCls:'icon-undo',
+				handler:function(){
+					$('#tg').treegrid("reload");
+				}
+			}
 	);
 	</shiro:hasPermission>
 

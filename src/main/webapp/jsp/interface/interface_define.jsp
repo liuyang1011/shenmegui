@@ -289,7 +289,13 @@
                 });
             }
         });
-
+        toolbar.push({
+            text: '撤销',
+            iconCls: 'icon-undo',
+            handler: function () {
+                $('#tg').treegrid("reload");
+            }
+        });
 
 
 

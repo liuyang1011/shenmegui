@@ -168,6 +168,15 @@
 		}
 	});
 	</shiro:hasPermission>
+	<shiro:hasPermission name="sla-get">
+	toolbar.push({
+		text : '撤销',
+		iconCls : 'icon-undo',
+		handler : function() {
+			$('#sla').datagrid('reload');
+		}
+	});
+	</shiro:hasPermission>
 
 		var editedRows = [];
 		$(function() {

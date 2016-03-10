@@ -141,7 +141,9 @@
                     <shiro:hasPermission name="sda-get">
                         <a href="javascript:void(0)" onclick="comparePage()" class="easyui-linkbutton"
                            iconCls="icon-save" plain="true">版本对比</a>
+                        <a href="javascript:void(0)" onclick="reload()" class="easyui-linkbutton" iconCls="icon-undo" plain="true">撤销</a>
                     </shiro:hasPermission>
+
                 </td>
                 <td align="right"></td>
             </tr>
@@ -308,6 +310,9 @@
         }else{
             return '';
         }
+    }
+    function reload(){
+        $('#tg').treegrid('reload');
     }
     //节点上移
     function moveUp() {

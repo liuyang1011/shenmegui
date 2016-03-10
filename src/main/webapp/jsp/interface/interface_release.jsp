@@ -25,7 +25,7 @@
     </tr>
     <tr>
       <td width="100%">
-        <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#releaseDlg').dialog('close');">取消</a><a href="#" onclick="interfaceManager.release('${param.interfaceId}',$('#versionDesc').textbox('getValue'));" class="easyui-linkbutton"  iconCls="icon-save">保存</a></div>
+        <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick=" $('#w').window('close');">取消</a><a href="#" onclick="interfaceManager.release('${param.interfaceId}',$('#versionDesc').textbox('getValue'));" class="easyui-linkbutton"  iconCls="icon-save">保存</a></div>
       </td>
     </tr>
   </table>
