@@ -48,7 +48,8 @@
         <tr>
             <th data-options="field:'',checkbox:true"></th>
             <th data-options="field:'type'" width="20%" align="left">日志类型</th>
-            <th data-options="field:'detail'" width="50%">日志描述</th>
+            <th data-options="field:'detail'" width="40%">日志描述</th>
+            <th data-options="field:'userId'" width="20%">操作用户</th>
             <th data-options="field:'time'" width="20%">日志日期</th>
         </tr>
         </thead>

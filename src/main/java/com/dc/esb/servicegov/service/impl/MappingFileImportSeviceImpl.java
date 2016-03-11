@@ -222,7 +222,7 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         String m = isIndexEx ? "index_exd页第" : "index页第";
         String interfaceId = indexVO.getInterfaceId();
         if(StringUtils.isEmpty(interfaceId) && !isIndexEx){//检查接口id是否为空, index_ex页不需要校验此数据
-            logMsg(m + indexVO.getIndexNum() + "条记录导入失败，原因：接口代码为空！");
+//            logMsg(m + indexVO.getIndexNum() + "条记录导入失败，原因：接口代码为空！");
             return false;
         }
         if(null == workbook.getSheet(interfaceId)&& !isIndexEx){
@@ -595,24 +595,25 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         if(null != sda && StringUtils.isNotEmpty(sda.getMetadataId())) {//判断元数据是否存在
             Metadata metadata = metadataDAO.findUniqueBy("metadataId", sda.getMetadataId());
             if (null == metadata) {
-                metadata = new Metadata();
-                metadata.setMetadataId(sda.getMetadataId().trim());
-                metadata.setChineseName(sda.getStructAlias().trim());
-                String type = sda.getType();
-                type.replaceAll("（", "(").replaceAll("）", ")");
-                if(type.indexOf("(") >= 0){
-                    metadata.setType(type.split("[()]+")[0]);
-                    String lengthAndScale = type.split("[()]+")[1];
-                    if(StringUtils.isNotEmpty(lengthAndScale)){
-                        String strs[] = lengthAndScale.split("\\,");
-                        metadata.setLength(strs[0]);
-                        if(strs.length > 1){
-                            metadata.setScale(strs[1]);
-                        }
-                    }
-                }else {
-                    metadata.setType(type);
-                }
+                return false;
+//                metadata = new Metadata(); //生成新的元数据
+//                metadata.setMetadataId(sda.getMetadataId().trim());
+//                metadata.setChineseName(sda.getStructAlias().trim());
+//                String type = sda.getType();
+//                type.replaceAll("（", "(").replaceAll("）", ")");
+//                if(type.indexOf("(") >= 0){
+//                    metadata.setType(type.split("[()]+")[0]);
+//                    String lengthAndScale = type.split("[()]+")[1];
+//                    if(StringUtils.isNotEmpty(lengthAndScale)){
+//                        String strs[] = lengthAndScale.split("\\,");
+//                        metadata.setLength(strs[0]);
+//                        if(strs.length > 1){
+//                            metadata.setScale(strs[1]);
+//                        }
+//                    }
+//                }else {
+//                    metadata.setType(type);
+//                }
             }
         }else{
             return true;
