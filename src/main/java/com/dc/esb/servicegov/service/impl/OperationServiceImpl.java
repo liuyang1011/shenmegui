@@ -760,6 +760,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                         Interface inter = providerInvoke.getInter();
                         if (null != inter) {
                             configVO.setProInterfaceName(inter.getInterfaceName());
+                            configVO.setProTranCode(inter.getEcode());
                         }
                         result.add(configVO);
                         unimap.put(providerInvoke.getSystemId(), "");
@@ -800,6 +801,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                         Interface inter = consumerInvoke.getInter();
                         if (null != inter) {
                             configVO.setConInterfaceName(inter.getInterfaceName());
+                            configVO.setConTranCode(inter.getEcode());
                         }
                         result.add(configVO);
                         unimap.put(consumerInvoke.getSystemId(), "");

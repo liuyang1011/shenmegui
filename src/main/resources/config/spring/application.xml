@@ -109,10 +109,15 @@
     <!-- Shiro's main business-tier object for web-enabled applications (use
         org.apache.shiro.web.mgt.DefaultWebSecurityManager instead when there is
         no web environment) -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionIdCookie.name" value="jsid" />
+    </bean>
+
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <!-- Single realm app (realm configured next, below). If you have multiple
             realms, use the 'realms' property instead. -->
         <property name="realm" ref="sampleRealm"/>
+        <property name="sessionManager" ref="sessionManager"></property>
         <!-- Uncomment this next property if you want heterogenous session access
             or clusterable/d    istributable sessions. The default value is 'http' which
             uses the Servlet container's HttpSession as the underlying Session implementation.
@@ -125,6 +130,11 @@
     <aop:config proxy-target-class="true"></aop:config>
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
+    </bean>
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="sid"/>
+        <!--设置Cookie名字，默认为JSESSIONID-->
+        <property name="name" value="WEBSID" />
     </bean>
 
     <!-- Define the Shiro Filter here (as a FactoryBean) instead of directly

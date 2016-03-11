@@ -6,6 +6,7 @@ insert into system(system_id, system_chinese_name, system_ab)values('000004', '»
 insert into system(system_id, system_chinese_name, system_ab)values('000005', 'BSMP', 'BSM');
 insert into system(system_id, system_chinese_name, system_ab)values('000006', 'ÁªÍøºË²éÏµÍ³', 'idcheck');
 insert into system(system_id, system_chinese_name, system_ab)values('000009', '×ÔÖú·¢¿¨ÏµÍ³', 'ACM');
+insert into system(system_id, system_chinese_name, system_ab)values('000010', '×Ô¶¯¹ñÔ±ÏµÍ³', 'ATM');
 commit;
 
 
@@ -2941,8 +2942,11 @@ insert into SLA_TEMPLATE (sla_template_id, description, template_name)
 values ('4028eabb4fd419c7014fd41ab1290001', 'Ä£°æÒ»', '1');
 
 
-INSERT INTO GENERATOR (ID, DESCRIPTION, IMPLEMENTS, NAME) VALUES ('0', 'Ä¬ÈÏµÄXML±ê×¼µÄ²ð×é°üÉú³ÉÆ÷', 'com.dc.esb.servicegov.export.impl.StandardXMLConfigExportGender', 'XML±ê×¼²ð×é°üÉú³ÉÆ÷');
-INSERT INTO GENERATOR (ID, DESCRIPTION, IMPLEMENTS, NAME) VALUES ('1', 'XML·Ç±ê×¼µÄ²ð×é°üÉú³ÉÆ÷', 'com.dc.esb.servicegov.export.impl.UnStandardXMLConfigExportGender', 'XML·Ç±ê²ð×é°üÉú³ÉÆ÷');
+INSERT INTO GENERATOR (ID, DESCRIPTION, IMPLEMENTS, NAME) VALUES ('0', 'standardXml', 'com.dc.esb.servicegov.export.impl.StandardXMLConfigExportGender', 'standardXml');
+INSERT INTO GENERATOR (ID, DESCRIPTION, IMPLEMENTS, NAME) VALUES ('1', 'xml', 'com.dc.esb.servicegov.export.impl.UnStandardXMLConfigExportGender', 'xml');
+INSERT INTO GENERATOR (ID, DESCRIPTION, IMPLEMENTS, NAME) VALUES ('30f792df-61e1-47e6-b947-9f0b57c7730b', 'fix', 'com.dc.esb.servicegov.export.impl.UnStandardFixConfigExportGenerator', 'fix');
+INSERT INTO GENERATOR (ID, DESCRIPTION, IMPLEMENTS, NAME) VALUES ('71d8dbe5-916e-448f-a916-d9b98d72cf8b', 'coreXml', 'com.dc.esb.servicegov.export.impl.CoreXMLConfigExportGender', 'coreXml');
+
 
 insert into service_head(head_id, head_desc, head_name, head_remark, type) values('SYS_HEAD','Ä¬ÈÏSYS_HEAD','SYS_HEAD','Êý¾Ý¿â³õÊ¼»¯Ê±±ØÐë','SYS_HEAD');
 

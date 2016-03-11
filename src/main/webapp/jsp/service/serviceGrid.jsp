@@ -8,7 +8,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>列表页</title>
     <link rel="stylesheet" type="text/css"
@@ -25,52 +25,64 @@
     <script type="text/javascript" src="/js/service/export.js"></script>
     <script type="text/javascript" src="/resources/js/jquery.fileDownload.js"></script>
     <script type="text/javascript" src="/assets/tag/tagManager.js"></script>
-<style type="text/css">
-    <!--
-    ul#tags li {
-        font-size: 1.4em;
-        font-weight: bold;
-    }
+    <style type="text/css">
+        <!--
+        ul#tags li {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
 
-
-    -->
-</style>
+        -->
+    </style>
 </head>
 
 <body>
 <fieldset>
     <legend>条件搜索</legend>
-    <table border="0" cellspacing="0" cellpadding="0" >
+    <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th><nobr>服务代码</nobr></th>
+            <th>
+                <nobr>服务代码</nobr>
+            </th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceId" value="${entity.serviceId }">
             </td>
-            <th><nobr>服务名称</nobr></th>
+            <th>
+                <nobr>服务名称</nobr>
+            </th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="serviceName" value="${entity.serviceName }">
             </td>
-            <th><nobr>服务备注</nobr></th>
+            <th>
+                <nobr>服务备注</nobr>
+            </th>
             <td><input class="easyui-textbox" disabled="true"
                        type="text" name="remark" value="${entity.remark }">
             </td>
         </tr>
         <tr>
-            <th><nobr>服务功能描述</nobr></th>
-            <td colspan="7"><input class="easyui-textbox" disabled="true" style="width:100%" type="text" name="desc" value="${entity.desc }"></td>
+            <th>
+                <nobr>服务功能描述</nobr>
+            </th>
+            <td colspan="7"><input class="easyui-textbox" disabled="true" style="width:100%" type="text" name="desc"
+                                   value="${entity.desc }"></td>
         </tr>
         <tr>
-            <th><nobr>服务标签</nobr></th>
-            <td><nobr>
-                <ul id="tags"></ul>
+            <th>
+                <nobr>服务标签</nobr>
+            </th>
+            <td>
+                <nobr>
+                    <ul id="tags"></ul>
                 </nobr>
             </td>
 
             <th>
                 <shiro:hasPermission name="service-update">
-                <nobr>
-                <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em">保存</a>
-                </nobr>
+                    <nobr>
+                        <a href="#" id="saveTagBtn" class="easyui-linkbutton" iconCls="icon-save"
+                           style="margin-left:1em">保存</a>
+                    </nobr>
                 </shiro:hasPermission>
             </th>
             <td>&nbsp;</td>
@@ -99,9 +111,9 @@
         <th data-options="field:'operationDesc',width:300">场景功能描述</th>
         <th data-options="field:'consumers',width:150">消费者</th>
         <th data-options="field:'providers',width:150">提供者</th>
-        <th data-options="field:'version'" >版本号</th>
-        <th data-options="field:'versionRemark', width:80" >版本说明</th>
-        <th data-options="field:'optState'"  formatter='formatter.operationState'>状态</th>
+        <th data-options="field:'version'">版本号</th>
+        <th data-options="field:'versionRemark', width:80">版本说明</th>
+        <th data-options="field:'optState'" formatter='formatter.operationState'>状态</th>
         <th data-options="field:'optDate',width:120">更新时间</th>
         <th data-options="field:'optUser', width:80">更新用户</th>
     </thead>
@@ -115,10 +127,10 @@
 </body>
 <script type="text/javascript">
     /*$(function(){
-        $('.descText') textarea.textbox-text {
-            white-space: pre-wrap;
-        }
-    });*/
+     $('.descText') textarea.textbox-text {
+     white-space: pre-wrap;
+     }
+     });*/
 
     var serviceId;
     var operationId;
@@ -225,7 +237,7 @@
                     return false;
                 }
                 else {
-                    if( checkedItems[0].optState != 0 &&  checkedItems[0].optState != 7){
+                    if (checkedItems[0].optState != 0 && checkedItems[0].optState != 7) {
                         alert("只有服务定义和修订状态的场景才能修改");
                         return false;
                     }
@@ -253,12 +265,12 @@
             var flag = true;
             var checkedItems = $('#operationList').datagrid('getChecked');
             $.each(checkedItems, function (index, item) {
-                if(item.optState == 3 && item.optState != 4){
+                if (item.optState == 3 && item.optState != 4) {
                     alert("已上线和已发布的场景不能删除！");
                     flag = false;
                 }
             });
-            if(flag == false) return;
+            if (flag == false) return;
             if (checkedItems != null && checkedItems.length > 0) {
                 if (confirm("确定要删除已选中的" + checkedItems.length + "项吗？一旦删除无法恢复！")) {
                     var ids = [];
@@ -276,9 +288,9 @@
                         dataType: "json",
                         data: JSON.stringify(ids),
                         success: function (data) {
-                            if(data){
+                            if (data) {
                                 alert("操作成功");
-                            }else{
+                            } else {
                                 alert("已上线和发布的场景不能删除");
                             }
 
@@ -299,7 +311,7 @@
         handler: function () {
             var checkedItems = $('#operationList').datagrid('getChecked');
             if (checkedItems != null && checkedItems.length > 0) {
-                if(checkedItems.length > 1){
+                if (checkedItems.length > 1) {
                     alert('请只选中一个要查看的场景！');
                     return;
                 }
@@ -308,7 +320,7 @@
                 var opeHisContent = ' <iframe scrolling="auto" frameborder="0"  src="' + encodeURI(encodeURI(urlPath)) + '" style="width:100%;height:100%;"></iframe>'
 
                 parent.parent.addTab('历史场景', opeHisContent);
-            }else{
+            } else {
                 alert('没有选中数据哦！');
             }
 
@@ -355,12 +367,12 @@
     toolbar.push({
         text: '提交审核',
         iconCls: 'icon-audit',
-        handler: function(){
+        handler: function () {
             var url = "";
             var items = $('#operationList').datagrid('getSelections');
             if (items != null && items.length > 0) {
-                for(var i = 0; i < items.length; i++){
-                    if(items[i].optState != 0 && items[i].optState != 7){
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].optState != 0 && items[i].optState != 7) {
                         alert("只有服务定义状态和修订状态的服务能提交审核");
                         return;
                     }
@@ -375,18 +387,19 @@
                         "data": JSON.stringify(items),
                         "dataType": "json",
                         "success": function (result) {
-                            if(result){
+                            if (result) {
                                 $('#operationList').datagrid('reload');
                             }
                         }
                     });
                 }
-            }else{
+            } else {
                 alert('没有选中数据哦！');
             }
         }
     });
     </shiro:hasPermission>
+
     <shiro:hasPermission name="version-check">
     toolbar.push({
         text: '审核',
@@ -396,14 +409,14 @@
             var items = $('#operationList').datagrid('getData').rows;
             var flag = false;
             if (items != null && items.length > 0) {
-                for(var i = 0; i < items.length; i++){
-                    if(items[i].optState == 6){
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].optState == 6) {
                         flag = true;
                         break;
                     }
                 }
             }
-            if(!flag){
+            if (!flag) {
                 alert("该服务下没有要审核的数据！");
                 return false;
             }
@@ -426,15 +439,14 @@
             var url = "";
             var items = $('#operationList').datagrid('getSelections');
             if (items != null && items.length > 0) {
-                for(var i = 0; i < items.length; i++){
-                    if(items[i].optState == 1 || items[i].optState == 2 || items[i].optState == 3 || items[i].optState == 4|| items[i].optState == 9){
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].optState == 1 || items[i].optState == 2 || items[i].optState == 3 || items[i].optState == 4 || items[i].optState == 9) {
 
-                    }else{
+                    } else {
                         alert("审核通过，审核不通过，已上线，已发布，已废弃状态的服务才能进行修订");
                         return;
                     }
                 }
-
                 if (!confirm("确定要修订吗？")) {
                     return;
                 }
@@ -446,14 +458,50 @@
                     "data": JSON.stringify(items),
                     "dataType": "json",
                     "success": function (result) {
-                        if(result){
+                        if (result) {
                             $('#operationList').datagrid('reload');
                         }
                     }
                 });
-            }else{
+            } else {
                 alert('没有选中数据哦！');
-            };
+            }
+            ;
+        }
+    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="operation-commit">
+    toolbar.push({
+        text: '上线',
+        iconCls: 'icon-audit',
+        handler: function () {
+            var items = $('#operationList').datagrid('getSelections');
+            if (items != null && items.length > 0) {
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].optState != 3) {
+                        alert("只有服务发布状态的服务能提交审核");
+                        return;
+                    }
+                    if (!confirm("确定要上线服务吗？")) {
+                        return;
+                    }
+                    $.ajax({
+                        "type": "POST",
+                        "async": false,
+                        "contentType": "application/json; charset=utf-8",
+                        "url": "/operation/goalive",
+                        "data": JSON.stringify(items),
+                        "dataType": "json",
+                        "success": function (result) {
+                            if (result) {
+                                $('#operationList').datagrid('reload');
+                            }
+                        }
+                    });
+                }
+            } else {
+                alert('没有选中数据！');
+            }
         }
     });
     </shiro:hasPermission>
@@ -466,10 +514,9 @@
             var url = "";
             var items = $('#operationList').datagrid('getSelections');
             if (items != null && items.length > 0) {
-                for(var i = 0; i < items.length; i++){
-                    if( items[i].optState == 4){
-
-                    }else{
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].optState == 4) {
+                    } else {
                         alert("已上线状态的服务才能下线");
                         return;
                     }
@@ -485,19 +532,19 @@
                     "data": JSON.stringify(items),
                     "dataType": "json",
                     "success": function (result) {
-                        if(result){
+                        if (result) {
                             $('#operationList').datagrid('reload');
                         }
                     }
                 });
-            }else{
+            } else {
                 alert('没有选中数据哦！');
             }
         }
     });
     </shiro:hasPermission>
 
-//    废弃
+    //    废弃
     toolbar.push({
         text: '废弃',
         iconCls: 'icon-audit',
@@ -514,128 +561,88 @@
                         "data": JSON.stringify(items),
                         "dataType": "json",
                         "success": function (result) {
-                            if(result){
+                            if (result) {
                                 alert("操作成功");
                                 $('#operationList').datagrid('reload');
-                            }else{
+                            } else {
                                 alert("操作失败");
                             }
                         }
                     });
                 }
-            }else{
+            } else {
                 alert("没用选中数据哦！")
             }
         }
     });
-
-    <shiro:hasPermission name="excelExport-get">
-    toolbar.push({
-        text:'导出EXCEL',
-        iconCls:'icon-excel-export',
-        handler: function () {
-            var checkedItems = $('#operationList').datagrid('getChecked');
-            if (checkedItems != null && checkedItems.length > 0) {
-                var form=$("<form>");//定义一个form表单
-                form.attr("style","display:none");
-                form.attr("target","");
-                form.attr("method","post");
-                form.attr("action","/excelExporter/exportOperation");
-
-                for(var i=0; i < checkedItems.length; i++){
-                    var input1=$("<input>");
-                    input1.attr("type","hidden");
-                    input1.attr("name","pks["+i+"].serviceId");
-                    input1.attr("value",checkedItems[i].serviceId);
-                    var input2=$("<input>");
-                    input2.attr("type","hidden");
-                    input2.attr("name","pks["+i+"].operationId");
-                    input2.attr("value",checkedItems[i].operationId);
-
-                    form.append(input1);
-                    form.append(input2);
-                }
-
-                $("body").append(form);//将表单放置在web中
-                form.submit();//表单提交
-            }
-            else{
-                alert("没有选中数据！");
-            }
-        }
-    });
-    </shiro:hasPermission>
     <shiro:hasPermission name="exportConfig-get">
     <%--toolbar.push({--%>
-        <%--text: '导出配置文件',--%>
-        <%--iconCls: 'icon-qxfp',--%>
-        <%--handler: function () {--%>
-
-            <%--var checkedItems = $('#operationList').datagrid('getChecked');--%>
-            <%--if (checkedItems != null && checkedItems.length > 0) {--%>
-                <%--if (checkedItems.length > 1) {--%>
-                    <%--alert("请只选中一个要导出的场景！");--%>
-                    <%--return false;--%>
-                <%--} else {--%>
-                    <%--var urlPath = "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;--%>
-                    <%--uiinit.win({--%>
-                        <%--w: 500,--%>
-                        <%--iconCls: 'icon-add',--%>
-                        <%--title: "配置导出",--%>
-                        <%--modal: true,--%>
-                        <%--url:urlPath--%>
-                    <%--});--%>
-
-                <%--}--%>
-            <%--} else {--%>
-                <%--alert("请选中要导出的场景！");--%>
-            <%--}--%>
-
-        <%--}--%>
+    <%--text: '导出配置文件',--%>
+    <%--iconCls: 'icon-qxfp',--%>
+    <%--handler: function () {--%>
+    <%--var checkedItems = $('#operationList').datagrid('getChecked');--%>
+    <%--if (checkedItems != null && checkedItems.length > 0) {--%>
+    <%--if (checkedItems.length > 1) {--%>
+    <%--alert("请只选中一个要导出的场景！");--%>
+    <%--return false;--%>
+    <%--} else {--%>
+    <%--var urlPath = "/jsp/service/export_config.jsp?serviceId=${entity.serviceId }&operationId=" + checkedItems[0].operationId;--%>
+    <%--uiinit.win({--%>
+    <%--w: 500,--%>
+    <%--iconCls: 'icon-add',--%>
+    <%--title: "配置导出",--%>
+    <%--modal: true,--%>
+    <%--url:urlPath--%>
     <%--});--%>
+    <%--}--%>
+    <%--} else {--%>
+    <%--alert("请选中要导出的场景！");--%>
+    <%--}--%>
+    <%--}--%>
+    <%--});--%>
+    //    toolbar.push({
+    //        text:'导出配置&nbsp;',
+    //        iconCls:'icon-excel-export',
+    //        handler: function () {
+    //            var checkedItems = $('#operationList').datagrid('getChecked');
+    //            if (checkedItems != null && checkedItems.length > 0) {
+    //                $.ajax({
+    //                    "type": "POST",
+    //                    "async": false,
+    //                    "contentType": "application/json; charset=utf-8",
+    //                    "url": "/export/getConfigVo",
+    //                    "data": JSON.stringify(checkedItems),
+    //                    "dataType": "json",
+    //                    "success": function (result) {
+    //                        if(result && result.length > 0){
+    //                            configResult = result;
+    //                            $('#opDialog').dialog({
+    //                                title: '导出配置',
+    //                                width: 1000,
+    //                                left:50,
+    //                                closed: false,
+    //                                cache: false,
+    //                                href: "/jsp/service/export_config_list.jsp",
+    //                                modal: true,
+    //                                onLoad:function(){
+    //                                    $("#choosedList").datagrid("loadData", configResult);
+    //                                }
+    //                            });
+    //                        }else{
+    //                            alert("没有可导出的配置！");
+    //                        }
+    //                    }
+    //                });
+    //
+    //            }
+    //            else{
+    //                alert("没有选中数据！");
+    //            }
+    //        }
+    //    });
     toolbar.push({
-        text:'导出配置&nbsp;',
-        iconCls:'icon-excel-export',
-        handler: function () {
-            var checkedItems = $('#operationList').datagrid('getChecked');
-            if (checkedItems != null && checkedItems.length > 0) {
-                $.ajax({
-                    "type": "POST",
-                    "async": false,
-                    "contentType": "application/json; charset=utf-8",
-                    "url": "/export/getConfigVo",
-                    "data": JSON.stringify(checkedItems),
-                    "dataType": "json",
-                    "success": function (result) {
-                        if(result && result.length > 0){
-                            configResult = result;
-                            $('#opDialog').dialog({
-                                title: '导出配置',
-                                width: 1000,
-                                left:50,
-                                closed: false,
-                                cache: false,
-                                href: "/jsp/service/export_config_list.jsp",
-                                modal: true,
-                                onLoad:function(){
-                                    $("#choosedList").datagrid("loadData", configResult);
-                                }
-                            });
-                        }else{
-                            alert("没有可导出的配置！");
-                        }
-                    }
-                });
-
-            }
-            else{
-                alert("没有选中数据！");
-            }
-        }
-    });
-    toolbar.push({
-        text:'发布服务',
-        iconCls:'icon-excel-export',
+        text: '发布服务',
+        iconCls: 'icon-excel-export',
         handler: function () {
             var checkedItems = $('#operationList').datagrid('getChecked');
             serviceId = checkedItems[0].serviceId;
@@ -649,35 +656,34 @@
                     "data": JSON.stringify(checkedItems),
                     "dataType": "json",
                     "success": function (result) {
-                        if(result && result.length > 0){
+                        if (result && result.length > 0) {
                             configResult = result;
                             $('#opDialog').dialog({
                                 title: '导出配置',
                                 width: 1000,
-                                left:50,
+                                left: 50,
                                 closed: false,
                                 cache: false,
                                 href: "/jsp/service/publish_config_list.jsp",
                                 modal: true,
-                                onLoad:function(){
+                                onLoad: function () {
                                     $("#choosedList").datagrid("loadData", configResult);
                                 }
                             });
-                        }else{
+                        } else {
                             alert("没有可导出的配置！");
                         }
                     }
                 });
-
             }
-            else{
+            else {
                 alert("没有选中数据！");
             }
         }
     });
     toolbar.push({
-        text:'授权服务',
-        iconCls:'icon-excel-export',
+        text: '授权服务',
+        iconCls: 'icon-excel-export',
         handler: function () {
             var checkedItems = $('#operationList').datagrid('getChecked');
             serviceId = checkedItems[0].serviceId;
@@ -691,68 +697,99 @@
                     "data": JSON.stringify(checkedItems),
                     "dataType": "json",
                     "success": function (result) {
-                        if(result && result.length > 0){
+                        if (result && result.length > 0) {
                             configResult = result;
                             $('#opDialog').dialog({
                                 title: '导出配置',
                                 width: 1000,
-                                left:50,
+                                left: 50,
                                 closed: false,
                                 cache: false,
                                 href: "/jsp/service/auth_config_list.jsp",
                                 modal: true,
-                                onLoad:function(){
+                                onLoad: function () {
                                     $("#choosedList").datagrid("loadData", configResult);
                                 }
                             });
-                        }else{
+                        } else {
                             alert("没有可导出的配置！");
                         }
                     }
                 });
-
             }
-            else{
+            else {
                 alert("没有选中数据！");
             }
         }
     })
+    //    toolbar.push({
+    //        text:'导出WSDL',
+    //        iconCls:'icon-excel-export',
+    //        handler: function () {
+    //            var checkedItems = $('#operationList').datagrid('getChecked');
+    //            if (checkedItems != null && checkedItems.length > 0) {
+    //                var form=$("<form>");//定义一个form表单
+    //                form.attr("style","display:none");
+    //                form.attr("target","");
+    //                form.attr("method","post");
+    //                form.attr("action","/wsdlExport/exportOperation");
+    //
+    //                for(var i=0; i < checkedItems.length; i++){
+    //                    var input1=$("<input>");
+    //                    input1.attr("type","hidden");
+    //                    input1.attr("name","pks["+i+"].serviceId");
+    //                    input1.attr("value",checkedItems[i].serviceId);
+    //                    var input2=$("<input>");
+    //                    input2.attr("type","hidden");
+    //                    input2.attr("name","pks["+i+"].operationId");
+    //                    input2.attr("value",checkedItems[i].operationId);
+    //
+    //                    form.append(input1);
+    //                    form.append(input2);
+    //                }
+    //
+    //                $("body").append(form);//将表单放置在web中
+    //                form.submit();//表单提交
+    //            }
+    //            else{
+    //                alert("没有选中数据！");
+    //            }
+    //        }
+    //    });
+    </shiro:hasPermission>
+    <shiro:hasPermission name="excelExport-get">
     toolbar.push({
-        text:'导出WSDL',
-        iconCls:'icon-excel-export',
+        text: '导出EXCEL',
+        iconCls: 'icon-excel-export',
         handler: function () {
             var checkedItems = $('#operationList').datagrid('getChecked');
             if (checkedItems != null && checkedItems.length > 0) {
-                var form=$("<form>");//定义一个form表单
-                form.attr("style","display:none");
-                form.attr("target","");
-                form.attr("method","post");
-                form.attr("action","/wsdlExport/exportOperation");
-
-                for(var i=0; i < checkedItems.length; i++){
-                    var input1=$("<input>");
-                    input1.attr("type","hidden");
-                    input1.attr("name","pks["+i+"].serviceId");
-                    input1.attr("value",checkedItems[i].serviceId);
-                    var input2=$("<input>");
-                    input2.attr("type","hidden");
-                    input2.attr("name","pks["+i+"].operationId");
-                    input2.attr("value",checkedItems[i].operationId);
-
+                var form = $("<form>");//定义一个form表单
+                form.attr("style", "display:none");
+                form.attr("target", "");
+                form.attr("method", "post");
+                form.attr("action", "/excelExporter/exportOperation");
+                for (var i = 0; i < checkedItems.length; i++) {
+                    var input1 = $("<input>");
+                    input1.attr("type", "hidden");
+                    input1.attr("name", "pks[" + i + "].serviceId");
+                    input1.attr("value", checkedItems[i].serviceId);
+                    var input2 = $("<input>");
+                    input2.attr("type", "hidden");
+                    input2.attr("name", "pks[" + i + "].operationId");
+                    input2.attr("value", checkedItems[i].operationId);
                     form.append(input1);
                     form.append(input2);
                 }
-
                 $("body").append(form);//将表单放置在web中
                 form.submit();//表单提交
             }
-            else{
+            else {
                 alert("没有选中数据！");
             }
         }
     });
     </shiro:hasPermission>
-
     //版本发布
     function releaseOp(desc, operationId) {
         $('#opDialog').dialog('close');
@@ -770,39 +807,39 @@
          *  初始化接口标签
          * @param result
          */
-        var initTags = function initTags(result){
-            for(var i = 0; i < result.length; i++){
+        var initTags = function initTags(result) {
+            for (var i = 0; i < result.length; i++) {
                 var tag = result[i];
                 $("#tags").append("<li>" + tag.tagName + "</li>");
             }
             $("#tags").tagit();
 
         };
-        tagManager.getTagForService(serviceId,initTags);
+        tagManager.getTagForService(serviceId, initTags);
 
         $("#saveTagBtn").click(function () {
             var tagNames = $("#tags").tagit("assignedTags");
             var tags = [];
-            for(var i = 0; i < tagNames.length; i++){
-                 var tagName = tagNames[i];
-                 var tagToAdd = {};
-                 tagToAdd.tagName = tagName;
-                 tags.push(tagToAdd);
+            for (var i = 0; i < tagNames.length; i++) {
+                var tagName = tagNames[i];
+                var tagToAdd = {};
+                tagToAdd.tagName = tagName;
+                tags.push(tagToAdd);
             }
-            tagManager.addTagForService(serviceId, tags, function (){
+            tagManager.addTagForService(serviceId, tags, function () {
                 alert("标签保存成功");
             });
         });
 
     });
 
-    function onDblClickCell(rowIndex, field,value){
-        var texts = '<div style="word-wrap:break-word" >'+value+'</div>';
+    function onDblClickCell(rowIndex, field, value) {
+        var texts = '<div style="word-wrap:break-word" >' + value + '</div>';
         $.messager.show({
-            title:'详细',
-            msg:texts,
-            showType:'show',
-            height:'auto'
+            title: '详细',
+            msg: texts,
+            showType: 'show',
+            height: 'auto'
         });
     }
 </script>

@@ -16,6 +16,8 @@ public class ConfigVO {
     private String consumerName;
     private String proIsStandard;
     private String conIsStandard;
+    private String proTranCode;
+    private String conTranCode;
     private String proInterfaceName;
     private String conInterfaceName;
 
@@ -168,5 +170,21 @@ public class ConfigVO {
 
     public String getVersionAutoId() {
         return versionAutoId;
+    }
+
+    public String getProTranCode() {
+        return proTranCode;
+    }
+
+    public void setProTranCode(String proTranCode) {
+        this.proTranCode = proTranCode;
+    }
+
+    public String getConTranCode() {
+        return conTranCode;
+    }
+
+    public void setConTranCode(String conTranCode) {
+        this.conTranCode = conTranCode;
     }
 }

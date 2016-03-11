@@ -630,6 +630,12 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		return ida;
 	}
 
+	public Ida getByInterfaceIdHeadId(String headId, String structName){
+		String hql = " from Ida where headId = ? and structName = ?";
+		Ida ida = idaDAOImpl.findUnique(hql, headId, structName);
+		return ida;
+	}
+
 	public List<Ida> getNotEmptyByParentId(String parentId){
 		String hql = "from Ida where _parentId = ? order by seq asc";
 		List<Ida> idas = idaDAOImpl.find(hql, parentId);

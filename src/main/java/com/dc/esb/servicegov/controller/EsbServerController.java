@@ -92,7 +92,6 @@ public class EsbServerController {
     @ResponseBody
     boolean configSync(HttpServletRequest request, HttpServletResponse response, @RequestBody ConfigVO[] list, @PathVariable(value = "optionFlag") String optionFlag, @PathVariable(value = "dicSync") String dicSync, @PathVariable(value = "serverStr") String serverStr) {
         OperationLog operationLog = systemLogService.record("配置文件", "ESB同步", "");
-
         try {
             String serviceDef = "";
             String serviceDefContent = "";
@@ -127,7 +126,7 @@ public class EsbServerController {
                         }
                         Service service = serviceService.findUniqueBy("serviceId", configVo.getServiceId());
                         proxy.pubProvider(configVo.getServiceId() + configVo.getOperationId(), service.getServiceName(), configVo.getProviderName(), configVo.getVersionId(),
-                                configVo.getVersionAutoId(), configVo.getProInterfaceName(), configVo.getProGeneratorName(), serviceDef,
+                                configVo.getVersionAutoId(), configVo.getProTranCode(), configVo.getProGeneratorName(), serviceDef,
                                 serviceDefContent, toFile, toFileContent, fromFile, fromFileContent, "userId");
                     } else if (file.getName().startsWith("in")) {
                         File[] configFiles = file.listFiles();
@@ -141,13 +140,12 @@ public class EsbServerController {
                                 fromFileContent = new String(readFile(configFile));
                             }
                         }
-                        proxy.pubConsumer(configVo.getServiceId() + configVo.getOperationId(), configVo.getVersionId(),configVo.getVersionAutoId(),
-                                configVo.getConsumerName(), configVo.getConInterfaceName(), configVo.getConGeneratorName(), toFile,
+                        proxy.pubConsumer(configVo.getServiceId() + configVo.getOperationId(), configVo.getVersionId(), configVo.getVersionAutoId(),
+                                configVo.getConsumerName(), configVo.getConTranCode(), configVo.getConGeneratorName(), toFile,
                                 toFileContent, fromFile, fromFileContent, "userId");
                     }
                 }
             }
-
         } catch (Exception e) {
             logger.error("配置文件同步错误", e);
         }
@@ -162,6 +160,4 @@ public class EsbServerController {
         in.readFully(contentBytes);
         return contentBytes;
     }
-
-
 }
