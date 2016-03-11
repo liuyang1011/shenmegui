@@ -47,7 +47,8 @@ public class IDAController {
 //		reqMap.put("state", Constants.IDA_STATE_COMMON);
 //		List<Ida> idas = idaService.findBy(reqMap, "seq");
 		String hql = "from Ida t where t.headId = '"+headId+"'";
-		hql += " and (t.xpath is not null or t.structName is not null) order by t.seq";
+//		hql += " and (t.xpath is not null or t.structName is not null) order by t.seq";
+		hql += " and  t.structName is not null order by t.seq";
 
 		List<Ida> idas = idaService.findBy(hql);
 		for(Ida ida:idas){

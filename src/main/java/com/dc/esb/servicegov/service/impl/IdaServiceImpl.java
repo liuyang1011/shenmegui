@@ -630,9 +630,9 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		return ida;
 	}
 
-	public Ida getByHeadIdIdStructName(String interfaceId, String structName){
+	public Ida getByHeadIdIdStructName(String headId, String structName){
 		String hql = " from Ida where headId = ? and structName = ?";
-		Ida ida = idaDAOImpl.findUnique(hql, interfaceId, structName);
+		Ida ida = idaDAOImpl.findUnique(hql, headId, structName);
 		return ida;
 	}
 

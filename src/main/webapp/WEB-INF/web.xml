@@ -748,4 +748,8 @@
 	<welcome-file-list>
 		<welcome-file>jsp/index.jsp</welcome-file>
 	</welcome-file-list>
+    <!-- session有效期-->
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
 </web-app>

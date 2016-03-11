@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"
          errorPage="" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -65,95 +66,103 @@
 <script type="text/javascript">
     $(function () {
         var editedRows = [];
-        var toolbar = [
-            {
-                text: '新增',
-                iconCls: 'icon-add',
-                handler: function () {
-                    uiinit.win({
-                        top:"20px",
-                        left:"150px",
-                        w: 500,
+        var toolbar = [];
+        <shiro:hasPermission name="englishWord-add">
+            toolbar.push(
+                    {
+                        text: '新增',
                         iconCls: 'icon-add',
-                        title: "新增英文单词",
-                        url: "/jsp/englishWord/add.jsp"
-                    });
-                }
-            },
-            {
-                text: '删除',
-                iconCls: 'icon-remove',
-                handler: function () {
-                    var row = $('#tt').edatagrid('getSelected');
-                    var rowIndex = $('#tt').edatagrid('getRowIndex', row);
-                    $('#tt').edatagrid('deleteRow', rowIndex);
-                }
-            },
-            {
-                text: ' 保存',
-                iconCls: 'icon-save',
-                handler: function () {
-
-                    for (var per in editedRows) {
-                        $("#tt").datagrid('endEdit', editedRows[per]);
-                    }
-                    var deletedDatas = $('#tt').edatagrid('getChanges',
-                            'deleted');
-                    var addDatas = $('#tt').edatagrid('getChanges',
-                            'inserted');
-                    var updatedDatas = $('#tt').edatagrid('getChanges',
-                            'updated');
-                    for (var i = 0; i < addDatas.length; i++) {
-                        var addData = addDatas[i];
-                        var data = {};
-                        if (addData) {
-                            data.id = addData.id;
-                            data.englishWord = addData.englishWord;
-                            data.wordAb = addData.wordAb;
-                            data.chineseWord = addData.chineseWord;
-                            data.optUser = addData.optUser;
-                            data.optDate = addData.optDate;
-                            data.remark = addData.remark;
-                            englishWordManager.add(data, function (result) {
-                                if (result) {
-                                    alert("保存成功");
-                                } else {
-                                    alert("保存失败");
-                                }
+                        handler: function () {
+                            uiinit.win({
+                                top:"20px",
+                                left:"150px",
+                                w: 500,
+                                iconCls: 'icon-add',
+                                title: "新增英文单词",
+                                url: "/jsp/englishWord/add.jsp"
                             });
                         }
                     }
-                    for (var j = 0; j < deletedDatas.length; j++) {
-                        var deleteData = deletedDatas[j];
-                        englishWordManager.deleteById(deleteData.id,
-                                function (result) {
-                                    if (result) {
-                                        alert("删除成功");
-                                    } else {
-                                        alert("删除失败");
-                                    }
-                                });
-                    }
-                    for (var k = 0; k < updatedDatas.length; k++) {
-                        var updatedData = updatedDatas[k];
-                        var data = {};
-                        data.id = updatedData.id;
-                        data.englishWord = updatedData.englishWord;
-                        data.wordAb = updatedData.wordAb;
-                        data.chineseWord = updatedData.chineseWord;
-                        data.optUser = updatedData.optUser;
-                        data.optDate = updatedData.optDate;
-                        data.remark = updatedData.remark;
-                        englishWordManager.modify(data, function (result) {
+            );
+        </shiro:hasPermission>
+        <shiro:hasPermission name="englishWord-delete">
+        toolbar.push({
+            text: '删除',
+            iconCls: 'icon-remove',
+            handler: function () {
+                var row = $('#tt').edatagrid('getSelected');
+                var rowIndex = $('#tt').edatagrid('getRowIndex', row);
+                $('#tt').edatagrid('deleteRow', rowIndex);
+            }
+        });
+        </shiro:hasPermission>
+        <shiro:hasPermission name="englishWord-add">
+        toolbar.push({
+            text: ' 保存',
+            iconCls: 'icon-save',
+            handler: function () {
+
+                for (var per in editedRows) {
+                    $("#tt").datagrid('endEdit', editedRows[per]);
+                }
+                var deletedDatas = $('#tt').edatagrid('getChanges',
+                        'deleted');
+                var addDatas = $('#tt').edatagrid('getChanges',
+                        'inserted');
+                var updatedDatas = $('#tt').edatagrid('getChanges',
+                        'updated');
+                for (var i = 0; i < addDatas.length; i++) {
+                    var addData = addDatas[i];
+                    var data = {};
+                    if (addData) {
+                        data.id = addData.id;
+                        data.englishWord = addData.englishWord;
+                        data.wordAb = addData.wordAb;
+                        data.chineseWord = addData.chineseWord;
+                        data.optUser = addData.optUser;
+                        data.optDate = addData.optDate;
+                        data.remark = addData.remark;
+                        englishWordManager.add(data, function (result) {
                             if (result) {
-                                alert("修改成功");
+                                alert("保存成功");
                             } else {
-                                alert("修改失败");
+                                alert("保存失败");
                             }
                         });
                     }
                 }
-            }];
+                for (var j = 0; j < deletedDatas.length; j++) {
+                    var deleteData = deletedDatas[j];
+                    englishWordManager.deleteById(deleteData.id,
+                            function (result) {
+                                if (result) {
+                                    alert("删除成功");
+                                } else {
+                                    alert("删除失败");
+                                }
+                            });
+                }
+                for (var k = 0; k < updatedDatas.length; k++) {
+                    var updatedData = updatedDatas[k];
+                    var data = {};
+                    data.id = updatedData.id;
+                    data.englishWord = updatedData.englishWord;
+                    data.wordAb = updatedData.wordAb;
+                    data.chineseWord = updatedData.chineseWord;
+                    data.optUser = updatedData.optUser;
+                    data.optDate = updatedData.optDate;
+                    data.remark = updatedData.remark;
+                    englishWordManager.modify(data, function (result) {
+                        if (result) {
+                            alert("修改成功");
+                        } else {
+                            alert("修改失败");
+                        }
+                    });
+                }
+            }
+        });
+        </shiro:hasPermission>
 
         $('#tt').edatagrid({
             rownumbers: true,

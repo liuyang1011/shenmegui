@@ -13,7 +13,8 @@ var LOAD_URL = {
     SERVICEUI2: '/dataTemplate/serviceadmin/fwcjmx.html',
     SERVICEUI_LW: '/jsp/service/servicePage.jsp',
     USERADD: '/jsp/user/useradd.jsp',
-    SEARCH: '/jsp/service/search.jsp'
+    SEARCH: '/jsp/service/search.jsp',
+    INTERFACE_SEARCH: '/jsp/interface/interface_search.jsp'
 };
 var mainContentIndex = 0;
 var maxIndex = 1;

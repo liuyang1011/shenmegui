@@ -39,6 +39,7 @@
 <shiro:hasRole name="admin">
     <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a></li>
         <li><a href="javascript:;" class="openable" mid="1.14">ESB服务器管理</a></li>
+        <li><a href="javascript:;" class="openable" mid="1.16">字段处理方法</a></li>
     </shiro:hasRole>
         <%--<li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>--%>
     </li>
@@ -58,15 +59,17 @@
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
-    <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
-        <ul>
-            <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
-            <li><a href="javascript:;" class="openable" mid="9.2">字段映射导入</a></li>
-            <%--<li><a href="javascript:;" class="openable" mid="9.3">服务视图导出</a></li>--%>
-            <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
-            <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
-        </ul>
-    </li>
+    <shiro:hasPermission name="resource-import">
+        <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
+            <ul>
+                <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
+                <li><a href="javascript:;" class="openable" mid="9.2">字段映射导入</a></li>
+                <%--<li><a href="javascript:;" class="openable" mid="9.3">服务视图导出</a></li>--%>
+                <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
+                <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
+            </ul>
+        </li>
+    </shiro:hasPermission>
 </ul>
 <%
     }
@@ -126,7 +129,7 @@
     data-options="url:'/system/getTree',method:'get',animate:true"></ul>
 <%
     }
-    if (mid.equals("6")) {
+    if (mid.equals("6") || mid.equals("6.1")) {
 %>
 <div class="tree-filter">
     <input class="easyui-searchbox" id="mxinterfacetreefilter" style="width:100%">
@@ -135,6 +138,19 @@
 
 <ul class="easyui-tree msinterfacetree" style="overflow:scroll;height:90%"
     data-options="url:'/interface/getLeftLazyTree',method:'get',animate:true" style="overflow:auto;"></ul>
+<script type="text/javascript">
+    var title = "接口检索";
+    var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="' + LOAD_URL.INTERFACE_SEARCH + '" style="width:100%;height:98%;"></iframe>';
+    if ($('#mainContentTabs').tabs('exists', title)) {
+        $('#mainContentTabs').tabs('select', title);
+    } else {
+        $('#mainContentTabs').tabs('add', {
+            title: title,
+            content: content,
+            closable: true
+        });
+    }
+</script>
 
 <%
     }

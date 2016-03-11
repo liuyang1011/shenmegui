@@ -21,54 +21,20 @@
 <div data-options="region:'north',border:false" id="header">
     <div id="logo"></div>
     <ul id="nav">
+        <li><a href="javascript:;" mid="14">服务信息</a></li>
+        <li><a href="javascript:;" mid="6.1">接口信息</a></li>
         <li>
             <a href="javascript:;" mid="2">公共信息</a>
         </li>
         <li>
-            <a href="javascript:;" mid="6.1">系统管理</a>
-            <%--<ul>--%>
-                <%--<li><a href="javascript:;" mid="6.1">接口检索</a></li>--%>
-                <%--&lt;%&ndash;&lt;%&ndash;<li><a href="javascript:;" mid="13">接口检索</a></li>&ndash;%&gt;&ndash;%&gt;--%>
-                <%--&lt;%&ndash;<li><a href="javascript:;" mid="3">报文头管理</a></li>&ndash;%&gt;--%>
-            <%--</ul>--%>
-        </li>
-        <li>
-            <a href="javascript:;"  mid="4">服务管理</a>
-            <ul>
-                <li><a href="javascript:;" mid="4">服务信息管理</a></li>
-                <li><a href="javascript:;" mid="12">服务发布管理</a></li>
-                <shiro:hasPermission name="serviceHead-get">
-                <li><a href="javascript:;" mid="15">服务报文头管理</a></li>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="operation-get">
-                <li><a href="javascript:;" mid="14">服务检索</a></li>
-                </shiro:hasPermission>
-                <%--<li><a href="javascript:;" mid="17">服务识别</a></li>--%>
-            </ul>
-        </li>
-        <li>
-            <a href="javascript:;" mid="5">交易链路</a>
-        </li>
-        <shiro:hasPermission name="exportStatistics-get">
-        <li>
             <a href="javascript:;" mid="11">统计报表</a>
-        </li>
-        </shiro:hasPermission>
-        <li>
-            <a href="javascript:;" mid="1">平台管理</a>
         </li>
     </ul>
     <div id="header_toolsbar">
-        <a href="javascript:;" class="login_user"><shiro:principal/></a>
-
-        <%--<a id="taskName" href="javascript:;" >当前任务:</a>--%>
-        <%--<input id="serviceCategoryPermission" <shiro:hasPermission name="serviceCategory-add"> value="1" </shiro:hasPermission> style="display: none"></input>--%>
-        <%--<input id="serviceCategoryPermissionEdit" <shiro:hasPermission name="serviceCategory-update"> value="1" </shiro:hasPermission> style="display: none"></input>--%>
-        <%--<input id="serviceCategoryPermissionDelete" <shiro:hasPermission name="serviceCategory-delete"> value="1" </shiro:hasPermission> style="display: none"></input>--%>
-        <a href="/logout/">退出</a>
-        <a href="javascript:;">帮助</a>
+        <a href="/logout/">登录</a>
     </div>
 </div>
+
 <div data-options="region:'west',collapsible:true,title:'菜单'"
      class="west-menu" id="west-menu" split="true">
 

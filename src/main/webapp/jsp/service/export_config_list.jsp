@@ -51,7 +51,11 @@
 			      fitColumns:true,
                 toolbar:'#exportTB',
                 method:'get',
-                onLoadSuccess:function(row){//当表格成功加载时执行
+                onLoadSuccess:function(data){//当表格成功加载时执行
+                    $.each(data.rows, function(i, row){
+                        var rowIndex = $('#choosedList').datagrid('getRowIndex', row);
+                        $('#choosedList').datagrid('beginEdit', rowIndex);
+                    });
                     $(this).datagrid('selectAll');
                 },
                 onRowContextMenu:onRowContextMenu,
@@ -103,20 +107,20 @@
         type:'combobox',
         options: {
             required:true,
-            valueField: 'name',
+            valueField: 'id',
             textField: 'name',
             method : 'GET',
             url: "/generator/getAll",
             onSelect:function(record){
-                var row = $("#choosedList").datagrid("getSelected");
-                var index = $("#choosedList").datagrid("getRowIndex", row);
-                $("#choosedList").datagrid("endEdit", index);
-                $("#choosedList").datagrid("updateRow",{
-                    index : index,
-                    row:{
-                        conGeneratorId:record.id
-                    }
-                })
+//                var row = $("#choosedList").datagrid("getSelected");
+//                var index = $("#choosedList").datagrid("getRowIndex", row);
+//                $("#choosedList").datagrid("endEdit", index);
+//                $("#choosedList").datagrid("updateRow",{
+//                    index : index,
+//                    row:{
+//                        conGeneratorId:record.id
+//                    }
+//                })
             }
         }
     }
@@ -124,20 +128,20 @@
         type:'combobox',
         options: {
             required:true,
-            valueField: 'name',
+            valueField: 'id',
             textField: 'name',
             method : 'GET',
             url: "/generator/getAll",
             onSelect:function(record){
-                var row = $("#choosedList").datagrid("getSelected");
-                var index = $("#choosedList").datagrid("getRowIndex", row);
-                $("#choosedList").datagrid("endEdit", index);
-                $("#choosedList").datagrid("updateRow",{
-                    index : index,
-                    row:{
-                        proGeneratorId:record.id
-                    }
-                })
+//                var row = $("#choosedList").datagrid("getSelected");
+//                var index = $("#choosedList").datagrid("getRowIndex", row);
+//                $("#choosedList").datagrid("endEdit", index);
+//                $("#choosedList").datagrid("updateRow",{
+//                    index : index,
+//                    row:{
+//                        proGeneratorId:record.id
+//                    }
+//                })
             }
         }
     }
@@ -170,7 +174,10 @@
             var fields = ["consumerServiceInvokeId", "providerServiceInvokeId", "conGeneratorId", "proGeneratorId"];
             for(var i=0; i < rows.length; i++){
                 var index = $("#choosedList").datagrid('getRowIndex', rows[i]);
-                $("#choosedList").datagrid('endEdit', index);
+                var conEditor = $("#choosedList").treegrid('getEditor', {index:index,field:'conGeneratorName'});
+                rows[i]["conGeneratorId"] = $(conEditor.target).combobox("getValue");
+                var proEditor = $("#choosedList").treegrid('getEditor', {index:index,field:'proGeneratorName'});
+                rows[i]["proGeneratorId"] = $(proEditor.target).combobox("getValue");
                 for(var j=0; j < fields.length; j++){
                     var input1=$("<input>");
                     input1.attr("type","hidden");

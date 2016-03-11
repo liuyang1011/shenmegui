@@ -124,8 +124,14 @@ public class VersionServiceImpl extends AbstractBaseService<Version, String> imp
 	public String releaseVersionCode(String versionCode) {//格式:1.0.0
 		if (StringUtils.isNotEmpty(versionCode)) {
 			String[] s = versionCode.split("\\.");
+			int s0 = Integer.parseInt(s[0]);
 			int s1 = Integer.parseInt(s[1]);
-			s[1] = String.valueOf(s1 + 1);
+			if(99 == s1){//满99进1
+				s[0] = (s0 + 1) + "";
+				s[1] = "0";
+			}else{
+				s[1] = String.valueOf(s1 + 1);
+			}
 			s[2] = "0";
 			return s[0] + "." + s[1] + "." + s[2];
 		}

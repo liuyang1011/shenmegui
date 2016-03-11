@@ -27,7 +27,7 @@
   <table border="0" cellspacing="0" cellpadding="0">
     <tr>
       <th><nobr>服务代码</nobr></th>
-      <td><input name="serviceId" id="serviceId"  class="easyui-combobox" style="width:150px"
+      <td><input name="serviceId" id="serviceId"  class="easyui-combobox" width="25%"
                  data-options="
                  method:'get',
                  textField:'serviceId',
@@ -48,7 +48,7 @@
                   >
       </td>
       <th><nobr>服务名称</nobr></th>
-      <td><input name="serviceName" id="serviceName"  class="easyui-combobox" style="width:150px"
+      <td><input name="serviceName" id="serviceName"  class="easyui-combobox"  width="25%"
                  data-options="
                  method:'get',
                  textField:'serviceName',
@@ -66,17 +66,16 @@
               >
       </td>
       <th><nobr>服务功能描述</nobr></th>
-      <td><input class="easyui-textbox" style="width:100px"
+      <td><input class="easyui-textbox"  width="20%"
                  type="text" name="desc" id="serviceDesc">
       </td>
       <th>
 
       </th>
-      <td></td>
     </tr>
     <tr>
       <th><nobr>场景代码</nobr></th>
-      <td><input name="operationId" id="operationId"  class="easyui-combobox" style="width:150px"
+      <td><input name="operationId" id="operationId"  class="easyui-combobox"  width="25%"
                  data-options="
                  method:'get',
                  textField:'operationId',
@@ -95,7 +94,7 @@
       </td>
       <th><nobr>场景名称</nobr></th>
       <td>
-        <input name="operationName" id="operationName"  class="easyui-combobox" style="width:150px"
+        <input name="operationName" id="operationName"  class="easyui-combobox"  width="25%"
                data-options="
                  method:'get',
                  textField:'operationName',
@@ -113,13 +112,42 @@
                 >
       </td>
       <th><nobr>场景功能描述</nobr></th>
-      <td><input class="easyui-textbox" style="width:100px"
+      <td><input class="easyui-textbox"  width="20%"
                  type="text" name="operationDesc" id="operationDesc">
       </td>
-      <th><nobr>场景状态</nobr></th>
-      <td><input class="easyui-combobox" style="width:100px"
-                 type="text" name="operationState" id="operationState"
-                 data-options="
+        <th>
+
+        </th>
+      </tr>
+    <tr>
+        <th><nobr>消费者</nobr></th>
+        <td><input name="consumerId" id="consumerId"  class="easyui-combobox"  width="25%"
+                   data-options="
+                 method:'get',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+				    }
+                 "
+                >
+        </td>
+      <th><nobr>提供者</nobr></th>
+        <td><input name="providerId" id="providerId"  class="easyui-combobox"  width="25%"
+                   data-options="
+                 method:'get',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+				    }
+                 "
+                >
+        </td>
+        <th><nobr>场景状态</nobr></th>
+        <td><input class="easyui-combobox"  width="20%"
+                   type="text" name="operationState" id="operationState"
+                   data-options="
                  textField:'text',
                  valueField:'id',
                  data:[
@@ -135,50 +163,14 @@
 
                  ]
                  "
-              >
-      </td>
-      </tr>
-    <tr>
-      <th><nobr>提供者</nobr></th>
-        <td><input name="providerId" id="providerId"  class="easyui-combobox" style="width:150px"
-                   data-options="
-                 method:'get',
-                 textField:'chineseName',
-                 valueField:'id',
-                 onChange:function(newValue, oldValue){
-							this.value=newValue;
-				    }
-                 "
                 >
         </td>
-      <th><nobr>消费者</nobr></th>
-        <td><input name="consumerId" id="consumerId"  class="easyui-combobox" style="width:150px"
-                   data-options="
-                 method:'get',
-                 textField:'chineseName',
-                 valueField:'id',
-                 onChange:function(newValue, oldValue){
-							this.value=newValue;
-				    }
-                 "
-                >
-        </td>
-      <th>
-
-      </th>
-      <td></td>
-      <th>
-
-      </th>
-      <td></td>
-      <th style="width:200px">
+      <th style="width:200px" >
           <nobr>
           <a href="#" id="saveTagBtn" onclick="query()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >查询</a>
           <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
           </nobr>
       </th>
-      <td></td>
-
     </tr>
   </table>
 

@@ -1,5 +1,6 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.dao.impl.EsbDAOImpl;
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 
 /**
@@ -30,9 +33,13 @@ public class LoginController {
     private UserServiceImpl userService;
     @Autowired
     private EnglishWordServiceImpl englishWordService;
-
+    @Autowired
+    private EsbDAOImpl esbDAO;
 
     private static final Log log = LogFactory.getLog(LoginController.class);
+
+    private static final String touristName = "tourist";//游客用户名称
+    private static final String touristPwd = "tourist";//游客用户密码
 
     @RequestMapping(method = RequestMethod.GET, value = "/", headers = "Accept=application/json")
     public
@@ -75,7 +82,26 @@ public class LoginController {
         systemLogService.addLoginLog(username,"登入", "成功");
         return new ModelAndView("index");
     }
+    //游客登录模式
+    @RequestMapping(value = "/touristLogin")
+    public ModelAndView touristLogin(HttpServletRequest request){
+        try {
+            String username = new String(touristName.getBytes("iso-8859-1"), "utf-8");
+            String password = new String(touristPwd.getBytes("iso-8859-1"), "utf-8");
 
+            SecurityUtils.getSubject().login(new UsernamePasswordToken(touristName, touristPwd));
+            String hql = " from EsbTest";
+        }catch(Exception e){
+            log.error(e, e );
+            log.error("系统暂未开放游客模式！");
+            ModelAndView mv = new ModelAndView("/login/login");
+            mv.addObject("errMsg", "系统暂未开放游客模式！");
+            systemLogService.addLoginLog("IP:" + request.getRemoteAddr(), "登入", "失败");
+            return mv;
+        }
+        systemLogService.addLoginLog("IP:" + request.getRemoteAddr(),"登入", "成功");
+        return new ModelAndView("tourist_index");
+    }
     @ExceptionHandler({IncorrectCredentialsException.class})
     public String processUnauthorizedException() {
         return "/login/login";

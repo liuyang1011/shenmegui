@@ -46,6 +46,27 @@
         <property name="timeBetweenEvictionRunsMillis" value="30000"/>
         <property name="numTestsPerEvictionRun" value="100"/>
     </bean>
+    <bean id="esbDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${esb.jdbc.driver}"/>
+        <property name="url" value="${esb.jdbc.url}"/>
+        <property name="username" value="${esb.jdbc.username}"/>
+        <property name="password" value="${esb.jdbc.password}"/>
+        <property name="defaultAutoCommit" value="false"/>
+        <property name="initialSize" value="50"/>
+        <property name="maxActive" value="100"/>
+        <property name="minIdle" value="25"/>
+        <property name="maxIdle" value="30"/>
+        <property name="maxWait" value="3000"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="180"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="validationQuery" value="select count(1) from dual"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>
+        <property name="numTestsPerEvictionRun" value="100"/>
+    </bean>
 
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -58,6 +79,38 @@
                 <prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
                 <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="javax.persistence.validation.mode">none</prop>
+                <!-- <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</prop> -->
+            </props>
+        </property>
+        <property name="eventListeners">
+            <map>
+                <entry key="merge">
+                    <bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
+                </entry>
+            </map>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.dc.esb.servicegov.entity</value>
+                <!--<value>org.jbpm.persistence.processinstance</value>-->
+                <!--<value>org.drools.persistence.info</value>-->
+                <!--<value>org.jbpm.process.audit</value>-->
+                <!--<value>org.jbpm.task</value>-->
+            </list>
+        </property>
+    </bean>
+    <bean id="esbSessionFactory"
+          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="esbDataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>-->
                 <prop key="javax.persistence.validation.mode">none</prop>
                 <!-- <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</prop> -->
             </props>

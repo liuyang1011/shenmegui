@@ -345,7 +345,7 @@
 								if(data){
 									var urlPath = "/jsp/sysadmin/relate_operation.jsp?interfaceId="+row.interfaceId;
 									$('#releaseDlg').dialog({
-										title: '关联的服务场景',
+										title: '关联的服务场景（双击查看详细）',
 										width: 500,
 										left:150,
 										top:50,

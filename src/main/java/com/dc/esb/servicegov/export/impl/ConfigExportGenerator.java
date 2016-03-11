@@ -41,6 +41,8 @@ public class ConfigExportGenerator {
     IdaServiceImpl idaService;
     @Autowired
     ServiceHeadServiceImpl serviceHeadService;
+    @Autowired
+    MetadataServiceImpl metadataService;
 
     String channel_service_path = "template/config_export/nbcb/channel_service_template.xml";//默认请求文件模板路径
     String service_channel_path = "template/config_export/nbcb/service_system_template.xml";//默认响应文件模板路径
@@ -103,9 +105,11 @@ public class ConfigExportGenerator {
             ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
             map.put("${" + serviceHead.getHeadName() + "}$", getsServiceHeadStr(headId, Constants.ElementAttributes.REQUEST_NAME));//模板内容替换按照名称+$
         }
-        map.put("${request}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
+        map.put("${interfaceHead}$", getsInterfaceHeadStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
+        map.put("${standardBody}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
+        map.put("${unStandardBody}$", getUnStandardBodyStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
         try{
-            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + channel_service_path;
+            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + getChannelServicePath();
             FileUtil.copyFile(srcPath, path, map);
         }catch (Exception e){
             log.error("生成请求文件出错", e);
@@ -126,9 +130,11 @@ public class ConfigExportGenerator {
             ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
             map.put("${" + serviceHead.getHeadName() + "}$", getsServiceHeadStr(headId, Constants.ElementAttributes.RESPONSE_NAME));//模板内容替换按照名称+$
         }
-        map.put("${response}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
+        map.put("${interfaceHead}$", getsInterfaceHeadStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
+        map.put("${standardBody}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
+        map.put("${unStandardBody}$", getUnStandardBodyStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
         try{
-            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + service_channel_path;
+            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + getServiceChannelPath();
             FileUtil.copyFile(srcPath, path, map);
         }catch (Exception e){
             log.error("生成response文件出错", e);
@@ -155,8 +161,24 @@ public class ConfigExportGenerator {
 
 
     //根据接口报文头获取字符串
-    public String getsInterfaceHeadStr(String headId){
-        return null;
+    public String getsInterfaceHeadStr(ServiceInvoke serviceInvoke, String targetName){
+        String str = "";
+        List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", serviceInvoke.getInterfaceId());
+        if(null != relates && 0 < relates.size()){
+            Document doc = DocumentHelper.createDocument();
+            doc.setXMLEncoding("utf-8");
+            Element element = doc.addElement("InterfaceHead");
+            for(InterfaceHeadRelate relate : relates){
+                String headId = relate.getHeadId();
+                Ida reInterfaceHeadIda = idaService.getByHeadIdIdStructName(headId, targetName);
+                List<Ida> idas = idaService.findBy("_parentId", reInterfaceHeadIda.getId());
+                for(Ida ida : idas){
+                    renderInterfaceHeadIda(element, ida, headId);
+                }
+            }
+            str = getElementChildrenStr(element);
+        }
+        return str;
     }
     //获取标准body
     public String getsStandardBodyStr(ServiceInvoke serviceInvoke, String structName){
@@ -175,9 +197,26 @@ public class ConfigExportGenerator {
         return result;
     }
     //获取非标body
-    public String getUnStandardBodyStr(ServiceInvoke serviceInvoke){
+    public String getUnStandardBodyStr(ServiceInvoke serviceInvoke, String structName){
+        String result = "";
 
-        return null;
+        String interfaceId = serviceInvoke.getInterfaceId();
+        if(StringUtils.isNotEmpty(interfaceId)){
+            Document doc = DocumentHelper.createDocument();
+            doc.setXMLEncoding("utf-8");
+            Element element = doc.addElement("BODY");
+            String serviceId = serviceInvoke.getServiceId();
+            String operationId = serviceInvoke.getOperationId();
+            Ida ida = idaService.getByInterfaceIdStructName(interfaceId, structName);
+            if(null != ida){
+                List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
+                for(Ida child : children){
+                    renderBodyIda(element, child, serviceId, operationId);
+                }
+            }
+            result = getElementChildrenStr(element);
+        }
+        return result;
     }
     public void renderSDA(Element parentElement, SDA sda){
         Element element = parentElement.addElement(sda.getStructName());
@@ -186,6 +225,53 @@ public class ConfigExportGenerator {
         if(null != children &&  0 < children.size()){
             for(SDA child : children){
                 renderSDA(element, child);
+            }
+        }
+    }
+    public void renderInterfaceHeadIda(Element parentElement, Ida ida, String headId){
+        if(null != ida && StringUtils.isNotEmpty(ida.getStructName())){
+            Element idaElement = parentElement.addElement(ida.getStructName());
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("headId", headId);
+            params.put("xpath", ida.getXpath());
+            SDA sda = sdaService.findUniqueBy(params);
+            if(null != sda){
+                addAttribute(idaElement, "metadataId", sda.getMetadataId());
+                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+                if(null != metadata){
+                    addAttribute(idaElement, "length", metadata.getLength());
+                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
+                }
+            }
+            List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
+            if(null != children && 0 < children.size()){
+                for(Ida child : children){
+                    renderInterfaceHeadIda(idaElement, child, headId);
+                }
+            }
+        }
+    }
+    public void renderBodyIda(Element parentElement, Ida ida, String serviceId, String operationId ){
+        if(null != ida && StringUtils.isNotEmpty(ida.getStructName())){
+            Element idaElement = parentElement.addElement(ida.getStructName());
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("serviceId", serviceId);
+            params.put("operationId", operationId);
+            params.put("xpath", ida.getXpath());
+            SDA sda = sdaService.findUniqueBy(params);
+            if(null != sda){
+                addAttribute(idaElement, "metadataId", sda.getMetadataId());
+                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+                if(null != metadata){
+                    addAttribute(idaElement, "length", metadata.getLength());
+                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
+                }
+            }
+            List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
+            if(null != children && 0 < children.size()){
+                for(Ida child : children){
+                    renderBodyIda(idaElement, child, serviceId, operationId);
+                }
             }
         }
     }
@@ -249,7 +335,7 @@ public class ConfigExportGenerator {
             Element headElement = targetElement.addElement(headId.toUpperCase());//添加服务报文头标签 例：<SYS_HEAD> <APP_HEAD>
             SDA reServiceHeadSDA = sdaService.getByStructName(headId, targetName);
 //            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
-            List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//徽商服务头全量;
+            List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//服务头全量;
 //            SDA reOperationSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), targetName);
 //            List<SDA> operationHeadSDAs = sdaService.getOperationHeadSDAs(operation.getServiceId(), operation.getOperationId(), headId, reOperationSDA.getId());//场景sda中约束条件为相应报文头的元素
 ////            sdas.addAll(operationHeadSDAs);
@@ -367,5 +453,13 @@ public class ConfigExportGenerator {
         } catch (IOException e) {
             log.error(e, e);
         }
+    }
+    //获取模板路径，子类重写此方法替换模板
+    public String getChannelServicePath(){
+        return channel_service_path;
+    }
+    //获取模板路径，子类重写此方法替换模板
+    public String getServiceChannelPath(){
+        return service_channel_path;
     }
 }

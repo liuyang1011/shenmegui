@@ -99,22 +99,24 @@ public class MappingFileImportController {
                 Row row = indexSheet.getRow(0);
                 MappingIndexHeadIndexVO headRowVO = new MappingIndexHeadIndexVO(row);//根据index页头列名称获取顺序
                 for(int i =1; i <= indexSheet.getLastRowNum(); i++){//提取index每条记录
-                    MappingImportIndexRowVO indexVO = new MappingImportIndexRowVO(i, headRowVO, indexSheet.getRow(i));//index页一条记录
-                    logger.info("===========开始导入INDEX页第" + indexVO.getIndexNum() + "条记录,接口代码[" + indexVO.getInterfaceId() + "]=============");
-                    long time = java.lang.System.currentTimeMillis();
-                    try {
-                        if (mappingFileImportSevice.imoportIndexRecord(workbook, indexVO)) {
-                            //根据版本信息发布版本
-                            if (Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equalsIgnoreCase(indexVO.getOperationState())) {
-                                operationService.release(indexVO.getOperationId(), indexVO.getServiceId(), "导入发布");
+                    if(indexSheet.getRow(i) != null){
+                        MappingImportIndexRowVO indexVO = new MappingImportIndexRowVO(i, headRowVO, indexSheet.getRow(i));//index页一条记录
+                        logger.info("===========开始导入INDEX页第" + indexVO.getIndexNum() + "条记录,接口代码[" + indexVO.getInterfaceId() + "]=============");
+                        long time = java.lang.System.currentTimeMillis();
+                        try {
+                            if (mappingFileImportSevice.imoportIndexRecord(workbook, indexVO)) {
+                                //根据版本信息发布版本
+                                if (Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED.equalsIgnoreCase(indexVO.getOperationState())) {
+                                    operationService.release(indexVO.getOperationId(), indexVO.getServiceId(), "导入发布");
+                                }
+                                long useTime = java.lang.System.currentTimeMillis() - time;
+                                logger.info("===========INDEX页第" + indexVO.getIndexNum() + "条记录导入完成，,接口代码[" + indexVO.getInterfaceId() + "]，耗时" + useTime + "ms=============");
                             }
-                            long useTime = java.lang.System.currentTimeMillis() - time;
-                            logger.info("===========INDEX页第" + indexVO.getIndexNum() + "条记录导入完成，,接口代码[" + indexVO.getInterfaceId() + "]，耗时" + useTime + "ms=============");
+                        }catch (Exception e){
+                            mappingFileImportSevice.logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败,导入时发生异常！异常信息："+e.getMessage());
+                            logger.error(e, e);
+                            continue;
                         }
-                    }catch (Exception e){
-                        mappingFileImportSevice.logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败,导入时发生异常！异常信息："+e.getMessage());
-                        logger.error(e, e);
-                        continue;
                     }
                 }
             }else{
@@ -126,18 +128,20 @@ public class MappingFileImportController {
                 Row row = indexExSheet.getRow(0);
                 MappingIndexHeadIndexVO headRowVO = new MappingIndexHeadIndexVO(row);//根据index页头列名称获取顺序
                 for(int i =1; i <= indexExSheet.getLastRowNum(); i++){//提取index每条记录
-                    MappingImportIndexRowVO indexExVO = new MappingImportIndexRowVO(i, headRowVO, indexExSheet.getRow(i));//一条记录
-                    logger.info("===========开始导入INDEX_EX页第" + indexExVO.getIndexNum() + "条记录=============");
-                    long time = java.lang.System.currentTimeMillis();
-                    try {
-                        if (mappingFileImportSevice.importIndexExRecord(workbook, indexExVO)) {
-                            long useTime = java.lang.System.currentTimeMillis() - time;
-                            logger.info("===========INDEX_EX页第" + indexExVO.getIndexNum() + "条记录导入完成，耗时" + useTime + "ms=============");
+                    if(indexExSheet.getRow(i) != null){
+                        MappingImportIndexRowVO indexExVO = new MappingImportIndexRowVO(i, headRowVO, indexExSheet.getRow(i));//一条记录
+                        logger.info("===========开始导入INDEX_EX页第" + indexExVO.getIndexNum() + "条记录=============");
+                        long time = java.lang.System.currentTimeMillis();
+                        try {
+                            if (mappingFileImportSevice.importIndexExRecord(workbook, indexExVO)) {
+                                long useTime = java.lang.System.currentTimeMillis() - time;
+                                logger.info("===========INDEX_EX页第" + indexExVO.getIndexNum() + "条记录导入完成，耗时" + useTime + "ms=============");
+                            }
+                        }catch (Exception e){
+                            mappingFileImportSevice.logMsg("index_ex页第" + indexExVO.getIndexNum() + "条记录导入失败,导入时发生异常！");
+                            logger.error(e, e);
+                            continue;
                         }
-                    }catch (Exception e){
-                        mappingFileImportSevice.logMsg("index_ex页第" + indexExVO.getIndexNum() + "条记录导入失败,导入时发生异常！");
-                        logger.error(e, e);
-                        continue;
                     }
                 }
             }

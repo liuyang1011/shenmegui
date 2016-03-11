@@ -74,6 +74,15 @@ if(mid.equals("1.15")){
 <%
 	}
 %>
+
+<%
+	if(mid.equals("1.16")){
+%>
+{"success":true,"url":"/jsp/attfunc/func_list.jsp","title":"字段处理方法"}
+<%
+	}
+%>
+
 <%
 	if(mid.equals("2.3")){
 %>

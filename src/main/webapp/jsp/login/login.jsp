@@ -64,9 +64,7 @@
 
     <div class="social-auth-links text-center">
       <p>- OR -</p>
-      <!--
-      <a href="#" class="btn btn-block btn-social  btn-flat"><i class="fa"></i> 游客登录 </a>
-      -->
+      <a href="/login/touristLogin"  class="btn btn-block btn-flat"> 游客登录 </a>
     </div><!-- /.social-auth-links -->
 
   </div><!-- /.login-box-body -->

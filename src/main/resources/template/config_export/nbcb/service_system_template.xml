@@ -10,6 +10,6 @@
 		${LOCAL_HEAD}$
 	</LOCAL_HEAD>
 	<BODY>
-		${response}$
+		${standardBody}$
 	</BODY>
 </service>

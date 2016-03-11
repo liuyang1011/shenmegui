@@ -241,7 +241,9 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
             for (int i = 0; i < interList.size(); i++) {
                 HSSFRow row = sheet.createRow(i+1);
                 row.createCell(0).setCellValue(interList.get(i).getInterfaceId());//接口id
-                row.createCell(1).setCellValue(system.getSystemAb());//系统
+                if(null != system){
+                    row.createCell(1).setCellValue(system.getSystemAb());//系统
+                }
                 String status = "";
                 if(interList.get(i).getStatus() != null){
                     if(interList.get(i).getStatus().equals(Constants.INTERFACE_STATUS_TC)){

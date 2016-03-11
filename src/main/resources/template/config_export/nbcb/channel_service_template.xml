@@ -10,7 +10,7 @@
 		${LOCAL_HEAD}$
 	</LOCAL_HEAD>
 	<BODY>
-		${request}$
+		${standardBody}$
 	</BODY>
 
 </service>

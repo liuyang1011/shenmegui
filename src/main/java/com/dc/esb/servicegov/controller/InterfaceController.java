@@ -118,7 +118,7 @@ public class InterfaceController {
             System system = systems.get(i);
             TreeNode treeNode = new TreeNode();
             treeNode.setId(system.getSystemId());
-            treeNode.setText(system.getSystemChineseName());
+            treeNode.setText(system.getSystemChineseName() + "(" + system.getSystemAb()  +")");
             treeNode.setState("closed");
             treeNode.setClick("system");
             children.add(treeNode);

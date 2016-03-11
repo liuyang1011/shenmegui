@@ -243,7 +243,7 @@ public class OperationController {
         }
         return result;
     }
-    @RequiresPermissions({"operation-add"})
+//    @RequiresPermissions({"operation-add"})
     @RequestMapping(method = RequestMethod.GET, value = "/getInvokeMapping2", headers = "Accept=application/json")
     public
     @ResponseBody
