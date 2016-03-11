@@ -2,11 +2,15 @@
 <project version="4">
   <component name="dataSourceStorageLocal">
     <data-source name="Oracle - tx1@192.168.195.128" uuid="fe0b1187-1b26-41f8-ac7f-545168467ed9" />
-    <data-source name="MySQL - eam@localhost" uuid="69a64047-ef18-49b4-900d-cf6c552085cb" />
+    <data-source name="MySQL - eam@localhost" uuid="69a64047-ef18-49b4-900d-cf6c552085cb">
+      <user-name>root</user-name>
+    </data-source>
     <data-source name="Oracle - orcl@192.168.195.129" uuid="b14829a7-1750-4ffb-a019-450afc1bc827">
       <user-name>esb</user-name>
       <user-password>dfcfdfd9dfc8</user-password>
     </data-source>
-    <data-source name="MySQL - esbsg@localhost" uuid="8f279b14-2934-4a9f-8e13-490ef3cc2bc5" />
+    <data-source name="MySQL - esbsg@localhost" uuid="8f279b14-2934-4a9f-8e13-490ef3cc2bc5">
+      <user-name>root</user-name>
+    </data-source>
   </component>
 </project>

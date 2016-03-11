@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.dc.esb.servicegov.dao.support.Page;
+import com.dc.esb.servicegov.entity.Version;
+import com.dc.esb.servicegov.entity.VersionHis;
+import com.dc.esb.servicegov.service.impl.VersionHisServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -29,6 +33,8 @@ import com.dc.esb.servicegov.service.impl.OperationHisServiceImpl;
 public class OperationHisController {
 	@Autowired
 	private OperationHisServiceImpl operationHisServiceImpl;
+	@Autowired
+	private VersionHisServiceImpl versionHisService;
 
 	@RequiresPermissions({"service-get"})
 	@RequestMapping("/hisPage")
@@ -48,6 +54,45 @@ public class OperationHisController {
 		result.put("total", rows.size());
 		result.put("rows", rows);
 		return result;
+	}
+
+	@RequiresPermissions({"version-get"})
+	@RequestMapping("/getVersionsByOS/{serviceId}/{operationId}")
+	@ResponseBody
+	public List<VersionVO> getVersions(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId) {
+		List<OperationHis> operationHises = operationHisServiceImpl.getByOS(operationId, serviceId);
+		List<VersionVO> versions = new ArrayList<VersionVO>();
+
+		for(int i = 0; i < operationHises.size(); i ++){
+			VersionHis version = operationHises.get(i).getVersionHis();
+			version.setAutoId(operationHises.get(i).getAutoId());
+			VersionVO versionVO = new VersionVO();
+			versionVO.setVersionId("V" + (i+1));
+			versionVO.setVersionCode(version.getCode());
+			versions.add(versionVO);
+		}
+		return versions;
+	}
+
+	class VersionVO{
+		private String versionCode;
+		private String versionId;
+
+		public String getVersionCode() {
+			return versionCode;
+		}
+
+		public void setVersionCode(String versionCode) {
+			this.versionCode = versionCode;
+		}
+
+		public String getVersionId() {
+			return versionId;
+		}
+
+		public void setVersionId(String versionId) {
+			this.versionId = versionId;
+		}
 	}
 
 	@RequiresPermissions({"service-get"})

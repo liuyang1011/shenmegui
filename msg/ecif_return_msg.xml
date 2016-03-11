@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<service package_type="xml" store-mode="UTF-8">
+    <SYS_HEAD/>
+    <APP_HEAD/>
+    <BODY>
+        <CstNo>2000000011</CstNo>
+        <CstNm>xun wang</CstNm>
+        <OrgNo>icbc102301000028</OrgNo>
+        <BsnOrgNo>3328</BsnOrgNo>
+        <StmNo>4403036208652</StmNo>
+        <TotNum>0</TotNum>
+        <array>
+            <PrtArray>
+                <OldFldVal></OldFldVal>
+                <NewFldVal></NewFldVal>
+                <FldNm></FldNm>
+            </PrtArray>
+        </array>
+    </BODY>
+</service>

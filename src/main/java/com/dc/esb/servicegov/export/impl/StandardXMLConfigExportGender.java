@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.export.impl;
 
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.SDAAttrbuteServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,11 +11,13 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.System;
 import java.util.List;
 
 /**
@@ -23,6 +26,9 @@ import java.util.List;
 @Component
 public class StandardXMLConfigExportGender extends ConfigExportGenerator{
     private Log log = LogFactory.getLog(StandardXMLConfigExportGender.class);
+
+    @Autowired
+    private SDAAttrbuteServiceImpl sdaAttrbuteService;
     /**
      * 生成请求文件
      * @param serviceInvoke
@@ -35,8 +41,28 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
             String operationId = serviceInvoke.getOperationId();
             Operation operation = operationService.getOperation(serviceId, operationId);
 
-            String fileName = getReqFilePath(serviceInvoke, path);
+            String fileName = this.getReqFilePath(serviceInvoke, path);
+            Document doc = DocumentHelper.createDocument();
+            Element serviceElement = doc.addElement("service");//根节点
+            addAttribute(serviceElement, "package_type", "xml");
+            addAttribute(serviceElement, "store-mode", "UTF-8");
+            fillPackageParserServiceHead(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
+            fillPackageParserBody(operation, serviceInvoke.getInterfaceId(), serviceElement, Constants.ElementAttributes.REQUEST_NAME, false);
 
+            createFile(doc, fileName);
+        }catch (Exception e){
+            log.error("生成请求文件失败！", e);
+        }
+    }
+
+    @Override
+    public void  generateRequest(ServiceInvoke serviceInvoke, String path, String versionAutoId){
+        try {
+            String serviceId = serviceInvoke.getServiceId();
+            String operationId = serviceInvoke.getOperationId();
+            Operation operation = operationService.getOperation(serviceId, operationId);
+
+            String fileName = this.getReqFilePath(serviceInvoke, path);
             Document doc = DocumentHelper.createDocument();
             Element serviceElement = doc.addElement("service");//根节点
             addAttribute(serviceElement, "package_type", "xml");
@@ -62,7 +88,7 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
             String operationId = serviceInvoke.getOperationId();
             Operation operation = operationService.getOperation(serviceId, operationId);
 
-            String fileName = getResFilePath(serviceInvoke, path);
+            String fileName = this.getResFilePath(serviceInvoke, path);
 
             Document doc = DocumentHelper.createDocument();
             Element serviceElement = doc.addElement("service");//根节点
@@ -96,6 +122,22 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
         Element bodyElement = targetElement.addElement("BODY");
         SDA reSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), structName);
         List<SDA> sdas = sdaService.getChildExceptServiceHead(reSDA.getId(), operation.getHeadId());
+//        List<SDA> sdas1 =
+        if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
+            List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+            for(InterfaceHeadRelate relate : relates){
+                List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadBodySDAs(relate.getHeadId(), structName);
+                addListContent(sdas, interfaceheadSDAs);
+            }
+        }
+        fillPackageParserElement(bodyElement, sdas);
+    }
+
+    public void fillPackageParserBody(Operation operation, String interfaceId, Element targetElement, String structName, boolean arrayFlag, String versionAutoId){
+        Element bodyElement = targetElement.addElement("BODY");
+        SDA reSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), structName);
+        List<SDA> sdas = sdaService.getChildExceptServiceHead(reSDA.getId(), operation.getHeadId());
+//        List<SDA> sdas1 =
         if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
             List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
             for(InterfaceHeadRelate relate : relates){
@@ -121,9 +163,20 @@ public class StandardXMLConfigExportGender extends ConfigExportGenerator{
                 List<SDA> subChildren = sdaService.getChildren(child);
                 fillPackageParserElement(childElement, subChildren);
             }else{
+                String sdaId = child.getId();
+                List<SDAAttribute> sdaAttributes = sdaAttrbuteService.findBy("sdaId", sdaId);
+
                 Element childElement = parentElement.addElement(child.getStructName());
                 addAttribute(childElement, "metadataid", child.getMetadataId());
                 addAttribute(childElement, "chinese_name", child.getStructAlias());
+                for(SDAAttribute sdaAttribute : sdaAttributes){
+                    String expressionType = sdaAttribute.getType();
+                    if("0".equalsIgnoreCase(expressionType)){
+                        addAttribute(childElement, "expression", "'" + sdaAttribute.getValue() + "'");
+                    }else{
+                        addAttribute(childElement, "expression", "'" + sdaAttribute.getValue() + "'");
+                    }
+                }
             }
         }
     }

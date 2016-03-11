@@ -377,6 +377,26 @@ public class ConfigExportController {
         return result;
     }
 
+    /*根据场景列表导出提供方*/
+    @RequiresPermissions({"exportConfig-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/getConfigProviderVo", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<ConfigVO> getConfigProviderVo(@RequestBody List list) {
+        List<ConfigVO> result = operationService.getProviderConfigVo(list);
+        return result;
+    }
+
+    /*根据场景列表导出提供方*/
+    @RequiresPermissions({"exportConfig-get"})
+    @RequestMapping(method = RequestMethod.POST, value = "/getConfigConsumerVo", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<ConfigVO> getConfigConsumerVo(@RequestBody List list) {
+        List<ConfigVO> result = operationService.getConsumerConfigVo(list);
+        return result;
+    }
+
     /**
      * 批量导出
      * @param request

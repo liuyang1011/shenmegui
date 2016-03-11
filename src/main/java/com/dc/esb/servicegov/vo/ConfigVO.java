@@ -23,6 +23,8 @@ public class ConfigVO {
     private String conGeneratorId;
     private String proGeneratorName;
     private String conGeneratorName;
+    private String versionId;
+    private String versionAutoId;
     public String getServiceId() {
         return serviceId;
     }
@@ -150,5 +152,21 @@ public class ConfigVO {
 
     public void setConsumerServiceInvokeId(String consumerServiceInvokeId) {
         this.consumerServiceInvokeId = consumerServiceInvokeId;
+    }
+
+    public String getVersionId() {
+        return versionId;
+    }
+
+    public void setVersionId(String versionId) {
+        this.versionId = versionId;
+    }
+
+    public void setVersionAutoId(String versionAutoId) {
+        this.versionAutoId = versionAutoId;
+    }
+
+    public String getVersionAutoId() {
+        return versionAutoId;
     }
 }

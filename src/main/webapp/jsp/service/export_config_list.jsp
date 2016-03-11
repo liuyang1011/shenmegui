@@ -119,6 +119,32 @@
                 })
             }
         }
+    };
+
+    /**
+    * 发布服务的版本选择
+    * @type {{type}}
+     */
+    var versionEditor = {
+        type:'combobox',
+        options: {
+            required:true,
+            valueField: 'name',
+            textField: 'name',
+            method : 'GET',
+            url: "/generator/getAll",
+            onSelect:function(record){
+                var row = $("#choosedList").datagrid("getSelected");
+                var index = $("#choosedList").datagrid("getRowIndex", row);
+                $("#choosedList").datagrid("endEdit", index);
+                $("#choosedList").datagrid("updateRow",{
+                    index : index,
+                    row:{
+                        conGeneratorId:record.id
+                    }
+                })
+            }
+        }
     }
     var proGeneratorEditor = {
         type:'combobox',

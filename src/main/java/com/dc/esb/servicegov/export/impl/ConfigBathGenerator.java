@@ -30,52 +30,67 @@ public class ConfigBathGenerator {
     private ServiceInvokeServiceImpl serviceInvokeService;
     @Autowired
     private GeneratorServiceImpl generatorService;
+
     /**
      * 批量生成xml文件
+     *
      * @param list
      * @return 配置文件所在
      */
-    public String generate(HttpServletRequest request, ConfigListVO list){
-        if(validate(list)){
+    public String generate(HttpServletRequest request, ConfigListVO list) {
+        if (validate(list)) {
             String path = ConfigExportGenerator.class.getResource("/").getPath() + "/generator" + new Date().getTime();
-            for(ConfigVO configVO : list.getList()){
+            for (ConfigVO configVO : list.getList()) {
                 generate(request, configVO, path);
             }
             return path;
-        }else{
+        } else {
             return null;
         }
     }
 
     /**
      * 生成一条交易的配置文件
+     *
      * @param configVO
      * @return
      */
-    public File generate(HttpServletRequest request, ConfigVO configVO, String path){
+    public File generate(HttpServletRequest request, ConfigVO configVO, String path) {
         String consumerServiceInvokeId = configVO.getConsumerServiceInvokeId();
         String providerServiceInvokeId = configVO.getProviderServiceInvokeId();
+        String versionAutoId = configVO.getVersionAutoId();
+        String versionId = configVO.getVersionId();
         ServiceInvoke consumerServiceInvoke = serviceInvokeService.findUniqueBy("invokeId", consumerServiceInvokeId);
         ServiceInvoke providerServiceInvoke = serviceInvokeService.findUniqueBy("invokeId", providerServiceInvokeId);
 
         String conGeneratorId = configVO.getConGeneratorId();
+        String conGeneratorName = configVO.getConGeneratorName();
         String proGeneratorId = configVO.getProGeneratorId();
+        String proGeneratorName = configVO.getProGeneratorName();
         Generator conGenerator = generatorService.findUniqueBy("id", conGeneratorId);
         Generator proGenerator = generatorService.findUniqueBy("id", proGeneratorId);
 
-        if(null != consumerServiceInvoke){
+        if (null != consumerServiceInvoke) {
             WebApplicationContext cont = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
-            ConfigExportGenerator conConfigExportGenerator = (ConfigExportGenerator)cont.getBean(getSpringBeanName(conGenerator.getImplementsClazz()));
-            conConfigExportGenerator.generate(consumerServiceInvoke, path);
-
-//                Class conGeneratorClass = Class.forName(conGenerator.getImplementsClazz());
-//                ConfigExportGenerator conConfigExportGenerator = (ConfigExportGenerator)conGeneratorClass.newInstance();
-//                conConfigExportGenerator.generate(consumerServiceInvoke, path);
+            ConfigExportGenerator conConfigExportGenerator = (ConfigExportGenerator) cont.getBean(getSpringBeanName(conGenerator.getImplementsClazz()));
+            conConfigExportGenerator.setName(conGeneratorName);
+            conConfigExportGenerator.setVersion(versionId);
+            if (null != versionAutoId) {
+                conConfigExportGenerator.generate(consumerServiceInvoke, path, versionAutoId);
+            } else {
+                conConfigExportGenerator.generate(consumerServiceInvoke, path);
+            }
         }
-        if(null != providerServiceInvoke){
+        if (null != providerServiceInvoke) {
             WebApplicationContext cont = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getSession().getServletContext());
-            ConfigExportGenerator proConfigExportGenerator = (ConfigExportGenerator)cont.getBean(getSpringBeanName(proGenerator.getImplementsClazz()));
-            proConfigExportGenerator.generate(providerServiceInvoke, path);
+            ConfigExportGenerator proConfigExportGenerator = (ConfigExportGenerator) cont.getBean(getSpringBeanName(proGenerator.getImplementsClazz()));
+            proConfigExportGenerator.setName(proGeneratorName);
+            proConfigExportGenerator.setVersion(versionId);
+            if (null != versionAutoId) {
+                proConfigExportGenerator.generate(providerServiceInvoke, path, versionAutoId);
+            } else {
+                proConfigExportGenerator.generate(providerServiceInvoke, path);
+            }
         }
 
         return null;
@@ -83,35 +98,37 @@ public class ConfigBathGenerator {
 
     /**
      * 数据正确性验证
+     *
      * @param configListVO
      * @return
      */
-    public boolean validate(ConfigListVO configListVO){
-        if(null == configListVO || 0 == configListVO.getList().size()){
+    public boolean validate(ConfigListVO configListVO) {
+        if (null == configListVO || 0 == configListVO.getList().size()) {
             errorMsg = "传入数据为空！";
-            return  false;
+            return false;
         }
         List<ConfigVO> list = configListVO.getList();
-        for(int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             ConfigVO configVO = list.get(i);
-            if(null == configVO){
-                errorMsg = "第"+ (i+1) + "条数据数据为空!";
-            }else{
+            if (null == configVO) {
+                errorMsg = "第" + (i + 1) + "条数据数据为空!";
+            } else {
             }
         }
         return true;
     }
-    public void generateErrorMsg(String errorMsg){
-        if(StringUtils.isNotEmpty(errorMsg)){//如果导出过程中出现错误，将错误信息写入errorMsg.txt
+
+    public void generateErrorMsg(String errorMsg) {
+        if (StringUtils.isNotEmpty(errorMsg)) {//如果导出过程中出现错误，将错误信息写入errorMsg.txt
 
         }
     }
 
-    public String getSpringBeanName(String className){
+    public String getSpringBeanName(String className) {
         String[] classNameStrs = className.split("\\.");
-        className = classNameStrs[classNameStrs.length-1];
-        String firstChar = className.substring(0,1);
+        className = classNameStrs[classNameStrs.length - 1];
+        String firstChar = className.substring(0, 1);
         String beanName = className.replaceFirst(firstChar, firstChar.toLowerCase());
-        return  beanName;
+        return beanName;
     }
 }

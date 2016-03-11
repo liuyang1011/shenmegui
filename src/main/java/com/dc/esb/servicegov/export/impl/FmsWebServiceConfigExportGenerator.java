@@ -129,7 +129,7 @@ public class FmsWebServiceConfigExportGenerator extends ConfigExportGenerator{
             }
 
             //生成文件
-            String fileName = getResFilePath(serviceInvoke, path);
+            String fileName = this.getResFilePath(serviceInvoke, path);
             createFile(doc, fileName);
         }catch (Exception e){
             log.error("生成response文件失败！", e);

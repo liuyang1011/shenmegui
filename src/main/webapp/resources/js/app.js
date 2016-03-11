@@ -1191,10 +1191,12 @@ $(function () {
         title: title,
         content: content
     });
-
-
-
-
+    var content = '<iframe scrolling="yes" frameborder="0"  src="/jsp/welcome.jsp" style="width:100%;height:98%;"></iframe>';
+    var title = "欢迎页"
+    $('#mainContentTabs').tabs('add', {
+        title: title,
+        content: content
+    });
 });
 
 

@@ -42,9 +42,26 @@ public class SDAHisServiceImpl extends AbstractBaseService<SDAHis, String> imple
 
 	}
 
+	public SDAHis getByStructName(String serviceId, String operationId, String structName, String versionAutoId){
+		String hql = " from SDAHis where serviceId = ? and operationId = ? and structName = ? and operationHisId = ?";
+		SDAHis sda = daoImpl.findUnique(hql, serviceId, operationId, structName, versionAutoId);
+		return sda;
+	}
+
+	public List<SDAHis> getChildExceptServiceHead(String parentId, String serviceHeadIds, String versionAutoId){
+		String[] headIds = serviceHeadIds.split("\\,");
+		String hql = " from SDAHis where and operationHisId = :operationHisId parentId = :parentId and ( constraint is null or constraint not in(:serviceHeadIds))";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("operationHisId", versionAutoId);
+		params.put("parentId", parentId);
+		params.put("serviceHeadIds", headIds);
+		List<SDAHis> result = daoImpl.find(hql, params);
+		return result;
+	}
+
 	@Override
 	public HibernateDAO<SDAHis, String> getDAO() {
-		return null;
+		return daoImpl;
 	}
 	@Override
 	public void save(SDAHis entity){

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service>
+    <Address1></Address1>
+    <Address2></Address2>
+    <Address3></Address3>
+    <AddressSeqno></AddressSeqno>
+    <AddressType></AddressType>
+    <AvaiDate>2016-03-04 00:16:43 604</AvaiDate>
+    <BrcCode>11111</BrcCode>
+    <BurdenNums></BurdenNums>
+    <CustShortName></CustShortName>
+    <CustStatus></CustStatus>
+    <CustomType></CustomType>
+    <CrtlCode1></CrtlCode1>
+    <CurrDate></CurrDate>
+    <CustEngName></CustEngName>
+    <Flag4></Flag4>
+    <GroupId></GroupId>
+    <IdNo></IdNo>
+    <IdType></IdType>
+    <LinkTel></LinkTel>
+    <Mail></Mail>
+    <LostDate></LostDate>
+    <Remark></Remark>
+    <ServerLevel></ServerLevel>
+    <TellerCode></TellerCode>
+    <VisaAddress></VisaAddress>
+    <VisaDate></VisaDate>
+    <ZipCode></ZipCode>
+    <UnitID></UnitID>
+    <BankNo></BankNo>
+    <BankName></BankName>
+    <AccFlag></AccFlag>
+    <MsgType></MsgType>
+    <BankType1></BankType1>
+    <CustomId>2000000011</CustomId>
+    <CustomName>XUN WANG</CustomName>
+    <LicNum>3328</LicNum>
+</service>

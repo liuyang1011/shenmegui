@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<service package_type="xml" store-mode="UTF-8">
+  <CustEngName metadataid="CstFrstNm" chinese_name="客户英文名称"/>ICBC</CustEngName>
+  <TranCode chinese_name="交易码"/>1002</TranCode>
+  <CustomId metadataid="CstNo" chinese_name="客户号"/>2000000011</CustomId>
+  <AcctPry metadataid="CtyEcnmDept" chinese_name="国民经济部门"/>B03</AcctPry>             
+  <AtrTyp metadataid="IdyCd" chinese_name="行业分类"/>J6620</AtrTyp>                       
+  <UnitID metadataid="FnOrgCd" chinese_name="金融机构代码"/>1C1200</UnitID>                
+  <BankNo metadataid="FnOrgLrgAmtNo" chinese_name="金融机构大额行号"/>102301000028</BankNo>
+  <BankName metadataid="FnOrgLrgAmtNm" chinese_name="金融机构大额行名"/>工商银行南京市城北支行</BankName>
+  <AccFlag metadataid="DmstOvsBnkFlg" chinese_name="境内境外标志"/>0</AccFlag>
+  <MsgType1 metadataid="FnOrgTp" chinese_name="金融机构类型代码"/>1C1200</MsgType1>
+  <CustName metadataid="CstNm" chinese_name="客户名称"/>工商银行南京市城北支行</CustName>
+  <BankType2 metadataid="MgtSclCd" chinese_name="企业规模"/>CS01</BankType2>
+  <GlCustomClass1 metadataid="CoCstTp" chinese_name="客户分类代码"/>01</GlCustomClass1>
+  <MctType metadataid="IvsrEncmTp" chinese_name="企业控股类型"/>01</MctType>
+  <BankType1 metadataid="CstRskLvl" chinese_name="金融风险评估分类"/>1</BankType1>
+  <IdType metadataid="IdentTp" chinese_name="证件类别"/>610001</IdType>
+  <IdNo metadataid="IdentNo" chinese_name="证件号码"/>74371976-1</IdNo>
+  <ExBankName metadataid="GrpCoNm" chinese_name="银行总行名称"/>中国工商银行股份有限公司</ExBankName>
+  <IdType1 chinese_name="监护人证件类型"/>110001</IdType1>
+  <IdNo1 chinese_name="监护人证件号码"/>100122199005063248</IdNo1>
+  <CustomName1 chinese_name="监护人客户名称"/>王迅</CustomName1>
+  <CustMngNo chinese_name="客户经理"/>3328<CustMngNo>
+  <SalesPeopleCode chinese_name="销售人员代码"/>5656</SalesPeopleCode>
+  <VisaDate chinese_name="证件签发日期"/>2012-12-05</VisaDate>
+  <ServerLevel chinese_name="银行服务评级"/>AAA</ServerLevel>
+  <LicNum chinese_name="营业执照号码"/>4403036208652</LicNum>
+  <EconFlag chinese_name="特殊经济区域标识"/>0</EconFlag>
+  <Flag4 chinese_name="标志4"/>0</Flag4>
+  <Remark chinese_name="备注摘要信息"/>重要客户</Remark>
+  <GroupId chinese_name="客户组号"/>2</GroupId>
+  <CustShortName chinese_name="客户短名"/>工行南京城北支行</CustShortName>
+  <VisaAddress chinese_name="证件签发地点"/>北京</VisaAddress>
+  <Flag1 chinese_name="标志"/>0</Flag1>
+  <CrtlCode1 chinese_name="客户控制代码"/>0000</CrtlCode1>
+  <Flag chinese_name="标志"/>0</Flag>
+  <Sex chinese_name="性别"/></Sex>
+  <LostDate chinese_name="失效日期"/>2020-12-05</LostDate>
+  <LinkMan chinese_name="联系人名称"/>王迅</LinkMan>
+  <LinkTel chinese_name="联系人电话"/>13728285632</LinkTel>
+  <NationCode metadataid="CtyCd" chinese_name="国家代码"/>CHN</NationCode>
+  <City metadataid="RgonCd" chinese_name="市/县"/>320102</City>
+  <AddressType metadataid="RetAdrTp" chinese_name="地址类别"/>2</AddressType>
+  <Array1 metadataid="CstAdrArray" chinese_name="">
+    <Zip metadataid="PstCd" chinese_name="邮政编码"/>210000</Zip>
+    <Address1 metadataid="CtcAdr" chinese_name="地址内容1"/>南京市玄武区中山路228号</Address1>
+    <Mobile metadataid="Mbl" chinese_name="手机"/>13728285632</Mobile>
+    <Tel metadataid="TelNo" chinese_name="联系电话"/>025-86775219</Tel>
+    <Fax metadataid="FaxNo" chinese_name="传真"/>025-86775219</Fax>
+    <Mail metadataid="Email" chinese_name="邮件地址"/>XX@icbc.com.cn</Mail>
+  </Array1>
+  <Address2 chinese_name="地址内容2"/>XXXXXXXXX</Address2>
+  <Address3 chinese_name="地址内容3"/>XXXXXXXXX</Address3>
+</service>

@@ -2,12 +2,16 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.entity.EsbServer;
 import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.entity.Service;
 import com.dc.esb.servicegov.export.impl.ConfigBathGenerator;
 import com.dc.esb.servicegov.export.util.FileUtil;
+import com.dc.esb.servicegov.service.ServiceService;
 import com.dc.esb.servicegov.service.impl.EsbServerServiceImpl;
+import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.vo.ConfigListVO;
 import com.dc.esb.servicegov.vo.ConfigVO;
+import com.dc.esc.jmx.register.PublishServiceProxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +39,15 @@ public class EsbServerController {
     @Autowired
     private SystemLogServiceImpl systemLogService;
     @Autowired
+    private ServiceServiceImpl serviceService;
+    @Autowired
     ConfigBathGenerator configBathGenerator;
 
 
     @RequestMapping(value = "/getServerList")
     public
     @ResponseBody
-    List<EsbServer> getServerList () {
+    List<EsbServer> getServerList() {
         List<EsbServer> list = esbServerService.getAll();
         return list;
     }
@@ -49,14 +55,14 @@ public class EsbServerController {
     @RequestMapping(value = "/saveAdd")
     public
     @ResponseBody
-    boolean saveAdd (EsbServer esbServer) {
+    boolean saveAdd(EsbServer esbServer) {
         esbServer.setServerId(UUID.randomUUID().toString());
         esbServerService.save(esbServer);
         return true;
     }
 
     @RequestMapping(value = "/editPage")
-    public ModelAndView editPage (String serverId) {
+    public ModelAndView editPage(String serverId) {
         ModelAndView mv = new ModelAndView("esb/server_edit");
 
         EsbServer esbServer = esbServerService.findUniqueBy("serverId", serverId);
@@ -64,37 +70,97 @@ public class EsbServerController {
 
         return mv;
     }
+
     @RequestMapping(value = "/saveEdit")
     public
     @ResponseBody
-    boolean saveEdit (EsbServer esbServer) {
+    boolean saveEdit(EsbServer esbServer) {
         esbServerService.save(esbServer);
         return true;
     }
+
     @RequestMapping(value = "/deleteById")
     public
     @ResponseBody
-    boolean deleteById (String serverId) {
+    boolean deleteById(String serverId) {
         esbServerService.deleteById(serverId);
         return true;
     }
+
     @RequestMapping(method = RequestMethod.POST, value = "/configSync/{optionFlag}/{dicSync}/{serverStr}", headers = "Accept=application/json")
     public
     @ResponseBody
-    boolean configSync (HttpServletRequest request, HttpServletResponse response,@RequestBody ConfigVO[] list,@PathVariable(value = "optionFlag")  String optionFlag,@PathVariable(value = "dicSync") String dicSync,@PathVariable(value = "serverStr") String serverStr) {
+    boolean configSync(HttpServletRequest request, HttpServletResponse response, @RequestBody ConfigVO[] list, @PathVariable(value = "optionFlag") String optionFlag, @PathVariable(value = "dicSync") String dicSync, @PathVariable(value = "serverStr") String serverStr) {
         OperationLog operationLog = systemLogService.record("配置文件", "ESB同步", "");
 
         try {
+            String serviceDef = "";
+            String serviceDefContent = "";
+            String toFile = "";
+            String toFileContent = "";
+            String fromFile = "";
+            String fromFileContent = "";
             ConfigListVO configListVO = new ConfigListVO();
             List<ConfigVO> configVOs = Arrays.asList(list);
             configListVO.setList(configVOs);
-            String path  = configBathGenerator.generate(request, configListVO);//一条
-            esbServerService.tranConfig(path, optionFlag, dicSync, serverStr);
-        }catch (Exception e){
-            logger.error("配置文件同步错误");
+            String path = configBathGenerator.generate(request, configListVO);//一条
+            ConfigVO configVo = configVOs.get(0);
+            PublishServiceProxy proxy = new PublishServiceProxy();
+            File dir = new File(path);
+            if (dir.isDirectory()) {
+                File[] files = dir.listFiles();
+                for (File file : files) {
+                    if (file.getName().startsWith("out")) {
+                        File[] configFiles = file.listFiles();
+                        for (File configFile : configFiles) {
+                            String fileName = configFile.getName();
+                            if (fileName.startsWith("service")) {
+                                serviceDef = configFile.getName();
+                                serviceDefContent = new String(readFile(configFile));
+                            } else if (fileName.contains("to")) {
+                                toFile = fileName;
+                                toFileContent = new String(readFile(configFile));
+                            } else if (fileName.contains("from")) {
+                                fromFile = fileName;
+                                fromFileContent = new String(readFile(configFile));
+                            }
+                        }
+                        Service service = serviceService.findUniqueBy("serviceId", configVo.getServiceId());
+                        proxy.pubProvider(configVo.getServiceId() + configVo.getOperationId(), service.getServiceName(), configVo.getProviderName(), configVo.getVersionId(),
+                                configVo.getVersionAutoId(), configVo.getProInterfaceName(), configVo.getProGeneratorName(), serviceDef,
+                                serviceDefContent, toFile, toFileContent, fromFile, fromFileContent, "userId");
+                    } else if (file.getName().startsWith("in")) {
+                        File[] configFiles = file.listFiles();
+                        for (File configFile : configFiles) {
+                            String fileName = configFile.getName();
+                            if (fileName.contains("to")) {
+                                toFile = fileName;
+                                toFileContent = new String(readFile(configFile));
+                            } else if (fileName.contains("from")) {
+                                fromFile = fileName;
+                                fromFileContent = new String(readFile(configFile));
+                            }
+                        }
+                        proxy.pubConsumer(configVo.getServiceId() + configVo.getOperationId(), configVo.getVersionId(),configVo.getVersionAutoId(),
+                                configVo.getConsumerName(), configVo.getConInterfaceName(), configVo.getConGeneratorName(), toFile,
+                                toFileContent, fromFile, fromFileContent, "userId");
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("配置文件同步错误", e);
         }
         systemLogService.updateResult(operationLog);
         return true;
+    }
+
+    private byte[] readFile(File configFile) throws IOException {
+        int length = (int) configFile.length();
+        byte[] contentBytes = new byte[length];
+        DataInputStream in = new DataInputStream(new FileInputStream(configFile));
+        in.readFully(contentBytes);
+        return contentBytes;
     }
 
 

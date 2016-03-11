@@ -120,6 +120,9 @@
         }
     });*/
 
+    var serviceId;
+    var operationId;
+
     var formatter = {
         operationState: function (value, row, index) {
             if (value == 0) {
@@ -630,6 +633,90 @@
             }
         }
     });
+    toolbar.push({
+        text:'发布服务',
+        iconCls:'icon-excel-export',
+        handler: function () {
+            var checkedItems = $('#operationList').datagrid('getChecked');
+            serviceId = checkedItems[0].serviceId;
+            operationId = checkedItems[0].operationId;
+            if (checkedItems != null && checkedItems.length > 0) {
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/export/getConfigProviderVo",
+                    "data": JSON.stringify(checkedItems),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result && result.length > 0){
+                            configResult = result;
+                            $('#opDialog').dialog({
+                                title: '导出配置',
+                                width: 1000,
+                                left:50,
+                                closed: false,
+                                cache: false,
+                                href: "/jsp/service/publish_config_list.jsp",
+                                modal: true,
+                                onLoad:function(){
+                                    $("#choosedList").datagrid("loadData", configResult);
+                                }
+                            });
+                        }else{
+                            alert("没有可导出的配置！");
+                        }
+                    }
+                });
+
+            }
+            else{
+                alert("没有选中数据！");
+            }
+        }
+    });
+    toolbar.push({
+        text:'授权服务',
+        iconCls:'icon-excel-export',
+        handler: function () {
+            var checkedItems = $('#operationList').datagrid('getChecked');
+            serviceId = checkedItems[0].serviceId;
+            operationId = checkedItems[0].operationId;
+            if (checkedItems != null && checkedItems.length > 0) {
+                $.ajax({
+                    "type": "POST",
+                    "async": false,
+                    "contentType": "application/json; charset=utf-8",
+                    "url": "/export/getConfigConsumerVo",
+                    "data": JSON.stringify(checkedItems),
+                    "dataType": "json",
+                    "success": function (result) {
+                        if(result && result.length > 0){
+                            configResult = result;
+                            $('#opDialog').dialog({
+                                title: '导出配置',
+                                width: 1000,
+                                left:50,
+                                closed: false,
+                                cache: false,
+                                href: "/jsp/service/auth_config_list.jsp",
+                                modal: true,
+                                onLoad:function(){
+                                    $("#choosedList").datagrid("loadData", configResult);
+                                }
+                            });
+                        }else{
+                            alert("没有可导出的配置！");
+                        }
+                    }
+                });
+
+            }
+            else{
+                alert("没有选中数据！");
+            }
+        }
+    })
     toolbar.push({
         text:'导出WSDL',
         iconCls:'icon-excel-export',

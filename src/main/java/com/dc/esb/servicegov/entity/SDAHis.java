@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.entity;
 
+import com.dc.esb.servicegov.export.IExportableNode;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -10,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "SDA_HIS")
-public class SDAHis implements Serializable {
+public class SDAHis extends IExportableNode implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -122,6 +124,16 @@ public class SDAHis implements Serializable {
 
 	public void setSdaId(String sdaId) {
 		this.sdaId = sdaId;
+	}
+
+	@Override
+	public String getId() {
+		return this.sdaId;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.sdaId = id;
 	}
 
 	public String getStructName() {

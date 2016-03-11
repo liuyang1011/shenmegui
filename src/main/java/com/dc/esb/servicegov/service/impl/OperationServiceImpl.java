@@ -7,7 +7,6 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
-import com.dc.esb.servicegov.service.InterfaceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.DateUtils;
@@ -16,9 +15,9 @@ import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.ConfigVO;
 import com.dc.esb.servicegov.vo.OperationExpVO;
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class OperationServiceImpl extends AbstractBaseService<Operation, OperationPK>{
+public class OperationServiceImpl extends AbstractBaseService<Operation, OperationPK> {
 
 
     private static final Log log = LogFactory.getLog(OperationServiceImpl.class);
@@ -95,8 +94,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         params.put("serviceId", serviceId);
         params.put("operationId", operationId);
         List<Operation> list = findBy(params);
-        if(list != null && list.size() > 0){
-        	return list.get(0);
+        if (list != null && list.size() > 0) {
+            return list.get(0);
         }
         return null;
 
@@ -124,7 +123,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     public boolean addOperation(Operation entity) {
         try {
-            String versionId = versionServiceImpl.addVersion(Constants.Version.TARGET_TYPE_OPERATION, entity.getOperationId(),Constants.Version.TYPE_ELSE);
+            String versionId = versionServiceImpl.addVersion(Constants.Version.TARGET_TYPE_OPERATION, entity.getOperationId(), Constants.Version.TYPE_ELSE);
             entity.setVersionId(versionId);
             entity.setDeleted(Constants.DELTED_FALSE);
             operationDAOImpl.save(entity);
@@ -132,7 +131,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
 
         } catch (Exception e) {
-            log.error(e,e);
+            log.error(e, e);
             return false;
         }
         return true;
@@ -146,7 +145,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             versionServiceImpl.editVersion(entity.getVersionId());
             //清空
         } catch (Exception e) {
-            log.error(e,e);
+            log.error(e, e);
             return false;
         }
         return true;
@@ -154,22 +153,24 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     /**
      * sda、sla。ola，等操作修改后调用此方法，更新版本号和场景状态
+     *
      * @param serviceId
      * @param operationId
      */
-    public void editReleate(String serviceId, String operationId){
+    public void editReleate(String serviceId, String operationId) {
         Operation operation = getOperation(serviceId, operationId);
         versionServiceImpl.editVersion(operation.getVersionId());
         //现在无需修改状态，因为只有服务定义状态，修订状态才能修改
 //        operation.setState(Constants.Operation.OPT_STATE_UNAUDIT);/*修改状态*/
         save(operation);
     }
+
     public void deleteOperations(OperationPK[] operationPks) {
         //TODO 删场景的时候要删除service_invoke
         //TODO 删除场景的时候删除sda
         for (OperationPK operationPK : operationPks) {
-            serviceInvokeService.deleteByOperationId(operationPK.getOperationId(),operationPK.getServiceId());
-            sdaService.deleteByOperationId(operationPK.getOperationId(),operationPK.getServiceId());
+            serviceInvokeService.deleteByOperationId(operationPK.getOperationId(), operationPK.getServiceId());
+            sdaService.deleteByOperationId(operationPK.getOperationId(), operationPK.getServiceId());
         }
         if (operationPks != null && operationPks.length > 0) {
             for (OperationPK operationPK : operationPks) {
@@ -193,10 +194,11 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
         return mv;
     }
+
     //添加接口映射关系
-    public boolean addInvokeMapping(List<LinkedHashMap> serviceInvokes){
+    public boolean addInvokeMapping(List<LinkedHashMap> serviceInvokes) {
         //清空原有接口关系
-        if(serviceInvokes != null && serviceInvokes.size() > 0){
+        if (serviceInvokes != null && serviceInvokes.size() > 0) {
             LinkedHashMap<String, String> map0 = serviceInvokes.get(0);
             String serviceId = map0.get("serviceId");
             String operationId = map0.get("operationId");
@@ -204,7 +206,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
             List<ServiceInvoke> consumserList = new ArrayList<ServiceInvoke>();
             List<ServiceInvoke> providerrList = new ArrayList<ServiceInvoke>();
-            for(int i = 0; i < serviceInvokes.size(); i++){
+            for (int i = 0; i < serviceInvokes.size(); i++) {
                 LinkedHashMap<String, String> map = serviceInvokes.get(i);
                 ServiceInvoke serviceInvoke = new ServiceInvoke();
 
@@ -213,25 +215,25 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 serviceInvoke.setSystemId(map.get("systemId"));
 
                 String interfaceId = map.get("interfaceId");
-                if(StringUtils.isNotEmpty(interfaceId)){
+                if (StringUtils.isNotEmpty(interfaceId)) {
                     serviceInvoke.setInterfaceId(interfaceId);
                     serviceInvoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_N);
-                }else{
+                } else {
                     serviceInvoke.setIsStandard(Constants.INVOKE_TYPE_STANDARD_Y);
                     serviceInvoke.setRemark("标准");
                 }
                 serviceInvoke.setType(map.get("type"));
                 serviceInvokeService.save(serviceInvoke);
-                if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
+                if (Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())) {
                     consumserList.add(serviceInvoke);
                 }
-                if(Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())){
+                if (Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())) {
                     providerrList.add(serviceInvoke);
                 }
             }
-            for(int i = 0; i < consumserList.size(); i++){
+            for (int i = 0; i < consumserList.size(); i++) {
                 ServiceInvoke consumer = consumserList.get(i);
-                for(int j = 0; j < providerrList.size(); j++){
+                for (int j = 0; j < providerrList.size(); j++) {
                     ServiceInvoke provider = providerrList.get(j);
                     InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
                     interfaceInvoke.setConsumerInvokeId(consumer.getInvokeId());
@@ -244,6 +246,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
         return true;
     }
+
     /**
      * @param req
      * @param serviceId
@@ -259,8 +262,8 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             String[] constrs = consumerStr.split("\\,");
             for (String constr : constrs) {
                 if (constr.contains("__invoke__")) { //判断是否是serviceInvokeID
-                	constr = constr.replace("__invoke__", "");
-                	serviceInvokeService.updateAfterOPAdd(constr,serviceId,operationId,Constants.INVOKE_TYPE_CONSUMER);
+                    constr = constr.replace("__invoke__", "");
+                    serviceInvokeService.updateAfterOPAdd(constr, serviceId, operationId, Constants.INVOKE_TYPE_CONSUMER);
                 } else {//传入参数为systemId
                     ServiceInvoke si = new ServiceInvoke();
                     si.setSystemId(constr);
@@ -275,10 +278,10 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         if (!StringUtils.isEmpty(providerStr)) {
             String[] prostrs = providerStr.split("\\,");
             for (String prostr : prostrs) {
-            	if (prostr.contains("__invoke__")) { //判断是否是serviceInvokeID
-            		prostr = prostr.replace("__invoke__", "");
-                	serviceInvokeService.updateAfterOPAdd(prostr,serviceId,operationId,Constants.INVOKE_TYPE_PROVIDER);
-                }  else {//传入参数为systemId
+                if (prostr.contains("__invoke__")) { //判断是否是serviceInvokeID
+                    prostr = prostr.replace("__invoke__", "");
+                    serviceInvokeService.updateAfterOPAdd(prostr, serviceId, operationId, Constants.INVOKE_TYPE_PROVIDER);
+                } else {//传入参数为systemId
                     ServiceInvoke si = new ServiceInvoke();
                     si.setSystemId(prostr);
                     si.setServiceId(serviceId);
@@ -324,7 +327,6 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     }
 
 
-
     /**
      * add by liwang
      * review and modify by Vincent Fan
@@ -336,7 +338,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         Operation operation = getOperation(serviceId, operationId);
         if (operation != null) {
             //备份操作基本信息
-            if(StringUtils.isNotEmpty(versionDesc)){
+            if (StringUtils.isNotEmpty(versionDesc)) {
                 try {
                     versionDesc = URLDecoder.decode(versionDesc, "utf-8");
                 } catch (UnsupportedEncodingException e) {
@@ -355,21 +357,21 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
     }
 
-    public String auditOperation(String state, String auditRemark, String[] operationIds) throws  Throwable{
+    public String auditOperation(String state, String auditRemark, String[] operationIds) throws Throwable {
         String logParam = "  ";
         if (operationIds != null && operationIds.length > 0) {
             for (int i = 0; i < operationIds.length; i++) {
                 String[] per = operationIds[i].split(",");
                 String operationId = per[0];
                 String serviceId = per[1];
-                Map<String,String> map = new HashMap<String, String>();
+                Map<String, String> map = new HashMap<String, String>();
                 map.put("operationId", operationId);
                 map.put("serviceId", serviceId);
                 Operation ope = operationDAOImpl.findUniqureBy(map);
                 ope.setState(state);
                 save(ope);
                 Version version = ope.getVersion();
-                if(StringUtils.isNotEmpty(auditRemark)){
+                if (StringUtils.isNotEmpty(auditRemark)) {
                     auditRemark = URLDecoder.decode(auditRemark, "utf-8");
                 }
                 version.setRemark(auditRemark);
@@ -377,26 +379,29 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 logParam += "[服务ID:" + serviceId + ", 场景ID:" + operationId + "],";
             }
         }
-        return logParam.substring(0, logParam.length()-2);
+        return logParam.substring(0, logParam.length() - 2);
     }
-    
-    public List<Operation> getReleased(Page page,String serviceId,String serviceName,String operationId,String operationName){
-    	return operationDAOImpl.getReleased(page, serviceId, serviceName, operationId, operationName);
+
+    public List<Operation> getReleased(Page page, String serviceId, String serviceName, String operationId, String operationName) {
+        return operationDAOImpl.getReleased(page, serviceId, serviceName, operationId, operationName);
     }
-    public boolean judgeByMetadataId(String metadataId){
+
+    public boolean judgeByMetadataId(String metadataId) {
         //查找场景列表
         long count = operationDAOImpl.getByMetadataIdCount(metadataId);
-        if(count > 0){
+        if (count > 0) {
             return true;
         }
         return false;
     }
+
     /**
      * TODO 根据metadataId查询operation树
+     *
      * @param metadataId
      * @return
      */
-    public List<TreeNode> getTreeByMetadataId(String metadataId){
+    public List<TreeNode> getTreeByMetadataId(String metadataId) {
         //查找场景列表
         List<Operation> opList = operationDAOImpl.getByMetadataId(metadataId);
         List<TreeNode> tree = genderTree(opList);
@@ -406,13 +411,14 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     /**
      * TODO 根据场景列表组装服务场景树
+     *
      * @param opList
      * @return
      */
-    public List<TreeNode> genderTree(List<Operation> opList){
+    public List<TreeNode> genderTree(List<Operation> opList) {
         List<TreeNode> tree = new ArrayList<TreeNode>();
 
-        for( int i = 0; i < opList.size(); i++){
+        for (int i = 0; i < opList.size(); i++) {
             Operation operation = opList.get(i);
             //场景名称=operationName + （serviceId：operationId）
             String text = operation.getOperationName() + "(" + operation.getServiceId() + ":" + operation.getOperationId() + ")";
@@ -440,25 +446,26 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             ServiceCategory sc3 = scDao.findUniqueBy("categoryId", service.getCategoryId());
             TreeNode scNode3 = EasyUiTreeUtil.getInstance().convertTreeNode(sc3, scFields);
 
-            ServiceCategory sc2 =  scDao.findUniqueBy("categoryId", sc3.getParentId());;
+            ServiceCategory sc2 = scDao.findUniqueBy("categoryId", sc3.getParentId());
+            ;
             TreeNode scNode2 = EasyUiTreeUtil.getInstance().convertTreeNode(sc2, scFields);
 
-            ServiceCategory sc1=  scDao.findUniqueBy("categoryId", sc2.getParentId());
+            ServiceCategory sc1 = scDao.findUniqueBy("categoryId", sc2.getParentId());
             TreeNode scNode1 = EasyUiTreeUtil.getInstance().convertTreeNode(sc1, scFields);
 
             opNode.setParentId(serviceNode.getId());//operation的父节点为service
             serviceNode.setParentId(scNode3.getId());//service的父节点为三级分类
             tree.add(opNode);
-            if(!tree.contains(serviceNode)){
+            if (!tree.contains(serviceNode)) {
                 tree.add(serviceNode);
             }
-            if(!tree.contains(scNode3)){
+            if (!tree.contains(scNode3)) {
                 tree.add(scNode3);
             }
-            if(!tree.contains(scNode2)){
+            if (!tree.contains(scNode2)) {
                 tree.add(scNode2);
             }
-            if(!tree.contains(scNode1)){
+            if (!tree.contains(scNode1)) {
                 tree.add(scNode1);
             }
         }
@@ -468,19 +475,20 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     /**
      * 删除场景要删除service_invoke  SDA
+     *
      * @param list
      * @return
      */
-    public boolean deleteList(List<Operation> list){
-        for (Operation per : list){
-            serviceInvokeService.deleteByOperationId(per.getOperationId(),per.getServiceId());
+    public boolean deleteList(List<Operation> list) {
+        for (Operation per : list) {
+            serviceInvokeService.deleteByOperationId(per.getOperationId(), per.getServiceId());
             sdaService.deleteByOperationId(per.getOperationId(), per.getServiceId());
             delete(per);
         }
         return true;
     }
 
-    public String genderQueryHql(Map<String, String[]> values) throws  Throwable{
+    public String genderQueryHql(Map<String, String[]> values) throws Throwable {
         String hql = "";
         if (values != null && values.size() > 0) {
             for (String key : values.keySet()) {
@@ -529,7 +537,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                 if (key.equals("providerId") && values.get(key) != null && values.get(key).length > 0) {
                     if (StringUtils.isNotEmpty(values.get(key)[0])) {
                         hql += " and ii.provider.systemId like '%" + values.get(key)[0] + "%' ";
-                        hql += " and ii.provider.type like '%" +Constants.INVOKE_TYPE_PROVIDER + "%' ";
+                        hql += " and ii.provider.type like '%" + Constants.INVOKE_TYPE_PROVIDER + "%' ";
 
                     }
                 }
@@ -537,7 +545,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     if (StringUtils.isNotEmpty(values.get(key)[0])) {
                         if (StringUtils.isNotEmpty(values.get(key)[0])) {
                             hql += " and ii.consumer.systemId like '%" + values.get(key)[0] + "%' ";
-                            hql += " and ii.consumer.type like '%" +Constants.INVOKE_TYPE_CONSUMER+ "%' ";
+                            hql += " and ii.consumer.type like '%" + Constants.INVOKE_TYPE_CONSUMER + "%' ";
 
                         }
                     }
@@ -547,31 +555,33 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         }
         return hql;
     }
-    public long queryCount(Map<String, String[]> values) throws  Throwable{
-        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ";
-        if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
-                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) ) ){
+
+    public long queryCount(Map<String, String[]> values) throws Throwable {
+        String hql = "select a.serviceId, a.operationId from " + Operation.class.getName() + " as a ";
+        if ((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
+                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]))) {
             hql = hql + ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ";
-        }else{
+        } else {
             hql += " where 1=1 ";
         }
         hql += genderQueryHql(values);
         hql += " group by a.serviceId, a.operationId";
         return operationDAOImpl.find(hql).size();
     }
-    public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page) throws  Throwable{
-        StringBuffer hql = new StringBuffer("select a.serviceId, a.operationId from " + Operation.class.getName() +" as a ");
-        if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
-                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) ) ){
-            hql.append( ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ");
-        }else{
+
+    public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page) throws Throwable {
+        StringBuffer hql = new StringBuffer("select a.serviceId, a.operationId from " + Operation.class.getName() + " as a ");
+        if ((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
+                || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]))) {
+            hql.append(", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId ");
+        } else {
             hql.append(" where 1=1 ");
         }
         hql.append(genderQueryHql(values));
         hql.append("  group by a.serviceId, a.operationId order by a.serviceId, a.operationId");
-        List<Object[]> strsArray =  operationDAOImpl.findBy(hql.toString(), page, new ArrayList<SearchCondition>());
-        List<OperationExpVO> voList =  new ArrayList<OperationExpVO>();
-        for(Object[] strs : strsArray){
+        List<Object[]> strsArray = operationDAOImpl.findBy(hql.toString(), page, new ArrayList<SearchCondition>());
+        List<OperationExpVO> voList = new ArrayList<OperationExpVO>();
+        for (Object[] strs : strsArray) {
             Operation operation = getOperation(String.valueOf(strs[0]), String.valueOf(strs[1]));
             OperationExpVO vo = new OperationExpVO(operation);
             List<ServiceInvoke> consumerList = serviceInvokeService.getByOperationAndType(operation, Constants.INVOKE_TYPE_CONSUMER);
@@ -582,7 +592,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             String providers = getSystemNames(providerList);
             vo.setProviders(providers);
 
-            if(operation.getVersion() != null){
+            if (operation.getVersion() != null) {
                 vo.setVersion(operation.getVersion().getCode());
             }
             voList.add(vo);
@@ -590,15 +600,15 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return voList;
     }
 
-    public String getSystemNames(List<ServiceInvoke> serviceInvokes){
+    public String getSystemNames(List<ServiceInvoke> serviceInvokes) {
         String consumer = "";
         List<String> temp = new ArrayList<String>();
-        for(int i = 0; i < serviceInvokes.size(); i++){
+        for (int i = 0; i < serviceInvokes.size(); i++) {
             ServiceInvoke si = serviceInvokes.get(i);
-            if(si.getSystem() != null){
-                if(!temp.contains(si.getSystem().getSystemId())){
+            if (si.getSystem() != null) {
+                if (!temp.contains(si.getSystem().getSystemId())) {
                     temp.add(si.getSystem().getSystemId());
-                    if(i != 0){
+                    if (i != 0) {
                         consumer += ", ";
                     }
                     consumer += si.getSystem().getSystemChineseName();
@@ -609,61 +619,61 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return consumer;
     }
 
-    public List<OperationBean> findOperationBy(String serviceId){
+    public List<OperationBean> findOperationBy(String serviceId) {
         List<Operation> rows = findBy("serviceId", serviceId);
         List<OperationBean> operList = new ArrayList<OperationBean>();
-        for(Operation operation : rows){
-            Map<String,String> map = new HashMap<String, String>();
-            map.put("serviceId",operation.getServiceId());
-            map.put("operationId",operation.getOperationId());
+        for (Operation operation : rows) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("serviceId", operation.getServiceId());
+            map.put("operationId", operation.getOperationId());
             List<ServiceInvoke> list = serviceInvokeService.findBy(map);
             String providerSystems = "";
             String consumerSystems = "";
-            for(ServiceInvoke per : list){
+            for (ServiceInvoke per : list) {
                 String type = per.getType();
-                if(Constants.INVOKE_TYPE_PROVIDER.equals(type)){//提供方
+                if (Constants.INVOKE_TYPE_PROVIDER.equals(type)) {//提供方
                     String systemAb = per.getSystem().getSystemAb();
-                    if("".equals(providerSystems)){
+                    if ("".equals(providerSystems)) {
                         providerSystems = systemAb;
-                    }else{
-                        providerSystems += ","+systemAb;
+                    } else {
+                        providerSystems += "," + systemAb;
                     }
                 }
-                if(Constants.INVOKE_TYPE_CONSUMER.equals(type)){//调用方
+                if (Constants.INVOKE_TYPE_CONSUMER.equals(type)) {//调用方
                     String systemAb = per.getSystem().getSystemAb();
-                    if("".equals(consumerSystems)){
+                    if ("".equals(consumerSystems)) {
                         consumerSystems = systemAb;
-                    }else{
-                        consumerSystems += ","+systemAb;
+                    } else {
+                        consumerSystems += "," + systemAb;
                     }
                 }
             }
 
-            operList.add(new OperationBean(operation,providerSystems,consumerSystems));
+            operList.add(new OperationBean(operation, providerSystems, consumerSystems));
         }
         return operList;
     }
 
-    public boolean judgeCanRevise(Operation operation){
+    public boolean judgeCanRevise(Operation operation) {
         //审核通过，审核不通过，已上线，已发布,已废弃 可以变为修订状态
         String state = operation.getState();
-        if(state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.OPT_STATE_UNPASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED)
-                || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE ) || state.equals(Constants.Operation.OPT_STATE_ABANDONED)){
+        if (state.equals(Constants.Operation.OPT_STATE_PASS) || state.equals(Constants.Operation.OPT_STATE_UNPASS) || state.equals(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED)
+                || state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE) || state.equals(Constants.Operation.OPT_STATE_ABANDONED)) {
             return true;
         }
         return false;
     }
 
-    public boolean judgeCanQuit(Operation operation){
+    public boolean judgeCanQuit(Operation operation) {
         //已上线 可以变为下线状态
         String state = operation.getState();
-        if(state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)){
+        if (state.equals(Constants.Operation.LIFE_CYCLE_STATE_ONLINE)) {
             return true;
         }
         return false;
     }
 
-    public List<ConfigVO> getConfigVo(List list){
+    public List<ConfigVO> getConfigVo(List list) {
         List<ConfigVO> result = new ArrayList<ConfigVO>();
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
@@ -674,32 +684,32 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             params.put("operationId", operationId);
             Operation operation = operationDAOImpl.findUniqureBy(params);
 
-            if(operation != null){
+            if (operation != null) {
                 List<InterfaceInvoke> iiList = interfaceInvokeDAO.getByOperation(operation.getServiceId(), operation.getOperationId());
-                for(InterfaceInvoke ii : iiList){
+                for (InterfaceInvoke ii : iiList) {
                     ConfigVO configVO = new ConfigVO();
                     configVO.setServiceId(operation.getServiceId());
                     configVO.setOperationId(operation.getOperationId());
                     configVO.setOperationName(operation.getOperationName());
-                    if(ii != null){
+                    if (ii != null) {
                         ServiceInvoke siPro = ii.getProvider();
-                        if(siPro != null){
-                            if(siPro.getSystem() != null){
+                        if (siPro != null) {
+                            if (siPro.getSystem() != null) {
                                 configVO.setProviderServiceInvokeId(siPro.getInvokeId());
                                 configVO.setProviderName(siPro.getSystem().getSystemChineseName());
                                 Interface inter = siPro.getInter();
-                                if(null != inter){
+                                if (null != inter) {
                                     configVO.setProInterfaceName(inter.getInterfaceName());
                                 }
                             }
                         }
                         ServiceInvoke siCon = ii.getConsumer();
-                        if(siCon != null){
-                            if(siCon.getSystem() != null){
+                        if (siCon != null) {
+                            if (siCon.getSystem() != null) {
                                 configVO.setConsumerServiceInvokeId(siCon.getInvokeId());
                                 configVO.setConsumerName(siCon.getSystem().getSystemChineseName());
                                 Interface inter = siCon.getInter();
-                                if(null != inter){
+                                if (null != inter) {
                                     configVO.setConInterfaceName(inter.getInterfaceName());
                                 }
                             }
@@ -707,11 +717,11 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                     }
                     configVO.setConIsStandard("0"); //0; 标准， 1：非标
                     configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
-                    configVO.setConGeneratorName("XML标准拆组包生成器");
+                    configVO.setConGeneratorName("standardXml");
 
                     configVO.setProIsStandard("0"); //0; 标准， 1：非标
                     configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
-                    configVO.setProGeneratorName("XML标准拆组包生成器");
+                    configVO.setProGeneratorName("standardXml");
                     result.add(configVO);
                 }
 
@@ -723,7 +733,85 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     }
 
-    public static class OperationBean{
+    public List<ConfigVO> getProviderConfigVo(List list) {
+        Map<String, String> unimap = new HashMap<String, String>();
+        List<ConfigVO> result = new ArrayList<ConfigVO>();
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("serviceId", serviceId);
+            params.put("operationId", operationId);
+            Operation operation = operationDAOImpl.findUniqureBy(params);
+            if (operation != null) {
+                List<ServiceInvoke> providerInvokes = serviceInvokeService.getByOperationAndType(operation, "0");
+                for (ServiceInvoke providerInvoke : providerInvokes) {
+                    if(!unimap.containsKey(providerInvoke.getSystemId())){
+                        ConfigVO configVO = new ConfigVO();
+                        configVO.setOperationId(operationId);
+                        configVO.setServiceId(serviceId);
+                        configVO.setOperationName(operation.getOperationName());
+                        configVO.setProviderServiceInvokeId(providerInvoke.getInvokeId());
+                        configVO.setProviderName(providerInvoke.getSystem().getSystemAb());
+                        configVO.setProIsStandard("0"); //0; 标准， 1：非标
+                        configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                        configVO.setProGeneratorName("standardXml");
+                        Interface inter = providerInvoke.getInter();
+                        if (null != inter) {
+                            configVO.setProInterfaceName(inter.getInterfaceName());
+                        }
+                        result.add(configVO);
+                        unimap.put(providerInvoke.getSystemId(), "");
+                    }
+
+                }
+            }
+
+
+        }
+        return result;
+    }
+
+    public List<ConfigVO> getConsumerConfigVo(List list) {
+        Map<String, String> unimap = new HashMap<String, String>();
+        List<ConfigVO> result = new ArrayList<ConfigVO>();
+        for (int i = 0; i < list.size(); i++) {
+            LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
+            String serviceId = map.get("serviceId").toString();
+            String operationId = map.get("operationId").toString();
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("serviceId", serviceId);
+            params.put("operationId", operationId);
+            Operation operation = operationDAOImpl.findUniqureBy(params);
+            if (operation != null) {
+                List<ServiceInvoke> consumerInvokes = serviceInvokeService.getByOperationAndType(operation, "1");
+                for (ServiceInvoke consumerInvoke : consumerInvokes) {
+                    if(!unimap.containsKey(consumerInvoke.getSystemId())){
+                        ConfigVO configVO = new ConfigVO();
+                        configVO.setOperationId(operationId);
+                        configVO.setServiceId(serviceId);
+                        configVO.setOperationName(operation.getOperationName());
+                        configVO.setConsumerServiceInvokeId(consumerInvoke.getInvokeId());
+                        configVO.setConsumerName(consumerInvoke.getSystem().getSystemAb());
+                        configVO.setConIsStandard("0"); //0; 标准， 1：非标
+                        configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                        configVO.setConGeneratorName("standardXml");
+                        Interface inter = consumerInvoke.getInter();
+                        if (null != inter) {
+                            configVO.setConInterfaceName(inter.getInterfaceName());
+                        }
+                        result.add(configVO);
+                        unimap.put(consumerInvoke.getSystemId(), "");
+                    }
+
+                }
+            }
+        }
+        return result;
+    }
+
+    public static class OperationBean {
         private String operationId;
 
         private String serviceId;
@@ -751,7 +839,7 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
         private String consumerSystems;
 
-        public OperationBean(Operation operation, String providerSystems, String consumerSystems){
+        public OperationBean(Operation operation, String providerSystems, String consumerSystems) {
             setOperationId(operation.getOperationId());
             setServiceId(operation.getServiceId());
             setOperationName(operation.getOperationName());
@@ -884,10 +972,11 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
     /**
      * TODO 根据metadataId查询operation树
+     *
      * @param interfaceId
      * @return
      */
-    public List<TreeNode> getByInterfaceId(String interfaceId){
+    public List<TreeNode> getByInterfaceId(String interfaceId) {
         //查找场景列表
         String hql = "select o from Operation o, ServiceInvoke si where o.serviceId = si.serviceId and o.operationId = si.operationId and si.interfaceId = ?";
         List<Operation> opList = operationDAOImpl.find(hql, interfaceId);

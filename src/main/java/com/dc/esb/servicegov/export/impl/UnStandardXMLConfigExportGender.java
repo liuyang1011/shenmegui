@@ -1,23 +1,16 @@
 package com.dc.esb.servicegov.export.impl;
 
 import com.dc.esb.servicegov.entity.*;
-import com.dc.esb.servicegov.service.impl.IdaServiceImpl;
-import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
+import com.dc.esb.servicegov.service.impl.IdaAttrbuteServiceImpl;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
-import org.jboss.el.lang.ELArithmetic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +22,9 @@ import java.util.Map;
 public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
     private Log log = LogFactory.getLog(UnStandardXMLConfigExportGender.class);
 
+    @Autowired
+    private IdaAttrbuteServiceImpl idaAttrbuteService;
+
     @Override
     public void  generateRequest(ServiceInvoke serviceInvoke, String path){
         try {
@@ -37,7 +33,7 @@ public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
                 String serviceId = serviceInvoke.getServiceId();
                 String operationId = serviceInvoke.getOperationId();
 
-                String fileName = getReqFilePath(serviceInvoke, path);
+                String fileName = this.getReqFilePath(serviceInvoke, path);
 
                 Document doc = DocumentHelper.createDocument();
                 Element serviceElement = doc.addElement("service");//根节点
@@ -63,7 +59,7 @@ public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
                 String serviceId = serviceInvoke.getServiceId();
                 String operationId = serviceInvoke.getOperationId();
 
-                String fileName = getResFilePath(serviceInvoke, path);
+                String fileName = this.getResFilePath(serviceInvoke, path);
 
                 Document doc = DocumentHelper.createDocument();
                 Element serviceElement = doc.addElement("service");//根节点
@@ -101,9 +97,26 @@ public class UnStandardXMLConfigExportGender extends ConfigExportGenerator{
         params.put("xpath", ida.getXpath());
         SDA sda = sdaService.findUniqueBy(params);
         if(null != sda){
-            addAttribute(idaElement, "metadataId", sda.getMetadataId());
+            addAttribute(idaElement, "metadataid", sda.getMetadataId());
         }
-        addAttribute(idaElement, "chinese_name", ida.getStructAlias());;
+        String type = ida.getType();
+        if("array".equalsIgnoreCase(type)){
+            addAttribute(idaElement, "type", "array");
+            addAttribute(idaElement, "is_struct", "false");
+        }
+        String idaId = ida.getId();
+        List<IdaAttribute> idaAttributes =idaAttrbuteService.findBy("idaId", idaId);
+        for(IdaAttribute idaAttribute: idaAttributes){
+            String expressionType = idaAttribute.getType();
+            addAttribute(idaElement,"isSdoHeader", "true");
+            if("0".equalsIgnoreCase(expressionType)){
+                addAttribute(idaElement, "expression", "'" + idaAttribute.getValue() + "'" );
+            }else{
+                addAttribute(idaElement, "expression", idaAttribute.getValue());
+            }
+        }
+
+        addAttribute(idaElement, "chinese_name", ida.getStructAlias());
         return idaElement;
 
 

@@ -35,7 +35,27 @@ public class ConfigExportGenerator {
     InterfaceHeadRelateServiceImpl interfaceHeadRelateService;
     @Autowired
     IdaServiceImpl idaService;
+
+    private String name;
+
+    private String version="";
+
     public void generate(ServiceInvoke serviceInvoke, String path){
+        if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
+            //生成文件路径
+            path = path + File.separator + "in_config";
+        }
+        if(Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())){
+            path = path + File.separator + "out_config";
+        }
+        generateRequest(serviceInvoke, path);
+        genrateServiceFile(serviceInvoke, path);
+        generateResponse(serviceInvoke, path);
+    }
+
+    public void generate(ServiceInvoke serviceInvoke, String path, String autoVersionId){
+
+
         if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
             //生成文件路径
             path = path + File.separator + "in_config";
@@ -55,12 +75,18 @@ public class ConfigExportGenerator {
     public void  generateRequest(ServiceInvoke serviceInvoke, String path){
     }
 
+    public void  generateRequest(ServiceInvoke serviceInvoke, String path, String versionAutoId){
+    }
+
+
     /**
      * 生成esb响应文件
      * @param serviceInvoke
      * @param path
      */
     public void  generateResponse(ServiceInvoke serviceInvoke, String path){
+    }
+    public void  generateResponse(ServiceInvoke serviceInvoke, String path, String versionAutoId){
     }
 
     /**
@@ -75,7 +101,7 @@ public class ConfigExportGenerator {
             String operationId = serviceInvoke.getOperationId();
             Operation operation = operationService.getOperation(serviceId, operationId);
             com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
-            String fileName = path + File.separator + "service_" + serviceId + operationId + ".xml";
+            String fileName = path + File.separator + "service_" + serviceId + operationId +getVersion() +".xml";
 
             Document doc = DocumentHelper.createDocument();
             Element rootElement = doc.addElement("S" + serviceId + operationId);//根节点
@@ -190,21 +216,28 @@ public class ConfigExportGenerator {
             }
         }
     }
-    public static String getReqFilePath(ServiceInvoke serviceInvoke, String path){
+    public String getReqFilePath(ServiceInvoke serviceInvoke, String path){
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
         com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
 
-        String fileName = path + File.separator + "channel_" + system.getSystemAb() + "_service_" + serviceId + operationId + ".xml";
-        return  fileName;
+        String fileName = path + File.separator + "cons_" + serviceId + operationId + getVersion() + "_from_" + getName() + ".xml";
+        if(path.endsWith("out_config")){
+            fileName = path + File.separator + "prvd_" + serviceId + operationId + getVersion() + "_to_" + getName() + ".xml";
+        }
+        return fileName;
     }
 
-    public static String getResFilePath(ServiceInvoke serviceInvoke, String path){
+    public String getResFilePath(ServiceInvoke serviceInvoke, String path){
+
         String serviceId = serviceInvoke.getServiceId();
         String operationId = serviceInvoke.getOperationId();
         com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
 
-        String fileName = path + File.separator + "service_" + serviceId + operationId + "_system_" + system.getSystemAb() + ".xml";
+        String fileName = path + File.separator + "cons_" + serviceId + operationId + getVersion() + "_to_" + getName()+ ".xml";
+        if(path.endsWith("out_config")){
+            fileName = path + File.separator + "prvd_" + serviceId + operationId + getVersion() + "_from_" + getName()+ ".xml";
+        }
         return  fileName;
     }
 
@@ -223,5 +256,21 @@ public class ConfigExportGenerator {
         } catch (IOException e) {
             log.error(e, e);
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }
