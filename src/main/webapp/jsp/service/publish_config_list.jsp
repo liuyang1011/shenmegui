@@ -31,7 +31,7 @@
            onclick="exportBath()">导出配置文件</a>
         （默认导出标准XML配置，鼠标右键选择其他选项)&nbsp;&nbsp;&nbsp;
         <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-excel-export" plain="true"
-           onclick="tranToEsb()">发布到ESB</a>
+           onclick="tranToEsb()">发布到ESC</a>
         <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-config" plain="true"
            onclick="tranConfig()">发布选项</a>
     </div>
