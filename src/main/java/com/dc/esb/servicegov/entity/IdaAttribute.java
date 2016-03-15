@@ -16,8 +16,12 @@ public class IdaAttribute implements Serializable {
     private String id;
     @Column(name = "type")
     private String type;//固定值0:，表达式:1
+    @Column(name = "name")
+    private String name;//属性名称，如果是表达式属性名称为expression
     @Column(name = "value")
     private String value;
+    @Column(name = "remarks")
+    private String remarks;
     @Column(name = "ida_id")
     private String idaId;
 
@@ -51,5 +55,21 @@ public class IdaAttribute implements Serializable {
 
     public void setIdaId(String idaId) {
         this.idaId = idaId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

@@ -34,6 +34,7 @@ public class MappingImportIndexRowVO {
     private String operationState;//场景状态
     private String isStandard;//是否标准
     private String remark;//备注
+    private String publicBody;//公共体
 
     public MappingImportIndexRowVO(){}
 
@@ -80,6 +81,7 @@ public class MappingImportIndexRowVO {
 
         }
         this.remark = getCell(row, headRowVO.remarkIndex);
+        this.publicBody = getCell(row, headRowVO.publicBodyIndex);
     }
 
 
@@ -288,5 +290,13 @@ public class MappingImportIndexRowVO {
 
     public void setIndexNum(int indexNum) {
         this.indexNum = indexNum;
+    }
+
+    public String getPublicBody() {
+        return publicBody;
+    }
+
+    public void setPublicBody(String publicBody) {
+        this.publicBody = publicBody;
     }
 }

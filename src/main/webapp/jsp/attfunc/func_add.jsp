@@ -28,23 +28,6 @@
 <form class="formui" id="addForm" action="/attFunction/save" method="post">
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-        <th>类型</th>
-        <td> <input type="text" id="type"
-                    name="type"
-                    class="easyui-combobox"
-                    required="true"
-                    data-options="
-                 textField:'text',
-                 valueField:'id',
-                 value:'1',
-                 data:[
-                    {'id':'0','text':'固定值'},
-                    {'id':'1','text':'表达式'}
-                 ]
-                 "/>
-        </td>
-    </tr>
-        <tr>
             <th>中文名称</th>
             <td><input name="name" class="easyui-textbox" type="text" id="name" required="true"/>
             </td>

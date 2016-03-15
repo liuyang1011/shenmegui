@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.dao.impl.AttFunctionDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
+import com.dc.esb.servicegov.entity.AttFuncParam;
 import com.dc.esb.servicegov.entity.AttFunction;
 import com.dc.esb.servicegov.entity.CategoryWord;
 import com.dc.esb.servicegov.entity.Metadata;
@@ -28,82 +29,36 @@ import java.util.Map;
 @Transactional
 public class AttFunctionServiceImpl extends AbstractBaseService<AttFunction, String> {
     private static final Log log = LogFactory.getLog(AttFunctionServiceImpl.class);
-            @Autowired
-                    AttFunctionDAOImpl attFunctionDAO;
+    @Autowired
+    AttFunctionDAOImpl attFunctionDAO;
 
     @Override
     public HibernateDAO<AttFunction, String> getDAO() {
         return attFunctionDAO;
     }
 
-    public String genderHql(Map<String, String[]> values){
+    public String genderHql(Map<String, String[]> values) {
         String hql = "";
-        if(values != null && values.size() > 0){
-            for(String key:values.keySet()){
-                if(key.equals("metadataName") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and upper(a.metadataName) like upper('%" + values.get(key)[0] + "%') ";
-                    }
-                }
-                if(key.equals("chineseName") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
+        if (values != null && values.size() > 0) {
+            for (String key : values.keySet()) {
+                if (key.equals("name") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
                         try {
-                            hql += " and a.chineseName like '%" + URLDecoder.decode(values.get(key)[0], "utf-8") + "%' ";
-                        }catch (UnsupportedEncodingException e) {
-                            log.error(e,e);
+                            hql += " and a.name like '%" + URLDecoder.decode(values.get(key)[0], "utf-8") + "%' ";
+                        } catch (UnsupportedEncodingException e) {
+                            log.error(e, e);
                             log.error("中文名称转码错误！");
                         }
                     }
                 }
-                if(key.equals("metadataId") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and upper(a.metadataId) like upper('%" + values.get(key)[0] + "%') ";
+                if (key.equals("funcName") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and upper(a.funcName) like upper('%" + values.get(key)[0] + "%') ";
                     }
                 }
-                if(key.equals("metadataAlias") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.metadataAlias like '%" + values.get(key)[0] + "%' ";
-                    }
-                }
-                if(key.equals("status") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.status like '%" + values.get(key)[0] + "%' ";
-                    }
-                }
-                if(key.equals("version") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.version like '%" + values.get(key)[0] + "%' ";
-                    }
-                }
-                if(key.equals("optUser") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.optUser like '%" + values.get(key)[0] + "%' ";
-                    }
-                }
-                if(key.equals("startDate") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.optDate >'" + values.get(key)[0] + "' ";
-                    }
-                }
-                if(key.equals("endDate") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.optDate <'" + values.get(key)[0] + " 23:59:59' ";
-                    }
-                }
-
-                if(key.equals("categoryWordId") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        hql += " and a.categoryWordId ='" + values.get(key)[0] + "' ";
-                    }
-                }
-                if(key.equals("dataCategory") && values.get(key) != null && values.get(key).length > 0 ){
-                    if(StringUtils.isNotEmpty(values.get(key)[0])){
-                        try {
-                            hql += " and a.dataCategory like '%" + URLDecoder.decode(values.get(key)[0], "utf-8") + "%' ";
-                        }catch (UnsupportedEncodingException e) {
-                            log.error(e,e);
-                            log.error("数据项分类转码错误！");
-                        }
+                if (key.equals("des") && values.get(key) != null && values.get(key).length > 0) {
+                    if (StringUtils.isNotEmpty(values.get(key)[0])) {
+                        hql += " and a.des like '%" + values.get(key)[0] + "%' ";
                     }
                 }
             }
@@ -111,20 +66,41 @@ public class AttFunctionServiceImpl extends AbstractBaseService<AttFunction, Str
         return hql;
     }
 
-    public long queryCount(Map<String, String[]> values){
+    public long queryCount(Map<String, String[]> values) {
         String hql = "select count(*) from AttFunction a where 1=1 ";
         hql += genderHql(values);
-        return (Long)attFunctionDAO.findUnique(hql);
+        return (Long) attFunctionDAO.findUnique(hql);
     }
+
     //关联categoryWord表，显示chineseWord
-    public List<AttFunction> queryByCondition(Map<String, String[]> values, Page page){
+    public List<AttFunction> queryByCondition(Map<String, String[]> values, Page page) {
 //        String hql = "select a,b.chineseWord from Metadata a, CategoryWord b where 1=1 and a.categoryWordId=b.englishWord ";
         String hql = "from AttFunction a where 1=1 ";
         hql += genderHql(values);
         hql += " order by a.id";
         List<AttFunction> list = attFunctionDAO.findBy(hql, page);
-        for(AttFunction attFunction : list){
-
+        for (AttFunction attFunction : list) {
+            String hql2 = " from AttFuncParam where funcId = ? order by seq asc";
+            List<AttFuncParam> params = attFunctionDAO.findFree(hql2, attFunction.getId());
+            String paramStr = "";
+            String paramNameStr = "";
+            if (null != params && 0 < params.size()) {
+                for (int i = 0; i < params.size(); i++) {
+                    AttFuncParam param = params.get(i);
+                    if (i != 0) {
+                        paramNameStr += "," + param.getName();
+                        paramStr += "," + param.getDefaultValue();
+                    } else {
+                        paramNameStr += param.getName();
+                        paramStr += param.getDefaultValue();
+                    }
+                }
+                paramStr = attFunction.getFuncName() + "(" + paramStr + ")";
+            }else{
+                paramStr = attFunction.getFuncName() + "()";
+            }
+            attFunction.setParams(paramStr);
+            attFunction.setParamNames(paramNameStr);
         }
         return list;
     }

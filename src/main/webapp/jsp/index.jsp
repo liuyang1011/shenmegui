@@ -44,6 +44,7 @@
                 <li><a href="javascript:;" mid="14">服务检索</a></li>
                 </shiro:hasPermission>
                 <%--<li><a href="javascript:;" mid="17">服务识别</a></li>--%>
+                <li><a href="javascript:;" mid="18">调用地址查询</a></li>
             </ul>
         </li>
         <li>

@@ -59,6 +59,7 @@
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
+    <shiro:lacksRole name="游客">
         <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
             <ul>
                 <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
@@ -68,6 +69,7 @@
                 <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
             </ul>
         </li>
+    </shiro:lacksRole>
 </ul>
 <%
     }
@@ -287,6 +289,32 @@
     }
 
 </script>
+
+<%
+    }
+    if (mid.equals("18")) {
+%>
+<div class="tree-filter">
+    <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
+
+</div>
+<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%"
+    data-options="url:'/service/getTree',method:'get',animate:true"></ul>
+<script>
+    var title = "调用地址查询";
+    var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="/jsp/service/ip_search.jsp" style="width:100%;height:98%;"></iframe>';
+    if ($('#mainContentTabs').tabs('exists',title)) {
+        $('#mainContentTabs').tabs('select',title);
+    }else{
+        $('#mainContentTabs').tabs('add', {
+            title: title,
+            content: content,
+            closable: true
+        });
+    }
+
+</script>
+
 <%
     }
 %>

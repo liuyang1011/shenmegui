@@ -1,9 +1,6 @@
 package com.dc.esb.servicegov.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -36,7 +33,10 @@ public class AttFunction implements Serializable{
     @Column(name="OPT_DATE")
     private String optDate;
 
-    private String params;//参数
+    @Transient
+    private String params;//参数默认值
+    @Transient
+    private String paramNames;//参数名称
 
     public String getId() {
         return id;
@@ -116,5 +116,13 @@ public class AttFunction implements Serializable{
 
     public void setParams(String params) {
         this.params = params;
+    }
+
+    public String getParamNames() {
+        return paramNames;
+    }
+
+    public void setParamNames(String paramNames) {
+        this.paramNames = paramNames;
     }
 }

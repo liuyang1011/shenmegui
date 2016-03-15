@@ -8,41 +8,15 @@ import com.dc.esb.servicegov.entity.Operation;
 public class IpExpVO {
     private String serviceId;
     private String serviceName;
-    private String serviceDesc;
     private String operationId;
     private String operationName;
-    private String operationDesc;
-    private String consumers;
-    private String providers;
-    private String version;
-    private String versionRemark;
-    private String optDate;
-    private String optUser;
-    private String optState;
+    private String consumer;
+    private String consumerAb;
+    private String conIp;
+    private String provider;
+    private String providerAb;
+    private String proIp;
     public IpExpVO(){}
-    public IpExpVO(Operation o) {
-        this.serviceId = o.getServiceId();
-        this.serviceName = o.getService().getServiceName();
-        this.serviceDesc = o.getService().getDesc();
-        this.operationId = o.getOperationId();
-        this.operationName = o.getOperationName();
-        this.operationDesc = o.getOperationDesc();
-        if(o.getVersion() != null){
-            this.version = o.getVersion().getCode();
-            this.versionRemark = o.getVersion().getRemark();
-        }
-        this.optDate = o.getOptDate();
-        this.optUser = o.getOptUser();
-        this.optState = o.getState();
-    }
-
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
 
     public String getServiceName() {
         return serviceName;
@@ -68,75 +42,60 @@ public class IpExpVO {
         this.operationName = operationName;
     }
 
-    public String getOperationDesc() {
-        return operationDesc;
+    public String getConsumer() {
+        return consumer;
     }
 
-    public void setOperationDesc(String operationDesc) {
-        this.operationDesc = operationDesc;
+    public void setConsumer(String consumer) {
+        this.consumer = consumer;
     }
 
-    public String getConsumers() {
-        return consumers;
+
+    public String getProvider() {
+        return provider;
     }
 
-    public void setConsumers(String consumers) {
-        this.consumers = consumers;
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
-    public String getProviders() {
-        return providers;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public void setProviders(String providers) {
-        this.providers = providers;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getVersion() {
-        return version;
+    public String getConIp() {
+        return conIp;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setConIp(String conIp) {
+        this.conIp = conIp;
     }
 
-    public String getOptDate() {
-        return optDate;
+    public String getProIp() {
+        return proIp;
     }
 
-    public void setOptDate(String optDate) {
-        this.optDate = optDate;
+    public void setProIp(String proIp) {
+        this.proIp = proIp;
     }
 
-    public String getOptUser() {
-        return optUser;
+    public String getConsumerAb() {
+        return consumerAb;
     }
 
-    public void setOptUser(String optUser) {
-        this.optUser = optUser;
+    public void setConsumerAb(String consumerAb) {
+        this.consumerAb = consumerAb;
     }
 
-    public String getOptState() {
-        return optState;
+    public String getProviderAb() {
+        return providerAb;
     }
 
-    public void setOptState(String optState) {
-        this.optState = optState;
-    }
-
-    public String getServiceDesc() {
-        return serviceDesc;
-    }
-
-    public void setServiceDesc(String serviceDesc) {
-        this.serviceDesc = serviceDesc;
-    }
-
-    public String getVersionRemark() {
-        return versionRemark;
-    }
-
-    public void setVersionRemark(String versionRemark) {
-        this.versionRemark = versionRemark;
+    public void setProviderAb(String providerAb) {
+        this.providerAb = providerAb;
     }
 }

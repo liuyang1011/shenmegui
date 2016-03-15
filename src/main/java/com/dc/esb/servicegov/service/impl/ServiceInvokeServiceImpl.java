@@ -95,7 +95,7 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 			delete(serviceInvoke);
 		}
 	}
-	public List<?> findJsonBySO(String serviceId, String operationId){
+	public List<ServiceInvokeJson> findJsonBySO(String serviceId, String operationId){
 		return serviceInvokeDAOImpl.findJsonBySO(serviceId, operationId);
 	}
 

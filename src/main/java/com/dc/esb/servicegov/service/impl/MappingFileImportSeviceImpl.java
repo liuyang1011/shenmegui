@@ -294,6 +294,18 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 }
             }
         }
+        String publicBodyStr = indexVO.getPublicBody();
+        if(StringUtils.isNotEmpty(publicBodyStr)){
+            String[] bodyNames = publicBodyStr.split("\\,");
+            for(String bodyName : bodyNames){
+                if(StringUtils.isNotEmpty(bodyName) && !isIndexEx){
+                    if(null == workbook.getSheet(bodyName)){
+                        logMsg( m + indexVO.getIndexNum() + "条记录导入失败，原因：未找到公共体页[" + bodyName + "]！");
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
     /**
@@ -535,6 +547,12 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
         Map<String, Ida> idas = idaService.genderInterIdaAuto(interfaceId);
         List<SDA> sdas = sdaService.genderSDAAuto(serviceId, operationId);
 
+        if(StringUtils.isNotEmpty(indexVO.getPublicBody())){
+            if(!importPublicBody(idas, sdas, workbook, indexVO)){
+                logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败，原因：公共体[" + indexVO.getPublicBody() + "]导入失败！");
+                return false;
+            }
+        }
         List<Ida> idaParents = new ArrayList<Ida>();
         idaParents.add(idas.get(Constants.ElementAttributes.REQUEST_NAME));
         List<SDA> sdaParents = new ArrayList<SDA>();
@@ -587,6 +605,74 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
             }
         }
         return true;
+    }
+
+    /**
+     * 插入公共体，公共体内容拼接到接口ida和场景sda中
+     * @param idas
+     * @param sdas
+     * @param workbook
+     * @param indexVO
+     */
+    public boolean importPublicBody(Map<String, Ida> idas, List<SDA> sdas, Workbook workbook, MappingImportIndexRowVO indexVO){
+        String interfaceId = indexVO.getInterfaceId();
+        String serviceId = indexVO.getServiceId();
+        String operationId = indexVO.getOperationId();
+        String publicBodyName = indexVO.getPublicBody();
+
+        List<Ida> idaParents = new ArrayList<Ida>();
+        idaParents.add(idas.get(Constants.ElementAttributes.REQUEST_NAME));
+        List<SDA> sdaParents = new ArrayList<SDA>();
+        sdaParents.add(sdas.get(1));
+
+        Sheet mappingSheet = workbook.getSheet(publicBodyName);
+        MappingSheetIndexVO sheetIndexVO = new MappingSheetIndexVO(mappingSheet);
+        //导入输入数据
+        for(int i = sheetIndexVO.inputIndex; i < sheetIndexVO.outputIndex-1; i++ ){
+            MappingSheetRowVO sheetRowVO = new MappingSheetRowVO(sheetIndexVO, mappingSheet, i, idaParents, sdaParents);
+            SDA sda = sheetRowVO.getSda();
+            if(null != sda){
+                sda.setSeq(i);
+                sda.setServiceId(serviceId);
+                sda.setOperationId(operationId);
+                boolean result1 = insertSDA(sda, sdaParents);
+                if(result1){
+                    Ida ida = sheetRowVO.getIda();
+                    ida.setSeq(i);
+                    ida.setInterfaceId(interfaceId);
+                    ida.setState(Constants.IDA_STATE_COMMON);
+                    insertIda(ida, idaParents);
+                }else{
+                    logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败，原因：[" + publicBodyName +"]页元数据[" + sda.getMetadataId() + "]未定义！");
+                    return false;
+                }
+            }
+
+        }
+        idaParents.add(idas.get(Constants.ElementAttributes.RESPONSE_NAME));
+        sdaParents.add(sdas.get(2));
+        for(int i = sheetIndexVO.outputIndex; i <= mappingSheet.getLastRowNum(); i++ ){
+            MappingSheetRowVO sheetRowVO = new MappingSheetRowVO(sheetIndexVO, mappingSheet, i, idaParents, sdaParents);
+            SDA sda = sheetRowVO.getSda();
+            if(null != sda){
+                sda.setSeq(i);
+                sda.setServiceId(serviceId);
+                sda.setOperationId(operationId);
+                boolean result1 = insertSDA(sda, sdaParents);
+                if(result1){
+                    Ida ida = sheetRowVO.getIda();
+                    ida.setSeq(i);
+                    ida.setInterfaceId(interfaceId);
+                    ida.setState(Constants.IDA_STATE_COMMON);
+                    insertIda(ida, idaParents);
+                }else{
+                    logMsg("index页第" + indexVO.getIndexNum() + "条记录导入失败，原因：[" + publicBodyName +"]页元数据[" + sda.getMetadataId() + "]未定义！");
+                    return false;
+                }
+            }
+        }
+        return true;
+
     }
     /**
      * @param sda

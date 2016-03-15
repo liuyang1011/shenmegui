@@ -70,7 +70,7 @@
                 <th data-options="field:'type', width:'10%'"
                     formatter='ff.typeText'>类型
                 </th>
-                <th data-options="field:'desc', width:'10%'">描述</th>
+                <th data-options="field:'interfaceHeadName', width:'10%'">报文头</th>
                 <th data-options="field:'remark', width:'10%'">备注</th>
             </tr>
             </thead>
@@ -168,6 +168,14 @@
             pageSize: 10,
             onClickRow: function () {
                 relateInterface();
+            },
+            onLoadSuccess:function(data){
+                $.each(data.rows, function(i, item){
+                    if(item.isStandard != '99'){
+                        $("#invokeList").datagrid("selectRow", i);
+                        relateInterface();
+                    }
+                });
             }
         });
     });

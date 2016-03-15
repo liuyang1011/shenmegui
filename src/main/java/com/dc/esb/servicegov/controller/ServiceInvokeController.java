@@ -128,7 +128,7 @@ public class ServiceInvokeController {
     @RequestMapping("/getInterfaceByOSS")
     @ResponseBody
     public Map<String, Object> getInterfaceByOSS(String serviceId, String operationId, String systemId) {
-        List<?> rows = serviceInvokeService.findJsonBySO(serviceId, operationId);
+        List<ServiceInvokeJson> rows = serviceInvokeService.findJsonBySO(serviceId, operationId);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", rows.size());
         result.put("rows", rows);

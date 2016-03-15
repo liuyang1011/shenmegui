@@ -99,7 +99,7 @@ public class MappingFileImportController {
                 Row row = indexSheet.getRow(0);
                 MappingIndexHeadIndexVO headRowVO = new MappingIndexHeadIndexVO(row);//根据index页头列名称获取顺序
                 for(int i =1; i <= indexSheet.getLastRowNum(); i++){//提取index每条记录
-                    if(indexSheet.getRow(i) != null){
+                    if(indexSheet.getRow(i) != null && indexSheet.getRow(i).getCell(0) != null){
                         MappingImportIndexRowVO indexVO = new MappingImportIndexRowVO(i, headRowVO, indexSheet.getRow(i));//index页一条记录
                         logger.info("===========开始导入INDEX页第" + indexVO.getIndexNum() + "条记录,接口代码[" + indexVO.getInterfaceId() + "]=============");
                         long time = java.lang.System.currentTimeMillis();
@@ -128,7 +128,7 @@ public class MappingFileImportController {
                 Row row = indexExSheet.getRow(0);
                 MappingIndexHeadIndexVO headRowVO = new MappingIndexHeadIndexVO(row);//根据index页头列名称获取顺序
                 for(int i =1; i <= indexExSheet.getLastRowNum(); i++){//提取index每条记录
-                    if(indexExSheet.getRow(i) != null){
+                    if(indexExSheet.getRow(i) != null && indexSheet.getRow(i).getCell(0) != null){
                         MappingImportIndexRowVO indexExVO = new MappingImportIndexRowVO(i, headRowVO, indexExSheet.getRow(i));//一条记录
                         logger.info("===========开始导入INDEX_EX页第" + indexExVO.getIndexNum() + "条记录=============");
                         long time = java.lang.System.currentTimeMillis();

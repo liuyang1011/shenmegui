@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>字段处理管理</title>
+    <title>字段处理管理方法</title>
     <link rel="stylesheet" type="text/css"
           href="/resources/themes/default/easyui.css">
     <link rel="stylesheet" type="text/css"
@@ -14,16 +14,37 @@
     <link href="/resources/css/css.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<table id="tt" style="height:500px; width:auto;" title="所有字段处理"
+<form id="searchForm">
+    <fieldset>
+        <legend>条件搜索</legend>
+        <table border="0" cellspacing="0" cellpadding="0" heigth="auto">
+            <tr>
+                <th><nobr> 中文名称</nobr></th>
+                <td><input class="easyui-textbox" style="width:100px" type="text" name="name" id="name"></td>
+                <th><nobr> 名称</nobr></th>
+                <td><input class="easyui-textbox" style="width:100px" type="text" name="funcName" id="funcName"></td>
+                <th><nobr> 说明</nobr></th>
+                <td><input class="easyui-textbox" style="width:100px" type="text" name="des" id="des"></td>
+                <td align="right">
+                    <shiro:hasPermission name="metadata-get">
+                        <a href="#" onclick="query()" class="easyui-linkbutton" iconCls="icon-search">搜索</a>
+                        <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                    </shiro:hasPermission>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+</form>
+<table id="tt" style="height:500px; width:auto;" title="字段处理方法"
        data-options="rownumbers:true,singleSelect:true,url:'/attFunction/query',method:'get',toolbar:toolbar,pagination:true,fitColumns:'false',
 				pageSize:10">
     <thead>
     <tr>
         <th data-options="field:'id',checkbox:true"></th>
-        <th field="type" width="130px" type="text" align="center"  formatter='formatter.type'>类型</th>
+        <%--<th field="type" width="130px" type="text" align="center"  formatter='formatter.type'>类型</th>--%>
         <th field="name" width="130px" type="text" align="center">中文名称</th>
         <th field="funcName" width="130px" align="center">名称</th>
-        <th field="params" width="130px" align="center">参数</th>
+        <th field="paramNames" width="130px" align="center">参数</th>
         <th field="des" width="130px" align="center">说明</th>
         <th field=" " width="230px" align="center"  formatter="operationCell">操作</th>
     </tr>
@@ -68,10 +89,10 @@
                 var checkedItems = $('#tt').edatagrid('getChecked');
                 if (checkedItems != null && checkedItems.length > 0) {
                     uiinit.win({
-                        w: 400,
+                        w: 600,
                         iconCls: 'icon-edit',
-                        title: "修改生成类",
-                        url: "/attFunction/edit/" + row.id
+                        title: "修改字段处理方法",
+                        url: "/attFunction/editPage?id=" + row.id
                     })
                 } else {
                     alert("请选中要修改的数据！");
@@ -115,8 +136,14 @@
         </shiro:hasRole>
     ];
 
-    var param_toolbar = {
-
+    function query(){
+        var params = {
+            "name" : encodeURI($("#name").textbox("getValue")),
+            "funcName" : $("#funcName").textbox("getValue"),
+            "des" : $("#des").textbox("getValue")
+        };
+        $("#tt").datagrid('options').queryParams = params;
+        $("#tt").datagrid('reload');
     }
 
     $(function () {

@@ -8,12 +8,17 @@ import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.io.SAXEventRecorder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 
 @Repository
 public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
+    @Autowired
+    private InterfaceHeadRelateDAOImpl interfaceHeadRelateDAO;
+    @Autowired
+    private InterfaceHeadDAOImpl interfaceHeadDAO;
 	public List<?> getBLInvoke(String baseId) {
         String hql = "select new "+ ServiceInvokeJson.class.getName()+"(invoke) from "+ ServiceInvoke.class.getName() + " as invoke where invoke.invokeId in  (select si.invokeId from " +ServiceInvoke.class.getName() + " as si, "
                +OperationHis.class.getName()+ " as oh where oh.versionHis.autoId in (select bvhm.versionHisId from " + BaseLineVersionHisMapping.class.getName() + " as bvhm where bvhm.baseLineId=?)" +
@@ -32,14 +37,39 @@ public class ServiceInvokeDAOImpl  extends HibernateDAO<ServiceInvoke, String> {
      * @param operationId
      * @return
      */
-    public List<?> findJsonBySO(String serviceId, String operationId){
+    public List<ServiceInvokeJson> findJsonBySO(String serviceId, String operationId){
 //        String hql = " select new com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson("+
 //                " s.invokeId, s.systemId, s.isStandard, s.serviceId, s.operationId, s.interfaceId, s.type, s.desc, s.remark,"+
 //                " s.interfaceId, s.system.systemChineseName)"+
 //                " from "+ ServiceInvoke.class.getName()+" as s " +
 //                "where s.serviceId=? and s.operationId=? ";
         String hql = "select new "+ ServiceInvokeJson.class.getName()+"(s) from "+ ServiceInvoke.class.getName()+" as s where s.serviceId=? and s.operationId=? ";
-        List<?> list = super.find(hql, serviceId, operationId);
+        List<ServiceInvokeJson> list = super.findFree(hql, serviceId, operationId);
+        if(null != list && 0 < list.size()){
+            for(ServiceInvokeJson serviceInvokeJson : list){
+                String interfaceId = serviceInvokeJson.getInterfaceId();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateDAO.findBy("interfaceId", interfaceId);
+                String interfaceHeadNames = "";
+                if(null != relates && 0 < relates.size()){
+                    for(int i = 0; i < relates.size(); i++){
+                        InterfaceHeadRelate relate = relates.get(i);
+                        if(null != relate){
+                            InterfaceHead interfaceHead = relate.getInterfaceHead();
+                            if(null != interfaceHead){
+                                if(i != 0){
+                                    interfaceHeadNames += "," + interfaceHead.getHeadName();
+                                }else{
+                                    interfaceHeadNames += interfaceHead.getHeadName();
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+                serviceInvokeJson.setInterfaceHeadName(interfaceHeadNames);
+            }
+        }
         return list;
     }
     /**

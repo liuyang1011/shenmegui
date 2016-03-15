@@ -26,7 +26,7 @@
         </tr>
         <tr>
             <td width="20%">
-                属性：
+                类型：
             </td>
             <td>
                 <input type="text" id="attrType"
@@ -38,9 +38,22 @@
                  data:[
                     {'id':'0','text':'固定值'},
                     {'id':'1','text':'表达式'}
-                 ]
+                 ],
+                 onSelect:function(record){
+                           if(record.id == '1'){
+                            selectExpression(record);
+                       }
+                 }
                  "
                  />
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                属性：
+            </td>
+            <td>
+                <input id="attrName"  type="text" class="easyui-textbox" required="true" style="width:200px">
             </td>
         </tr>
         <tr>
@@ -48,24 +61,41 @@
                 值：
             </td>
             <td>
-                <input id="sdaAttribute"  type="text" class="easyui-textbox" required="true" style="width:200px">
+                <input id="attrValue"  type="text" class="easyui-textbox" required="true" style="width:200px">
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                说明：
+            </td>
+            <td>
+                <input id="attrRemarks"  type="text" class="easyui-textbox" style="width:200px">
             </td>
         </tr>
     </table>
 </fieldset>
+<div id="attrDlg" class="easyui-dialog" closed="true" resizable="true"></div>
 <script type="text/javascript">
     function saveAttr(){
-        var attributeValue = $("#sdaAttribute").textbox("getValue");
-        if(attributeValue == null || attributeValue == ""){
-            alert("请输入属性值！");
-            return;
-        }else{
+        var attrName = $("#attrName").textbox("getValue");
+            var attrValue = $("#attrValue").textbox("getValue");
             var attrType = $("#attrType").combobox("getValue");
+            var attrRemarks = $("#attrRemarks").textbox("getValue");
+            if(attrName == null || attrName == ""){
+                alert("请输入属性名称！");
+                return;
+            }
+            if(attrValue == null || attrValue == ""){
+                alert("请输入属性值！");
+                return;
+            }else{
             var path = $("#tg").treegrid('options').url;
             var sdaAttribute ={};
             sdaAttribute.id = new Date().getTime();
             sdaAttribute.type = attrType;
-            sdaAttribute.value = attributeValue;
+            sdaAttribute.name = attrName;
+            sdaAttribute.value = attrValue;
+            sdaAttribute.remarks = attrRemarks;
             sdaAttribute.sdaId = "${param.sdaId}";
             $.ajax({
                 type: "post",
@@ -84,6 +114,20 @@
                 }
             });
         }
+    }
+    //类型选择触发方法
+    function selectExpression(record){
+        var urlPath = "/jsp/service/sda/func_choose.jsp"
+        $("#attrDlg").dialog({
+            title: '字段处理方法选择',
+            left:70,
+            width: 800,
+            height: 'auto',
+            closed: false,
+            cache: false,
+            href: urlPath,
+            modal: true
+        });
     }
 </script>
 </body>

@@ -43,6 +43,7 @@
 							 var urlpath = '/operation/getByServiceId?serviceId='+newValue;
 							 $('#operationId').combobox({url : urlpath});
 							 $('#operationName').combobox({url : urlpath});
+							 query();
 				    }
                  "
                   >
@@ -61,13 +62,20 @@
 							        $('#serviceId').combobox('setValue',item.serviceId);
 							        }
 							 });
+							 query();
 				    }
                  "
               >
       </td>
       <th><nobr>服务功能描述</nobr></th>
       <td><input class="easyui-textbox"  width="20%"
-                 type="text" name="desc" id="serviceDesc">
+                 type="text" name="desc" id="serviceDesc"
+                 data-options="
+                 onChange:function(newValue, oldValue){
+                    query();
+                 }
+                 "
+              >
       </td>
       <th>
 
@@ -88,6 +96,7 @@
 							        $('#operationName').combobox('setValue',newValue);
 							        }
 							 });
+							 query();
 				    }
                  "
               >
@@ -107,13 +116,20 @@
 							        $('#operationId').combobox('setValue',newValue);
 							        }
 							 });
+							 query();
 				    }
                  "
                 >
       </td>
       <th><nobr>场景功能描述</nobr></th>
       <td><input class="easyui-textbox"  width="20%"
-                 type="text" name="operationDesc" id="operationDesc">
+                 type="text" name="operationDesc" id="operationDesc"
+                 data-options="
+                 onChange:function(newValue, oldValue){
+                    query();
+                 }
+                 "
+              >
       </td>
         <th>
 
@@ -128,6 +144,7 @@
                  valueField:'id',
                  onChange:function(newValue, oldValue){
 							this.value=newValue;
+							query();
 				    }
                  "
                 >
@@ -140,6 +157,7 @@
                  valueField:'id',
                  onChange:function(newValue, oldValue){
 							this.value=newValue;
+							query();
 				    }
                  "
                 >
@@ -161,7 +179,10 @@
                     {'id':'8','text':'已下线'},
                     {'id':'9','text':'已废弃'}
 
-                 ]
+                 ],
+                 onChange:function(newValue, oldValue){
+                    query();
+                 }
                  "
                 >
         </td>

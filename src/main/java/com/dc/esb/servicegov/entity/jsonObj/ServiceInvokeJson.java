@@ -28,6 +28,7 @@ public class ServiceInvokeJson {
 
     private String systemChineseName;
 
+    private String interfaceHeadName;
     public ServiceInvokeJson(){
 
     }
@@ -156,5 +157,13 @@ public class ServiceInvokeJson {
 
     public void setSystemChineseName(String systemChineseName) {
         this.systemChineseName = systemChineseName;
+    }
+
+    public String getInterfaceHeadName() {
+        return interfaceHeadName;
+    }
+
+    public void setInterfaceHeadName(String interfaceHeadName) {
+        this.interfaceHeadName = interfaceHeadName;
     }
 }

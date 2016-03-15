@@ -11,8 +11,8 @@ public class MappingIndexHeadIndexVO {
     final String  interfaceIdHead = "接口代码";
     final String  interfaceNameHead = "交易名称";
     final String  serviceNameHead = "服务名称";
-    final String  operationIdHead = "原子服务ID";
-    final String  operationNameHead = "原子服务名称";
+    final String  operationIdHead = "服务操作ID";
+    final String  operationNameHead = "服务操作名称";
     final String  consumerNamesHead = "调用方系统名称";
     final String  consumerAbsHead = "调用方";
     final String  providerAbsHead = "提供方";
@@ -32,6 +32,7 @@ public class MappingIndexHeadIndexVO {
     final String  isStandardHead = "是否标准";
     final String  remarkHead = "备注";
     final String  protocolHead = "关联协议";
+    final String  publicBody = "公共体";
 
     Integer  interfaceIdIndex = 0;
     Integer  interfaceNameIndex= 1;
@@ -57,6 +58,7 @@ public class MappingIndexHeadIndexVO {
     Integer  isStandardIndex = 21;
     Integer  remarkIndex = 22;
     Integer  protocolIndex = 23;
+    Integer  publicBodyIndex = 24;
 
     public MappingIndexHeadIndexVO(Row row){
         for(int i = 0; i <= row.getLastCellNum(); i++) {//遍历第1行所有单元格
@@ -133,6 +135,9 @@ public class MappingIndexHeadIndexVO {
             }
             if (remarkHead.equals(content)) {
                 remarkIndex = i;
+            }
+            if(publicBody.equalsIgnoreCase(content)){
+                publicBodyIndex = i;
             }
         }
     }

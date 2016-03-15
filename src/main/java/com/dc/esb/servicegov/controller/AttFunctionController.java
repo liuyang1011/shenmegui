@@ -1,11 +1,9 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.dao.support.Page;
-import com.dc.esb.servicegov.entity.AttFuncParam;
 import com.dc.esb.servicegov.entity.AttFunction;
 import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.AttFunctionServiceImpl;
-import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -43,8 +41,6 @@ public class AttFunctionController {
         int rowCount = Integer.parseInt(req.getParameter("rows"));
         Page page = new Page(attFunctionService.queryCount(req.getParameterMap()), rowCount);
         page.setPage(pageNo);
-//        List<Metadata> rows = metadataService.queryByCondition(req.getParameterMap(), page);
-        //关联categoryWord表，显示chineseWord
         List<AttFunction> rows = attFunctionService.queryByCondition(req.getParameterMap(), page);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("total", page.getResultCount());
@@ -66,10 +62,9 @@ public class AttFunctionController {
         return true;
     }
 
-    @RequestMapping(value = "/editPage", headers = "Accept=application/json")
-    @ResponseBody
+    @RequestMapping(value = "/editPage")
     public ModelAndView editPage(String id) {
-        ModelAndView mv = new ModelAndView("attfunc/func_edit.jsp");
+        ModelAndView mv = new ModelAndView("attfunc/func_edit");
         AttFunction entity = attFunctionService.getById(id);
         mv.addObject("entity", entity);
         return mv;
