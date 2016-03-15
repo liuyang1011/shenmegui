@@ -84,7 +84,7 @@ public class MappingSheetRowVO {
                         }
                     }
                 }
-                if(null != sda && StringUtils.isNotEmpty(sda.getType()) && sda.getType().toLowerCase().contains("array")) {
+                if(null != sda && StringUtils.isNotEmpty(sda.getType()) && (("array").equalsIgnoreCase(sda.getType()) || ("struct").equalsIgnoreCase(sda.getType()))) {
                     if (StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")) {//一个新数组加入父节点缓存
                         sdaParents.add(sda);
                         idaParents.add(ida);//sda为数组则对应ida节点一定为数组节点

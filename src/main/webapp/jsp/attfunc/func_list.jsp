@@ -15,7 +15,7 @@
 </head>
 <body>
 <table id="tt" style="height:500px; width:auto;" title="所有字段处理"
-       data-options="rownumbers:true,singleSelect:true,url:'/attrFunction/query',method:'get',toolbar:toolbar,pagination:true,fitColumns:'false',
+       data-options="rownumbers:true,singleSelect:true,url:'/attFunction/query',method:'get',toolbar:toolbar,pagination:true,fitColumns:'false',
 				pageSize:10">
     <thead>
     <tr>

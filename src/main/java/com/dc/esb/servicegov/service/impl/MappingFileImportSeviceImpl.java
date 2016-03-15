@@ -318,6 +318,8 @@ public class MappingFileImportSeviceImpl extends AbstractBaseService implements 
                 serviceDB.setServiceName(indexVO.getServiceName());
                 serviceDB.setDesc(serviceDesc);
                 service = serviceDB;
+            }else{
+                service = serviceDB;
             }
         }else{//服务不存在,创建服务
             service = new com.dc.esb.servicegov.entity.Service();
