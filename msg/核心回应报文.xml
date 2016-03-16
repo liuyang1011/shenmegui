@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="GBK"?>
+<service>
+    <sys>
+        <script_type></script_type>
+        <snd_sys>CORE</snd_sys>
+        <ref_snd_sys>BSM</ref_snd_sys>
+        <card_branch_id>27010517</card_branch_id>
+        <snd_date>20160309</snd_date>
+        <ref_snd_date>20160309</ref_snd_date>
+        <snd_time>20160309091144</snd_time>
+        <snd_seqno>15672475</snd_seqno>
+        <ret_msg></ret_msg>
+        <rcv_sys>BSM</rcv_sys>
+        <ref_snd_seqno>000301398636</ref_snd_seqno>
+        <tran_code>khcx</tran_code>
+        <ret_code>00</ret_code>
+    </sys>
+    <app>
+        <zw>10</zw>
+        <zy>16</zy>
+        <hm>孙彩霞</hm>
+        <shascustinfo>1</shascustinfo>
+        <tdjb></tdjb>
+        <zjzl></zjzl>
+        <email></email>
+        <pzzl>0</pzzl>
+        <czdyxx></czdyxx>
+        <zjhm>610104195507108326</zjhm>
+        <xjxmh></xjxmh>
+        <stel></stel>
+        <saddr>团结南路西坊16号楼41号</saddr>
+        <ptdyxx></ptdyxx>
+        <yb>710000</yb>
+        <scheckres>02</scheckres>
+        <ye>0.000000</ye>
+        <pzh></pzh>
+        <zh></zh>
+        <bookfee>0.000000</bookfee>
+        <khh>01610104195507108326</khh>
+        <fse>0.000000</fse>
+    </app>
+</service>

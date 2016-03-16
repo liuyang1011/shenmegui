@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="gb2312"?>
+<service>
+    <sys>
+        <snd_sys>BSM</snd_sys>
+        <rcv_sys>CORE</rcv_sys>
+        <snd_seqno>000301398636</snd_seqno>
+        <snd_date>20160309</snd_date>
+        <snd_time>091417</snd_time>
+        <terminal_no>A0401014</terminal_no>
+        <branch_id>27010517</branch_id>
+        <teller_id>BSMP</teller_id>
+        <tran_desc>0012000</tran_desc>
+        <merch_type></merch_type>
+        <merch_no></merch_no>
+        <merch_name></merch_name>
+        <tran_code>khcx</tran_code>
+        <tran_type>2099</tran_type>
+        <channel_list>05</channel_list>
+    </sys>
+    <app>
+        <sidno>610104195507108326</sidno>
+        <sidname>孙彩霞</sidname>
+        <svoukind>62</svoukind>
+    </app>
+</service>

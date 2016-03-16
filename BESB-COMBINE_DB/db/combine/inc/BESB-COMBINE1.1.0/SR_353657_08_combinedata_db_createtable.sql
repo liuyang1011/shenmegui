@@ -1,0 +1,1554 @@
+
+------------------------------------------------
+-- Export file for user WUXIAO_NC_TEST        --
+-- Created by wuxiaob on 2010-12-22, 14:30:33 --
+------------------------------------------------
+
+
+
+create table BASESERVICES
+(
+  SERVICEID   NVARCHAR2(40),
+  PARAMNAME   VARCHAR2(400),
+  PARAMVALUE  VARCHAR2(400),
+  DESCRIPTION VARCHAR2(20),
+  ID          VARCHAR2(10) not null,
+  PARENTID    NVARCHAR2(40)
+)
+;
+alter table BASESERVICES
+  add constraint BASESERVICE_PK primary key (ID);
+
+
+create table PADDRESS
+(
+  ADDRESSID      VARCHAR2(32) not null,
+  URL            VARCHAR2(500),
+  QUEUENAME      VARCHAR2(40),
+  LOCATIONDEPEND VARCHAR2(20),
+  batchMessage VARCHAR2(20) default 'false'
+)
+;
+alter table PADDRESS
+  add primary key (ADDRESSID);
+
+
+create table CLIENTLOCATION
+(
+  LOCATION     VARCHAR2(20) not null,
+  OUTADDRESSID VARCHAR2(32),
+  INADDRESSID  VARCHAR2(32),
+  SESSIONCOUNT INTEGER,
+  DELIVERYMODE VARCHAR2(20),
+  ID           VARCHAR2(1),
+  NODEID       VARCHAR2(40)
+)
+;
+alter table CLIENTLOCATION
+  add primary key (LOCATION);
+alter table CLIENTLOCATION
+  add constraint CLIENTLOCATION_PADDRESS_REF foreign key (OUTADDRESSID)
+  references PADDRESS (ADDRESSID);
+alter table CLIENTLOCATION
+  add constraint CLIENTLOCATION_PADDRESS_REF2 foreign key (INADDRESSID)
+  references PADDRESS (ADDRESSID);
+
+
+create table BINDTYPEDEFINE
+(
+  TYPENAME      VARCHAR2(40) not null,
+  CONTAINERTYPE INTEGER,
+  VMPATH        VARCHAR2(500),
+  CONFIGIMPL    VARCHAR2(100 CHAR),
+  PARSERIMPL    VARCHAR2(100),
+  INVOKERIMPL   VARCHAR2(100)
+)
+;
+alter table BINDTYPEDEFINE
+  add constraint BINDTYPEDEFINE_PK primary key (TYPENAME);
+
+create table PROTOCOLBIND
+(
+  PROTOCOLID NVARCHAR2(40) not null,
+  BINDTYPE   VARCHAR2(40) not null,
+  BINDURI    VARCHAR2(4000) not null,
+  REQUESTADAPTER  VARCHAR2(40),
+  RESPONSEADAPTER VARCHAR2(40),
+  threadpool varchar2(50)
+)
+;
+alter table PROTOCOLBIND
+  add constraint SERVICEBIND_PK primary key (PROTOCOLID);
+alter table PROTOCOLBIND
+  add foreign key (BINDTYPE)
+  references BINDTYPEDEFINE (TYPENAME);
+
+
+create table BINDMAP
+(
+  SERVICEID  NVARCHAR2(40) not null,
+  STYPE      NVARCHAR2(20) not null,
+  LOCATION   VARCHAR2(40) not null,
+  VERSION    VARCHAR2(40),
+  PROTOCOLID NVARCHAR2(40) not null
+)
+;
+alter table BINDMAP
+  add constraint BIND_LOC_REF foreign key (LOCATION)
+  references CLIENTLOCATION (LOCATION);
+alter table BINDMAP
+  add constraint BIND_PROTOCOLID_REF foreign key (PROTOCOLID)
+  references PROTOCOLBIND (PROTOCOLID);
+
+create table BUSSSERVICES
+(
+  SERVICEID   NVARCHAR2(40),
+  CATEGORY    VARCHAR2(20 CHAR),
+  METHODNAME  VARCHAR2(400 CHAR),
+  ISARG       VARCHAR2(5 CHAR),
+  DESCRIPTION VARCHAR2(40 CHAR)
+)
+;
+
+
+create table CONFIGURATIONS
+(
+  ID          INTEGER not null,
+  LOCATION    VARCHAR2(20 CHAR),
+  PARAMNAME   VARCHAR2(400 CHAR),
+  PARAMVALUE  VARCHAR2(400),
+  DESCRIPTION VARCHAR2(40 CHAR),
+  PARAMTYPE   VARCHAR2(12)
+)
+;
+alter table CONFIGURATIONS
+  add primary key (ID);
+
+
+create table DATAADAPTER
+(
+  DATAADAPTERID NVARCHAR2(40) not null,
+  DATAADAPTER   VARCHAR2(4000),
+  LOCATION      VARCHAR2(20),
+  ADAPTERTYPE   VARCHAR2(10)
+)
+;
+alter table DATAADAPTER
+  add constraint DATAADAPTER_PK primary key (DATAADAPTERID);
+
+
+create table DEPLOYMENTS
+(
+  ID          VARCHAR2(20),
+  LOCATION    VARCHAR2(20),
+  FILEPATH    VARCHAR2(255 CHAR),
+  DEPLOYDATE  VARCHAR2(20 CHAR),
+  DESCRIPTION VARCHAR2(200),
+  NAME        NVARCHAR2(40),
+  FILECONTENT BLOB,
+  USERNAME    VARCHAR2(40),
+  VERSION     VARCHAR2(40)
+)
+;
+
+
+create table DEPLOYUNITS
+(
+  LOCATION    VARCHAR2(20),
+  DEPT        VARCHAR2(40),
+  FILEPATH    VARCHAR2(255 CHAR),
+  DEPLOYDATE  DATE default sysdate,
+  DESCRIPTION VARCHAR2(200),
+  NAME        NVARCHAR2(40),
+  ID          VARCHAR2(40) not null,
+  FROMID      VARCHAR2(40)
+)
+;
+alter table DEPLOYUNITS
+  add constraint DEPLOYUNITS_PK primary key (ID);
+
+
+create table DEPLOYUNITSFILES
+(
+  ID       VARCHAR2(40) not null,
+  UNITID   VARCHAR2(40) not null,
+  FIX      VARCHAR2(40) not null,
+  FILENAME VARCHAR2(100) not null
+)
+;
+alter table DEPLOYUNITSFILES
+  add constraint PK_DEPLOYUNITSFILES primary key (ID);
+
+
+create table ESB2_CLIENT_SECR
+(
+  CLIENTNAME     VARCHAR2(100) not null,
+  AUTHTYPE       VARCHAR2(40),
+  AUTHMODE       VARCHAR2(40),
+  SSLENABLE      VARCHAR2(40),
+  SESSIONOUTTIME VARCHAR2(40),
+  PASSWORD       VARCHAR2(40),
+  AUTHIMPL       VARCHAR2(40)
+)
+;
+alter table ESB2_CLIENT_SECR
+  add constraint PK_ESB2_CLIENT_SECR primary key (CLIENTNAME);
+
+
+create table ESB2_FAULT_PROV
+(
+  LOCATIONID  NVARCHAR2(40) not null,
+  FAULTTYPE   CHAR(1) not null,
+  SERVICEID   NVARCHAR2(40) not null,
+  FAULTFLAG   CHAR(1) not null,
+  DESCRIPTION VARCHAR2(1000)
+)
+;
+alter table ESB2_FAULT_PROV
+  add constraint PK_ESB2_FAULT_PROV primary key (LOCATIONID, FAULTTYPE, SERVICEID);
+
+-- Create table
+create table ESB2_FLOW_CTRL
+(
+  DIMENSION          NVARCHAR2(500) not null,
+  KEYWORD          	 NVARCHAR2(40) not null,
+  TOKENTOTALQUANTITY VARCHAR2(10) not null,
+  INMULTIDATE        VARCHAR2(40),
+  INDATE             VARCHAR2(40),
+  INWEEK             VARCHAR2(40),
+  INMONTH            VARCHAR2(40),
+  INYEAR             VARCHAR2(40),
+  CONTROLID          VARCHAR2(40) not null
+);
+-- Add comments to the table 
+comment on table ESB2_FLOW_CTRL
+  is '流控令牌配置表';
+-- Add comments to the columns 
+comment on column ESB2_FLOW_CTRL.DIMENSION
+  is '维度名称';
+comment on column ESB2_FLOW_CTRL.KEYWORD
+  is '关键字';
+comment on column ESB2_FLOW_CTRL.TOKENTOTALQUANTITY
+  is '令牌数';
+comment on column ESB2_FLOW_CTRL.INMULTIDATE
+  is '时间段';
+comment on column ESB2_FLOW_CTRL.INDATE
+  is '日表达式';
+comment on column ESB2_FLOW_CTRL.INWEEK
+  is '周表达式';
+comment on column ESB2_FLOW_CTRL.INMONTH
+  is '月表达式';
+comment on column ESB2_FLOW_CTRL.INYEAR
+  is '年表达式';
+comment on column ESB2_FLOW_CTRL.CONTROLID
+  is '记录id';
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ESB2_FLOW_CTRL
+  add constraint PK_ESB_FLOW_CTRL primary key (CONTROLID);
+
+
+
+create table ESB2_IN_FLOW_CTRL
+(
+  CONTROLID          VARCHAR2(40) not null,
+  DIMENSION          VARCHAR2(500) not null,
+  KEYWORD          	 VARCHAR2(40) not null,
+  TOKENTOTALQUANTITY VARCHAR2(10) not null,
+  LOCATION           VARCHAR2(40),
+  INMULTIDATE        VARCHAR2(40),
+  INDATE             VARCHAR2(40),
+  INWEEK             VARCHAR2(40),
+  INMONTH            VARCHAR2(40),
+  INYEAR             VARCHAR2(40)
+)
+;
+alter table ESB2_IN_FLOW_CTRL
+  add constraint PK_ESB2_IN_FLOW_CTRL primary key (CONTROLID);
+
+
+create table ESB2_LOG_LOG4JCONFIG
+(
+  LOCATIONID NVARCHAR2(20) not null,
+  CONFIGTYPE VARCHAR2(10) not null,
+  CONFIGINFO VARCHAR2(4000)
+)
+;
+alter table ESB2_LOG_LOG4JCONFIG
+  add constraint ESB_LOG_LOG4JCONFIG primary key (LOCATIONID);
+
+
+create table ESB2_TRANS_CTRL
+(
+  FLOWTYPE     CHAR(1) not null,
+  CHANNELID    NVARCHAR2(40) not null,
+  SERVICEID    NVARCHAR2(40) not null,
+  FLOWLEVEL    CHAR(1) not null,
+  FLOWLOCATION CHAR(1) not null
+)
+;
+alter table ESB2_TRANS_CTRL
+  add constraint ESB_TRANS_CTRL primary key (FLOWTYPE, CHANNELID, SERVICEID);
+
+
+CREATE TABLE ESB2_TRANS_LOG
+(
+  ESBFLOWNO         VARCHAR2(1000 BYTE)         NOT NULL,
+  FLOWSTEPID        VARCHAR2(3 BYTE)            NOT NULL,
+  ESBSERVICEFLOWNO  VARCHAR2(100 BYTE)          NOT NULL,
+  ESBSERVSEQU       VARCHAR2(1000 BYTE),
+  REQFLOWNO         VARCHAR2(1000 BYTE),
+  RESPFLOWNO        VARCHAR2(1000 BYTE),
+  SERVICETYPE       CHAR(1 BYTE),
+  TRANSTAMP         VARCHAR2(30 BYTE)           NOT NULL,
+  LOCATIONID        NVARCHAR2(20)               NOT NULL,
+  CHANNELID         NVARCHAR2(40)		NOT NULL,
+  SERVICEID         NVARCHAR2(40)               NOT NULL,
+  RESPSTATUS        CHAR(1 BYTE),
+  RESPCODE          VARCHAR2(20 BYTE),
+  RESPMSG           VARCHAR2(4000 BYTE),
+  OPERSTAMP         TIMESTAMP(3)                DEFAULT systimestamp          NOT NULL,
+  PREFLOWNO         VARCHAR2(100 BYTE),
+  POSTFLOWNO        VARCHAR2(100 BYTE),
+  LOGICCHANNEL      VARCHAR2(40 BYTE),
+  REALCHANNEL       VARCHAR2(40 BYTE),
+  SERVICEFLOW       VARCHAR2(40 BYTE),
+  LOGICSYSTEM       VARCHAR2(40 BYTE),
+  REALSYSTEM        VARCHAR2(40 BYTE),
+  LOOP              VARCHAR2(40 BYTE),
+  FLAT_DATE         VARCHAR2(40 BYTE),
+  BUSINESSRESPSTATUS        CHAR(1 BYTE),
+  BUSINESSRESPCODE          VARCHAR2(20 BYTE),
+   REQMSGLENTH                  INTEGER,
+  RESPMSGLENTH  INTEGER
+)
+;
+alter table ESB2_TRANS_LOG
+  add constraint ESB_TRANS_LOG primary key (ESBFLOWNO, FLOWSTEPID);
+
+
+create table ESB2_TRANS_LOG_FLOWNO
+(
+  CONFIGTYPE  NVARCHAR2(1) not null,
+  SYSID       NVARCHAR2(40) not null,
+  CONFIGVALUE NVARCHAR2(200),
+  OPERSTAMP         TIMESTAMP(3)                DEFAULT systimestamp          NOT NULL,
+  FLAT_DATE         VARCHAR2(40 BYTE)
+)
+;
+alter table ESB2_TRANS_LOG_FLOWNO
+  add constraint PK_ESB2_TRANS_LOG_FLOWNO primary key (CONFIGTYPE, SYSID);
+
+
+
+
+
+create table ESB2_TRANS_LOG_TEMP_STAMP
+(
+	ESBFlowNo		varchar2(1000)	not null,
+	FlowStepId		varchar2(3)		not null,
+	TransStamp		timestamp(3)	not null,
+	FLAT_DATE         VARCHAR2(40 BYTE)
+);
+alter table ESB2_TRANS_LOG_TEMP_STAMP
+  add constraint PK_ESB2_TRANS_LOG_TEMP_STAMP primary key (ESBFLOWNO,FlowStepId);
+
+
+create table ESB_ERRORCODE
+(
+  ERRORCODE   VARCHAR2(40) not null,
+  DESCRIPTION VARCHAR2(400)
+)
+;
+alter table ESB_ERRORCODE
+  add constraint ERRORCODE_PK primary key (ERRORCODE);
+
+
+create table ESB_MSG_PROCESSOR
+(
+  PROCESSORID   VARCHAR2(40 CHAR) not null,
+  SERVICEEXPR   VARCHAR2(200 CHAR),
+  CHANNELEXPR   VARCHAR2(200 CHAR),
+  PROCESSRULE   BLOB,
+  MESSAGETYPE   VARCHAR2(20 CHAR) not null,
+  LOCATION      VARCHAR2(40 CHAR) not null,
+  PROCESSORTYPE VARCHAR2(20) not null
+)
+;
+alter table ESB_MSG_PROCESSOR
+  add constraint ESB_MSG_PROCESSOR_PK primary key (PROCESSORID);
+
+
+create table ESB_NODES_LINK
+(
+  FROMID    NVARCHAR2(100),
+  TOID      NVARCHAR2(100),
+  COLOR     VARCHAR2(20),
+  THICKNESS VARCHAR2(10)
+)
+;
+
+
+create table ESB_PTSERVICES
+(
+  ID              VARCHAR2(40 CHAR) not null,
+  SERVICEID       VARCHAR2(40 CHAR),
+  CHANNELID       VARCHAR2(40 CHAR),
+  INADDRESSID     VARCHAR2(40 CHAR),
+  OUTADDRESSID    VARCHAR2(40 CHAR),
+  DELIVERYMODE    VARCHAR2(10 CHAR),
+  CHANNELLOCATION VARCHAR2(40 CHAR),
+  SERVICELOCATION VARCHAR2(40 CHAR),
+  SESSIONCOUNT    VARCHAR2(20 CHAR)
+)
+;
+alter table ESB_PTSERVICES
+  add constraint ESB_PTSERVICES_PK primary key (ID);
+alter table ESB_PTSERVICES
+  add constraint ADDR_IN_REF foreign key (INADDRESSID)
+  references PADDRESS (ADDRESSID);
+alter table ESB_PTSERVICES
+  add constraint ADDR_OUT_REF foreign key (OUTADDRESSID)
+  references PADDRESS (ADDRESSID);
+alter table ESB_PTSERVICES
+  add constraint ESB_PTSERVICES_LOC_R02 foreign key (CHANNELLOCATION)
+  references CLIENTLOCATION (LOCATION);
+alter table ESB_PTSERVICES
+  add constraint ESB_PTSERVICES_LOC_REF foreign key (SERVICELOCATION)
+  references CLIENTLOCATION (LOCATION);
+
+
+create table ESB_SHAREDRESOURCES
+(
+  RESOURCEID  VARCHAR2(32) not null,
+  CONTENT     BLOB not null,
+  DESCRIPTION VARCHAR2(400),
+  LASTMODIFY  VARCHAR2(100),
+  LENGTH      INTEGER
+)
+;
+alter table ESB_SHAREDRESOURCES
+  add constraint PK_ESB_SHAREDRESOURCES primary key (RESOURCEID);
+
+
+create table ESB_USERS
+(
+  ID          VARCHAR2(1) not null,
+  USERNAME    VARCHAR2(20),
+  PASSWORD    VARCHAR2(50 CHAR),
+  ROLES       INTEGER,
+  LASTDATE    VARCHAR2(50),
+  DESCRIPTION VARCHAR2(50),
+  STATUS      VARCHAR2(1)
+)
+;
+alter table ESB_USERS
+  add constraint ESB_USERS_PK primary key (ID);
+
+
+create table EXCEPTIONCONFIG
+(
+  CHANNELID      VARCHAR2(40),
+  SERVICEID      VARCHAR2(40),
+  ERRORCODE      VARCHAR2(40),
+  TYPE           VARCHAR2(20),
+  EXPR           VARCHAR2(4000),
+  EXTENDCONTENTS BLOB,
+  XMLFILENAME    VARCHAR2(40),
+  XSDFILENAME    VARCHAR2(40),
+  LOCATION       VARCHAR2(40)
+)
+;
+
+
+create table EXCEPTIONDATA
+(
+  REFID         VARCHAR2(40) not null,
+  EXCEPTIONDATA BLOB
+)
+;
+alter table EXCEPTIONDATA
+  add constraint EXCEPTIONDATA_PK primary key (REFID);
+
+create table GROUPS
+(
+  GROUPNAME       VARCHAR2(20) not null,
+  DESCRIPTION     VARCHAR2(40),
+  LOCATION        VARCHAR2(40),
+  DATAADAPTER     VARCHAR2(4000),
+  INADDRESSID     VARCHAR2(32),
+  OUTADDRESSID    VARCHAR2(32),
+  SESSIONCOUNT    INTEGER,
+  DELIVERYMODE    VARCHAR2(40),
+  NODEID          VARCHAR2(40),
+  PROTOCOLADAPTER NVARCHAR2(40)
+)
+;
+alter table GROUPS
+  add constraint GROUPS_PK primary key (GROUPNAME);
+alter table GROUPS
+  add constraint GROUPS_FK_PROTOCOL foreign key (PROTOCOLADAPTER)
+  references PROTOCOLBIND (PROTOCOLID);
+alter table GROUPS
+  add constraint GROUP_LOCATION_CF foreign key (LOCATION)
+  references CLIENTLOCATION (LOCATION);
+
+
+create table IMPORT_METADATA_HISTORY
+(
+  FILE_INFO   BLOB,
+  SERVICE_ID  VARCHAR2(50) not null,
+  FILE_TYPE   VARCHAR2(20) not null,
+  IMPORT_TIME VARCHAR2(20)
+)
+;
+alter table IMPORT_METADATA_HISTORY
+  add primary key (SERVICE_ID, FILE_TYPE);
+
+create table PROXY
+(
+  PROXYID   VARCHAR2(20) not null,
+  ADDRESSID VARCHAR2(32)
+)
+;
+alter table PROXY
+  add primary key (PROXYID);
+alter table PROXY
+  add constraint PROXY_PADDRESS_REF foreign key (ADDRESSID)
+  references PADDRESS (ADDRESSID);
+
+create table ROUTERS
+(
+  ROUTERNAME            VARCHAR2(20) not null,
+  LOCATION              VARCHAR2(20),
+  DEFAULTPROXYADDRESSID VARCHAR2(32),
+  PROXYID               VARCHAR2(20)
+)
+;
+alter table ROUTERS
+  add primary key (ROUTERNAME);
+alter table ROUTERS
+  add constraint ROUTER_LOCATION foreign key (LOCATION)
+  references CLIENTLOCATION (LOCATION);
+alter table ROUTERS
+  add constraint ROUTER_PROXY_REF foreign key (PROXYID)
+  references PROXY (PROXYID);
+
+create table MAILBOX
+(
+  MAILBOXID    VARCHAR2(32) not null,
+  ADDRESSID    VARCHAR2(32),
+  DELIVERYMODE VARCHAR2(20),
+  SESSIONCOUNT INTEGER,
+  ROUTERNAME   VARCHAR2(40 CHAR)
+)
+;
+alter table MAILBOX
+  add primary key (MAILBOXID);
+alter table MAILBOX
+  add constraint MAILBOX_ADDRESSID_REF foreign key (ADDRESSID)
+  references PADDRESS (ADDRESSID);
+alter table MAILBOX
+  add constraint MAILBOX_ROUTER_REF foreign key (ROUTERNAME)
+  references ROUTERS (ROUTERNAME);
+
+
+create table MAPPINGCONFIG
+(
+  ID          VARCHAR2(16) not null,
+  MAPPINGDATA BLOB,
+  MARK        VARCHAR2(64)
+)
+;
+alter table MAPPINGCONFIG
+  add constraint MAPPINGCONFIG_PK primary key (ID);
+
+
+create table METADATA_MANAGER
+(
+  SERVICE_ID  VARCHAR2(50) not null,
+  DESCRIPTION VARCHAR2(50)
+)
+;
+alter table METADATA_MANAGER
+  add primary key (SERVICE_ID);
+
+create table MAPPING
+(
+  ID            VARCHAR2(16) not null,
+  SOURCEID      VARCHAR2(4000),
+  TARGETID      VARCHAR2(40),
+  MAPPINGID     VARCHAR2(16),
+  SERVICEID     VARCHAR2(40 CHAR),
+  TEMPLATE      BLOB,
+  TRANSFORMTYPE VARCHAR2(40)
+)
+;
+alter table MAPPING
+  add constraint MAPPING_PK primary key (ID);
+alter table MAPPING
+  add constraint MPCFG_REF foreign key (MAPPINGID)
+  references MAPPINGCONFIG (ID);
+alter table MAPPING
+  add foreign key (SOURCEID)
+  references METADATA_MANAGER (SERVICE_ID);
+
+
+create table METADATA_TYPE
+(
+  DESCRIPTION   VARCHAR2(50),
+  TYPE          VARCHAR2(50),
+  FILETYPE      VARCHAR2(10),
+  ISORDER       CHAR(18),
+  SERVICE_ID    VARCHAR2(50) not null,
+  OPERATION     VARCHAR2(50),
+  METADATA_NAME VARCHAR2(50) not null
+)
+;
+alter table METADATA_TYPE
+  add primary key (SERVICE_ID, METADATA_NAME);
+alter table METADATA_TYPE
+  add foreign key (SERVICE_ID)
+  references METADATA_MANAGER (SERVICE_ID) on delete set null;
+
+
+create table METADATA_NODE
+(
+  NODE_PATH      VARCHAR2(200) not null,
+  CURSOR         INTEGER,
+  NODE_LABLE     VARCHAR2(50),
+  SERVICE_ID     VARCHAR2(50) not null,
+  METADATA_NAME  VARCHAR2(50) not null,
+  METADATA_VALUE VARCHAR2(100)
+)
+;
+alter table METADATA_NODE
+  add primary key (NODE_PATH, SERVICE_ID, METADATA_NAME);
+alter table METADATA_NODE
+  add foreign key (SERVICE_ID, METADATA_NAME)
+  references METADATA_TYPE (SERVICE_ID, METADATA_NAME) on delete set null;
+
+
+create table NODE_ATTRIBUTE
+(
+  NODE_ATTR_NAME  VARCHAR2(50),
+  NODE_ATTR_VALUE VARCHAR2(100),
+  NODE_PATH       VARCHAR2(200),
+  SERVICE_ID      VARCHAR2(50),
+  METADATA_NAME   VARCHAR2(50)
+)
+;
+alter table NODE_ATTRIBUTE
+  add foreign key (NODE_PATH, SERVICE_ID, METADATA_NAME)
+  references METADATA_NODE (NODE_PATH, SERVICE_ID, METADATA_NAME) on delete set null;
+
+
+create table PADDRESSEXT
+(
+  LOCATION   VARCHAR2(40),
+  ROUTERNAME VARCHAR2(40 CHAR)
+)
+;
+alter table PADDRESSEXT
+  add constraint ROUTER_LOC_REF foreign key (LOCATION)
+  references CLIENTLOCATION (LOCATION);
+alter table PADDRESSEXT
+  add constraint ROUTER_R_LOC foreign key (ROUTERNAME)
+  references ROUTERS (ROUTERNAME);
+
+create table PROXYADDRESS
+(
+  ID           VARCHAR2(20) not null,
+  ADDRESSID    VARCHAR2(32),
+  PROXYID      VARCHAR2(20),
+  SESSIONCOUNT INTEGER,
+  DELIVERYMODE VARCHAR2(20)
+)
+;
+alter table PROXYADDRESS
+  add primary key (ID);
+alter table PROXYADDRESS
+  add constraint PROXYADDRESS_PADDRESS_REF foreign key (ADDRESSID)
+  references PADDRESS (ADDRESSID);
+alter table PROXYADDRESS
+  add constraint PROXYADDRESS_PROXY_REF foreign key (PROXYID)
+  references PROXY (PROXYID);
+
+
+create table PROXYSERVICES
+(
+  SERVICEID   NVARCHAR2(40) not null,
+  SUBSERVICES VARCHAR2(4000),
+  XPDL        CLOB,
+  CONTENTS    CLOB
+)
+;
+alter table PROXYSERVICES
+  add constraint PROXYSERVICES_PK primary key (SERVICEID);
+alter table PROXYSERVICES add PROXYTYPE NVARCHAR2(40);
+comment on column PROXYSERVICES.PROXYTYPE
+  is '代理服务类型（cbr：in上的代理服务，out：out上的代理服务）';
+
+create table REVERSALCODE
+(
+  SERVICEID  NVARCHAR2(40) not null,
+  ESBCODE    VARCHAR2(20) not null,
+  LOCATIONID NVARCHAR2(40) not null
+)
+;
+alter table REVERSALCODE
+  add constraint PK_REVERSALCODE primary key (SERVICEID, ESBCODE, LOCATIONID);
+
+
+create table REVERSALMAPPING
+(
+  SERVICEID    NVARCHAR2(40) not null,
+  REVSERVICEID NVARCHAR2(40) not null
+)
+;
+alter table REVERSALMAPPING
+  add constraint PK_REVERSALMAPPING primary key (SERVICEID);
+
+
+create table REVERSALPOLICY
+(
+  SERVICEID    NVARCHAR2(40) not null,
+  TIMES        VARCHAR2(5) not null,
+  INTERVAL     VARCHAR2(10) not null,
+  AUTOREVERSAL CHAR(1) default 2 not null,
+  LOCATIONID   NVARCHAR2(40) not null,
+  REVERSALSERVICEID   NVARCHAR2(40),
+  REVERSALFLOWNAME   NVARCHAR2(40),
+  TIMEOUT		VARCHAR2(10)
+)
+;
+alter table REVERSALPOLICY
+  add constraint PK_REVERSALPOLICY primary key (SERVICEID, LOCATIONID);
+
+create table REVERSALTRANS
+(
+  ESBFLOWNO        VARCHAR2(100) not null,
+  SERVICEID        NVARCHAR2(40) not null,
+  PREFLOWNO        VARCHAR2(100) not null,
+  SERVICETYPE      VARCHAR2(10),
+  REVBINDATE       DATE,
+  REVENDDATE       DATE,
+  STATUS           VARCHAR2(10) not null
+)
+;
+alter table REVERSALTRANS
+  add constraint PK_REVERSALTRANS primary key (ESBFLOWNO);
+
+create table REVERSALTRANSLOG
+(
+  ESBFLOWNO 	   VARCHAR2(100) not null,
+  ESBSERVICEFLOWNO VARCHAR2(100) not null,
+  LOCATIONID       NVARCHAR2(40),
+  POSTFLOWNO       VARCHAR2(100),
+  SERVICEID	   VARCHAR2(100),
+  REVSERVICEID     NVARCHAR2(40),
+  REVCHANNELID     NVARCHAR2(40),
+  REVTYPE          VARCHAR2(10),
+  REVBINDATE       DATE,
+  REVENDDATE       DATE,
+  STATUS           VARCHAR2(10),
+  RESPMSG          VARCHAR2(4000)
+);
+
+
+create table SERVICEINFO
+(
+  SERVICEID    NVARCHAR2(40),
+  SERVICETYPE  VARCHAR2(20),
+  CONTRIBUTION VARCHAR2(40),
+  PREPARED     VARCHAR2(20),
+  GROUPNAME    VARCHAR2(20),
+  LOCATION     VARCHAR2(20),
+  DESCRIPTION  VARCHAR2(40),
+  MODIFYTIME	VARCHAR2(100)
+)
+;
+alter table SERVICEINFO
+  add constraint GROUP_CON foreign key (GROUPNAME)
+  references GROUPS (GROUPNAME);
+
+
+create table SERVICEPERIOD
+(
+  LOCATIONID  NVARCHAR2(40) not null,
+  SERVICETYPE CHAR(1) not null,
+  SERVICEID   NVARCHAR2(40) not null,
+  PERIODTYPE  CHAR(1) not null,
+  ISENABLED   CHAR(1) not null,
+  EXPRESSION  VARCHAR2(1000)
+)
+;
+alter table SERVICEPERIOD
+  add constraint PK_SERVICEPERIOD primary key (LOCATIONID, SERVICETYPE, SERVICEID, PERIODTYPE);
+
+
+create table SERVICEPRIORITY
+(
+  SERVICEID  NVARCHAR2(40) not null,
+  LOCATION   VARCHAR2(40) not null,
+  POOLSIZE   INTEGER,
+  BUFFERSIZE INTEGER,
+  SERVICEMODE  VARCHAR2(2) 
+)
+;
+alter table SERVICEPRIORITY
+  add constraint SERVICEPRIORITY_PK primary key (SERVICEID, LOCATION);
+alter table SERVICEPRIORITY
+  add constraint PRIORITY_LOC_REF foreign key (LOCATION)
+  references CLIENTLOCATION (LOCATION);
+
+
+create table SERVICES
+(
+  NAME         NVARCHAR2(40),
+  INADDRESSID  VARCHAR2(32),
+  OUTADDRESSID VARCHAR2(32),
+  TYPE         VARCHAR2(20),
+  SESSIONCOUNT INTEGER,
+  DELIVERYMODE VARCHAR2(20),
+  NODEID       VARCHAR2(8),
+  LOCATION     VARCHAR2(40),
+  routerable   VARCHAR2(8)
+)
+;
+alter table SERVICES
+  add constraint SVC_ROUTER_REF foreign key (INADDRESSID)
+  references PADDRESS (ADDRESSID);
+
+
+create table SERVICESYSTEM
+(
+  NAME        NVARCHAR2(40) not null,
+  DESCRIPTION VARCHAR2(200),
+  REALCHANNEL VARCHAR2(20),
+  adapter     VARCHAR2(1000)
+)
+;
+alter table SERVICESYSTEM
+  add constraint PK_SERVICESYSTEM primary key (NAME);
+
+
+create table SERVICESYSTEMATTR
+(
+  SERVICESYSTEMNAME NVARCHAR2(40) not null,
+  ATTRNAME          NVARCHAR2(40) not null,
+  ATTRVALUE         NVARCHAR2(100) not null,
+  ATTRDESC          NVARCHAR2(200)
+)
+;
+alter table SERVICESYSTEMATTR
+  add constraint PK_SERVICESYSTEMPARAM primary key (SERVICESYSTEMNAME, ATTRNAME);
+
+
+create table SERVICESYSTEMMAP
+(
+  NAME      NVARCHAR2(40) not null,
+  SERVICEID NVARCHAR2(40) not null,
+  adapter   NVARCHAR2(200)
+)
+;
+alter table SERVICESYSTEMMAP
+  add constraint PK_SERVICESYSTEMMAP primary key (NAME, SERVICEID);
+
+
+create table SERVICEVERSION
+(
+  LOCATIONID     NVARCHAR2(40) not null,
+  CONTRIBUTIONID NVARCHAR2(40) not null,
+  SERVICEID      NVARCHAR2(40) not null,
+  CONTAINERTYPE  VARCHAR2(10) not null,
+  SERVICETYPE    VARCHAR2(10) default 'normal' not null,
+  DEPLOYTYPE     VARCHAR2(10) default 'base' not null,
+  VERSIONNUMBER  VARCHAR2(20) not null,
+  ISDEFAULT      CHAR(1) not null
+)
+;
+alter table SERVICEVERSION
+  add constraint PK_SERVICEVERSION primary key (LOCATIONID, CONTRIBUTIONID, SERVICEID, VERSIONNUMBER);
+
+
+create table TEMPLATES
+(
+  ID        NVARCHAR2(40) not null,
+  MARK      VARCHAR2(20),
+  TEMPLATES CLOB
+)
+;
+alter table TEMPLATES
+  add primary key (ID);
+
+
+create table WEBSERVICES
+(
+  ID          VARCHAR2(40) not null,
+  UNITID      VARCHAR2(40),
+  NAME        NVARCHAR2(40),
+  METHOD      NVARCHAR2(40),
+  DEPTNAME    VARCHAR2(40),
+  DESCRIPTION VARCHAR2(200)
+)
+;
+alter table WEBSERVICES
+  add constraint WEBSERVICES_PK primary key (ID);
+
+
+create table WSDEPLOY
+(
+  DEPLOYNAME   VARCHAR2(40) not null,
+  DEPLOYTYPE   VARCHAR2(40) not null,
+  LOCATIONID   VARCHAR2(20) not null,
+  DEPARTMENT   VARCHAR2(40),
+  SECURITYNAME VARCHAR2(100) not null
+)
+;
+alter table WSDEPLOY
+  add constraint PK_WSDEPLOY primary key (DEPLOYNAME);
+
+create table WSDEPLOYHTTP
+(
+  DEPLOYNAME VARCHAR2(40) not null,
+  UDDIKEY    VARCHAR2(40),
+  URL        VARCHAR2(200) not null,
+  CHANNELID  VARCHAR2(40)
+)
+;
+alter table WSDEPLOYHTTP
+  add constraint PK_WSDEPLOYHTTP primary key (DEPLOYNAME, URL);
+
+create table WSDEPLOYITEM
+(
+  DEPLOYNAME  VARCHAR2(40) not null,
+  SERVICENAME VARCHAR2(40) not null
+)
+;
+alter table WSDEPLOYITEM
+  add constraint PK_WSDEPLOYITEM primary key (DEPLOYNAME, SERVICENAME);
+
+
+create table WSDEPLOYJMS
+(
+  DEPLOYNAME         VARCHAR2(40) not null,
+  UDDIKEY            VARCHAR2(40),
+  URL                VARCHAR2(200) not null,
+  CHANNELID          VARCHAR2(40),
+  LISTENJNDIFACTORY  VARCHAR2(100) not null,
+  LISTENPROVIDERURL  VARCHAR2(100) not null,
+  LISTENQUEUEFACTORY VARCHAR2(100) not null,
+  LISTENQUEUENAME    VARCHAR2(100) not null,
+  SENDJNDIFACTORY    VARCHAR2(100) not null,
+  SENDPROVIDERURL    VARCHAR2(100) not null,
+  SENDQUEUEFACTORY   VARCHAR2(100) not null,
+  SENDQUEUENAME      VARCHAR2(100) not null,
+  SESSIONCOUNT       VARCHAR2(10) not null,
+  JMSTHREADCOUNT     VARCHAR2(10) not null
+)
+;
+alter table WSDEPLOYJMS
+  add constraint PK_WSDEPLOYJMS primary key (DEPLOYNAME, URL);
+
+
+create table ESB_METADATA_FILE
+(
+  CONFIGID VARCHAR2(64),
+  NAME     VARCHAR2(100),
+  CONTENT  CLOB,
+  LOCATION VARCHAR2(20)
+)
+;
+comment on column ESB_METADATA_FILE.CONFIGID
+  is '元数据配置id';
+comment on column ESB_METADATA_FILE.NAME
+  is '文件名';
+comment on column ESB_METADATA_FILE.CONTENT
+  is '文件内容';
+comment on column ESB_METADATA_FILE.LOCATION
+  is '节点名称';
+
+
+create table ESB_METADATA_TRANSFORM
+(
+  CONFIGID       VARCHAR2(64) not null,
+  GROUPNAME      VARCHAR2(20),
+  CHANNEL        VARCHAR2(40),
+  SERVICE        VARCHAR2(40),
+  METADATACONFIG CLOB,
+  SERVICESYSTEM  VARCHAR2(40),
+  TYPE           VARCHAR2(20)
+)
+;
+comment on column ESB_METADATA_TRANSFORM.CONFIGID
+  is '编号';
+comment on column ESB_METADATA_TRANSFORM.GROUPNAME
+  is '组名';
+comment on column ESB_METADATA_TRANSFORM.CHANNEL
+  is '渠道名';
+comment on column ESB_METADATA_TRANSFORM.SERVICE
+  is '服务名';
+comment on column ESB_METADATA_TRANSFORM.METADATACONFIG
+  is '元数据配置';
+comment on column ESB_METADATA_TRANSFORM.SERVICESYSTEM
+  is '服务系统名称';
+comment on column ESB_METADATA_TRANSFORM.TYPE
+  is '类型：common、in、out';
+alter table ESB_METADATA_TRANSFORM
+  add constraint PK_ESB_METADATA_TRANSFORM primary key (CONFIGID);
+
+
+-- Add/modify columns 
+alter table ESB_METADATA_TRANSFORM add MESSAGETYPE VARCHAR2(20);
+-- Add comments to the columns 
+comment on column ESB_METADATA_TRANSFORM.MESSAGETYPE
+  is '报文类型：fix、cd';
+  
+  
+create table ESB_ADAPTER_TEMPLATE
+(
+  NAME     VARCHAR2(50) not null,
+  ADAPTERS VARCHAR2(1000),
+  TYPE     VARCHAR2(20),
+  REMARK   VARCHAR2(100),
+  PROTOCOLADAPTER  VARCHAR2(100),
+  IDENTIFYRULEID VARCHAR2(100),
+  JORUNALCLASSIFYID VARCHAR2(100)
+)
+;
+comment on table ESB_ADAPTER_TEMPLATE
+  is '数据适配器模板配置';
+comment on column ESB_ADAPTER_TEMPLATE.NAME
+  is '模板名称';
+comment on column ESB_ADAPTER_TEMPLATE.ADAPTERS
+  is '适配器配置';
+comment on column ESB_ADAPTER_TEMPLATE.TYPE
+  is '适配类型（IN接入，OUT接出）';
+comment on column ESB_ADAPTER_TEMPLATE.REMARK
+  is '备注';
+comment on column ESB_ADAPTER_TEMPLATE.identifyruleid
+is '规则配置';
+
+
+
+alter table ESB_ADAPTER_TEMPLATE
+  add constraint PK_ESB_ADAPTER_TEMPLATE primary key (NAME);
+
+-- Create table
+create table ESB_ADAPTER_TYPE
+(
+  TYPENAME VARCHAR2(20) not null,
+  TYPEDESC VARCHAR2(20),
+  SEQUEUE  NUMBER
+);
+-- Add comments to the columns 
+comment on column ESB_ADAPTER_TYPE.TYPENAME
+  is '适配类型';
+comment on column ESB_ADAPTER_TYPE.TYPEDESC
+  is '描述';
+comment on column ESB_ADAPTER_TYPE.SEQUEUE
+  is '排序';
+alter table ESB_ADAPTER_TYPE
+  add constraint PK_ESB_ADAPTER_TYPE primary key (TYPENAME)
+  
+  
+-- Add/modify columns 
+alter table SERVICEINFO add ADAPTERTYPE VARCHAR2(20);
+-- Add comments to the columns 
+comment on column SERVICEINFO.ADAPTERTYPE
+  is '适配类型';
+  
+-- Add/modify columns 
+alter table BINDMAP add MAPTYPE NVARCHAR2(20);
+-- Add comments to the columns 
+comment on column BINDMAP.MAPTYPE
+  is '绑定类型(request请求，response返回)';
+  
+  
+create table ESB_SEQUENCE
+(
+  NAME  VARCHAR2(50) not null,
+  STEP  NUMBER not null,
+  VALUE NUMBER not null
+)
+;
+comment on column ESB_SEQUENCE.NAME
+  is '序列名称';
+comment on column ESB_SEQUENCE.STEP
+  is '步长';
+comment on column ESB_SEQUENCE.VALUE
+  is '当前值';
+alter table ESB_SEQUENCE
+  add constraint PK_ESB_SEQUENCE primary key (NAME);
+  
+--增加列for case 950
+alter table MAPPING add TYPE VARCHAR2(16);
+comment on column MAPPING.TYPE
+is 'in/out/in_out';
+
+--修改列for case 1197
+alter table BINDTYPEDEFINE modify VMPATH VARCHAR2(4000);
+
+--修改列for case 1440
+alter table SERVICEPERIOD add CHANNELID VARCHAR2(40);
+-- Add comments to the columns 
+comment on column SERVICEPERIOD.CHANNELID
+  is '渠道编号';
+  
+-- Add/modify columns 
+alter table SERVICEINFO add ISCREATE VARCHAR2(20);
+-- Add comments to the columns 
+comment on column SERVICEINFO.ISCREATE
+  is '是否是新建服务';
+  
+-- Create table
+create table ESB_SERVICE_CONTROL
+(
+  SERVICEID VARCHAR2(40),
+  CHANNELID VARCHAR2(40)
+);
+-- Create/Recreate indexes 
+create unique index PK_ESB_SERVICE_CONTROL on ESB_SERVICE_CONTROL (SERVICEID, CHANNELID);
+
+-- Create table for case 1532
+drop table mapping;
+create table MAPPING
+(
+  ID            VARCHAR2(16) not null,
+  SOURCEID      VARCHAR2(4000),
+  TARGETID      VARCHAR2(40),
+  MAPPINGID     VARCHAR2(16),
+  SERVICEID     VARCHAR2(40 CHAR),
+  TEMPLATE      BLOB,
+  TRANSFORMTYPE VARCHAR2(40),
+  TYPE          VARCHAR2(16)
+);
+alter table MAPPING
+  add constraint MAPPING_PK primary key (ID);
+alter table MAPPING
+  add constraint MPCFG_REF foreign key (MAPPINGID)
+  references MAPPINGCONFIG (ID);
+  
+-- Add/modify columns 
+alter table PADDRESS add LOGICADDRESS VARCHAR2(20);
+-- Add comments to the columns 
+comment on column PADDRESS.LOGICADDRESS
+  is '逻辑地址';
+  
+-- Create table
+create table ESB_LOGIC_ADDRESS_MAPPING
+(
+  MAPPING_ID       VARCHAR2(64) not null,
+  CLUSTER_IDENTIFY VARCHAR2(64) not null,
+  LOGIC_NAME       VARCHAR2(400) not null,
+  ADDRESS_ID       VARCHAR2(400) not null
+);
+-- Add comments to the columns 
+comment on column ESB_LOGIC_ADDRESS_MAPPING.MAPPING_ID
+  is '映射编号';
+comment on column ESB_LOGIC_ADDRESS_MAPPING.CLUSTER_IDENTIFY
+  is '映射对应的节点标示';
+comment on column ESB_LOGIC_ADDRESS_MAPPING.LOGIC_NAME
+  is '逻辑地址名称';
+comment on column ESB_LOGIC_ADDRESS_MAPPING.ADDRESS_ID
+  is '物理地址id';
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ESB_LOGIC_ADDRESS_MAPPING
+  add constraint PK_ESB_LOGIC_ADDRESS_MAPPING primary key (MAPPING_ID);
+alter table ESB_LOGIC_ADDRESS_MAPPING
+  add constraint UNI_ESB_LOGIC_ADDRESS_MAPPING unique (CLUSTER_IDENTIFY, LOGIC_NAME);
+
+--for case 1133
+drop index PK_ESB_FAULT_PROV
+
+--for case 1006
+
+-- Create table
+create table ESB_CLUSTER_NOTIFY_RESULT
+(
+  SENDMESSAGE	  BLOB,
+  TIME            VARCHAR2(20),
+  SOURCECLIENT    VARCHAR2(40),
+  COMMAND         VARCHAR2(40),
+  LOCATION        VARCHAR2(40),
+  SUMMARY         VARCHAR2(100),
+  SENDHEADER      VARCHAR2(1000),
+  TARGETCLIENT    VARCHAR2(40),
+  RESPONSEMESSAGE VARCHAR2(4000),
+  RESPONSEHEADER  VARCHAR2(1000),
+  ID              VARCHAR2(50) not null
+);
+-- Add comments to the table 
+comment on table ESB_CLUSTER_NOTIFY_RESULT
+  is '多路通知的执行结果信息';
+-- Add comments to the columns 
+comment on column ESB_CLUSTER_NOTIFY_RESULT.SENDMESSAGE
+  is '请求具体报文';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.TIME
+  is '返回的时间';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.SOURCECLIENT
+  is '发起通知的client';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.COMMAND
+  is '管理监控命令';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.LOCATION
+  is '接收端容器';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.SUMMARY
+  is '返回信息摘要';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.SENDHEADER
+  is '请求头部信息';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.TARGETCLIENT
+  is '接收通知的client';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.RESPONSEMESSAGE
+  is '响应的具体报文';
+comment on column ESB_CLUSTER_NOTIFY_RESULT.RESPONSEHEADER
+  is '响应的头部信息';
+
+  
+
+create table DATAADAPTER_PARAM
+(
+	DATAADAPTERID VARCHAR2(40),
+	LOCATION      VARCHAR2(20),
+	PARAMNAME     VARCHAR2(100),
+	PARAMVALUE    VARCHAR2(100),
+	PARAMDESC     VARCHAR2(100),
+	ISGROUP       VARCHAR2(20),
+	BIGFILE       BLOB
+);
+
+create table ESB_DB_LOG
+(
+  OPERID    VARCHAR2(50) not null,
+  OPERTABLE VARCHAR2(30),
+  OPERUSER  VARCHAR2(50),
+  OPERTYPE  VARCHAR2(10),
+  OPERTIME  VARCHAR2(20)
+);
+alter table ESB_DB_LOG
+  add constraint PK_ESB_DB_LOG primary key (OPERID);
+  
+create table ESB_DB_LOG_INFO
+(
+  OPERID    VARCHAR2(50) not null,
+  OPERSQL   CLOB,
+  OPERPARAM CLOB
+);
+create table MONITORPARA
+(
+  CLUSTERTYPE   VARCHAR2(20) not null,
+  LOCATION    VARCHAR2(20) not null,
+  PARAMNAME   	VARCHAR2(50) not null,
+  PARAMVALUE  	VARCHAR2(20),
+  ISVALID     	VARCHAR2(1),
+  DESCRIPTION	VARCHAR2(400)
+);
+alter table ESB_DB_LOG_INFO
+  add constraint FK_ESB_DB_LOG_INFO foreign key (OPERID)
+  references ESB_DB_LOG (OPERID);
+
+CREATE TABLE THREADPARAMMONITOR (
+   name  VARCHAR2(100) DEFAULT NULL,
+   type  INTEGER      DEFAULT '0',
+   info  VARCHAR2(400) DEFAULT NULL,
+   dsc   VARCHAR2(400) DEFAULT NULL,
+   time  TIMESTAMP DEFAULT NULL,
+   LOOP VARCHAR2(100), 
+   LOCATION VARCHAR2(100)
+ ) ;
+
+create table BUSS_LOG_CONFIGURE
+(
+  LOCATION    VARCHAR2(20),
+  PARAMNAME   VARCHAR2(50),
+  PARAMVALUE  VARCHAR2(100),
+  DESCRIPTION VARCHAR2(200)
+);
+create table LOGAPP_BAK_PARAM
+(
+  PARAMNAME   VARCHAR2(50),
+  PARAMVALUE  VARCHAR2(100),
+  DESCRIPTION VARCHAR2(200)
+);
+create table LOGNODE_MANAGER
+(
+  LOGNODEID   VARCHAR2(50) not null,
+  LOGNODEDESC VARCHAR2(100),
+  LOGNODEIP   VARCHAR2(50)
+);
+alter table LOGNODE_MANAGER
+  add constraint LOGNODE_MANAGER_PK primary key (LOGNODEID)
+;
+create table LOGNODE_STORE
+(
+  LOGNODEID   VARCHAR2(50),
+  STORETYPE   VARCHAR2(50),
+  STOREPATH   VARCHAR2(100),
+  DESCRIPTION VARCHAR2(200)
+);
+create table THREADPOOL
+(
+  NAME        VARCHAR2(50) not null,
+  MAXNUM      VARCHAR2(50),
+  CORNUM      VARCHAR2(50),
+  TASKQUENUM  VARCHAR2(50),
+  MAXIDLETIME VARCHAR2(50),
+  TIMEUNIT    VARCHAR2(50)
+);
+alter table THREADPOOL
+  add constraint THREADPOOL_PK primary key (NAME);
+
+create table ESB_ADAPTER_TEMPLATE_SVCPARAM
+(
+  TEMPLATENAME VARCHAR2(100) not null,
+  ADAPTERNAME  VARCHAR2(100) not null,
+  PARAMS       VARCHAR2(4000)
+);
+
+create table ESB_F5_CONTROL
+(
+  CLUSTERNAME VARCHAR2(50) not null,
+  STATUS      VARCHAR2(10) not null
+);
+comment on column ESB_F5_CONTROL.CLUSTERNAME
+  is '多路标识';
+comment on column ESB_F5_CONTROL.STATUS
+  is 'F5是否开启';
+alter table ESB_F5_CONTROL
+  add constraint PK_ESB_F5_CONTROL primary key (CLUSTERNAME);
+  
+
+CREATE TABLE TOPIC
+(
+  TOPIC_ID                VARCHAR2(100 CHAR)       NOT NULL,
+  MESSAGE_NAME            VARCHAR2(100 CHAR)	   NOT NULL,
+  SERVICEID               VARCHAR2(1000 CHAR),
+  ROLLBACK_SERVICE_ID     VARCHAR2(100 CHAR),
+  SUBSCRIBERS             VARCHAR2(1000 CHAR),
+  PUBLISHERS              VARCHAR2(100 CHAR),
+  TRANSMIT_MODE           VARCHAR2(100 CHAR),
+  TRANSMIT_MAX_COUNTS     VARCHAR2(10 CHAR),
+  TRANSMIT_INTERVAL_TIME  VARCHAR2(10 CHAR),
+  TOPIC_STATUS            VARCHAR2(1 CHAR),
+  MESSAGE_MAX_LEN         VARCHAR2(20 CHAR),
+  DYNAMIC_FLG             VARCHAR2(1 CHAR),
+  IDENTIFYER			  VARCHAR2(50 CHAR)
+);
+alter table TOPIC
+  add primary key (MESSAGE_NAME);
+
+CREATE TABLE ORIGINAL_MESSAGE
+(
+  ORIGINAL_MESSAGE_ID     VARCHAR2(100 CHAR)    NOT NULL,
+  MESSAGE_PROCESSOR_ID    VARCHAR2(100 CHAR),
+  MESSAGE_CONTENT         BLOB,
+  SUBJECT_ID              VARCHAR2(100 CHAR),
+  PUBLISH_JOURNAL_NO      VARCHAR2(100 CHAR),
+  PUBLISHER               VARCHAR2(100 CHAR),
+  ESB_JOURNAL_NO          VARCHAR2(100 CHAR),
+  SERVICE_ID              VARCHAR2(100 CHAR),
+  ROLLBACK_SERVICE_ID     VARCHAR2(100 CHAR),
+  SUBSCRIBERS             VARCHAR2(1000 CHAR),
+  TRANSMIT_INTERVAL_TIME  INTEGER,
+  TRANSMIT_MAX_COUNTS     INTEGER,
+  SAVE_TIME               TIMESTAMP(6)          DEFAULT systimestamp          NOT NULL,
+  CALLBACK_STATUS         VARCHAR2(20 CHAR),
+  MESSAGE_STATUS          VARCHAR2(20 CHAR)
+);
+alter table ORIGINAL_MESSAGE
+  add primary key (ORIGINAL_MESSAGE_ID);
+
+
+  CREATE TABLE HANDLED_MESSAGE
+(
+  ORIGINAL_MESSAGE_ID     VARCHAR2(100 CHAR)    NOT NULL,
+  MESSAGE_PROCESSOR_ID    VARCHAR2(100 CHAR),
+  MESSAGE_CONTENT         BLOB,
+  SUBJECT_ID              VARCHAR2(100 CHAR),
+  PUBLISH_JOURNAL_NO      VARCHAR2(100 CHAR),
+  PUBLISHER               VARCHAR2(100 CHAR),
+  ESB_JOURNAL_NO          VARCHAR2(100 CHAR),
+  SERVICE_ID              VARCHAR2(100 CHAR),
+  ROLLBACK_SERVICE_ID     VARCHAR2(100 CHAR),
+  SUBSCRIBERS             VARCHAR2(1000 CHAR),
+  TRANSMIT_INTERVAL_TIME  INTEGER,
+  TRANSMIT_MAX_COUNTS     INTEGER,
+  SAVE_TIME               TIMESTAMP(6)          DEFAULT  systimestamp NOT NULL,
+  CALLBACK_STATUS         VARCHAR2(20 BYTE),
+  MESSAGE_STATUS          VARCHAR2(20 CHAR)
+);
+alter table HANDLED_MESSAGE
+  add primary key (ORIGINAL_MESSAGE_ID);
+
+
+
+CREATE TABLE TRANSMIT_MESSAGE
+(
+  MESSAGE_JOURNAL_NO   VARCHAR2(100 CHAR)       NOT NULL,
+  ORIGINAL_MESSAGE_ID  VARCHAR2(100 CHAR)       NOT NULL,
+  SUBSCRIBER           VARCHAR2(100 CHAR),
+  NEXT_TRANSMIT_TIME   TIMESTAMP(6),
+  TRANSMIT_TIME        TIMESTAMP(6),
+  TRANSMIT_COUNTS      INTEGER,
+  RESPONSE_CODE        VARCHAR2(100 CHAR),
+  RESPONSE_MESSAGE     VARCHAR2(4000 CHAR),
+  MESSAGE_STATUS       VARCHAR2(20 CHAR)
+);
+ALTER TABLE TRANSMIT_MESSAGE 
+    ADD PRIMARY KEY (MESSAGE_JOURNAL_NO);
+ALTER TABLE TRANSMIT_MESSAGE
+ ADD FOREIGN KEY (ORIGINAL_MESSAGE_ID) 
+ REFERENCES HANDLED_MESSAGE (ORIGINAL_MESSAGE_ID);
+
+CREATE TABLE CONTRACTOR
+(
+  CONTRACTOR_ID    VARCHAR2(100 CHAR)  NOT NULL,
+  CONTRACTOR_NAME  VARCHAR2(100 CHAR),
+  TELEPHONE        VARCHAR2(100 CHAR),
+  STATUS           VARCHAR2(1 CHAR)
+);
+ALTER TABLE CONTRACTOR
+ ADD PRIMARY KEY
+ (CONTRACTOR_ID);
+
+
+
+create table ESB2_TRANS_LOG_MSG
+(
+ESBFLOWNO  VARCHAR2(1000) not null,
+FLOWSTEPID CHAR(18) not null,
+PKGCONTENT BLOB,
+FLAT_DATE  DATE,
+TYPE VARCHAR2(20)
+);
+ALTER TABLE ESB2_TRANS_LOG_MSG
+ADD constraint PK_ESB2_TRANS_LOG_MSG PRIMARY KEY (ESBFLOWNO,FLOWSTEPID );
+
+
+
+
+create table ESB2_TRANS_LOG_STAMP
+(
+ESBFLOWNO   VARCHAR2(1000) not null,
+TRANSSTAMP1 TIMESTAMP(3),
+TRANSSTAMP2 TIMESTAMP(3),
+TRANSSTAMP3 TIMESTAMP(3),
+TRANSSTAMP4 TIMESTAMP(3),
+FLAT_DATE   DATE
+);
+
+alter table ESB2_TRANS_LOG_STAMP
+add constraint PK_ESB2_TRANS_LOG_STAMP primary key (ESBFLOWNO);
+
+
+create table ESB2_TRANS_OPT_LOG
+(
+ESBFLOWNO   VARCHAR2(1000) not null,
+FLOWSTEPID  CHAR(18) not null,
+PREFLOWNO   VARCHAR2(200),
+POSTFLOWNO  VARCHAR2(200),
+SERVICEFLOW VARCHAR2(40),
+FLAT_DATE   DATE
+);
+
+ALTER TABLE ESB2_TRANS_OPT_LOG
+ADD constraint PK_ESB2_TRANS_OPT_LOG PRIMARY KEY (ESBFLOWNO,FLOWSTEPID );
+
+
+create table ESB2_TRANS_REQ_LOG
+(
+ESBFLOWNO          VARCHAR2(1000) not null,
+FLOWSTEPID         CHAR(18) not null,
+ESBSERVICEFLOWNO   VARCHAR2(1000),
+SERVICETYPE        VARCHAR2(3),
+LOCATIONID         VARCHAR2(20),
+SERVICEID          VARCHAR2(40),
+LOGICCHANNEL       VARCHAR2(40),
+REALCHANNEL        VARCHAR2(40),
+LOGICSYSTEM        VARCHAR2(40),
+REALSYSTEM         VARCHAR2(40),
+LOOPID             VARCHAR2(40),
+RESPSTATUS         CHAR(1),
+RESPCODE           VARCHAR2(20),
+RESPMSG            VARCHAR2(4000),
+FLAT_DATE          DATE,
+BUSINESSRESPSTATUS CHAR(1),
+BUSINESSRESPCODE   VARCHAR2(20),
+OPERSTAMP          TIMESTAMP(3) default systimestamp not null
+);
+
+
+ALTER TABLE ESB2_TRANS_REQ_LOG
+ADD constraint PK_ESB2_TRANS_REQ_LOG PRIMARY KEY (ESBFLOWNO,FLOWSTEPID );
+
+
+
+
+create table ESB2_TRANS_EXTEND_LOG
+(
+EXTID          integer primary key,
+ESBFLOWNO   VARCHAR2(1000) not null,
+FLOWSTEPID  CHAR(18) not null,
+EXTENDKEY   VARCHAR2(20),
+EXTENDVALUE VARCHAR2(200),
+FLAT_DATE   DATE
+);
+
+
+
+create table ESB_IDENDIFY_RULES
+(
+  NAME         VARCHAR2(50),
+  TYPE         VARCHAR2(50),
+  RULENAME     VARCHAR2(50),
+  RULETYPE     VARCHAR2(50),
+  MESSAGETYPE  VARCHAR2(50),
+  IMPCLASS     VARCHAR2(1000),
+  EXPRESSION   VARCHAR2(2000),
+  NAMESPACE    VARCHAR2(50),
+  MAPPINGTABLE VARCHAR2(4000),
+  MERGERULE    VARCHAR2(50),
+  SERVICEID    VARCHAR2(50)
+);
+
+create table JOURNALCLASSIY_OPT
+(
+  ID          VARCHAR2(50) not null,
+  PREFLOWNO   VARCHAR2(10),
+  POSTFLOWNO  VARCHAR2(10),
+  SERVICEFLOW VARCHAR2(10),
+  LOCATION    VARCHAR2(20)
+);
+
+alter table JOURNALCLASSIY_OPT
+  add constraint JOURNALCLASSIY_OPT_PK primary key (ID);
+
+create table JOURNALCLASSIY_EXTEND
+(
+  ID          VARCHAR2(50),
+  KEY         VARCHAR2(500),
+  DESCRIPTION VARCHAR2(500)
+);
+
+alter table JOURNALCLASSIY_EXTEND
+  add constraint JOURNALCLASSIY_EXTEND_FK foreign key (ID)
+  references JOURNALCLASSIY_OPT (ID);
+  
+create table ESB2_FLOW_CTRL_DIMENSION
+(
+  DIMENSION VARCHAR2(500) not null,
+  PRIORITY  VARCHAR2(5) not null,
+  TYPE      VARCHAR2(50) default 'default',
+  used 	    VARCHAR2(20)
+)
+;
+comment on column ESB2_FLOW_CTRL_DIMENSION.DIMENSION
+  is '维度名称';
+comment on column ESB2_FLOW_CTRL_DIMENSION.PRIORITY
+  is '维度优先级';
+comment on column ESB2_FLOW_CTRL_DIMENSION.TYPE
+  is '类型(系统默认或者自定义)';
+comment on column ESB2_FLOW_CTRL_DIMENSION.USED
+  is '是否被启用';
+alter table ESB2_FLOW_CTRL_DIMENSION
+  add constraint PK_DIMENSIONNAME primary key (DIMENSION);
+  

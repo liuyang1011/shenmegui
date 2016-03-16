@@ -35,7 +35,7 @@ public class CoreXMLConfigExportGender extends ConfigExportGenerator {
                 Document doc = DocumentHelper.createDocument();
                 Element serviceElement = doc.addElement("service");//根节点
                 addAttribute(serviceElement, "package_type", "xml");
-                addAttribute(serviceElement, "store-mode", "UTF-8");
+                addAttribute(serviceElement, "store-mode", "GBK");
                 String serviceId = serviceInvoke.getServiceId();
                 String operationId = serviceInvoke.getOperationId();
                 String fileName = this.getReqFilePath(serviceInvoke, path);
@@ -72,12 +72,12 @@ public class CoreXMLConfigExportGender extends ConfigExportGenerator {
                 Document doc = DocumentHelper.createDocument();
                 Element serviceElement = doc.addElement("service");//根节点
                 addAttribute(serviceElement, "package_type", "xml");
-                addAttribute(serviceElement, "store-mode", "UTF-8");
+                addAttribute(serviceElement, "store-mode", "GBK");
                 List<InterfaceHeadRelate> interfaceHeadRelates = inter.getHeadRelates();
                 if (null != interfaceHeadRelates) {
                     if (interfaceHeadRelates.size() > 0) {
                         String interfaceHeadId = interfaceHeadRelates.get(0).getHeadId();
-                        Ida headRequestIda = idaService.getByInterfaceIdHeadId(interfaceHeadId, Constants.ElementAttributes.REQUEST_NAME);
+                        Ida headRequestIda = idaService.getByInterfaceIdHeadId(interfaceHeadId, Constants.ElementAttributes.RESPONSE_NAME);
                         List<Ida> children = idaService.getNotEmptyByParentId(headRequestIda.getId());
                         Element sysHeadElement = serviceElement.addElement("sys");
                         fillContent(sysHeadElement, children);
@@ -122,6 +122,7 @@ public class CoreXMLConfigExportGender extends ConfigExportGenerator {
             addAttribute(idaElement, "type", "array");
             addAttribute(idaElement, "is_struct", "false");
         }
+
         String idaId = ida.getId();
         List<IdaAttribute> idaAttributes = idaAttrbuteService.findBy("idaId", idaId);
         for (IdaAttribute idaAttribute : idaAttributes) {
@@ -134,6 +135,11 @@ public class CoreXMLConfigExportGender extends ConfigExportGenerator {
             }
         }
         addAttribute(idaElement, "chinese_name", ida.getStructAlias());
+        String remark = ida.getRemark();
+        String[] expressions = remark.split("=");
+        if(expressions.length > 1){
+            addAttribute(idaElement, expressions[0], expressions[1]);
+        }
         return idaElement;
     }
 

@@ -43,13 +43,11 @@ public class OperationHisController {
 	}
 	
 	//根据服务和场景id
-//	@RequiresPermissions({"service-get"})
 	@RequiresPermissions({"version-get"})
 	@RequestMapping("/getByOS/{serviceId}/{operationId}")
 	@ResponseBody
 	public Map<String, Object> getByOS(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId) {
 		List<?> rows = operationHisServiceImpl.getByOS(operationId, serviceId);
-		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("total", rows.size());
 		result.put("rows", rows);
@@ -62,7 +60,6 @@ public class OperationHisController {
 	public List<VersionVO> getVersions(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId) {
 		List<OperationHis> operationHises = operationHisServiceImpl.getByOS(operationId, serviceId);
 		List<VersionVO> versions = new ArrayList<VersionVO>();
-
 		for(int i = 0; i < operationHises.size(); i ++){
 			VersionHis version = operationHises.get(i).getVersionHis();
 			version.setAutoId(operationHises.get(i).getAutoId());
@@ -108,7 +105,6 @@ public class OperationHisController {
 	public Map<String, Object> operationHisList(HttpServletRequest req) {
 		int pageNo = Integer.parseInt(req.getParameter("page"));
 		int rowCount = Integer.parseInt(req.getParameter("rows"));
-
 		String serviceId = req.getParameter("serviceId");
 		if(null == serviceId) serviceId = "";
 		String serviceName = req.getParameter("serviceName");
@@ -133,9 +129,6 @@ public class OperationHisController {
 		}else{
 			operationName = "";
 		}
-
-
-
 		String hql = "from OperationHis a where a.state = '"+Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED+"'";
 		hql += " and a.service.serviceId like ? and a.service.serviceName like ?";
 		hql += " and a.operationId like ? and a.operationName like ?";

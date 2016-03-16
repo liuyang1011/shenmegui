@@ -103,6 +103,11 @@ public class UnStandardFixConfigExportGenerator extends ConfigExportGenerator{
         if("array".equalsIgnoreCase(type)){
             addAttribute(idaElement, "type", "array");
             addAttribute(idaElement, "is_struct", "false");
+        }else{
+            addAttribute(idaElement, "encoding", "GBK");
+            addAttribute(idaElement, "type", type.toLowerCase());
+            String length = ida.getLength();
+            addAttribute(idaElement, "length",length);
         }
         String idaId = ida.getId();
         List<IdaAttribute> idaAttributes =idaAttrbuteService.findBy("idaId", idaId);

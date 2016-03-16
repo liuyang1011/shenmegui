@@ -162,6 +162,7 @@
             <value>
                 /login/** = anon
                 /newui/** = anon
+                /jsp/login/** = anon
                 /** = authc
             </value>
         </property>

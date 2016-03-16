@@ -206,3 +206,11 @@ if(mid.equals("1.15")){
 	}
 
 %>
+<%
+	if(mid.equals("1.16")){
+%>
+{"success":true,"url":"/jsp/escTest/escTest.jsp","title":"ESC服务测试"}
+<%
+	}
+
+%>

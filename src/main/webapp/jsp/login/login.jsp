@@ -39,10 +39,18 @@
 
   </script>
 </head>
-<body class="login-page">
+<body class="login-page" style="background: url('/newui/bg.png');background-size: 100%">
+<span style="background:url('/newui/logo.png')  0 0px;width:147px;
+	 height:47px;
+	 float:left;
+    display:block;
+    margin-top:-60px;
+    margin-left:50px;
+    border:0px solid silver;">
+</span>
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../newui/index2.html"><b>服务治理平台</b>SG</a>
+    <a href="../../newui/index2.html"><b>服务治理平台</b>Sm@rtESG</a>
   </div><!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">登入</p>
@@ -63,7 +71,7 @@
     </form>
 
     <div class="social-auth-links text-center">
-      <p>- OR -</p>
+      <%--<p>- OR -</p>--%>
       <!--
       <a href="#" class="btn btn-block btn-social  btn-flat"><i class="fa"></i> 游客登录 </a>
       -->
