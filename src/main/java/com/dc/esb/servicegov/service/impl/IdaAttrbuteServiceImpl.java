@@ -8,6 +8,8 @@ import com.dc.esb.servicegov.entity.IdaAttribute;
 import com.dc.esb.servicegov.entity.SDAAttribute;
 import com.dc.esb.servicegov.service.SDAAttrbuteService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import org.apache.commons.lang.StringUtils;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,5 +37,15 @@ public class IdaAttrbuteServiceImpl extends AbstractBaseService<IdaAttribute,Str
             return true;
         }
         return false;
+    }
+    public void fillAttr(String idaId, Element element){
+        List<IdaAttribute> list = idaAttrbuteDAO.findBy("idaId", idaId);
+        if(null != list && 0 < list.size()){
+            for(IdaAttribute ia : list){
+                if(null != ia && StringUtils.isNotEmpty(ia.getName())){
+                    element.addAttribute(ia.getName(), ia.getValue());
+                }
+            }
+        }
     }
 }

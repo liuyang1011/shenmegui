@@ -43,6 +43,10 @@ public class ConfigExportGenerator {
     ServiceHeadServiceImpl serviceHeadService;
     @Autowired
     MetadataServiceImpl metadataService;
+    @Autowired
+    SDAAttrbuteServiceImpl sdaAttrbuteService;
+    @Autowired
+    IdaAttrbuteServiceImpl idaAttrbuteService;
 
     String channel_service_path = "template/config_export/nbcb/channel_service_template.xml";//默认请求文件模板路径
     String service_channel_path = "template/config_export/nbcb/service_system_template.xml";//默认响应文件模板路径
@@ -218,9 +222,11 @@ public class ConfigExportGenerator {
         }
         return result;
     }
+    //标准输出
     public void renderSDA(Element parentElement, SDA sda){
         Element element = parentElement.addElement(sda.getStructName());
         element.addAttribute("metadataid", sda.getMetadataId());
+        sdaAttrbuteService.fillAttr(sda.getId(), element);//添加附加属性
         List<SDA> children = sdaService.getChildren(sda);
         if(null != children &&  0 < children.size()){
             for(SDA child : children){
@@ -228,20 +234,23 @@ public class ConfigExportGenerator {
             }
         }
     }
+    //非标报文头输出
     public void renderInterfaceHeadIda(Element parentElement, Ida ida, String headId){
         if(null != ida && StringUtils.isNotEmpty(ida.getStructName())){
             Element idaElement = parentElement.addElement(ida.getStructName());
+            idaAttrbuteService.fillAttr(ida.getId(), idaElement);//ida附加属性
             Map<String, String> params = new HashMap<String, String>();
             params.put("headId", headId);
             params.put("xpath", ida.getXpath());
             SDA sda = sdaService.findUniqueBy(params);
             if(null != sda){
+                sdaAttrbuteService.fillAttr(sda.getId(), idaElement);//SDA附加属性
                 addAttribute(idaElement, "metadataId", sda.getMetadataId());
-                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
-                if(null != metadata){
-                    addAttribute(idaElement, "length", metadata.getLength());
-                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
-                }
+//                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+//                if(null != metadata){
+//                    addAttribute(idaElement, "length", metadata.getLength());
+//                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
+//                }
             }
             List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
             if(null != children && 0 < children.size()){
@@ -251,21 +260,24 @@ public class ConfigExportGenerator {
             }
         }
     }
+    //非标体输出
     public void renderBodyIda(Element parentElement, Ida ida, String serviceId, String operationId ){
         if(null != ida && StringUtils.isNotEmpty(ida.getStructName())){
             Element idaElement = parentElement.addElement(ida.getStructName());
+            idaAttrbuteService.fillAttr(ida.getId(), idaElement);//ida附加属性
             Map<String, String> params = new HashMap<String, String>();
             params.put("serviceId", serviceId);
             params.put("operationId", operationId);
             params.put("xpath", ida.getXpath());
             SDA sda = sdaService.findUniqueBy(params);
             if(null != sda){
+                sdaAttrbuteService.fillAttr(sda.getId(), idaElement);//sda附加属性
                 addAttribute(idaElement, "metadataId", sda.getMetadataId());
-                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
-                if(null != metadata){
-                    addAttribute(idaElement, "length", metadata.getLength());
-                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
-                }
+//                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+//                if(null != metadata){
+//                    addAttribute(idaElement, "length", metadata.getLength());
+//                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
+//                }
             }
             List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
             if(null != children && 0 < children.size()){
@@ -286,7 +298,11 @@ public class ConfigExportGenerator {
                 String startStr = "<" + elementName +">";
                 String endStr = "</" + elementName + ">";
                 str = str.substring(startStr.length());//从前端截取
-                str = str.substring(0, str.length() - endStr.length());//从尾端截取
+                if((str.length() - endStr.length()) <= 0){
+                    return "";
+                }else{
+                    str = str.substring(0, str.length() - endStr.length());//从尾端截取
+                }
             }
         }
 

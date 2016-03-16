@@ -7,6 +7,8 @@ import com.dc.esb.servicegov.entity.SDAAttribute;
 import com.dc.esb.servicegov.service.ErrorCodeService;
 import com.dc.esb.servicegov.service.SDAAttrbuteService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
+import org.apache.commons.lang.StringUtils;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +36,16 @@ public class SDAAttrbuteServiceImpl extends AbstractBaseService<SDAAttribute,Str
             return true;
         }
         return false;
+    }
+
+    public void fillAttr(String sdaId, Element element){
+        List<SDAAttribute> list = sdaAttrbuteDAO.findBy("sdaId", sdaId);
+        if(null != list && 0 < list.size()){
+            for(SDAAttribute sa : list){
+                if(null != sa && StringUtils.isNotEmpty(sa.getName())){
+                    element.addAttribute(sa.getName(), sa.getValue());
+                }
+            }
+        }
     }
 }

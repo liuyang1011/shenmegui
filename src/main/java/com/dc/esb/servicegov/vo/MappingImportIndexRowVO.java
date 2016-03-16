@@ -165,6 +165,12 @@ public class MappingImportIndexRowVO {
     }
 
     public String getInterfaceProId() {
+        if(Constants.INVOKE_TYPE_CONSUMER.equals(type) && StringUtils.isNotEmpty(consumerAbs)){
+            return consumerAbs;
+        }
+        if(Constants.INVOKE_TYPE_PROVIDER.equals(type) && StringUtils.isNotEmpty(providerAbs)){
+            return providerAbs;
+        }
         return interfaceProId;
     }
 
