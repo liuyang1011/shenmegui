@@ -17,6 +17,9 @@ public class EnglishWord {
     @GenericGenerator(name="system-uuid",strategy="uuid")
     private String id;
 
+    @Column(name = "FIRST_WORD")
+    private String firstWord;
+
     @Column(name = "ENGLISH_WORD")
     private String englishWord;
 
@@ -32,8 +35,8 @@ public class EnglishWord {
     @Column(name = "OPT_DATE")
     private String optDate;
 
-    @Column(name = "REMARK")
-    private String remark;
+    @Column(name = "CREATE_USER")
+    private String createUser;
 
     public String getId() {
         return id;
@@ -41,6 +44,14 @@ public class EnglishWord {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getFirstWord() {
+        return firstWord;
+    }
+
+    public void setFirstWord(String firstWord) {
+        this.firstWord = firstWord;
     }
 
     public String getEnglishWord() {
@@ -68,15 +79,6 @@ public class EnglishWord {
     }
 
 
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-
     public String getOptUser() {
         return optUser;
     }
@@ -91,5 +93,13 @@ public class EnglishWord {
 
     public void setOptDate(String optDate) {
         this.optDate = optDate;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
     }
 }

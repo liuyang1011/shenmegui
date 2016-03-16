@@ -19,15 +19,14 @@
     <legend>条件搜索</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>词汇中文名称</th>
-            <td><input class="easyui-textbox" type="text" name="ChineseWord" id="ChineseWord">
-            </td>
-
             <th>词汇英文名称</th>
-            <td><input class="easyui-textbox" type="text" name="EnglishWord" id="EnglishWord">
+            <td><input class="easyui-textbox" type="text" name="englishWord_" id="englishWord_">
             </td>
-            <th>词汇英文缩写</th>
-            <td><input class="easyui-textbox" type="text" name="WordAb" id="WordAb">
+            <th>词汇中文名称</th>
+            <td><input class="easyui-textbox" type="text" name="chineseWord" id="chineseWord">
+            </td>
+            <th>首写字母</th>
+            <td><input class="easyui-textbox" type="text" name="firstWord_" id="firstWord_">
             </td>
             <td align="right"><a href="#" class="easyui-linkbutton"
                                  iconCls="icon-search" id="search">搜索单词</a>
@@ -38,16 +37,18 @@
         </form>
 </fieldset>
 
-<table id="tt" style="height:370px; width:auto;" title="所有单词">
+<table id="tt" style="height:370px; width:auto;" title="词汇列表">
     <thead>
     <tr>
+        <th data-options="field:'',checkbox:true"></th>
         <th field="id" width="100" hidden="true">ID</th>
-        <th field="englishWord" width="100" editor="text">单词名称</th>
-        <th field="wordAb" width="100" align="right" editor="text">单词缩写</th>
-        <th field="chineseWord" width="100" align="right" editor="text">单词中文</th>
-        <th field="remark" width="150" align="right" editor="text">单词备注</th>
-        <th field="optUser" width="100" editor="text">操作用户</th>
-        <th field="optDate" width="100" editor="text">操作日期</th>
+        <th field="firstWord" width="100" align="center" >首写字母</th>
+        <th field="englishWord" width="100" align="center" >词汇英文名称</th>
+        <th field="wordAb" width="100" align="center" >词汇英文缩写</th>
+        <th field="chineseWord" width="100" align="center" >词汇中文名称</th>
+        <th field="optDate" width="200" align="center" >更新时间</th>
+        <th field="optUser" width="100" align="center" >更新用户</th>
+        <th field="createUser" width="100" align="center" >创建用户</th>
     </tr>
     </thead>
 </table>
@@ -70,87 +71,59 @@
                 text: '新增',
                 iconCls: 'icon-add',
                 handler: function () {
-                    $('#tt').edatagrid('addRow');
+//                    $('#tt').edatagrid('addRow');
+                    uiinit.win({
+                        top:"20px",
+                        left:"150px",
+                        w: 500,
+                        iconCls: 'icon-add',
+                        title: "新增词汇",
+                        url: "/jsp/englishWord/add.jsp"
+                    });
+                }
+            },
+            {
+                text: '修改',
+                iconCls: 'icon-edit',
+                handler: function () {
+                   var checkedItems = $('#tt').datagrid('getChecked');
+                   var checkedItem;
+                    if (checkedItems != null && checkedItems.length > 0) {
+                        if (checkedItems.length > 1) {
+                            alert("请只选中一行要修改的数据！");
+                            return false;
+                        }
+                        else {
+                            checkedItem = checkedItems[0];
+                            uiinit.win({
+                                w: 500,
+                                top:"20px",
+                                left:"150px",
+                                iconCls: 'icon-edit',
+                                title: "修改词汇",
+                              //  url: "/englishWord/getById/" + checkedItem.id
+                                url: "/englishWord/editPage?id=" + checkedItem.id
+
+                            });
+                        }
+                    }
+                    else {
+                        alert("请选中要修改的数据！");
+                    }
                 }
             },
             {
                 text: '删除',
                 iconCls: 'icon-remove',
                 handler: function () {
-                    var row = $('#tt').edatagrid('getSelected');
-                    var rowIndex = $('#tt').edatagrid('getRowIndex', row);
-                    $('#tt').edatagrid('deleteRow', rowIndex);
+                    deleteObj();
                 }
-            },
-            {
-                text: ' 保存',
-                iconCls: 'icon-save',
-                handler: function () {
-
-                    for (var per in editedRows) {
-                        $("#tt").datagrid('endEdit', editedRows[per]);
-                    }
-                    var deletedDatas = $('#tt').edatagrid('getChanges',
-                            'deleted');
-                    var addDatas = $('#tt').edatagrid('getChanges',
-                            'inserted');
-                    var updatedDatas = $('#tt').edatagrid('getChanges',
-                            'updated');
-                    for (var i = 0; i < addDatas.length; i++) {
-                        var addData = addDatas[i];
-                        var data = {};
-                        if (addData) {
-                            data.id = addData.id;
-                            data.englishWord = addData.englishWord;
-                            data.wordAb = addData.wordAb;
-                            data.chineseWord = addData.chineseWord;
-                            data.optUser = addData.optUser;
-                            data.optDate = addData.optDate;
-                            data.remark = addData.remark;
-                            englishWordManager.add(data, function (result) {
-                                if (result) {
-                                    alert("保存成功");
-                                } else {
-                                    alert("保存失败");
-                                }
-                            });
-                        }
-                    }
-                    for (var j = 0; j < deletedDatas.length; j++) {
-                        var deleteData = deletedDatas[j];
-                        englishWordManager.deleteById(deleteData.id,
-                                function (result) {
-                                    if (result) {
-                                        alert("删除成功");
-                                    } else {
-                                        alert("删除失败");
-                                    }
-                                });
-                    }
-                    for (var k = 0; k < updatedDatas.length; k++) {
-                        var updatedData = updatedDatas[k];
-                        var data = {};
-                        data.id = updatedData.id;
-                        data.englishWord = updatedData.englishWord;
-                        data.wordAb = updatedData.wordAb;
-                        data.chineseWord = updatedData.chineseWord;
-                        data.optUser = updatedData.optUser;
-                        data.optDate = updatedData.optDate;
-                        data.remark = updatedData.remark;
-                        englishWordManager.modify(data, function (result) {
-                            if (result) {
-                                alert("修改成功");
-                            } else {
-                                alert("修改失败");
-                            }
-                        });
-                    }
-                }
-            }];
-
+            }
+        ]
         $('#tt').edatagrid({
+
             rownumbers: true,
-            singleSelect: true,
+            singleSelect: false,
             url: '/englishWord/getAll',
             method: 'get',
             toolbar: toolbar,
@@ -165,21 +138,60 @@
             autoSave: false
         });
         $('#search').click(function () {
-            var param = {
-                "englishWord": $("#EnglishWord").textbox("getValue"),
-                "chineseWord": $("#ChineseWord").textbox("getValue"),
-                "wordAb": $("#WordAb").textbox("getValue")
-            };
-            if(param.englishWord || param.chineseWord || param.wordAb){
-                englishWordManager.query(param, function (result) {
-                    $('#tt').edatagrid('loadData', result);
-                });
-            }else{
+
+            var queryParams = $('#tt').datagrid('options').queryParams;
+            queryParams.englishWord = $("#englishWord_").textbox("getValue");
+            queryParams.chineseWord = encodeURI($("#chineseWord").textbox("getValue"));
+            queryParams.firstWord = $("#firstWord_").textbox("getValue");
+            if (queryParams.englishWord || queryParams.chineseWord || queryParams.firstWord ) {
+                $("#tt").datagrid('options').queryParams = queryParams;//传递值
+                $("#tt").datagrid('reload');//重新加载table
+            } else {
                 $("#tt").datagrid('reload');
             }
         });
     });
+    var deleteRow = function (data, callBack) {
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/json; charset=utf-8",
+            "url": "/englishWord/deleteWord",
+            "dataType": "json",
+            "data": JSON.stringify(data),
+            "success": function (result) {
+                callBack(result);
+            }
+        });
+    }
+    function deleteObj(){
+        var checkedItems = $('#tt').datagrid('getChecked');
+        if(checkedItems != null && checkedItems.length > 0){
+            if(confirm("确定要删除已选中的"+checkedItems.length+"项吗？一旦删除无法恢复！")){
+                var idss = [];
+                $.each(checkedItems, function(index, item) {
+                    idss.push(item.id);
+                });
+                $.ajax({
+                    type: "post",
+                    async: false,
+                    url: "/englishWord/delete",
+                    dataType: "json",
+                    data: {"ids":idss.join(",")},
+                    success: function(result){
+                        if(result){
+                            alert("操作成功");
+                            $('#tt').datagrid('reload');
+                        }else{
+                            alert("操作失败");
+                        }
 
+                    }
+                });
+            }
+        }else{
+            alert("没有选中项！");
+        }
+    }
 </script>
 
 </body>

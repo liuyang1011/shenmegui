@@ -1,9 +1,11 @@
 package com.dc.esb.servicegov.rsimport.impl;
 
+import com.dc.esb.servicegov.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,8 @@ import com.dc.esb.servicegov.rsimport.IResourceParser;
 import com.dc.esb.servicegov.rsimport.support.ExcelUtils;
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 @Component
 public class EnglishWordXlsxParserImpl implements IResourceParser {
@@ -64,7 +68,13 @@ public class EnglishWordXlsxParserImpl implements IResourceParser {
 		englishWord.setWordAb(ExcelUtils.getValue(row.getCell(WORDA_COLUMN)));
 		englishWord.setOptDate(ExcelUtils.getValue(row.getCell(OPT_DATE_COLUMN)));
 		englishWord.setOptUser(ExcelUtils.getValue(row.getCell(OPT_USER_COLUMN)));
-		englishWord.setRemark(ExcelUtils.getValue(row.getCell(REMARK_COLUMN)));
+//		englishWord.setRemark(ExcelUtils.getValue(row.getCell(REMARK_COLUMN)));
+		englishWord.setFirstWord(ExcelUtils.getValue(row.getCell(WORDA_COLUMN)).substring(0,1).toUpperCase());
+		englishWord.setOptDate(DateUtils.format(new Date()));
+		String userName = (String) SecurityUtils.getSubject().getPrincipal();
+		englishWord.setOptUser(userName);
+		String createUserName = (String) SecurityUtils.getSubject().getPrincipal();
+		englishWord.setCreateUser(createUserName);
 		return englishWord;
 	}
 

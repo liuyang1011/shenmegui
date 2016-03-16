@@ -86,7 +86,7 @@ if(mid.equals("1.14")){
 <%
 	if(mid.equals("3.2")){
 %>
-{"success":true,"url":"/dataTemplate/grid5.jsp","title":"英文单词及缩写管理"}
+{"success":true,"url":"/dataTemplate/grid5.jsp","title":"英文词汇管理"}
 <%
 	}
 	

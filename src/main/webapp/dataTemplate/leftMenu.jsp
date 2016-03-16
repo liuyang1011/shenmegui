@@ -47,7 +47,7 @@
 <ul id="menu-tree">
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
-                <li><a href="javascript:;" class="openable" mid="3.2">英文单词及缩写管理</a></li>
+                <li><a href="javascript:;" class="openable" mid="3.2">英文词汇管理</a></li>
                 <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>

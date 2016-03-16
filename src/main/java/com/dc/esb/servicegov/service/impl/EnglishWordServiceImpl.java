@@ -1,8 +1,11 @@
 package com.dc.esb.servicegov.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
+import com.dc.esb.servicegov.entity.Metadata;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,4 +27,24 @@ public class EnglishWordServiceImpl extends AbstractBaseService<EnglishWord, Str
 	public HibernateDAO getDAO() {
 		return englishWordDAOImpl;
 	}
+
+	/**
+	 * 前端唯一性验证
+	 * @param englishWord
+	 * @return
+	 */
+	public boolean uniqueValid(String englishWord) {
+		EnglishWord entity = findUniqueBy("englishWord",englishWord);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<EnglishWord> getId(String id) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", id);
+		return englishWordDAOImpl.findBy(params);
+	}
+
 }

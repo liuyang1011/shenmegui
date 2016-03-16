@@ -76,7 +76,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
             EnglishWord englishWord = list.get(i);
             if(englishWord != null){
                 HSSFRow row = sheet.createRow(i + 1);
-                String values[] = {englishWord.getChineseWord(), englishWord.getEnglishWord(), englishWord.getWordAb(), englishWord.getOptDate(), englishWord.getOptUser()};
+                String values[] = {englishWord.getFirstWord(),englishWord.getChineseWord(), englishWord.getEnglishWord(), englishWord.getWordAb(), englishWord.getOptDate(), englishWord.getOptUser(),englishWord.getCreateUser()};
                 setRowValue(row, commonStyle, values);
             }
         }
