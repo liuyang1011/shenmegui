@@ -136,9 +136,11 @@ public class CoreXMLConfigExportGender extends ConfigExportGenerator {
         }
         addAttribute(idaElement, "chinese_name", ida.getStructAlias());
         String remark = ida.getRemark();
-        String[] expressions = remark.split("=");
-        if(expressions.length > 1){
-            addAttribute(idaElement, expressions[0], expressions[1]);
+        if(null != remark){
+            String[] expressions = remark.split("=");
+            if(expressions.length > 1){
+                addAttribute(idaElement, expressions[0], expressions[1]);
+            }
         }
         return idaElement;
     }
