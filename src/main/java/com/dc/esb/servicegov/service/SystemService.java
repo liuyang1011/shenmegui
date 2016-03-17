@@ -20,4 +20,9 @@ public interface SystemService extends BaseService<System, String> {
     public List<System> getAllOrderBySystemId();
 
     public List<System> getByUserId(String userId);
+
+    public System createTime(System system);
+
+    public void replaceSystem(System entity,System newEntity);
+
 }

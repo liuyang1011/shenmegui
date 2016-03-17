@@ -221,7 +221,8 @@ var SYSMENU = {
                             }
                         } else if (node.click == "interfaces") {
                             var mid = systemNode.id;
-                            var title = node.text + '(' + mid + ')';
+                            var midtitle=node.systemNo;
+                            var title = node.text + '(' + midtitle + ')';
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
@@ -284,7 +285,8 @@ var SYSMENU = {
                         } else if (node.click == "heads") {
 
                         } else if (node.click == "files") {
-                            var title = "系统" + systemNode.id + "需求文件";
+                            var midtitle=node.systemNo;
+                            var title = "系统" +midtitle+ "需求文件";
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {

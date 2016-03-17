@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
+<%@page contentType="text/html; charset=utf-8" language="java" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,61 +26,53 @@
     <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
         <tr>
             <th width="100">
-                系统ID
+                系统编号
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="systemId" width="100">
+                <input class="easyui-textbox" type="text" id="systemNo" width="100"/>
             </td>
             <th width="100">
-                 中文名称
+                系统英文简称
             </th>
             <td width="100">
-                <input class="easyui-textbox" type="text" id="systemChineseName" width="100">
+                <input class="easyui-textbox" type="text" id="systemAb" width="100"/>
             </td>
             <th width="100">
-                系统简称
+                系统中文名称
             </th>
             <td width="100">
-                <input class="easyui-textbox" type="text" id="systemAb" width="100">
+                <input class="easyui-textbox" type="text" id="systemChineseName" width="100"/>
             </td>
             <th width="100">
-                联系人
+                系统分类
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="principal1" width="100">
+                <input class="easyui-textbox" type="text" id="systemClassify" width="100"/>
             </td>
         </tr>
 
         <tr>
             <th>
-                系统描述
+                系统负责人
             </th>
             <td>
-                <input class="easyui-textbox" type="text" id="featureDesc">
-            </td>
-            <th>
-                系统协议
-            </th>
-            <td>
-                <select class="" id="protocolIdSearch" style="width:155px" panelHeight="auto"
-                        data-options="editable:false">
-                </select>
+                <input class="easyui-textbox" type="text" id="systemPrincipal"/>
             </td>
             <td>
                 &nbsp;
             </td>
             <td>
-                &nbsp;
+                <shiro:hasPermission name="system-get">
+                    <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
+                    <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
+                </shiro:hasPermission>
             </td>
 
             <td>
                 &nbsp;
             </td>
             <td align="right">
-                <shiro:hasPermission name="system-get">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
-                <a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
-                </shiro:hasPermission>
+                &nbsp;
             </td>
         </tr>
     </table>
@@ -90,26 +82,32 @@
 <table id="tg" style="width:100%">
     <thead>
     <tr>
-        <th data-options="field:'systemId',width:'10%'">
-            系统ID
+        <th data-options="field:'systemNo',width:'10%'">
+            系统编号
         </th>
         <th data-options="field:'systemAb',width:'12%'">
-            系统简称
+            系统英文简称
         </th>
         <th data-options="field:'systemChineseName',width:'15%'">
             系统中文名称
         </th>
-        <th data-options="field:'protocolName',width:'15%',align:'center'">
-            系统协议
+        <th data-options="field:'systemClassify',width:'10%',align:'center'">
+            系统分类
         </th>
-        <th data-options="field:'principal1',width:'10%'">
-            联系人
+        <th data-options="field:'systemPrincipal',width:'10%'">
+            系统负责人
         </th>
-        <th data-options="field:'featureDesc',align:'left',width:'20%'">
-            系统描述
+        <th data-options="field:'principalTel',align:'left',width:'10%'">
+            负责人联系方式
         </th>
-        <th data-options="field:'workRange',width:'15%',align:'left'">
-            工作范围
+        <th data-options="field:'createUser',width:'10%',align:'left'">
+            创建用户
+        </th>
+        <th data-options="field:'updateDate',width:'15%',align:'left'">
+            更新时间
+        </th>
+        <th data-options="field:'updateUser',width:'10%',align:'left'">
+            更新用户
         </th>
     </tr>
     </thead>
@@ -140,7 +138,7 @@
                 uiinit.win({
                     w: 500,
                     iconCls: 'icon-add',
-                    title: "编辑系统",
+                    title: "修改系统",
                     url: "/system/edit/" + node.systemId
                 });
             } else {
@@ -189,32 +187,27 @@
         }
     });
     </shiro:hasPermission>
-    <shiro:hasPermission name="file-get">
     toolbar.push({
-        text: '文件管理',
-        iconCls: 'icon-save',
+        text: 'SLA协议',
+        iconCls: 'icon-qxfp',
         handler: function () {
             var node = $('#tg').datagrid("getSelected");
-            if (parent.$('#sysContentTabs').tabs('exists', "文件管理")) {
-                parent.$('#sysContentTabs').tabs('select', "文件管理");
-            } else {
-                var content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp" style="width:100%;height:100%;"></iframe>';
-                if (node && node["systemId"]) {
-                    content = '<iframe scrolling="auto" frameborder="0"  src="jsp/sysadmin/file_list.jsp?systemId=' + node.systemId + '" style="width:100%;height:100%;"></iframe>';
-                }
+            if(node==null){
+                alert("请选择系统!");
+                return;
+            }
+                var content = '<iframe scrolling="auto" frameborder="0"  src="jsp/systemSLA/slaPage.jsp?systemNo='+node.systemNo+'&systemId='+node.systemId+'" style="width:100%;height:100%;"></iframe>';
                 parent.$('#sysContentTabs').tabs('add', {
-                    title: "文件管理",
+                    title: "SLA协议",
                     content: content,
                     closable: true
                 });
-            }
         }
     });
-    </shiro:hasPermission>
 
     $(document).ready(function () {
         $('#tg').datagrid({
-            title: '系统基本信息维护',
+            title: '系统基本信息列表',
             iconCls: 'icon-edit',//图标
             width: '100%',
             height: '500px',
@@ -245,33 +238,20 @@
             displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
         });
 
-
-        $('#protocolIdSearch').combobox({
-            url: '/system/getProtocolAll?query=y',
-            method: 'get',
-            mode: 'remote',
-            valueField: 'id',
-            textField: 'text'
-        });
     })
 
     function searchData() {
-
-        var systemId = $("#systemId").val();
+        var systemNo = $("#systemNo").val();
         var systemAb = $("#systemAb").val();
         var systemChineseName = $("#systemChineseName").val();
-        var principal1 = $("#principal1").val();
-        var featureDesc = $("#featureDesc").val();
-        var protocolId = $("#protocolIdSearch").combobox('getValue');
-
+        var systemPrincipal = $("#systemPrincipal").val();
+        var systemClassify = $("#systemClassify").val();
         var queryParams = $('#tg').datagrid('options').queryParams;
-        queryParams.systemId = systemId;
+        queryParams.systemNo = systemNo;
         queryParams.systemChineseName = encodeURI(systemChineseName);
         queryParams.systemAb = systemAb;
-        queryParams.principal1 = principal1;
-        queryParams.featureDesc = featureDesc;
-        queryParams.protocolId = protocolId;
-
+        queryParams.systemPrincipal = systemPrincipal;
+        queryParams.systemClassify = systemClassify;
         $('#tg').datagrid('options').queryParams = queryParams;//传递值
         $("#tg").datagrid('reload');//重新加载table
     }

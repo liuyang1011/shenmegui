@@ -12,13 +12,11 @@ import com.dc.esb.servicegov.util.TreeNode;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.hibernate.ObjectNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -56,29 +54,18 @@ public class SystemController {
 
         StringBuffer hql = new StringBuffer("SELECT t1 FROM System t1");
 
-        String systemId = req.getParameter("systemId");
+        String systemNo = req.getParameter("systemNo");
         String systemChineseName = req.getParameter("systemChineseName");
         String systemAb = req.getParameter("systemAb");
-        String principal1 = req.getParameter("principal1");
-        String featureDesc = req.getParameter("featureDesc");
-        String protocolId = req.getParameter("protocolId");
+        String systemPrincipal = req.getParameter("systemPrincipal");
+        String systemClassify = req.getParameter("systemClassify");
 
         List<SearchCondition> searchConds = new ArrayList<SearchCondition>();
-        boolean hasWhere = false;
-        if(protocolId!=null&&!"".equals(protocolId)){
-            hql.append(",SystemProtocol t2 WHERE t1.systemId=t2.systemId and t2.protocolId like ?");
+        hql.append(" where 1=1");
+        if(systemNo!=null&&!"".equals(systemNo)){
+            hql.append(" and t1.systemNo like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue("%" + protocolId + "%");
-            searchConds.add(search);
-            hasWhere = true;
-        }
-        if(!hasWhere){
-            hql.append(" WHERE 1=1 ");
-        }
-        if(systemId!=null&&!"".equals(systemId)){
-            hql.append(" and t1.systemId like ?");
-            SearchCondition search = new SearchCondition();
-            search.setFieldValue("%" + systemId + "%");
+            search.setFieldValue("%" + systemNo + "%");
             searchConds.add(search);
         }
         if(systemChineseName!=null&&!"".equals(systemChineseName)){
@@ -98,21 +85,20 @@ public class SystemController {
             search.setFieldValue("%" + systemAb +"%");
             searchConds.add(search);
         }
-        if(principal1!=null&&!"".equals(principal1)){
-            hql.append(" and (t1.principal1 like ? or t1.principal2 like ?)");
+        if(systemPrincipal!=null&&!"".equals(systemPrincipal)){
+            hql.append(" and t1.systemPrincipal like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue("%" + principal1 + "%");
-            searchConds.add(search);
+            search.setFieldValue("%" + systemPrincipal + "%");
             searchConds.add(search);
         }
-        if(featureDesc!=null&&!"".equals(featureDesc)){
-            hql.append(" and t1.featureDesc like ?");
+        if(systemClassify!=null&&!"".equals(systemClassify)){
+            hql.append(" and t1.systemClassify like ?");
             SearchCondition search = new SearchCondition();
-            search.setFieldValue("%" + featureDesc +"%");
+            search.setFieldValue("%" + systemClassify +"%");
             searchConds.add(search);
         }
 
-        hql.append(" order by t1.systemId");
+        hql.append(" order by t1.systemNo");
         SearchCondition searchCond = new SearchCondition();
 
         Page page = systemService.findPage(hql.toString(), Integer.parseInt(rows), searchConds);
@@ -123,25 +109,15 @@ public class SystemController {
         for (System s:systems) {
             System sys = new System();
             sys.setSystemId(s.getSystemId());
+            sys.setSystemNo(s.getSystemNo());
             sys.setSystemAb(s.getSystemAb());
             sys.setSystemChineseName(s.getSystemChineseName());
-            sys.setFeatureDesc(s.getFeatureDesc());
-            sys.setWorkRange(s.getWorkRange());
-            String contact = "";
-            if(s.getPrincipal1()!=null && !"".equals(s.getPrincipal1())){
-                contact = s.getPrincipal1();
-            }
-            if(s.getPrincipal2()!=null && !"".equals(s.getPrincipal2())){
-                if("".equals(contact)){
-                    contact= s.getPrincipal2();
-                }else {
-                    contact = s.getPrincipal1()+","+s.getPrincipal2();
-                }
-            }
-
-            sys.setPrincipal1(contact);
-            sys.setOptDate(s.getOptDate());
-            sys.setOptUser(s.getOptUser());
+            sys.setSystemClassify(s.getSystemClassify());
+            sys.setSystemPrincipal(s.getSystemPrincipal());
+            sys.setPrincipalTel(s.getPrincipalTel());
+            sys.setCreateUser(s.getCreateUser());
+            sys.setUpdateDate(s.getUpdateDate());
+            sys.setUpdateUser(s.getUpdateUser());
             //add by
 
             List<SystemProtocol> systemProtocols =  s.getSystemProtocols();
@@ -176,14 +152,12 @@ public class SystemController {
     boolean save(@RequestBody
                  System entity) {
         OperationLog operationLog = systemLogService.record("系统","保存","系统名称：" + entity.getSystemChineseName());
-
-        systemService.save(entity);
+        systemService.save(systemService.createTime(entity));
 
         systemLogService.updateResult(operationLog);
         return true;
 
     }
-
     @RequiresPermissions({"system-update"})
     @RequestMapping(method = RequestMethod.GET, value = "/edit/{systemId}", headers = "Accept=application/json")
     public ModelAndView getSystem(@PathVariable
@@ -197,17 +171,17 @@ public class SystemController {
         return modelAndView;
     }
 
-    @RequiresPermissions({"system-delete"})
-    @RequestMapping(method = RequestMethod.GET, value = "/delete/{systemId}", headers = "Accept=application/json")
+    @RequiresPermissions({"system-update"})
+    @RequestMapping(method = RequestMethod.POST, value = "/update", headers = "Accept=application/json")
     public @ResponseBody
-    boolean delete(@PathVariable
-                 String systemId) {
-        OperationLog operationLog = systemLogService.record("系统","删除","系统ID:" + systemId);
-
-        boolean result = systemService.deleteSystemById(systemId);
-
+    boolean update(@RequestBody
+                   System entity) {
+        OperationLog operationLog = systemLogService.record("系统", "修改", "系统编号:" + entity.getSystemNo());
+        System entity1=systemService.getById(entity.getSystemId());
+        systemService.replaceSystem(entity1,entity);
+        systemService.update(entity1);
         systemLogService.updateResult(operationLog);
-        return result;
+        return true;
 
     }
 
@@ -215,9 +189,9 @@ public class SystemController {
     @RequestMapping(method = RequestMethod.POST, value = "/delete2", headers = "Accept=application/json")
     public @ResponseBody
     boolean delete2(@RequestBody String systemId) {
-        OperationLog operationLog = systemLogService.record("系统","删除","系统ID:" + systemId);
-        //去掉''
+        //去掉""
         systemId = systemId.substring(1,systemId.length()-1);
+        OperationLog operationLog = systemLogService.record("系统","删除","系统编号:" + systemService.getById(systemId).getSystemNo());
         boolean result =  systemService.deleteSystemById(systemId);
 
         systemLogService.updateResult(operationLog);
@@ -365,10 +339,10 @@ public class SystemController {
     }
 
     @RequiresPermissions({"system-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/systemIdCheck/{systemId}", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/systemNoCheck/{systemNo}", headers = "Accept=application/json")
     public @ResponseBody
-    boolean systemId(@PathVariable String systemId) {
-        System system =  systemService.findUniqueBy("systemId",systemId);
+    boolean systemId(@PathVariable String systemNo) {
+        System system =  systemService.findUniqueBy("systemNo",systemNo);
         if(system!=null) {
             return true;
         }
@@ -376,12 +350,12 @@ public class SystemController {
     }
 
     @RequiresPermissions({"system-get"})
-    @RequestMapping(method = RequestMethod.GET, value = "/systemAbcheck/{systemAb}/{systemId}", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/systemAbcheck/{systemAb}/{systemNo}", headers = "Accept=application/json")
     public @ResponseBody
-    boolean systemAb(@PathVariable String systemAb,@PathVariable String systemId) {
+    boolean systemAb(@PathVariable String systemAb,@PathVariable String systemNo) {
         System system =  systemService.findUniqueBy("systemAb",systemAb);
 
-        if(system!=null && !system.getSystemId().equals(systemId)) {
+        if(system!=null && !system.getSystemNo().equals(systemNo)) {
             return true;
         }
         return  false;

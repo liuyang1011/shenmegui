@@ -208,7 +208,7 @@
 							w:500,
 							iconCls:'icon-add',
 							title:"关联报文头",
-							url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
+							url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+'${param.systemId}'
 						});
 					}else{
 						alert("请选择要关联的行");
@@ -253,7 +253,7 @@
 
 					}
 
-					var systemId = ${param.systemId };
+					var systemId = '${param.systemId }';
 					if(row){
 						var form=$("<form>");//定义一个form表单
 						form.attr("style","display:none");

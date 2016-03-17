@@ -9,6 +9,7 @@ import java.util.List;
 
 public class TreeNode implements Serializable {
     String id;
+    String systemNo;
     String text;
     String iconCls;
     String checked;
@@ -31,6 +32,13 @@ public class TreeNode implements Serializable {
 
     public TreeNode() {
 
+    }
+    public String getSystemNo() {
+        return systemNo;
+    }
+
+    public void setSystemNo(String systemNo) {
+        this.systemNo = systemNo;
     }
 
     public String getId() {

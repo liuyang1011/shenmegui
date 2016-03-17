@@ -1,14 +1,15 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <meta http-equiv ="X-UA-Compatible" content ="IE=edge" >
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style>
 	<!--
-	table tr th{
+	#table tr th{
 		text-align:right
 	}
-	table tr td{
+	#table tr td{
 		padding-left:15px;
 		text-align:left
 	}
@@ -16,18 +17,18 @@
 </style>
 
 <form class="formui" id="form1">
-	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center">
+	<table border="0" cellspacing="0" cellpadding="0" style="width:100%; text-align:center" id="table">
 		<tr>
 			<th>
-				系统ID
+				系统编号
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemIdText" data-options="required:true, validType:['intOrFloat']">
+				<input class="easyui-textbox" type="text" id="systemNoText" data-options="required:true, validType:['intOrFloat']">
 			</td>
 		</tr>
 		<tr>
 			<th>
-				系统简称
+				系统英文简称
 			</th>
 			<td>
 				<input class="easyui-textbox" type="text" id="systemAbText" data-options="required:true, validType:['englishB']">
@@ -41,31 +42,36 @@
 				<input class="easyui-textbox" type="text" id="systemChineseNameText" data-options="required:true, validType:['chineseB']">
 			</td>
 		</tr>
-		<tr style="display:none">
-			<th>
-				系统功能描述
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="systemDescText">
-			</td>
-		</tr>
-		<!--
 		<tr>
 			<th>
-				系统协议
+				系统分类
 			</th>
 			<td>
-				<select class="easyui-combobox" id="protocolIdText" style="width:155px" panelHeight="auto" data-options="editable:false">
-				</select>
+				<input class="easyui-textbox" type="text" id="systemClassify1">
 			</td>
 		</tr>
-		-->
 		<tr>
 			<th>
-				工作范围
+				系统负责人
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="workRangeText">
+				<input class="easyui-textbox" type="text" id="systemPrincipal1">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				负责人联系电话
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principalTel" data-options="validType:['mobile']">
+			</td>
+		</tr>
+		<tr>
+			<th>
+				负责人邮箱
+			</th>
+			<td>
+				<input class="easyui-textbox" type="text" id="principalEmail" data-options="validType:['email']">
 			</td>
 		</tr>
 		<tr>
@@ -73,40 +79,7 @@
 				系统描述
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="featureDescText">
-			</td>
-		</tr>
-		<tr>
-			<th>
-				联系人一
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principal1Text">
-			</td>
-		</tr>
-		<tr style="display: none">
-			<th>
-				联系人一详细
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principalDetail1">
-			</td>
-		</tr>
-
-		<tr>
-			<th>
-				联系人二
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principal2Text">
-			</td>
-		</tr>
-		<tr style="display: none">
-			<th>
-				联系人二详细
-			</th>
-			<td>
-				<input class="easyui-textbox" type="text" id="principalDetail2">
+				<textarea  type="text" id="systemDesc"style="height: 100px;"></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -137,9 +110,9 @@
 		if(!$("#form1").form('validate')){
 			return false;
 		}
-        var systemId = $("#systemIdText").val();
-        if(systemId==null || systemId == ''){
-			alert("请填写系统ID");
+        var systemNo = $("#systemNoText").val();
+        if(systemNo==null || systemNo == ''){
+			alert("请填写系统编号");
 			return;
 		}
 		var systemAb = $("#systemAbText").val();
@@ -152,29 +125,26 @@
 		 $.ajax({
 			 type: "GET",
 			 async:false,
-			 url: "/system/systemIdCheck/"+systemId+"?_t=" + new Date().getTime(),
+			 url: "/system/systemNoCheck/"+systemNo+"?_t=" + new Date().getTime(),
 			 dataType: "json",
 			 success: function(data){
 				if(data){
-					alert("系统ID已存在");
+					alert("系统编号已存在");
 					flag = false;;
 				}
 			 }
 		});
-
 		if(!flag){
 			return;
 		}
-
-
 		 $.ajax({
 			 type: "GET",
 			 async:false,
-			 url: "/system/systemAbcheck/"+systemAb+"/"+systemId,
+			 url: "/system/systemAbcheck/"+systemAb+"/"+systemNo,
 			 dataType: "json",
 			 success: function(data){
 				if(data){
-					alert("系统简称已存在");
+					alert("系统英文简称已存在");
 					flag = false;;
 				}
 			 }
@@ -184,32 +154,22 @@
 			return;
 		}
 
-		/*var protocolId = $("#protocolIdText").combobox('getValue');
-		if(protocolId==null || protocolId == ''){
-			alert("请选择协议类型");
-			return;
-		}
-		*/
-		var systemDesc = $("#systemDescText").val();
-		var principal1 = $("#principal1Text").val();
-		var principalDetail1 = $("#principalDetail1").val();
-		var principal2 = $("#principal2Text").val();
-		var principalDetail2 = $("#principalDetail2").val();
-		var workRange = $("#workRangeText").val();
-		var featureDesc = $("#featureDescText").val();
+		var systemClassify = $("#systemClassify1").val();
+		var systemPrincipal = $("#systemPrincipal1").val();
+		var principalTel = $("#principalTel").val();
+		var principalEmail = $("#principalEmail").val();
+		var systemDesc = $("#systemDesc").val();
+		var createUser='<shiro:principal/>';
 		var data = {};
-
-		data.systemId = systemId;
+		data.systemNo=systemNo;
 		data.systemAb = systemAb;
 		data.systemChineseName = systemChineseName;
-		data.principal1 = principal1;
-		data.principal2 = principal2;
-		data.workRange = workRange;
-		data.featureDesc = featureDesc;
+		data.systemClassify = systemClassify;
+		data.systemPrincipal = systemPrincipal;
+		data.principalTel = principalTel;
+		data.principalEmail = principalEmail;
 		data.systemDesc = systemDesc;
-		data.principalDetail1 = principalDetail1;
-		data.principalDetail2 = principalDetail2;
-
+		data.createUser = createUser;
 		//var protocolData = {};
 
 		//protocolData.protocolId = protocolId;

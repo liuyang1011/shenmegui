@@ -181,6 +181,25 @@ var sysManager = {
             }
         });
     },
+    updateSystem: function (data, callBack) {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "/system/update",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (result) {
+                callBack(result);
+            },
+            complete: function (responce) {
+                var resText = responce.responseText;
+                if(resText.toString().indexOf("没有操作权限") > 0){
+                    alert("没有权限！");
+                    //window.location.href = "/jsp/403.jsp";
+                }
+            }
+        });
+    },
 
     deleteSystem: function () {
         var node = $('.msinterfacetree').tree("getSelected");

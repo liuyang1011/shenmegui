@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,4 +95,28 @@ public class SystemServiceImpl extends AbstractBaseService<System, String> imple
 		List<System> list = systemDAOImpl.find(hql, userId);
 		return list;
 	}
+
+	@Override
+	public System createTime(System system) {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date time=new Date();
+		String createDate=sdf.format(time);
+		system.setUpdateDate(createDate);
+		return system;
+	}
+
+	@Override
+	public void replaceSystem(System entity,System newEntity) {
+		entity.setSystemNo(newEntity.getSystemNo());
+		entity.setSystemAb(newEntity.getSystemAb());
+		entity.setSystemChineseName(newEntity.getSystemChineseName());
+		entity.setUpdateUser(newEntity.getUpdateUser());
+		entity.setUpdateDate(createTime(entity).getUpdateDate());
+		entity.setSystemDesc(newEntity.getSystemDesc());
+		entity.setSystemClassify(newEntity.getSystemClassify());
+		entity.setSystemPrincipal(newEntity.getSystemPrincipal());
+		entity.setPrincipalTel(newEntity.getPrincipalTel());
+		entity.setPrincipalEmail(newEntity.getPrincipalEmail());
+	}
+
 }

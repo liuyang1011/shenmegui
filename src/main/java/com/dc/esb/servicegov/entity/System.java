@@ -1,5 +1,7 @@
 package com.dc.esb.servicegov.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,42 +13,49 @@ public class System implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+
+	//系统序号
 	@Id
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid",strategy="uuid")
 	@Column(name = "SYSTEM_ID")
 	private String systemId;
-	
+	//系统编号
+	@Column(name = "SYSTEM_NO")
+	private String systemNo;
+	//系统简称
 	@Column(name = "SYSTEM_AB")
 	private String systemAb;
-	
+	//	系统中文名
 	@Column(name = "SYSTEM_CHINESE_NAME")
 	private String systemChineseName;
-	
-	@Column(name = "FEATURE_DESC")
-	private String featureDesc;
-	
-	@Column(name = "WORK_RANGE")
-	private String workRange;
-	
-	@Column(name = "PRINCIPAL1")
-	private String principal1;
-	
-	@Column(name = "PRINCIPAL2")
-	private String principal2;
-	
-	@Column(name = "OPT_USER")
-	private String optUser;
-	
-	@Column(name = "OPT_DATE")
-	private String optDate;
-
+	//	更新用户
+	@Column(name = "UPDATE_USER")
+	private String updateUser;
+	//	更新时间
+	@Column(name = "UPDATE_DATE")
+	private String updateDate;
+	//系统描述
 	@Column(name = "SYSTEM_DESC")
 	private String systemDesc;
-
-	@Column(name = "PRINCIPAL_DETAIL1")
-	private String principalDetail1;
-
-	@Column(name = "PRINCIPAL_DETAIL2")
-	private String principalDetail2;
+	//系统分类
+	@Column(name = "SYSTEM_ClASSIFY")
+	private String systemClassify;
+	//系统负责人
+	@Column(name = "SYSTEM_PRINCIPAL")
+	private String systemPrincipal;
+	//负责人电话
+	@Column(name = "PRINCIPAL_TEL")
+	private String principalTel;
+	//负责人邮箱
+	@Column(name = "PRINCIPAL_EMAIL")
+	private String principalEmail;
+	//关联公司
+	@Column(name = "CONN_COMPANY")
+	private String connCompany;
+	//创建用户
+	@Column(name = "CREATE_USER")
+	private String createUser;
 
 	private String protocolName;
 
@@ -61,9 +70,15 @@ public class System implements Serializable{
 	
 	@OneToMany(mappedBy="system",cascade = CascadeType.ALL)
 	private List<ServiceInvoke> serviceInvokes;
-	
-	
-	
+
+
+	public String getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
 	public String getSystemId() {
 		return systemId;
 	}
@@ -88,53 +103,7 @@ public class System implements Serializable{
 		this.systemChineseName = systemChineseName;
 	}
 
-	public String getFeatureDesc() {
-		return featureDesc;
-	}
 
-	public void setFeatureDesc(String featureDesc) {
-		this.featureDesc = featureDesc;
-	}
-
-	public String getWorkRange() {
-		return workRange;
-	}
-
-	public void setWorkRange(String workRange) {
-		this.workRange = workRange;
-	}
-
-	public String getPrincipal1() {
-		return principal1;
-	}
-
-	public void setPrincipal1(String principal1) {
-		this.principal1 = principal1;
-	}
-
-	public String getPrincipal2() {
-		return principal2;
-	}
-
-	public void setPrincipal2(String principal2) {
-		this.principal2 = principal2;
-	}
-
-	public String getOptUser() {
-		return optUser;
-	}
-
-	public void setOptUser(String optUser) {
-		this.optUser = optUser;
-	}
-
-	public String getOptDate() {
-		return optDate;
-	}
-
-	public void setOptDate(String optDate) {
-		this.optDate = optDate;
-	}
 
 	public List<ServiceInvoke> getServiceInvokes() {
 		return serviceInvokes;
@@ -168,19 +137,68 @@ public class System implements Serializable{
 		this.systemDesc = systemDesc;
 	}
 
-	public String getPrincipalDetail1() {
-		return principalDetail1;
+
+	public String getUpdateUser() {
+		return updateUser;
 	}
 
-	public void setPrincipalDetail1(String principalDetail1) {
-		this.principalDetail1 = principalDetail1;
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
 	}
 
-	public String getPrincipalDetail2() {
-		return principalDetail2;
+	public String getSystemClassify() {
+		return systemClassify;
 	}
 
-	public void setPrincipalDetail2(String principalDetail2) {
-		this.principalDetail2 = principalDetail2;
+	public void setSystemClassify(String systemClassify) {
+		this.systemClassify = systemClassify;
+	}
+
+	public String getSystemPrincipal() {
+		return systemPrincipal;
+	}
+
+	public void setSystemPrincipal(String systemPrincipal) {
+		this.systemPrincipal = systemPrincipal;
+	}
+
+	public String getPrincipalTel() {
+		return principalTel;
+	}
+
+	public void setPrincipalTel(String principalTel) {
+		this.principalTel = principalTel;
+	}
+
+	public String getPrincipalEmail() {
+		return principalEmail;
+	}
+
+	public void setPrincipalEmail(String principalEmail) {
+		this.principalEmail = principalEmail;
+	}
+
+	public String getConnCompany() {
+		return connCompany;
+	}
+
+	public void setConnCompany(String connCompany) {
+		this.connCompany = connCompany;
+	}
+
+	public String getCreateUser() {
+		return createUser;
+	}
+
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+
+	public String getSystemNo() {
+		return systemNo;
+	}
+
+	public void setSystemNo(String systemNo) {
+		this.systemNo = systemNo;
 	}
 }
