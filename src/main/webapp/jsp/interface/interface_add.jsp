@@ -98,9 +98,9 @@
 				&nbsp;
 			</td>
 			<td class="win-bbar">
+				<a href="#" class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
 				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-					onClick="$('#w').window('close')">取消</a><a href="#"
-					class="easyui-linkbutton" onclick="save()" iconCls="icon-save">保存</a>
+					onClick="$('#w').window('close')">取消</a>
 			</td>
 		</tr>
 	</table>
