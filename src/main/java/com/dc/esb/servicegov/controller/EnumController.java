@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.lang.System;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -448,14 +449,15 @@ public class EnumController {
         for (int i = 0; i < list.size(); i++) {
             LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) list.get(i);
             ids.add(map.get("elementId"));
-            List<EnumElements> entitys = enumService.getElementsByEnumId(map.get("elementId"));
-            if(entitys != null && entitys.size() > 0){
-                logParams += "," + entitys.get(0).getElementName();
-            }
+//            map.get("elementId");
+//            List<EnumElements> entitys = enumService.getElementsByEnumId(map.get("elementId"));
+//            if(entitys != null && entitys.size() > 0){
+//                logParams += "," + entitys.get(0).getElementName();
+//            }
+            logParams += "," + map.get("elementName");
         }
         enumService.deleteEnumElementsByIds(ids);
-
-        operationLog.setParams("名称：" + logParams.substring(1, logParams.length()-1));
+        operationLog.setParams("名称：" + logParams.substring(1, logParams.length()));
         systemLogService.updateResult(operationLog);
         return true;
     }

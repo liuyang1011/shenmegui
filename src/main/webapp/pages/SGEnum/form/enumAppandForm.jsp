@@ -61,10 +61,11 @@
 		</tr> -->
 		<tr>
 			<td>&nbsp;</td>
-			<td class="win-bbar"><a href="#" class="easyui-linkbutton"
-				iconCls="icon-cancel" id="cancelBtn">取消</a><a
-				id="saveBtn" href="#" class="easyui-linkbutton"
+			<td class="win-bbar">
+				<a id="saveBtn" href="#" class="easyui-linkbutton"
 				iconCls="icon-save">保存</a>
+				<a href="#" class="easyui-linkbutton"
+				   iconCls="icon-cancel" id="cancelBtn">取消</a>
 			</td>
 		</tr>
 	</table>
