@@ -4,12 +4,11 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 <form class="formui">
-    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="$('#interfaceDlg').dialog('close')">取消</a><a href="#"
-                                                                                                             <%--onclick="addInterfaceContent()"--%>
-                                                                                                             onclick="addInterfaceInvoke()"
-                                                                                                             class="easyui-linkbutton"
-                                                                                                             iconCls="icon-save">确定</a></div>
+    <div class="win-bbar" style="text-align:center"><a href="#" <%--onclick="addInterfaceContent()"--%>
+                                                       onclick="addInterfaceInvoke()"
+                                                       class="easyui-linkbutton"
+                                                       iconCls="icon-save">确定</a><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="$('#interfaceDlg').dialog('close')">取消</a></div>
     <fieldset>
         <legend>调用方</legend>
         <table border="0" cellspacing="0" cellpadding="0" style="width:auto;">

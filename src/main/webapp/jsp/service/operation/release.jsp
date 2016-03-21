@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		</tr>
     		<tr>
     			<td width="100%">
-    				<div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#opDialog').dialog('close');">取消</a><a href="#" onclick="releaseOp($('#versionDesc').textbox('getValue'),'${param.operationId}');" class="easyui-linkbutton"  iconCls="icon-save">保存</a></div>
+    				<div class="win-bbar" style="text-align:center"><a href="#" onclick="releaseOp($('#versionDesc').textbox('getValue'),'${param.operationId}');" class="easyui-linkbutton"  iconCls="icon-save">保存</a><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#opDialog').dialog('close');">取消</a></div>
     			</td>
     		</tr>
     	</table>

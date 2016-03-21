@@ -46,7 +46,7 @@
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td class="win-bbar"><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a><a href="#" class="easyui-linkbutton" onClick="toSave()" iconCls="icon-save">保存</a></td>
+    <td class="win-bbar"><a href="#" class="easyui-linkbutton" onClick="toSave()" iconCls="icon-save">保存</a><a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a></td>
   </tr>
 </table>
 </form>

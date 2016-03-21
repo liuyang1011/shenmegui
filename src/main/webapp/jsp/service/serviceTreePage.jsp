@@ -14,11 +14,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-     <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                           onClick="$('#dlg').dialog('close');">取消</a><a href="javascript:void(0)"
-                                                                                      onclick="selectService()"
-                                                                                      class="easyui-linkbutton"
-                                                                                      iconCls="icon-save">确定</a></div>
+     <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)"
+                                                        onclick="selectService()"
+                                                        class="easyui-linkbutton"
+                                                        iconCls="icon-save">确定</a><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                           onClick="$('#dlg').dialog('close');">取消</a></div>
   	<ul id="serviceTree" class="easyui-tree mxservicetree" data-options="url:'/service/getTree',method:'get',animate:true"></ul>
   </body>
 </html>

@@ -65,10 +65,11 @@
     <div id="tb" style="padding:5px;height:auto">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <td><a href="javascript:void(0)" onclick="auditPage(2);" class="easyui-linkbutton" iconCls="icon-cancel"
-                       plain="true">审核不通过</a>&nbsp;&nbsp;
+                <td>
                     <a href="javascript:void(0)" onclick="auditPage(1);" class="easyui-linkbutton" iconCls="icon-ok"
-                       plain="true">审核通过</a>
+                       plain="true">审核通过</a>&nbsp;&nbsp;
+                    <a href="javascript:void(0)" onclick="auditPage(2);" class="easyui-linkbutton" iconCls="icon-cancel"
+                       plain="true">审核不通过</a>
                 </td>
             </tr>
         </table>

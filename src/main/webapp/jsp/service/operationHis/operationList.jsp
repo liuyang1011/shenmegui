@@ -37,8 +37,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="tb" style="padding:5px;height:auto">
     	<table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td><a href="javascript:void(0)" onclick="$('#dlg').dialog('close');" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">取消</a>&nbsp;&nbsp;
-	    <a href="javascript:void(0)" onclick="selectOperation();" class="easyui-linkbutton" iconCls="icon-ok" plain="true">确定</a>
+    <td><a href="javascript:void(0)" onclick="selectOperation();" class="easyui-linkbutton" iconCls="icon-ok" plain="true">确定</a>&nbsp;&nbsp;
+		<a href="javascript:void(0)" onclick="$('#dlg').dialog('close');" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">取消</a>
     </td>
     </tr>
     </table>

@@ -21,11 +21,11 @@
 </head>
 <body>
 <form id="searchForm">
-    <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="javascript:$('#dlg').dialog('close');">取消</a><a href="javascript:void(0)" id="saveBtn"
-                                                                                                                onclick="saveAdd('append')"
-                                                                                                                class="easyui-linkbutton"
-                                                                                                                iconCls="icon-save">确定</a></div>
+    <div class="win-bbar" style="text-align:center"><a href="javascript:void(0)" id="saveBtn"
+                                                       onclick="saveAdd('append')"
+                                                       class="easyui-linkbutton"
+                                                       iconCls="icon-save">确定</a><a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="javascript:$('#dlg').dialog('close');">取消</a></div>
     <fieldset>
         <legend>条件搜索</legend>
         <table border="0" cellspacing="0" cellpadding="0" heigth="auto">

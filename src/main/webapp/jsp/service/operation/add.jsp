@@ -170,11 +170,11 @@
 
 <body>
 <form class="formui" id="operationForm">
-    <div class="win-bbar" style="text-align:center"><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
-                                                       onClick="clean()">取消</a><a href="#" id="saveBtn"
-                                                                                  onclick="saveAdd('operationForm',0)"
-                                                                                  class="easyui-linkbutton"
-                                                                                  iconCls="icon-save">保存</a></div>
+    <div class="win-bbar" style="text-align:center"><a href="#" id="saveBtn"
+                                                       onclick="saveAdd('operationForm',0)"
+                                                       class="easyui-linkbutton"
+                                                       iconCls="icon-save">保存</a><a href="#" class="easyui-linkbutton" iconCls="icon-cancel"
+                                                       onClick="clean()">取消</a></div>
     <div class="easyui-panel" title="基本信息" style="width:100%;height:auto;padding:10px;">
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
