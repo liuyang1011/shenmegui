@@ -18,22 +18,19 @@
     <legend>条件过滤</legend>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
+           <th>类别词英文名称</th>
+            <td>
+                <input class="easyui-textbox" type="text" id="_englishWord">
+            </td>
             <th><nobr>类别词中文名称</nobr></th>
+               <td>
+                   <input class="easyui-textbox" id="_chineseWord"/>
+               </td>
+            <th><nobr>类别词英文缩写</nobr></th>
             <td>
-                <input class="easyui-textbox" id="chineseWord"/>
+                <input class="easyui-textbox" id="_wordAb"/>
             </td>
-           <%--<th>类别词英文名称</th>--%>
-            <td style="display: none">
-                <input class="easyui-textbox" type="text" id="englishWord">
-            </td>
-            <th><nobr>类别词英文</nobr></th>
-            <td>
-                <input class="easyui-textbox" id="esglisgAb"/>
-            </td>
-            <th><nobr>备注</nobr></th>
-            <td>
-                <input class="easyui-textbox" id="remark"/>
-            </td>
+
             <td>
                 <shiro:hasPermission name="categoryWord-get">
                 <a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em"><nobr>查询</nobr></a>
@@ -46,16 +43,16 @@
 </fieldset>
 </form>
 <table id="tt" style="height:620px; width:100%;"
-       title="所有类别词">
+       title="类别词列表">
     <thead>
     <tr>
-        <th field="chineseWord" width="150" editor="{type:'validatebox',options:{required:true,validType:['chineseB']}}">中文名称</th>
-        <th field="englishWord" width="100" editor="text">英文全称</th>
-        <th field="esglisgAb" width="150" align="left" editor="{type:'textbox',options:{required:true,validType:['englishB']}}">英文缩写</th>
-        <!-- <th field="esglisgab" width="100" align="right" editor="{type:'numberbox',options:{precision:1}}">类别词英文缩写</th> -->
-        <th field="remark" width="150" align="left" editor="text">备注</th>
-        <th field="optUser" width="150" editor="text">修订人</th>
-        <th field="optDate" width="150" editor="text">修订时间</th>
+        <th field="englishWord" width="100">类别词英文名称</th>
+        <th field="esglisgAb" width="150" align="left" >类别词英文缩写</th>
+        <th field="chineseWord" width="150" >类别词中文名称</th>
+        <th field="remark" width="150" >备注</th>
+        <th field="optDate" width="150" >更新时间</th>
+        <th field="optUser" width="150" >更新用户</th>
+        <%--<th field="createUser" width="150" >创建用户</th>--%>
     </tr>
     </thead>
 </table>
@@ -113,49 +110,49 @@
     });
     </shiro:hasPermission>
     <shiro:hasPermission name="categoryWord-update">
-    toolbar.push({
-        text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-            for (var per in editedRows) {
-                $("#tt").datagrid('endEdit', editedRows[per]);
-                if(!$("#tt").datagrid('validateRow',editedRows[per])){
-                    alert("请输入必输项");
-                    return false;
-                }
-            }
-
-            var editData1 = $("#tt").datagrid('getChanges','inserted');
-            var editData2 = $("#tt").datagrid('getChanges','updated');
-            var deleteData = $("#tt").datagrid('getChanges', 'deleted');
-            categoryWordManager.saveCategoryWord(editData1,'1', function (result) {
-                if (result) {
-                    $('#tt').datagrid('reload');
-                }else{
-                    alert("英文名称或中文名称不能重复");
-                    $('#tt').datagrid('reload');
-                }
-            });
-            categoryWordManager.saveCategoryWord(editData2,'2', function (result) {
-                if (result) {
-                    $('#tt').datagrid('reload');
-                }else{
-                    alert("英文名称或中文名称不能重复");
-                    $('#tt').datagrid('reload');
-                }
-            });
-            if (deleteData.length > 0) {
-                categoryWordManager.deleteCategoryWord(deleteData, function (result) {
-                    if (result) {
-                        $('#tt').datagrid('reload');
-                    }else{
-                        alert("不能删除，有元数据关联");
-                    }
-                })
-            }
-            editedRows = [];
-        }
-    });
+//    toolbar.push({
+//        text: '保存',
+//                iconCls: 'icon-save',
+//                handler: function () {
+//            for (var per in editedRows) {
+//                $("#tt").datagrid('endEdit', editedRows[per]);
+//                if(!$("#tt").datagrid('validateRow',editedRows[per])){
+//                    alert("请输入必输项");
+//                    return false;
+//                }
+//            }
+//
+//            var editData1 = $("#tt").datagrid('getChanges','inserted');
+//            var editData2 = $("#tt").datagrid('getChanges','updated');
+//            var deleteData = $("#tt").datagrid('getChanges', 'deleted');
+//            categoryWordManager.saveCategoryWord(editData1,'1', function (result) {
+//                if (result) {
+//                    $('#tt').datagrid('reload');
+//                }else{
+//                    alert("英文名称或中文名称不能重复");
+//                    $('#tt').datagrid('reload');
+//                }
+//            });
+//            categoryWordManager.saveCategoryWord(editData2,'2', function (result) {
+//                if (result) {
+//                    $('#tt').datagrid('reload');
+//                }else{
+//                    alert("英文名称或中文名称不能重复");
+//                    $('#tt').datagrid('reload');
+//                }
+//            });
+//            if (deleteData.length > 0) {
+//                categoryWordManager.deleteCategoryWord(deleteData, function (result) {
+//                    if (result) {
+//                        $('#tt').datagrid('reload');
+//                    }else{
+//                        alert("不能删除，有元数据关联");
+//                    }
+//                })
+//            }
+//            editedRows = [];
+//        }
+//    });
     </shiro:hasPermission>
     var editedRows = [];
     $(function () {
@@ -199,16 +196,12 @@
         });
         $("#search").click(function(){
             var queryParams = $('#tt').datagrid('options').queryParams;
-            queryParams.englishWord = $("#englishWord").textbox("getValue");
-            queryParams.chineseWord = encodeURI($("#chineseWord").textbox("getValue"));
-            queryParams.esglisgAb = $("#esglisgAb").textbox("getValue");
-            queryParams.remark = encodeURI($("#remark").textbox("getValue"));
-            if (queryParams.englishWord || queryParams.chineseWord || queryParams.esglisgAb || queryParams.remark) {
+            queryParams.englishWord = $("#_englishWord").textbox("getValue");
+            queryParams.chineseWord = encodeURI($("#_chineseWord").textbox("getValue"));
+            queryParams.esglisgAb = $("#_wordAb").textbox("getValue");
+            if (queryParams.englishWord || queryParams.chineseWord || queryParams.esglisgAb ) {
                 $("#tt").datagrid('options').queryParams = queryParams;//传递值
                 $("#tt").datagrid('reload');//重新加载table
-//                categoryWordManager.query(param, function (result) {
-//                    $('#tt').edatagrid('loadData', result);
-//                });
             } else {
                 $("#tt").datagrid('reload');
                 //alert("请输入查询条件");

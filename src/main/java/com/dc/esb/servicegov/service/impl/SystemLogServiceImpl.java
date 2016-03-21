@@ -51,16 +51,17 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
         }
         if(values.get("startDate") != null && values.get("startDate").length > 0){
             if (StringUtils.isNotEmpty(values.get("startDate")[0])) {
-                hql += " and o.optDate > '" + values.get("startDate")[0] + "' ";
+                hql += " and o.optDate > '" + values.get("startDate")[0] + " 00:00:00' ";
             }
         }
         if(values.get("endDate") != null && values.get("endDate").length > 0)
         {
             if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
-                hql += " and o.optDate < '" + values.get("endDate")[0] + "' ";
+                hql += " and o.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
             }
         }
         long count = (Long)operationLogDAO.findUnique(hql);
+        System.out.println("count"+count);
         return count;
     }
     public List<OperationLog> getLogs(Map<String, String[]> values, Page page) {
@@ -72,15 +73,17 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
         }
         if(values.get("startDate") != null && values.get("startDate").length > 0){
             if (StringUtils.isNotEmpty(values.get("startDate")[0])) {
-                hql += " and o.optDate > '" + values.get("startDate")[0] + "' ";
+                hql += " and o.optDate > '" + values.get("startDate")[0] + " 00:00:00' ";
             }
         }
         if(values.get("endDate") != null && values.get("endDate").length > 0){
             if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
-                hql += " and o.optDate < '" + values.get("endDate")[0] + "' ";
+            //    hql += " and o.optDate < '" + values.get("endDate")[0] + "' ";
+                hql += " and o.optDate < '" + values.get("endDate")[0]  +" 23:59:59' ";
             }
         }
          hql += " order by optDate desc";
+        System.out.println("sql"+hql+"page"+page);
         List<OperationLog> list = operationLogDAO.find(hql, page);
         return list;
     }

@@ -8,16 +8,52 @@
 <form id="categoryWordForm" class="formui">
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>中文名称</th>
-            <td><input class="easyui-textbox" data-options="required:true, validType:['uniqueName','chineseB']" type="text" id="chineseWord_" ></td>
+            <th>词汇首写字母</th>
+            <td>
+                <input name="firstWord" id="firstWord"  class="easyui-combobox" style="width:140px"
+                       data-options="
+                 method:'get',
+                 url:'/englishWord/getAllFirstWord',
+                 textField:'firstWord',
+                 valueField:'firstWord',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+							 var urlpath = '/englishWord/getByFirstWord?firstWord='+newValue;
+							 $('#wordAb').combobox({url : urlpath});
+				    }
+                 "
+                        >
+            </td>
         </tr>
         <tr>
-            <th>英文全称</th>
-            <td><input class="easyui-textbox" type="text" id="englishWord"></td>
+            <th>类别词英文缩写</th>
+            <td><input name="wordAb" id="wordAb"  class="easyui-combobox" style="width:140px"
+                       data-options="required:true,validType:['uniqueAb'],
+                 method:'get',
+                 url:'/englishWord/getByFirstWord',
+                 textField:'wordAb',
+                 valueField:'wordAb',
+                 onChange:function(newValue, oldValue){
+                    this.value=newValue;
+							var values = $('#wordAb').combobox('getData');
+							 $.each(values, function (index, item) {
+							   if($.trim(item.wordAb) == $.trim(newValue)){
+							        $('#englishWord_').textbox('setValue',item.englishWord);
+							        $('#chineseWord_').textbox('setValue',item.chineseWord);
+							        }
+							 });
+				    }
+                 "
+                    >
+            </td>
         </tr>
         <tr>
-            <th>类别词英文</th>
-            <td><input class="easyui-textbox" type="text" id="esglisgAb_" data-options="required:true, validType:['uniqueAb','englishB']"></td>
+            <th>类别词英文名称</th>
+            <td><input class="easyui-textbox" type="text" id="englishWord_" data-options="required:true" readonly="readonly"></td>
+        </tr>
+        <tr>
+            <th>类别词中文名称</th>
+            <td><input class="easyui-textbox" data-options="required:true" type="text" id="chineseWord_" readonly="readonly" ></td>
         </tr>
         <tr>
             <th>备注</th>
@@ -26,8 +62,8 @@
         <tr>
             <td>&nbsp;</td>
             <td class="win-bbar">
-                <a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
                 <a id="addBtn" href="#" class="easyui-linkbutton"  iconCls="icon-save">保存</a>
+                <a href="#" class="easyui-linkbutton"  iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
             </td>
         </tr>
     </table>
@@ -36,23 +72,6 @@
 <script type="text/javascript">
     $(function () {
         $.extend($.fn.validatebox.defaults.rules, {
-            uniqueName: {
-                validator: function (value, param) {
-                    var result;
-                    $.ajax({
-                        type: "get",
-                        async: false,
-                        url: "/categoryWord/uniqueValidName",
-                        dataType: "json",
-                        data: {"chineseWord": encodeURI(value)},
-                        success: function (data) {
-                            result = data;
-                        }
-                    });
-                    return result;
-                },
-                message: '已存在相同类别词中文'
-            },
             uniqueAb: {
                 validator: function (value, param) {
                     var result;
@@ -68,7 +87,7 @@
                     });
                     return result;
                 },
-                message: '已存在相同类别词英文'
+                message: '已存在相同类别词英文缩写'
             }
         });
     });
@@ -82,8 +101,8 @@
         }
         var categoryWord = {};
         categoryWord.chineseWord = $('#chineseWord_').textbox("getValue");
-        categoryWord.esglisgAb = $('#englishWord').textbox("getValue");
-        categoryWord.esglisgAb = $('#esglisgAb_').textbox("getValue");
+        categoryWord.englishWord = $('#englishWord_').textbox("getValue");
+        categoryWord.esglisgAb = $('#wordAb').combobox('getValue');
         categoryWord.remark = $('#remark_').textbox("getValue");
         $.ajax({
             "type" : "POST",

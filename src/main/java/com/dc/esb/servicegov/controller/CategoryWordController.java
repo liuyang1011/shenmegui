@@ -176,10 +176,11 @@ public class CategoryWordController {
     @ResponseBody
     boolean add(@RequestBody CategoryWord categoryWord) {
         OperationLog operationLog = systemLogService.record("类别词","添加","中文名称：" + categoryWord.getChineseWord()+"; 英文名称："+ categoryWord.getEsglisgAb());
-
         categoryWord.setOptDate(DateUtils.format(new Date()));
         String userName = (String) SecurityUtils.getSubject().getPrincipal();
         categoryWord.setOptUser(userName);
+        String createUserName = (String) SecurityUtils.getSubject().getPrincipal();
+        categoryWord.setCreateUser(createUserName);
         categoryWordService.insert(categoryWord);
 
         systemLogService.updateResult(operationLog);

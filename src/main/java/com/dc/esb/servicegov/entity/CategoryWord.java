@@ -56,6 +56,17 @@ public class CategoryWord implements Serializable{
 	@Column(name = "OPT_DATE")
 	private String optDate;
 
+	public String getCreateUser() {
+		return createUser;
+	}
+
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+
+	@Column(name = "CREATE_USER")
+	private String createUser;
+
 	public String getEnglishWord() {
 		return englishWord;
 	}
