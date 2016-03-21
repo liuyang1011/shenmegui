@@ -33,8 +33,8 @@
     <tr>
       <td>&nbsp;</td>
       <td class="win-bbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
         <a href="#" id="completeTaskBtn" class="easyui-linkbutton" iconCls="icon-save">处理</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
       </td>
     </tr>
   </table>

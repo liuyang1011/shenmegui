@@ -73,8 +73,8 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align:center">
-                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#opDialog').dialog('close')">取消</a>
                 <a href="#" onclick="saveEdit()" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#opDialog').dialog('close')">取消</a>
             </td>
         </tr>
     </table>
