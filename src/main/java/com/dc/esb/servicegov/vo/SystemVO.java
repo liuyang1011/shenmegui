@@ -5,9 +5,17 @@ package com.dc.esb.servicegov.vo;
  */
 public class SystemVO {
     private String systemId;
+    private String systemNo;
     private String systemChineseName;
     private String systemAb;
     private boolean checked;
+    public String getSystemNo() {
+        return systemNo;
+    }
+
+    public void setSystemNo(String systemNo) {
+        this.systemNo = systemNo;
+    }
 
     public String getSystemId() {
         return systemId;

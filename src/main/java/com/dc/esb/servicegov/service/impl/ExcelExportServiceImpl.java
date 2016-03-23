@@ -820,7 +820,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             System system = systemList.get(i);
             HSSFRow row = sheet.createRow(2 + i);
 
-            setCellValue(row.createCell(1), cellStyle, system.getSystemId());//系统id
+            setCellValue(row.createCell(1), cellStyle, system.getSystemNo());//系统id
             setCellValue(row.createCell(2), cellStyle, system.getSystemAb());//英文简称
             setCellValue(row.createCell(3), cellStyle, system.getSystemChineseName());
             ;//中文名称
@@ -1059,7 +1059,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         result += si.getSystem().getSystemChineseName() + ",";
                     }
                     if("systemId".equals(field)){
-                        result += si.getSystem().getSystemId() + ",";
+                        result += si.getSystem().getSystemNo() + ",";
                     }
                     if("systemAb".equals(field)){
                         result += si.getSystem().getSystemAb() + ",";
@@ -1090,7 +1090,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReuseRateVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type,vo.getServiceNum(), vo.getOperationNum(), vo.getResueOperationNum(), vo.getSum(), vo.getReuseRate()};
+                        String[] values = { vo.getSystemNo(), vo.getSystemChineseName(), type,vo.getServiceNum(), vo.getOperationNum(), vo.getResueOperationNum(), vo.getSum(), vo.getReuseRate()};
                         setRowValue(row, cellStyle, values);
                     }
                 }
@@ -1152,7 +1152,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReleaseVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getServiceReleaseNum(), vo.getOperationReleaseNum() };
+                        String[] values = { vo.getSystemNo(), vo.getSystemChineseName(), type, vo.getServiceReleaseNum(), vo.getOperationReleaseNum() };
                         setRowValue(row, cellStyle, values);
                     }
                 }
@@ -1179,7 +1179,7 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                         HSSFRow row = sheet.createRow(i + 1);
                         ReleaseVO vo = list.get(i);
                         String type = Constants.INVOKE_TYPE_PROVIDER.equals(vo.getType()) ? "提供者" : "消费者";
-                        String[] values = { vo.getSystemId(), vo.getSystemChineseName(), type, vo.getServiceReleaseNum(), vo.getOperationReleaseNum() };
+                        String[] values = { vo.getSystemNo(), vo.getSystemChineseName(), type, vo.getServiceReleaseNum(), vo.getOperationReleaseNum() };
                         setRowValue(row, cellStyle, values);
                     }
                 }

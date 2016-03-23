@@ -34,7 +34,7 @@ public class InterfaceInvokeVO2 {
             ServiceInvoke provider = interfaceInvoke.getProvider();
 
             if(consumer != null){
-                this.conId = consumer.getSystemId();
+                this.conId = consumer.getSystem().getSystemNo();
                 if(consumer.getSystem() != null){
                     this.conName = consumer.getSystem().getSystemChineseName();
                 }
@@ -47,7 +47,7 @@ public class InterfaceInvokeVO2 {
             }
 
             if(provider != null){
-                this.proId = provider.getSystemId();
+                this.proId = provider.getSystem().getSystemNo();
                 if(provider.getSystem() != null){
                     this.proName = provider.getSystem().getSystemChineseName();
                 }

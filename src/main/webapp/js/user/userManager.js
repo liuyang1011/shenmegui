@@ -158,19 +158,5 @@ var userManager = {
                 callBack(result);
             }
         });
-    },
-    "saveUserSystem" : function(userId, systemIdsStr, callBack){
-        $.ajax({
-            type: "get",
-            url: "/userSystemRelation/saveUserSystem",
-            dataType: "json",
-            data:{
-                "userId":userId,
-                "systemIdsStr":systemIdsStr
-            },
-            success: function(result) {
-                callBack(result);
-            }
-        });
     }
 };

@@ -29,13 +29,13 @@
     <table border="0" cellspacing="0" cellpadding="0">
       <tr>
         <th><nobr>系统编号</nobr></th>
-        <td><input id="systemId" name="systemId" class="easyui-textbox" style="width:80px"
+        <td><input id="systemNo" name="systemNo" class="easyui-textbox" style="width:80px"
                    data-options="
                    onChange:function(newValue, oldValue){
                         this.value=newValue;
 							var values = $('#systemName').combobox('getData');
 							 $.each(values, function (index, item) {
-							   if($.trim(item.id) == $.trim(newValue) || $.trim(item.text) == $.trim(newValue)){
+							   if($.trim(item.systemNo) == $.trim(newValue) || $.trim(item.text) == $.trim(newValue)){
 							        $('#systemName').textbox('setText', item.chineseName);
 							        }
 							 });
@@ -55,7 +55,7 @@
 							var values = $('#systemName').combobox('getData');
 							 $.each(values, function (index, item) {
 							   if($.trim(item.id) == $.trim(newValue) || $.trim(item.text) == $.trim(newValue)){
-							        $('#systemId').textbox('setValue', newValue);
+							        $('#systemNo').textbox('setValue', item.systemNo);
 							        }
 							 });
 				    }
@@ -99,7 +99,7 @@
     <thead>
     <tr>
       <th data-options="field:'',checkbox:true,width:50"></th>
-      <th data-options="field:'systemId',width:100">系统编码</th>
+      <th data-options="field:'systemNo',width:100">系统编码</th>
       <th data-options="field:'systemChineseName',width:100">系统名称</th>
       <th data-options="field:'type',width:80" formatter='formatter.typeText'>类型</th>
       <th data-options="field:'serviceReleaseNum',width:80">关联服务数</th>
@@ -141,7 +141,7 @@
           form.attr("target","");
           form.attr("method","post");
           form.attr("action","/excelExporter/exportRelease/state");
-          var fields = ["systemId", "systemChineseName", "type", "operationReleaseNum", "serviceReleaseNum"];
+          var fields = ["systemNo", "systemChineseName", "type", "operationReleaseNum", "serviceReleaseNum"];
           for(var i=0; i < checkedItems.length; i++){
             for(var j=0; j < fields.length; j++){
               var input1=$("<input>");
@@ -164,7 +164,7 @@
   ];
   function query(){
     var params = {
-      "systemId":$("#systemId").textbox("getValue"),
+      "systemNo":$("#systemNo").textbox("getValue"),
       "systemName":encodeURI($("#systemName").textbox("getText")),
       "type":$("#type").combobox("getValue")
     }

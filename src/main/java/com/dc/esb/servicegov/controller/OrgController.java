@@ -1,10 +1,13 @@
 package com.dc.esb.servicegov.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dc.esb.servicegov.dao.impl.UserDAOImpl;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.OperationLog;
@@ -29,12 +32,31 @@ public class OrgController {
 	private SystemLogServiceImpl systemLogService;
 	@Autowired
 	private OrgServiceImpl orgServiceImpl;
+	@Autowired
+	private UserDAOImpl userDAO ;
+
 	@RequiresRoles({"admin"})
 	@RequestMapping(method = RequestMethod.POST, value = "/add", headers = "Accept=application/json")
 	public @ResponseBody
 	boolean add(@RequestBody Organization org) {
 		OperationLog operationLog = systemLogService.record("组织","添加","组织名称：" + org.getOrgName());
 		orgServiceImpl.save(org);
+		systemLogService.updateResult(operationLog);
+		return true;
+	}
+	@RequiresRoles({"admin"})
+	@RequestMapping(method = RequestMethod.POST, value = "/modify/{oldOrgName}", headers = "Accept=application/json")
+	public @ResponseBody
+	boolean update(@RequestBody Organization org,@PathVariable String oldOrgName) {
+		OperationLog operationLog = systemLogService.record("组织","修改","组织名称：" + org.getOrgName());
+		try {
+			oldOrgName = URLDecoder.decode(oldOrgName, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		orgServiceImpl.save(org);
+		String hql = "update SGUser set orgId ='"+org.getOrgName()+"'"+ " where orgId ='"+oldOrgName+"'";
+		userDAO.exeHql(hql);
 		systemLogService.updateResult(operationLog);
 		return true;
 	}

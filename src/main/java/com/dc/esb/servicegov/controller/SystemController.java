@@ -331,6 +331,7 @@ public class SystemController {
         for (System system :systems){
             map = new HashMap<String, Object>();
             map.put("id",system.getSystemId());
+            map.put("systemNo",system.getSystemNo());
             map.put("text",system.getSystemAb());
             map.put("chineseName",system.getSystemChineseName());
             resList.add(map);

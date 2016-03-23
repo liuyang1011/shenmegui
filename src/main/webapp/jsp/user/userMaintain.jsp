@@ -74,8 +74,8 @@
 	</thead>
 </table>
 <div id="systemBar" style="text-align:center;">
-	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="javascript:$('#dlg').dialog('close');">取消</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="addUserSystem()">确定</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="javascript:$('#dlg').dialog('close');">取消</a>	
 </div>
 <div id="w" class="easyui-window" title=""
 	 data-options="modal:true,closed:true,iconCls:'icon-add'"
@@ -229,7 +229,12 @@
 				systemIds.push(rows[i].systemId);
 			}
 			var systemIdsStr = systemIds.join(",");
-			userManager.saveUserSystem(user.id, systemIdsStr,function(result){
+			var systemNos = [];
+			for(var i = 0; i < rows.length; i++){
+				systemNos.push(rows[i].systemNo);
+			}
+			var systemNosStr = systemNos.join(",");
+			saveUserSystem(user.id, systemIdsStr,systemNosStr,function(result){
 				if(result){
 					alert("保存成功！")
 					$('#dlg').dialog("close");
@@ -269,6 +274,24 @@
 			}
 		});
 	});
+
+
+
+	function saveUserSystem(userId, systemIdsStr,systemNosStr, callBack){
+		$.ajax({
+			type: "get",
+			url: "/userSystemRelation/saveUserSystem",
+			dataType: "json",
+			data:{
+				"userId":userId,
+				"systemIdsStr":systemIdsStr,
+				"systemNosStr":systemNosStr
+			},
+			success: function(result) {
+				callBack(result);
+			}
+		});
+	}
 </script>
 
 </body>

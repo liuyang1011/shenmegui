@@ -46,6 +46,7 @@ public class UserSystemRelationController {
 
         for(System system : all){
             SystemVO systemVO = new SystemVO();
+            systemVO.setSystemNo(system.getSystemNo());
             systemVO.setSystemId(system.getSystemId());
             systemVO.setSystemChineseName(system.getSystemChineseName());
             systemVO.setSystemAb(system.getSystemAb());
@@ -67,12 +68,13 @@ public class UserSystemRelationController {
      * 保存用户-系统关系
      * @param userId 用户id
      * @param systemIdsStr 系统id拼接成的字符串，用逗号隔开
+     * @param  systemNosStr 系统编号拼接成的字符串，用逗号隔开
      * @return
      */
     @RequiresRoles({"admin"})
     @RequestMapping("/saveUserSystem")
-    public @ResponseBody boolean saveUserSystem(String userId, String systemIdsStr){
-        OperationLog operationLog = systemLogService.record("用户管理", "系统分配", "为用户["+userId+"]重新分配了系统["+systemIdsStr+"]");
+    public @ResponseBody boolean saveUserSystem(String userId, String systemIdsStr,String systemNosStr){
+        OperationLog operationLog = systemLogService.record("用户管理", "系统分配", "为用户["+userId+"]重新分配了系统["+systemNosStr+"]");
 
         boolean result = userSystemRelationService.saveUserSystem(userId, systemIdsStr);
 

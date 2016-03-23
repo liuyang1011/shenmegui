@@ -24,7 +24,7 @@
   <thead>
   <tr>
     <th data-options="field:'checked',checkbox:true"></th>
-    <th data-options="field:'systemId',width:100">系统编号</th>
+    <th data-options="field:'systemNo',width:100">系统编号</th>
     <th data-options="field:'systemChineseName',width:200">系统名称</th>
     <th data-options="field:'systemAb', width:150">系统简称</th>
   </thead>

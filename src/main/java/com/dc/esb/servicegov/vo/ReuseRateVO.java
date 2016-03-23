@@ -5,6 +5,7 @@ package com.dc.esb.servicegov.vo;
  */
 public class ReuseRateVO {
     private String systemId;//系统名称
+    private String systemNo;//系统编号
     private String systemChineseName;//系统名称
     private String type;//类型1：消费者，0：提供者
     private String resueOperationNum;//复用场景数（消费者大于1）
@@ -21,6 +22,13 @@ public class ReuseRateVO {
 
     public String getType() {
         return type;
+    }
+    public String getSystemNo() {
+        return systemNo;
+    }
+
+    public void setSystemNo(String systemNo) {
+        this.systemNo = systemNo;
     }
 
     public String getSystemId() {

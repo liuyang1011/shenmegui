@@ -5,6 +5,7 @@ package com.dc.esb.servicegov.vo;
  */
 public class ReleaseVO {
     private String systemId;//系统名称
+    private String systemNo;//系统编号
     private String systemChineseName;//系统名称
     private String type;//类型1：消费者，0：提供者
     private String operationNum;//关联场景数
@@ -16,6 +17,13 @@ public class ReleaseVO {
     private String reuseRate;//复用率
     private String sum;//消费者或者提供者调用总数
 
+    public String getSystemNo() {
+        return systemNo;
+    }
+
+    public void setSystemNo(String systemNo) {
+        this.systemNo = systemNo;
+    }
 
     public String getType() {
         return type;

@@ -14,14 +14,10 @@ import com.dc.esb.servicegov.service.ServiceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 
 import com.dc.esb.servicegov.service.support.Constants;
-import com.dc.esb.servicegov.vo.RelationVO;
-import com.dc.esb.servicegov.vo.ServiceInvokeInfoVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 @Transactional
@@ -96,7 +92,17 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 		}
 	}
 	public List<?> findJsonBySO(String serviceId, String operationId){
-		return serviceInvokeDAOImpl.findJsonBySO(serviceId, operationId);
+		List<?> list=serviceInvokeDAOImpl.findJsonBySO(serviceId, operationId);
+		List<ServiceInvokeJson> list1=new ArrayList<ServiceInvokeJson>();
+		for(Object obj:list){
+			ServiceInvokeJson serviceInvokeJson=(ServiceInvokeJson)obj;
+			String invokeId=serviceInvokeJson.getInvokeId();
+			ServiceInvoke invoke=serviceInvokeDAOImpl.findUniqueBy("invokeId", invokeId);
+			serviceInvokeJson.setSystemId(invoke.getSystem().getSystemNo());
+			list1.add(serviceInvokeJson);
+		}
+
+		return list1;
 	}
 
 	public List getInvokerRelationByServiceId(String serviceId) {
