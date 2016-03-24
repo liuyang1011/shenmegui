@@ -46,21 +46,19 @@
   </div><!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">登入</p>
-    <form action="/login/" method="post">
       <div class="form-group has-feedback">
-        <input name="username" type="user" class="form-control" placeholder="用户名"/>
+        <input name="username" type="user" class="form-control" placeholder="用户名" id="username"/>
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input name="password" type="password" class="form-control" placeholder="密码"/>
+        <input name="password" type="password" class="form-control" placeholder="密码" id="password"/>
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-4" style="width:100%">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">登 录</button>
+          <button class="btn btn-primary btn-block btn-flat" onclick="login()">登 录</button>
         </div><!-- /.col -->
       </div>
-    </form>
 
     <div class="social-auth-links text-center">
       <p>- OR -</p>
@@ -78,7 +76,10 @@
 <script src="../../newui/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <!-- iCheck -->
 <script src="../../newui/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
-<script>
+<!--md5加密-->
+<script src="../../newui/bootstrap/js/md5.js" type="text/javascript" ></script>
+
+<script type="text/javascript">
   $(function () {
     $('input').iCheck({
       checkboxClass: 'icheckbox_square-blue',
@@ -86,6 +87,27 @@
       increaseArea: '20%' // optional
     });
   });
+
+</script>
+<script type="text/javascript">
+  function login(){
+    var username=$("#username").val();
+    var password=$("#password").val();
+    password=hex_md5(password);
+    var temp=document.createElement("form");
+    temp.action="/login/";
+    temp.method="post";
+    temp.style.display="none";
+    var opt=document.createElement("input");
+    opt.name="username";
+    opt.value=username;
+    var opt1=document.createElement("input");
+    opt1.name="password";
+    opt1.value=password;
+    temp.appendChild(opt);
+    temp.appendChild(opt1);
+    temp.submit();
+  }
 </script>
 </body>
 </html>

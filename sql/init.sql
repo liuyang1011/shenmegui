@@ -328,7 +328,7 @@ values ('serverheadman', '服务治理组长', null);
 commit;
 
 
-insert into SG_USER (USER_ID, USER_LASTDATE, USER_NAME, USER_ORG_ID, USER_PASSWORD, USER_REMARK, USER_STARTDATE, USER_MOBILE, USER_TEL) values ('admin', '2025/10/28', '管理员', '1', '123456', '', '2015/7/22', '', '');
+insert into SG_USER (USER_ID, USER_LASTDATE, USER_NAME, USER_ORG_ID, USER_PASSWORD, USER_REMARK, USER_STARTDATE, USER_MOBILE, USER_TEL) values ('admin', '2025/10/28', '管理员', '1', 'e10adc3949ba59abbe56e057f20f883e', '', '2015/7/22', '', '');
 
 insert into USER_ROLE_RELATION (USER_ID,ROLE_ID) VALUES ('admin','admin');
 insert into USER_ROLE_RELATION (USER_ID,ROLE_ID) VALUES ('1749','admin');

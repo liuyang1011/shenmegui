@@ -86,6 +86,7 @@
 <script type="text/javascript" src="/resources/js/jquery.edatagrid.js"></script>
 <script type="text/javascript" src="/resources/js/ui.js"></script>
 <script type="text/javascript" src="/plugin/json/json2.js"></script>
+<script src="/newui/bootstrap/js/md5.js" type="text/javascript" ></script>
 <script type="text/javascript"
 		src="/js/user/userManager.js"></script>
 <script type="text/javascript">
@@ -181,7 +182,7 @@
 					if (!confirm("确定要初始化密码吗？初始化后密码变为：123456")) {
 						return;
 					}
-					userManager.initPassWord(row.id,'123456',function(result){
+					userManager.initPassWord(row.id,hex_md5('123456'),function(result){
 						if(result){
 							alert("初始化成功，密码变为：123456")
 						}

@@ -11,37 +11,40 @@
 <body>
 <fieldset>
 	<table width="99%" border="0" cellspacing="0" cellpadding="0" id="passWord">
-  <tr>
-    <th>旧密码</th>
-    <td><input name="oldPW" class="easyui-textbox" type="password" id="oldPW" /><font color="#FF0000">*</font></td>
-  </tr>
-<tr>
-    <th>新密码</th>
-    <td><input name="newPW" class="easyui-textbox" type="password" id="newPW" /><font color="#FF0000">*</font></td>
-  </tr>
-  <tr>
-    <th>确认密码</th>
-    <td><input name="confirmPW" class="easyui-textbox" type="password" id="confirmPW" /><font color="#FF0000">*</font></td>
-  </tr>
-</table>
+		<tr>
+			<th>旧密码</th>
+			<td><input name="oldPW" type="hidden"/>
+				<input name="oldPW" class="easyui-textbox" type="password" id="oldPW"/><font color="#FF0000">*</font></td>
+		</tr>
+		<tr>
+			<th>新密码</th>
+			<td><input name="newPW" class="easyui-textbox" type="password" id="newPW" /><font color="#FF0000">*</font></td>
+		</tr>
+		<tr>
+			<th>确认密码</th>
+			<td><input name="confirmPW" class="easyui-textbox" type="password" id="confirmPW" /><font color="#FF0000">*</font></td>
+		</tr>
+	</table>
 </fieldset>
-    <div style="margin-top:10px;"></div>
+<div style="margin-top:10px;"></div>
 <div align="center"><a class="easyui-linkbutton" id="saveBtn">保存</a>&nbsp;&nbsp;<a class="easyui-linkbutton" id="close" onclick="$('#w').window('close');">关闭</a>
 </div>
+<script src="/newui/bootstrap/js/md5.js" type="text/javascript" ></script>
 <script type="text/javascript">
-var pw="${user.password}";
-var userI="${user.id}";
-$(function() {
+	var pw="${user.password}";
+	var userI="${user.id}";
+	$(function() {
 		$('#saveBtn').click(function(){
 			var str1 = $('#oldPW').val();
+			str1=hex_md5(str1);
 			var str2 = $('#newPW').val();
 			var str3 = $('#confirmPW').val();
 			var parent=/^[u4E00-u9FA5]+$/;
-  			if(!parent.test(str2))
-  			{
-  				alert("密码不能使用中文");
-  				return false;
-  			}
+			if(!parent.test(str2))
+			{
+				alert("密码不能使用中文");
+				return false;
+			}
 // 			alert(str1+"旧"+str2+"新"+str3+"确"+pw+"原")	
 			if(str1!=pw){
 				alert("输入的旧密码有误！");
@@ -58,16 +61,16 @@ $(function() {
 // 			var data = {};	
 // 			data.id =userI;
 // 			data.password=str2;
-   			userManager.passWord(userI,str2,function(result) {
-   				if (result) {
-   					alert("保存成功");
-   					} else {
- 					alert("保存失败");
-   				}
-   				});
- 				$('#w').window('close');
+			userManager.passWord(userI,hex_md5(str2),function(result) {
+				if (result) {
+					alert("保存成功");
+				} else {
+					alert("保存失败");
+				}
+			});
+			$('#w').window('close');
 		});
-});
+	});
 </script>
 </body>
 </html>
