@@ -24,5 +24,21 @@ public class SLATemplateServiceImpl extends AbstractBaseService<SLATemplate, Str
 	public HibernateDAO<SLATemplate, String> getDAO() {
 		return slaTemplateDAOImpl;
 	}
+	public boolean uniqueValid1(String templateNo) {
+		SLATemplate entity = findUniqueBy("templateNo",templateNo);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean uniqueValid3(String templateName) {
+		SLATemplate entity = findUniqueBy("templateName",templateName);
+		if (entity != null) {
+			return false;
+		}
+		return true;
+	}
+
 
 }

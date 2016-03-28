@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,8 +94,20 @@ public class SLAServiceImpl extends AbstractBaseService<SLA, String> {
         }
         return true;
     }
+    public boolean uniqueValid2(String slaName,String slaTem) {
+        Map<String,String> params=new HashMap<String, String>();
+        params.put("slaName",slaName);
+        params.put("slaTemplateId", slaTem);
 
-//    public List<SLA> findBy(Map<String, String> params) {
-//        return slaDAOImpl.findBy(params);
-//    }
+        List<SLA> slas = findTemplateBy(params);
+        if(slas.size()==0) {
+            return true;
+        }
+           return false;
+    }
+
+
+    public List<SLA> findTemplateBy(Map<String, String> params) {
+        return slaDAOImpl.findTemplateBy(params);
+    }
 }

@@ -117,6 +117,14 @@ if(mid.equals("1.14")){
 %>
 
 <%
+	if(mid.equals("3.7")){
+%>
+{"success":true,"url":"/jsp/service/sla/slaTemplateGuanli.jsp","title":"SLA模板管理"}
+<%
+	}
+
+%>
+<%
 	if(mid.equals("9.5")){
 %>
 {"success":true,"url":"/jsp/metadata/metadata_import.jsp","title":"数据字典导入"}
