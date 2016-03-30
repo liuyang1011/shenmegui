@@ -27,14 +27,14 @@
   <!--[if lt IE 9]>
   <![endif]-->
   <script type="text/javascript">
-    var errMsg = '${errMsg}';
-    if(errMsg != null && errMsg!= ""){
-      alert(errMsg);
-    }
-    var topFlag = '${topFlag}';
-    if(topFlag){
-      top.location.href="/login/?topFlag=true" ;
-    }
+            var errMsg = '${errMsg}';
+            if(errMsg != null && errMsg!= ""){
+              alert(errMsg);
+            }
+            var topFlag = '${topFlag}';
+            if(topFlag){
+                top.location.href="/login/?topFlag=true" ;
+            }
 
 
   </script>
@@ -46,7 +46,6 @@
   </div><!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">登入</p>
-<<<<<<< Updated upstream
       <div class="form-group has-feedback">
         <input name="username" type="user" class="form-control" placeholder="用户名" id="username"/>
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -60,21 +59,6 @@
           <button class="btn btn-primary btn-block btn-flat" onclick="login()">登 录</button>
         </div><!-- /.col -->
       </div>
-=======
-    <div class="form-group has-feedback">
-      <input name="username" type="user" class="form-control" placeholder="用户名" id="username"/>
-      <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-    </div>
-    <div class="form-group has-feedback">
-      <input name="password" type="password" class="form-control" placeholder="密码" id="password"/>
-      <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-    </div>
-    <div class="row">
-      <div class="col-xs-4" style="width:100%">
-        <button class="btn btn-primary btn-block btn-flat" onclick="login()">登 录</button>
-      </div><!-- /.col -->
-    </div>
->>>>>>> Stashed changes
 
     <div class="social-auth-links text-center">
       <p>- OR -</p>
