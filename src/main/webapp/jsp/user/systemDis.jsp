@@ -5,6 +5,10 @@
     <title></title>
 </head>
 <body>
+<div id="systemBar" style="text-align:center;">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="addUserSystem()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="javascript:$('#dlg').dialog('close');">取消</a>
+</div>
 <table id="systemList" class="easyui-datagrid"
        data-options="
 			rownumbers:true,

@@ -222,7 +222,7 @@ var SYSMENU = {
                         } else if (node.click == "interfaces") {
                             var mid = systemNode.id;
                             var midtitle=node.systemNo;
-                            var title = node.text + '(' + midtitle + ')';
+                            var title = node.text + '(系统' + midtitle + ')';
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {//SYSADMINUIEDIT
@@ -286,7 +286,7 @@ var SYSMENU = {
 
                         } else if (node.click == "files") {
                             var midtitle=node.systemNo;
-                            var title = "系统" +midtitle+ "需求文件";
+                            var title = "系统(" +midtitle+ ")需求文件";
                             if ($('#mainContentTabs').tabs('exists', title)) {
                                 $('#mainContentTabs').tabs('select', title);
                             } else {
@@ -454,6 +454,7 @@ var SYSMENU = {
             });
         });
     },
+    //处理Task后生成树
     changeLeftMenu: function (mid) {
         $("#west-menu").load(LOAD_URL.LEFTMENU, 'mid=' + mid, function () {
             $('#mxsysadmintreefilter').searchbox({
@@ -609,6 +610,7 @@ var SYSMENU = {
                     }
                 },
                 onClick: function (node) {
+                    var systemNode = $('.msinterfacetree').tree("getParent", node.target);
                     if (node.click == 'system') {
                         var mid = node.id;
                         var title = node.text;
@@ -624,7 +626,7 @@ var SYSMENU = {
                             });
                         }
                     } else if (node.click == "interfaces") {
-                        var mid = node.id;
+                        var mid = systemNode.id;
                         var title = node.text;
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
@@ -638,7 +640,7 @@ var SYSMENU = {
                         }
 
                     } else if (node.click == 'disable') {
-                        var mid = node.id;
+                        var mid = systemNode.id;
                         var title = node.text;
                         if ($('#mainContentTabs').tabs('exists', title)) {
                             $('#mainContentTabs').tabs('select', title);
@@ -685,6 +687,20 @@ var SYSMENU = {
 
                     } else if (node.click == "heads") {
 
+                    } else if (node.click == "files") {
+                        var midtitle=node.systemNo;
+                        var title = "系统(" +midtitle+ ")需求文件";
+                        if ($('#mainContentTabs').tabs('exists', title)) {
+                            $('#mainContentTabs').tabs('select', title);
+                        } else {
+                            var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/sysadmin/file_list.jsp?isAll=0&systemId=' + systemNode.id + '&_t=' + new Date().getTime() + '"  style="width:100%;height:98%;"></iframe>';
+                            $('#mainContentTabs').tabs('add', {
+                                title: title,
+                                content: content,
+                                closable: true,
+                                fit: true
+                            });
+                        }
                     } else {
                         var mid = node.id;
                         var title = node.text;
@@ -699,6 +715,23 @@ var SYSMENU = {
                                 fit: true
                             });
                         }
+                    }
+                },
+                "onBeforeExpand": function (node) {
+                    if (node.children == null && node.click == 'system') {
+                        $.ajax({
+                            type: "get",
+                            async: false,
+                            url: "/interface/getLeftTree/subtree/system/" + node.id + "?_t=" + new Date().getTime(),
+                            dataType: "json",
+                            success: function (result) {
+                                $('.msinterfacetree').tree('append', {
+                                    parent: (node ? node.target : null),
+                                    data: result
+                                });
+                            }
+
+                        });
                     }
                 }
             });

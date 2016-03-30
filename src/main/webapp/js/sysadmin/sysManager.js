@@ -311,7 +311,8 @@ var sysManager = {
             success: function (result) {
                 var parent = $('.msinterfacetree').tree("getParent", node.target);
                 $('.msinterfacetree').tree("remove", node.target);
-                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + parent.id;
+                var systemNode =  $('.msinterfacetree').tree("getParent",parent.target);
+                $('.msinterfacetree').tree('options').url = "/interface/getLeftTree/subFileTree/system/" + systemNode.id;
                 $('.msinterfacetree').tree("reload", parent.target);
                 $('#tg').datagrid("reload");
 
@@ -320,7 +321,7 @@ var sysManager = {
     },
     "refreshFile" : function(){
         var node = $('.msinterfacetree').tree("getSelected");
-        $('.msinterfacetree').tree("reload", node.target);
+        //$('.msinterfacetree').tree("reload", node.target);
 
         var systemNode =  $('.msinterfacetree').tree("getParent",node.target);
         $.ajax({

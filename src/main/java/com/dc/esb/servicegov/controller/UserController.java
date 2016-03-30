@@ -49,7 +49,6 @@ public class UserController {
         return true;
     }
 
-    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/assignRoles", headers = "Accept=application/json")
     public
     @ResponseBody
@@ -134,10 +133,12 @@ public class UserController {
 
         List<UserRoleRelation> rs = userRoleRelationService.findBy("userId", user.getId());
         String roleId = "";
-        for (UserRoleRelation us : rs) {
-            roleId += us.getRoleId() + ",";
-        }
-        roleId = roleId.substring(0, roleId.length() - 1);
+            for (UserRoleRelation us : rs) {
+                roleId += us.getRoleId() + ",";
+            }
+            if(rs.size()!=0) {
+                roleId = roleId.substring(0, roleId.length() - 1);
+            }
         model.addObject("roleId", roleId);
         return model;
     }
@@ -148,10 +149,9 @@ public class UserController {
     @ResponseBody
     boolean modify(@RequestBody SGUser SGUser) {
         OperationLog operationLog = systemLogService.record("用户", "修改", "用户名称：" + SGUser.getName());
-
-    	userRoleRelationService.deleteRelation(SGUser.getId());
+        userServiceImpl.getDAO().getSessionFactory().getCurrentSession().evict(userServiceImpl.getById(SGUser.getId()));
         userServiceImpl.update(SGUser);
-
+        userRoleRelationService.deleteRelation(SGUser.getId());
         systemLogService.updateResult(operationLog);
         return true;
     }

@@ -73,10 +73,6 @@
 	</tr>
 	</thead>
 </table>
-<div id="systemBar" style="text-align:center;">
-	<a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="addUserSystem()">确定</a>
-	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="javascript:$('#dlg').dialog('close');">取消</a>	
-</div>
 <div id="w" class="easyui-window" title=""
 	 data-options="modal:true,closed:true,iconCls:'icon-add'"
 	 style="width:500px;height:200px;padding:10px;"></div>
