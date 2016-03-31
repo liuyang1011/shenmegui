@@ -44,9 +44,8 @@
           $(function() {
             userI=$("#id").val();
             $.ajax({
-              type: "POST",
-              url: "/user/findById",
-              data:"id="+userI,
+              type: "GET",
+              url: "/user/findById/"+userI,
               async: false,
               success: function(msg){
                 pw=msg.password;
@@ -58,8 +57,8 @@
                 str1=hex_md5(str1);
               var str2 = $('#newPW').val();
               var str3 = $('#confirmPW').val();
-              var parent=/^[u4E00-u9FA5]+$/;
-              if(!parent.test(str2))
+              var parent1=/^[u4E00-u9FA5]+$/;
+              if(!parent1.test(str2))
               {
                 alert("密码不能使用中文或为空");
                 return false;
@@ -82,9 +81,10 @@
 // 			data.password=str2;
               userManager.passWord(userI,hex_md5(str2),function(result) {
                 if (result) {
-                  alert("修改成功");
+                    alert("修改成功,请重新登录！");
+                    parent.location.href="/logout/";
                 } else {
-                  alert("保存失败");
+                  alert("修改失败");
                 }
               });
             });

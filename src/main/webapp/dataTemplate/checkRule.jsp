@@ -8,7 +8,7 @@
 {"success":true,"url":"/jsp/version/versionRelease.jsp","title":"版本发布"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("1.3")){
@@ -16,7 +16,7 @@
 {"success":true,"url":"/jsp/version/versionHis.jsp","title":"版本历史"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("1.4")){
@@ -24,7 +24,7 @@
 {"success":true,"url":"/jsp/version/releaseHis.jsp","title":"版本公告"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("1.5")){
@@ -60,7 +60,7 @@
 
 %>
 <%
-if(mid.equals("1.14")){
+	if(mid.equals("1.14")){
 %>
 {"success":true,"url":"/jsp/menu/menu_tree.jsp","title":"菜单管理"}
 <%
@@ -73,7 +73,7 @@ if(mid.equals("1.14")){
 {"success":true,"url":"/jsp/manageTask/manageTask.jsp","title":"流程任务管理"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("2.4")){
@@ -81,7 +81,7 @@ if(mid.equals("1.14")){
 {"success":true,"url":"/jsp/task/mytask.jsp","title":"我的任务"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("3.2")){
@@ -89,7 +89,7 @@ if(mid.equals("1.14")){
 {"success":true,"url":"/dataTemplate/grid5.jsp","title":"英文词汇管理"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("3.3")){
@@ -97,7 +97,7 @@ if(mid.equals("1.14")){
 {"success":true,"url":"/dataTemplate/grid6.jsp","title":"类别词管理"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("3.4")){
@@ -105,7 +105,7 @@ if(mid.equals("1.14")){
 {"success":true,"url":"/dataTemplate/grid7.jsp","title":"元数据管理"}
 <%
 	}
-	
+
 %>
 <%
 	if(mid.equals("3.6")){
@@ -116,14 +116,6 @@ if(mid.equals("1.14")){
 
 %>
 
-<%
-	if(mid.equals("3.7")){
-%>
-{"success":true,"url":"/jsp/service/sla/slaTemplateGuanli.jsp","title":"SLA模板管理"}
-<%
-	}
-
-%>
 <%
 	if(mid.equals("9.5")){
 %>
@@ -139,7 +131,7 @@ if(mid.equals("1.14")){
 {"success":true,"url":"/jsp/sysadmin/fieldmapping_import.jsp","title":"字段映射导入"}
 <%
 	}
-	
+
 %>
 
 <%
@@ -206,4 +198,32 @@ if(mid.equals("1.14")){
 <%
 	}
 
+%>
+<%
+	if(mid.equals("16.3")){
+%>
+{"success":true,"url":"/jsp/user/userModify.jsp","title":"个人信息设置"}
+<%
+	}
+%>
+<%
+	if(mid.equals("16.2")){
+%>
+{"success":true,"url":"/jsp/myWorkbench/areadyTask.jsp","title":"已办事宜"}
+<%
+	}
+%>
+<%
+	if(mid.equals("16.1")){
+%>
+{"success":true,"url":"/jsp/myWorkbench/mytask.jsp","title":"待办事宜"}
+<%
+	}
+%>
+<%
+	if(mid.equals("16.4")){
+%>
+{"success":true,"url":"/jsp/user/modifyPwd.jsp","title":"密码设置"}
+<%
+	}
 %>

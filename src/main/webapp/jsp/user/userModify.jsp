@@ -12,20 +12,23 @@
   <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
   <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
   <script type="text/javascript" src="/resources/js/ui.js"></script>
+  <script type="text/javascript" src="/plugin/validate.js"></script>
+  <script type="text/javascript"
+          src="/js/user/userManager.js"></script>
 </head>
 <body>
 <fieldset>
   <legend>个人信息修改</legend>
-            <table width="500" height="210" border="0" cellspacing="0" align="center">
+            <table width="500" height="210" border="0" cellspacing="0" align="center" id="userEdit">
                 <tr>
                   <th width="78"><nobr>用户代码：</nobr></th>
-                  <td width="168" height="41" scope="col"><input name="text" type="text" id="id" readonly="true" value="<shiro:principal/>" class="easyui-textbox"/></td>
+                  <td width="168" height="41" scope="col"><input name="text" type="text" id="id" disabled="true" value="<shiro:principal/>" class="easyui-textbox"/></td>
                   <th width="78"><span style="color: red;">*</span><nobr>用户名称：</nobr></th>
                   <td width="168" scope="col"><input name="text2" type="text" id="name" class="easyui-textbox"  data-options="required:true"/></td>
                 </tr>
                 <tr>
                   <th><span style="color: red;">*</span><nobr>邮箱：</nobr></th>
-                  <td height="41"><input name="text2" type="text" id="email" class="easyui-textbox"  data-options="required:true"/></td>
+                  <td height="41"><input name="text2" type="text" id="email" class="easyui-textbox"  data-options="required:true,validType:'email'"/></td>
                   <th><span style="color: red;">*</span><nobr>所属机构：</nobr></th>
                   <td><input name="text2" type="text" id="orgEdit" class="easyui-textbox" data-options="required:true"/></td>
                 </tr>
@@ -33,7 +36,7 @@
                   <th><span style="color: red;">*</span><nobr>手机号码：</nobr></th>
                   <td height="47"><input name="text2" type="text" id="userMobile" class="easyui-textbox" data-options="required:true,validType:'mobile'"/></td>
                   <th><nobr>电话号码：</nobr></th>
-                  <td><input name="text2" type="text" id="userTel" class="easyui-textbox"/></td>
+                  <td><input name="text2" type="text" id="userTel" class="easyui-textbox" data-options="required:true,validType:'phone'"/></td>
                 </tr>
                 <tr>
                   <th><nobr>备注：</nobr></th>
@@ -49,9 +52,8 @@
   $(function($) {
     var id=$("#id").val();
     $.ajax({
-      type: "POST",
-      url: "/user/findById",
-      data:"id="+id,
+      type: "GET",
+      url: "/user/findById/"+id,
       async: false,
       success: function(msg){
         userInfo=msg;
@@ -64,7 +66,7 @@
       }
     });
     $('#orgEdit').combobox({
-      url: '/org/getAll',
+      url: '/org/getAllOrg',
       method: 'get',
       mode: 'remote',
       editable:false,
@@ -81,6 +83,9 @@
 </script>
   <script type="text/javascript">
     $('#saveBtn').click(function () {
+      if(!$("#userEdit").form('validate')){
+        return false;
+      }
       var orgEdit=$('#orgEdit').combobox('getValue');
       var id=$("#id").val();
       var name=$("#name").val();
@@ -95,26 +100,28 @@
       data.userTel = userTel
       data.orgId = orgEdit;
       data.remark = remark;
+      data.email=email;
       data.password=userInfo.password;
       data.lastdate=userInfo.lastdate;
       data.startdate=userInfo.startdate;
-      data.email=email;
-      if(name==""||orgEdit==""||userMobile==""||email==""){
-        return;
-      }
       $.ajax({
-        type: "POST",
-        url: "/user/save/"+id,
-        data: data,
-        success: function(msg){
-          if(msg){
-            alert("设置成功！");
-            $('#w').window('close');
-              }else{
-            alert("设置失败！");
+        type: "post",
+        contentType: "application/json; charset=utf-8",
+        url: "/user/modify2",
+        data: JSON.stringify(data),
+        dataType: "json",
+        success: function(result) {
+          if(result){
+            alert("修改成功");
+            var tab=parent.$("#mainContentTabs").tabs("getSelected");
+            var index = parent.$('#mainContentTabs').tabs('getTabIndex',tab);
+            parent.$("#mainContentTabs").tabs("close",index);
+          }else{
+            alert("修改失败");
           }
         }
       });
+
     });
 
   </script>

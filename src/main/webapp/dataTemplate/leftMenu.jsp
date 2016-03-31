@@ -36,7 +36,7 @@
     </li>
     <li><a href="javascript:;" class="openable" mid="1.13">生成类管理</a>
     </li>
-        <li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>
+    <li><a href="javascript:;" class="openable" mid="2.3">流程任务管理</a>
     </li>
 </ul>
 <%
@@ -47,14 +47,13 @@
 <ul id="menu-tree">
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
-                <li><a href="javascript:;" class="openable" mid="3.2">英文词汇管理</a></li>
-                <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
+            <li><a href="javascript:;" class="openable" mid="3.2">英文词汇管理</a></li>
+            <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
-    <li><a href="javascript:;" class="openable" mid="3.7">SLA模板管理</a></li>
     <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
@@ -272,4 +271,24 @@
 </script>
 <%
     }
+%>
+<%
+    if (mid.equals("16")) {
+%>
+<ul id="menu-tree" style="overflow:scroll;height:100%">
+    <li>
+        <a href="javascript:;" class="openable" mid="16.1">待办事宜</a>
+    </li>
+    <li>
+        <a href="javascript:;" class="openable" mid="16.2">已办事宜</a>
+    </li>
+    <li>
+        <a href="javascript:;" class="openable" mid="16.3">个人信息设置</a>
+    </li>
+    <li>
+        <a href="javascript:;" class="openable" mid="16.4">密码设置</a>
+    </li>
+</ul>
+
+<%}
 %>

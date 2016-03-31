@@ -31,6 +31,16 @@ public class SGUser implements Serializable {
     private String remark;
     @Column(name = "USER_STARTDATE")
     private String startdate;
+    @Column(name="USER_EMAIL")
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getId() {
         return id;

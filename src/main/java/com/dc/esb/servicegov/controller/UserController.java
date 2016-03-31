@@ -169,6 +169,7 @@ public class UserController {
             user.setPassword(SGUser.getPassword());
             user.setUserMobile(SGUser.getUserMobile());
             user.setUserTel(SGUser.getUserTel());
+            user.setEmail(SGUser.getEmail());
 
             userServiceImpl.update(user);
         }
@@ -223,6 +224,20 @@ public class UserController {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 我的工作台--个人信息设置
+     * @param id
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/findById/{id}", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    SGUser findById(
+            @PathVariable("id") String id) {
+        SGUser user = userServiceImpl.getById(id);
+        return user;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
