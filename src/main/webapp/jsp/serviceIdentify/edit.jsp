@@ -270,10 +270,10 @@
         <table border="0" cellspacing="0" cellpadding="0" id="tb3">
             <tr>
                 <td>
-                    <a href="#" id="saveTagBtn" onclick="cloneData()" class="easyui-linkbutton" iconCls="icon-search" style="margin-left:1em" >确定</a>
+                    <a href="#" id="saveTagBtn" onclick="cloneData()" class="easyui-linkbutton" iconCls="icon-ok" style="margin-left:1em" >确定</a>
                 </td>
                 <td>
-                    <a href="#" id="save" onclick="saveData()" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >保存</a>
+                    <a href="#" id="save" onclick="saveData()" class="easyui-linkbutton" iconCls="icon-save" style="margin-left:1em" >保存</a>
                 </td>
                 <td>
                     <a href="#" id="clean" onclick="clearData()" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>

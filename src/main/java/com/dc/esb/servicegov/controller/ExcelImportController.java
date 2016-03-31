@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.service.MetadataService;
+import com.dc.esb.servicegov.service.ServiceIdentifyService;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.GlobalImport;
@@ -70,6 +72,8 @@ public class ExcelImportController {
 
     @Autowired
     InterfaceServiceImpl interfaceService;
+    @Autowired
+    private ServiceIdentifyService serviceIdentifyService;
     /**
      * Excel 2003
      */
@@ -140,6 +144,7 @@ public class ExcelImportController {
                         msg.append(sheetName + "导入失败，");
                         continue;
                     }
+
                     //判断是否新增
                     if(indexDO.getOptType().equals("0")){
                         Interface tempInter = (Interface) infoMap.get("interface");
@@ -278,6 +283,7 @@ public class ExcelImportController {
                         continue;
                     }*/
                     long useTime = java.lang.System.currentTimeMillis() - time;
+                    serviceIdentifyService.changeInterfaceState(((Interface)infoMap.get("interface")).getInterfaceId(),"a");
                     logger.info("===========接口[" + sheetName + "],导入完成，耗时" + useTime + "ms=============");
                 } else {
                     logger.error("交易代码为空。");

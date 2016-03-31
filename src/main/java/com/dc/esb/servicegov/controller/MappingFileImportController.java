@@ -2,6 +2,7 @@ package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.entity.InterfaceHead;
 import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.service.ServiceIdentifyService;
 import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
 import com.dc.esb.servicegov.service.impl.MappingFileImportSeviceImpl;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
@@ -51,7 +52,8 @@ public class MappingFileImportController {
     @Autowired
     private OperationServiceImpl operationService;
 
-
+    @Autowired
+    private ServiceIdentifyService serviceIdentifyService;
 
     @RequiresPermissions({"importExcel-update"})
     @RequestMapping(method = RequestMethod.POST, value = "/fieldImport")
@@ -116,6 +118,7 @@ public class MappingFileImportController {
                         logger.error(e, e);
                         continue;
                     }
+                    serviceIdentifyService.changeInterfaceState(indexVO.getInterfaceId(),"a");
                 }
             }else{
                mappingFileImportSevice.logMsg("缺少INDEX页!");
