@@ -43,7 +43,7 @@
                 </td>
                 <th>
                     <nobr>
-                        接口状态
+                        识别状态
                     </nobr>
                 </th>
                 <td>
@@ -55,24 +55,24 @@
                         <option value="a">未识别</option>
                     </select>
                 </td>
-                <%--<th>--%>
-                    <%--<nobr>--%>
-                        <%--系统--%>
-                    <%--</nobr>--%>
-                <%--</th>--%>
-                <%--<td>--%>
-                    <%--<input name="systemIdSearch" id="systemIdSearch"  class="easyui-combobox" style="width:150px"--%>
-                           <%--data-options="--%>
-                 <%--method:'get',--%>
-                 <%--url:'/system/getSystemAll',--%>
-                 <%--textField:'chineseName',--%>
-                 <%--valueField:'id',--%>
-                 <%--onChange:function(newValue, oldValue){--%>
-							<%--this.value=newValue;--%>
-				    <%--}--%>
-                 <%--"--%>
-                            <%-->--%>
-                <%--</td>--%>
+                <th>
+                    <nobr>
+                        系统
+                    </nobr>
+                </th>
+                <td>
+                    <input name="systemIdSearch" id="systemIdSearch"  class="easyui-combobox" style="width:150px"
+                           data-options="
+                 method:'get',
+                 url:'/system/getSystemAll',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+				    }
+                 "
+                            >
+                </td>
                 <td align="right">
                     <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
                     <a href="#" id="clean" onclick="clearCondition()" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
@@ -158,13 +158,14 @@
                     return false;
                 }
                 else {
+
                     checkedItem = checkedItems[0];
                     uiinit.win({
                         w: 700,
                         height:800,
                         iconCls: 'icon-edit',
                         title: "服务识别",
-                        url: "/serviceIdentify/edit/" +checkedItem.ecode+"/"+checkedItem.interfaceName+"/"+checkedItem.interfaceId
+                        url: "/serviceIdentify/edit/" +checkedItem.ecode+"/"+checkedItem.interfaceId
                     });
                 }
             }

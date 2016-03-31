@@ -40,6 +40,9 @@
 					<option value="">全部</option>
 					<option value="0">投产</option>
 					<option value="1">废弃</option>
+                    <option value="5">识别中</option>
+                    <option value="6">已识别</option>
+                    <option value="a">未识别</option>
 				</select>
 			</td>
 		</tr>

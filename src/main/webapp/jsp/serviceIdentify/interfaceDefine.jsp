@@ -435,6 +435,9 @@
                 if (value == 6) {
                     return "<font color='red'>已识别</font>";
                 }
+                if (value == a) {
+                    return "<font color='red'>未识别</font>";
+                }
             },
             version:function(value, row, index){
                 try {

@@ -4,8 +4,10 @@ import com.dc.esb.servicegov.dao.impl.*;
 import com.dc.esb.servicegov.entity.*;
 import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.process.impl.JbpmSupport;
+import com.dc.esb.servicegov.service.InterfaceService;
 import com.dc.esb.servicegov.service.ServiceIdentifyService;
 import com.dc.esb.servicegov.service.SystemService;
+import com.dc.esb.servicegov.service.impl.InterfaceServiceImpl;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
 import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
@@ -35,6 +37,8 @@ public class ServiceIdentifyController {
     private SystemLogServiceImpl systemLogService;
     @Autowired
     private OperationDAOImpl operataionDAO;
+    @Autowired
+    private InterfaceServiceImpl interfaceService;
     @Autowired
     private ServiceDAOImpl serviceDAO;
     @Autowired
@@ -152,7 +156,7 @@ public class ServiceIdentifyController {
     @RequestMapping(method = RequestMethod.GET, value = "/getCategoryAll", headers = "Accept=application/json")
     public @ResponseBody List<Map<String,Object>> getSystemAll(HttpServletRequest request) {
         List<Map<String,Object>> resList = new ArrayList<Map<String, Object>>();
-        StringBuffer hql1=new StringBuffer("select sc.categoryId,sc.categoryName,sc.desc from ServiceCategory as sc ");
+        StringBuffer hql1=new StringBuffer("select sc.categoryId,sc.categoryName,sc.desc from ServiceCategory as sc where parentId is null");
         Map<String,Object> map = new HashMap<String, Object>();
         List<Object[]> s=serviceCategoryDAOImpl.findBy(hql1.toString());
         for(Object[] o:s){
@@ -286,15 +290,18 @@ public class ServiceIdentifyController {
     /**
      * 根据交易码和交易名称跳转到服务识别界面
      * @param ecode
-     * @param interfaceName
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/edit/{ecode}/{interfaceName}/{interfaceId}", headers = "Accept=application/json")
-    public ModelAndView getSystem(@PathVariable
-                                  String ecode,@PathVariable String interfaceName,@PathVariable String interfaceId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/edit/{ecode}/{interfaceId}", headers = "Accept=application/json")
+    public ModelAndView getSystem(@PathVariable String ecode,@PathVariable String interfaceId) {
         ModelAndView mv = new ModelAndView("serviceIdentify/edit");
         mv.addObject("ecode",ecode);
-        mv.addObject("interfaceName",interfaceName);
+        Interface inter=interfaceService.findUniqueBy("ecode", ecode);
+        if(inter!=null){
+            String interfaceName=inter.getInterfaceName();
+            mv.addObject("interfaceName",interfaceName);
+        }
+
         String hql="select systemId from ServiceInvoke where interfaceId='"+interfaceId+"' and type='"+Constants.INVOKE_TYPE_PROVIDER+"'";
         List<Object> system=systemDAO.findBy(hql.toString());
         for(Object o:system){
