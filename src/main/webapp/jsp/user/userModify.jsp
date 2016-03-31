@@ -36,7 +36,7 @@
                   <th><span style="color: red;">*</span><nobr>手机号码：</nobr></th>
                   <td height="47"><input name="text2" type="text" id="userMobile" class="easyui-textbox" data-options="required:true,validType:'mobile'"/></td>
                   <th><nobr>电话号码：</nobr></th>
-                  <td><input name="text2" type="text" id="userTel" class="easyui-textbox" data-options="required:true,validType:'phone'"/></td>
+                  <td><input name="text2" type="text" id="userTel" class="easyui-textbox" data-options="validType:'phone'"/></td>
                 </tr>
                 <tr>
                   <th><nobr>备注：</nobr></th>
