@@ -433,6 +433,7 @@ insert into SG_MENU_CATEGORY (id,chinese_name,parent_id,temp) values ('12','元�
 insert into SG_MENU_CATEGORY (id,chinese_name,parent_id,temp) values ('13','公共代码','1',null);
 insert into SG_MENU_CATEGORY (id,chinese_name,parent_id,temp) values ('14','资源导入','1',null);
 insert into SG_MENU_CATEGORY (id,chinese_name,parent_id,temp) values ('15','英文单词管理','1',null);
+insert into SG_MENU_CATEGORY (id,chinese_name,parent_id,temp) values ('16','SLA模板管理','1',null);
 
 
 
@@ -486,8 +487,6 @@ insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('146','�
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('147','删除','142','35');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('148','保存','143','35');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('149','SLA模板-查询','144','35');
-insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('150','SLA模板-新增','145','35');
-insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('151','SLA模板-删除','146','35');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('152','SLA模板-修改','147','35');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('153','查询','148','35');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('154','映射元数据-查询','149','36');
@@ -574,6 +573,10 @@ insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('233','�
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('234','添加','207','15');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('235','修改','208','15');
 insert into SG_MENU (id,name,permission_id,sg_menu_category_id) values ('236','删除','209','15');
+insert into sg_menu (ID, NAME, PERMISSION_ID, SG_MENU_CATEGORY_ID)values ('237', 'SLA模板-查询', '144', '16');
+insert into sg_menu (ID, NAME, PERMISSION_ID, SG_MENU_CATEGORY_ID)values ('238', 'SLA模板-新增', '210', '16');
+insert into sg_menu (ID, NAME, PERMISSION_ID, SG_MENU_CATEGORY_ID)values ('239', 'SLA模板-删除', '211', '16');
+insert into sg_menu (ID, NAME, PERMISSION_ID, SG_MENU_CATEGORY_ID)values ('240', 'SLA模板-修改', '212', '16');
 
 
 
@@ -686,6 +689,10 @@ insert into PERMISSION (id, chinese_description, chinese_name, description, name
 insert into PERMISSION (id, chinese_description, chinese_name, description, name, temp, category_id) values ('207', null, null, 'englishWord', 'add', null, null);
 insert into PERMISSION (id, chinese_description, chinese_name, description, name, temp, category_id) values ('208', null, null, 'englishWord', 'update', null, null);
 insert into PERMISSION (id, chinese_description, chinese_name, description, name, temp, category_id) values ('209', null, null, 'englishWord', 'delete', null, null);
+insert into PERMISSION (id, chinese_description, chinese_name, description, name, temp, category_id) values ('210', null, null, 'slaTemplate', 'add', null, null);
+insert into PERMISSION (id, chinese_description, chinese_name, description, name, temp, category_id) values ('211', null, null, 'slaTemplate', 'delete', null, null);
+insert into PERMISSION (id, chinese_description, chinese_name, description, name, temp, category_id) values ('212', null, null, 'slaTemplate', 'update', null, null);
+
 commit;
 
 
@@ -1569,6 +1576,22 @@ insert into ROLE_MENU_RELATION (id, role_id, sg_menu_id)
 values ('ff80808150b225410150b229839a00a7', 'serverheadman', '103');
 insert into ROLE_MENU_RELATION (id, role_id, sg_menu_id)
 values ('ff80808150b225410150b22983a100a9', 'serverheadman', '105');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153cb21dea30307', 'admin', '237');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153caabcda90134', 'admin', '238');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153caabcda90136', 'admin', '239');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153caabcdb80138', 'admin', '240');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153cb1cc41e0278', 'server', '237');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153cb1cc42d027a', 'server', '238');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153cab427f7024c', 'server', '239');
+insert into ROLE_MENU_RELATION (ID, ROLE_ID, SG_MENU_ID)
+values ('4028698153ca97a50153cb1cc42d027c', 'server', '240');
 commit;
 
 insert into ROLE_PERMISSION_RELATION (id, permission_id, role_id)
@@ -2229,6 +2252,18 @@ insert into ROLE_PERMISSION_RELATION (id, permission_id, role_id)
 values ('ff80808150b225410150b229839b00a8', '103', 'serverheadman');
 insert into ROLE_PERMISSION_RELATION (id, permission_id, role_id)
 values ('ff80808150b225410150b22983a300aa', '105', 'serverheadman');
+insert into ROLE_PERMISSION_RELATION (ID, PERMISSION_ID, ROLE_ID)
+values ('4028698153ca97a50153caabcda90135', '210', 'admin');
+insert into ROLE_PERMISSION_RELATION (ID, PERMISSION_ID, ROLE_ID)
+values ('4028698153ca97a50153caabcda90137', '211', 'admin');
+insert into ROLE_PERMISSION_RELATION (ID, PERMISSION_ID, ROLE_ID)
+values ('4028698153ca97a50153caabcd990133', '212', 'admin');
+insert into ROLE_PERMISSION_RELATION (ID, PERMISSION_ID, ROLE_ID)
+values ('4028698153ca97d50153caabcda90135', '210', 'server');
+insert into ROLE_PERMISSION_RELATION (ID, PERMISSION_ID, ROLE_ID)
+values ('4028698153ca97d50153caabcda90137', '211', 'server');
+insert into ROLE_PERMISSION_RELATION (ID, PERMISSION_ID, ROLE_ID)
+values ('4028698153ca97d50153caabcd990133', '212', 'server');
 commit;
 
 

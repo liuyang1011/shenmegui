@@ -59,7 +59,7 @@
 
 
   var slaTemplatetoolbar = [];
-  <shiro:hasPermission name="slaTemp-add">
+  <shiro:hasPermission name="slaTemplate-add">
   slaTemplatetoolbar.push({
     text : '新增',
     iconCls : 'icon-add',
@@ -68,7 +68,7 @@
     }
   });
   </shiro:hasPermission>
-  <shiro:hasPermission name="slaTemp-update">
+  <shiro:hasPermission name="slaTemplate-update">
   slaTemplatetoolbar.push({
     text : '编辑',
     iconCls : 'icon-edit',
@@ -87,7 +87,7 @@
   </shiro:hasPermission>
 
 
-  <shiro:hasPermission name="slaTemp-delete">
+  <shiro:hasPermission name="slaTemplate-delete">
   slaTemplatetoolbar.push({
     text : '删除',
     iconCls : 'icon-remove',
@@ -111,7 +111,7 @@
     }
   });
   </shiro:hasPermission>
-  <shiro:hasPermission name="slaTemp-update">
+  <shiro:hasPermission name="slaTemplate-update">
   slaTemplatetoolbar.push({
     text : ' 保存',
     iconCls : 'icon-save',

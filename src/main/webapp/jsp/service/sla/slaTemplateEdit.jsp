@@ -14,6 +14,7 @@
 		</tr>
 	</thead>
 </table>
+<div id="win"></div>
 <div id="w" class="easyui-window" title=""
 	data-options="modal:true,closed:true,iconCls:'icon-add'"
 	style="width:500px;height:200px;padding:10px;"></div>
@@ -21,69 +22,90 @@
 <script type="text/javascript" src="/assets/sla/js/slaManager.js"></script>
 <script type="text/javascript">
 	var slaTemplatetoolbar = [];
-	<shiro:hasPermission name="slaTemp-add">
-	slaTemplatetoolbar.push({
-		text : '新增',
-		iconCls : 'icon-add',
-		handler : function() {
-			$('#slaTemplateTable').edatagrid('addRow');
-		}
-	});
-	</shiro:hasPermission>
-	<shiro:hasPermission name="slaTemp-update">
-	slaTemplatetoolbar.push({
-		text : '编辑',
-		iconCls : 'icon-edit',
-		handler : function() {
+	<%--<shiro:hasPermission name="slaTemp-add">--%>
+	<%--slaTemplatetoolbar.push({--%>
+		<%--text : '新增',--%>
+		<%--iconCls : 'icon-add',--%>
+		<%--handler : function() {--%>
+			<%--$('#slaTemplateTable').edatagrid('addRow');--%>
+		<%--}--%>
+	<%--});--%>
+	<%--</shiro:hasPermission>--%>
+	<%--<shiro:hasPermission name="slaTemp-update">--%>
+	<%--slaTemplatetoolbar.push({--%>
+		<%--text : '编辑',--%>
+		<%--iconCls : 'icon-edit',--%>
+		<%--handler : function() {--%>
 
-			var row = $('#slaTemplateTable').edatagrid("getSelected");
-			var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/sla/slaTemplate.jsp?slaTemplateId='+row.slaTemplateId+'&templateName='+row.templateName+'&serviceId='+serviceId+'&operationId='+operationId+'" style="width:100%;height:100%;"></iframe>';
-// 					alert(content);
-			parent.parent.parent.addTab('SLA模板', content);
-		}
-	});
-	</shiro:hasPermission>
-	<shiro:hasPermission name="slaTemp-delete">
+			<%--var row = $('#slaTemplateTable').edatagrid("getSelected");--%>
+			<%--var content = '<iframe scrolling="auto" frameborder="0"  src="/jsp/service/sla/slaTemplate.jsp?slaTemplateId='+row.slaTemplateId+'&templateName='+row.templateName+'&serviceId='+serviceId+'&operationId='+operationId+'" style="width:100%;height:100%;"></iframe>';--%>
+<%--// 					alert(content);--%>
+			<%--parent.parent.parent.addTab('SLA模板', content);--%>
+		<%--}--%>
+	<%--});--%>
+	<%--</shiro:hasPermission>--%>
+	<%--<shiro:hasPermission name="slaTemp-delete">--%>
+	<%--slaTemplatetoolbar.push({--%>
+		<%--text : '删除',--%>
+		<%--iconCls : 'icon-remove',--%>
+		<%--handler : function() {--%>
+			<%--var row = $('#slaTemplateTable').edatagrid('getSelected');--%>
+			<%--if(row==""||row==null){--%>
+				<%--alert("请选择一条信息！");--%>
+				<%--return false;--%>
+			<%--}--%>
+			<%--var rowIndex = $('#slaTemplateTable').datagrid('getRowIndex', row);--%>
+			<%--var deleteData = $("#slaTemplateTable").datagrid('getChanges','deleted');--%>
+			<%--$('#slaTemplateTable').edatagrid('deleteRow', rowIndex);--%>
+			<%--slaTemplateManager.deleteByEntity(deleteData,function(result){--%>
+				<%--if(result){--%>
+					<%--$('#slaTemplateTable').datagrid('reload');--%>
+					<%--alert("删除成功！");--%>
+				<%--}else{alert("删除失败！");}--%>
+			<%--});--%>
+		<%--}--%>
+	<%--});--%>
+	<%--</shiro:hasPermission>--%>
+	<%--<shiro:hasPermission name="slaTemp-update">--%>
+	<%--slaTemplatetoolbar.push({--%>
+		<%--text : ' 保存',--%>
+		<%--iconCls : 'icon-save',--%>
+		<%--handler : function() {--%>
+			<%--for ( var per in editedRows) {--%>
+				<%--$("#slaTemplateTable").datagrid('endEdit', editedRows[per]);--%>
+			<%--}--%>
+			<%--var editData = $("#slaTemplateTable").datagrid('getChanges');--%>
+			<%--slaTemplateManager.add(editData,function(result){--%>
+				<%--if(result){--%>
+					<%--$('#slaTemplateTable').datagrid('reload');--%>
+					<%--alert("保存成功！");--%>
+				<%--}else{alert("保存失败！");}--%>
+			<%--});--%>
+			<%--editedRows = [];--%>
+
+		<%--}--%>
+	<%--});--%>
+<shiro:hasPermission name="slaTemp-get">
 	slaTemplatetoolbar.push({
-		text : '删除',
-		iconCls : 'icon-remove',
+		text : 'SLA指标',
+		iconCls : 'icon-qxfp',
 		handler : function() {
-			var row = $('#slaTemplateTable').edatagrid('getSelected');
+			var row = $('#slaTemplateTable').edatagrid("getSelected");
 			if(row==""||row==null){
-				alert("请选择一条信息！");
+				alert("请选择一个模板！");
 				return false;
 			}
-			var rowIndex = $('#slaTemplateTable').datagrid('getRowIndex', row);
-			var deleteData = $("#slaTemplateTable").datagrid('getChanges','deleted');
-			$('#slaTemplateTable').edatagrid('deleteRow', rowIndex);
-			slaTemplateManager.deleteByEntity(deleteData,function(result){
-				if(result){
-					$('#slaTemplateTable').datagrid('reload');
-					alert("删除成功！");
-				}else{alert("删除失败！");}
+			$('#win').window({
+				width:600,
+				height:300,
+				iconCls : 'icon-add',
+				title : "["+row.templateName+"]SLA指标",
+				content:'<iframe scrolling="auto" frameborder="0"  src="/jsp/systemSLA/slaTemplate.jsp?slaTemplateId='+row.slaTemplateId+'" style="width:100%;height:100%;"></iframe>'
 			});
 		}
 	});
 	</shiro:hasPermission>
 	<shiro:hasPermission name="slaTemp-update">
-	slaTemplatetoolbar.push({
-		text : ' 保存',
-		iconCls : 'icon-save',
-		handler : function() {
-			for ( var per in editedRows) {
-				$("#slaTemplateTable").datagrid('endEdit', editedRows[per]);
-			}
-			var editData = $("#slaTemplateTable").datagrid('getChanges');
-			slaTemplateManager.add(editData,function(result){
-				if(result){
-					$('#slaTemplateTable').datagrid('reload');
-					alert("保存成功！");
-				}else{alert("保存失败！");}
-			});
-			editedRows = [];
-
-		}
-	});
 	slaTemplatetoolbar.push({
 		text : ' 关联所有场景',
 		iconCls : 'icon-save',
