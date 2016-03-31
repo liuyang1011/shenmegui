@@ -43,6 +43,7 @@
                 <shiro:hasPermission name="operation-get">
                     <li><a href="javascript:;" mid="14">服务检索</a></li>
                 </shiro:hasPermission>
+                <li><a href="javascript:;" mid="17">服务识别</a></li>
             </ul>
         </li>
         <li>
@@ -147,7 +148,8 @@
         <div id="serviceTreeDeleteBtn" data-options="iconCls:'icon-remove'">删除</div>
     </shiro:hasPermission>
     <shiro:hasPermission name="exportPdf-get">
-        <div id="servicePdf" data-options="iconCls:'icon-excel-export'">导出白皮书PDF</div>
+    <div id="servicePdf" data-options="iconCls:'icon-excel-export'">导出白皮书PDF</div>
+    <div id="serviceWord" data-options="iconCls:'icon-excel-export'">导出白皮书Word</div>
     </shiro:hasPermission>
     <shiro:hasPermission name="excelExport-get">
         <div id="serviceExcel" data-options="iconCls:'icon-excel-export'">导出字段映射Excel</div>

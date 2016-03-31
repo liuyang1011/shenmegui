@@ -54,6 +54,7 @@
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
+    <li><a href="javascript:;" class="openable" mid="3.7">SLA模板管理</a></li>
     <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
         <ul>
             <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
