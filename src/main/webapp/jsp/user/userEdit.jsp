@@ -116,7 +116,7 @@
         if(!$("#userEdit").form('validate')){
             return false;
         }
-    	var name=$('#userName').val();
+    	var name=$('#userName').textbox('getValue');
     	var orgEdit=$('#orgEdit').combobox('getValue');
     	var str1 = $('#startdate').datebox('getValue');
         var str2 = $('#lastdate').datebox('getValue');
