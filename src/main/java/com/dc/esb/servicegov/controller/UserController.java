@@ -170,6 +170,7 @@ public class UserController {
             user.setUserMobile(SGUser.getUserMobile());
             user.setUserTel(SGUser.getUserTel());
             user.setEmail(SGUser.getEmail());
+            user.setOrgId(SGUser.getOrgId());
 
             userServiceImpl.update(user);
         }
