@@ -68,6 +68,7 @@
     var orgI = "${user.orgId}";
     var userI = "${user.id}";
     var pasW = "${user.password}";
+    var email="${user.email}";
     $(function () {
         $('#roleEdit').datagrid({
             rownumbers: true,
@@ -152,6 +153,7 @@
         data.lastdate = $('#lastdate').datebox('getValue');
         data.orgId = orgEdit;
         data.remark = $('#remark').val();
+        data.email=email;
         var roles = [];
         for (var i = 0; i < rows.length; i++) {
             var userRoleRelation = {};
