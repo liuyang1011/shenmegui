@@ -160,9 +160,7 @@
             <shiro:hasPermission name="versionHis-get">
                 <li><a href="javascript:;" class="openable" mid="1.3">版本历史</a></li>
             </shiro:hasPermission>
-            <!--
             <li><a href="javascript:;" class="openable" mid="1.4">版本公告</a></li>
-             -->
             <shiro:hasPermission name="baseLine-get">
                 <li><a href="javascript:;" class="openable" mid="1.5">基线制作</a></li>
                 <li><a href="javascript:;" class="openable" mid="1.6">基线历史</a></li>

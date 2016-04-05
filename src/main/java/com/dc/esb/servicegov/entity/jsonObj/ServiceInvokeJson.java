@@ -10,6 +10,8 @@ public class ServiceInvokeJson {
 
     private String systemId;
 
+    private String systemNo;
+
     private String isStandard;
 
     private String serviceId;
@@ -32,7 +34,7 @@ public class ServiceInvokeJson {
 
     }
 
-    public ServiceInvokeJson(String invokeId, String systemId, String isStandard, String serviceId, String operationId, String interfaceId, String type, String desc, String remark, String interfaceName, String systemChineseName) {
+    public ServiceInvokeJson(String invokeId, String systemId, String isStandard, String serviceId, String operationId, String interfaceId, String type, String desc, String remark, String interfaceName, String systemChineseName,String systemNo) {
         this.invokeId = invokeId;
         this.systemId = systemId;
         this.isStandard = isStandard;
@@ -44,6 +46,7 @@ public class ServiceInvokeJson {
         this.remark = remark;
         this.interfaceName = interfaceName;
         this.systemChineseName = systemChineseName;
+        this.systemNo=systemNo;
     }
 
     public ServiceInvokeJson(ServiceInvoke si) {
@@ -64,10 +67,19 @@ public class ServiceInvokeJson {
         }
         if(si.getSystem() != null){
             this.systemChineseName = si.getSystem().getSystemChineseName();
+            this.systemNo=si.getSystem().getSystemNo();
         }else{
             this.systemChineseName = "";
         }
 
+    }
+
+    public String getSystemNo() {
+        return systemNo;
+    }
+
+    public void setSystemNo(String systemNo) {
+        this.systemNo = systemNo;
     }
 
     public String getInvokeId() {

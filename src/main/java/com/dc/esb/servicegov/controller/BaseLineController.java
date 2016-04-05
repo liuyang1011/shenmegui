@@ -28,6 +28,7 @@ import com.dc.esb.servicegov.entity.ServiceInvoke;
 import com.dc.esb.servicegov.service.impl.BaseLineServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceInvokeServiceImpl;
 import com.dc.esb.servicegov.util.JSONUtil;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/baseLine")
@@ -102,6 +103,26 @@ public class BaseLineController {
         result.put("total", rows.size());
         result.put("rows", rows);
         return result;
+    }
+
+    /**
+     * 版本公告
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/getRecentBaseLine")
+    @ResponseBody
+    public ModelAndView getRecentBaseLine(HttpServletRequest req) {
+        String baseId=req.getParameter("baseId");
+        ModelAndView model=new ModelAndView();
+        model.setViewName("version/releaseHis");
+        if("".equals(baseId)||baseId==null){
+            String hql="from BaseLine order by optDate desc";
+            List<BaseLine> lines=baseLineServiceImpl.findBy(hql);
+            model.addObject("baseLine",lines.get(0));
+        }else{
+            model.addObject("baseLine", baseLineServiceImpl.getById(baseId));
+        }
+        return model;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

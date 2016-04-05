@@ -1324,6 +1324,13 @@ $(function () {
         content: content,
         closable: true
     });
+    var content = '<iframe scrolling="auto" frameborder="0"  src="/baseLine/getRecentBaseLine" style="width:100%;height:98%;"></iframe>';
+    var title = "版本公告"
+    $('#mainContentTabs').tabs('add', {
+        title: title,
+        content: content,
+        closable: true
+    });
     ////TODO TZB不用我的任务
     var content = '<iframe scrolling="yes" frameborder="0"  src="/jsp/task/mytask.jsp" style="width:100%;height:98%;"></iframe>';
     var title = "我的任务"

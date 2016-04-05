@@ -21,7 +21,7 @@
 <%
 	if(mid.equals("1.4")){
 %>
-{"success":true,"url":"/jsp/version/releaseHis.jsp","title":"版本公告"}
+{"success":true,"url":"/baseLine/getRecentBaseLine","title":"版本公告"}
 <%
 	}
 
