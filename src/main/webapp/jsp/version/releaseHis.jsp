@@ -157,6 +157,9 @@
 			
 			uiinit.win({
 					w:500,
+                    top:1,
+                    left:400,
+                    h:520,
 					iconCls:'icon-search',
 					title:"历史基线版本",
 					url : "/jsp/version/grid.jsp"

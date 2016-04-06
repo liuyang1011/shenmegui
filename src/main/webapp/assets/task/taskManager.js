@@ -43,6 +43,26 @@ var taskManager = {
             }
         });
     },
+    "rollBackTask": function assignTask(task, callBack) {
+        //{user}/delegate/{targetUser}/task/{taskId}
+        var url = "/process/" + encodeURI(task.name) + "/task/" + task.taskId+"/rollback/"+task.processInstanceId+"/"+encodeURI(task.rollbackOpinion);
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/json; charset=utf-8",
+            "url": encodeURI(url),
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            },
+            "complete": function (responce) {
+                var resText = responce.responseText;
+                if(resText.toString().indexOf("没有操作权限") > 0){
+                    alert("没有权限！");
+                    //window.location.href = "/jsp/403.jsp";
+                }
+            }
+        });
+    },
     "processTask": function (task, callBack) {
         //{user}/work/{task}/taskName/{taskName}
         var url = "/process/" + task.userId + "/work/" + task.taskId;
@@ -59,12 +79,59 @@ var taskManager = {
     },
     "completeTask": function (task, params, callBack) {
         //{user}/work/{task}
-        var url = "/process/" + task.userId + "/complete/" + task.taskId;
+        var url = "/process/" + task.userId + "/complete/" + task.taskId+"/task/"+encodeURI(task.message);
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/json;charset=utf-8",
+            "url": encodeURI(url),
+            "data": JSON.stringify(params),
+           // "data":"message="+task.message,
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            },
+            "complete": function (responce) {
+                var resText = responce.responseText;
+                if(resText.toString().indexOf("没有操作权限") > 0){
+                    alert("没有权限！");
+                    //window.location.href = "/jsp/403.jsp";
+                }
+            }
+        });
+    },
+    "completeAllTask": function (length, url, params, callBack) {
+        for(var i=0;i<length;i++){
+            $.ajax({
+                "type": "POST",
+                "contentType": "application/json;charset=utf-8",
+                "url": url[i],
+                "data": JSON.stringify(params[i]),
+                "dataType": "json",
+                "success": function (result) {
+                    callBack(result);
+                }
+            });
+        }
+    },
+    "deleteTask": function (task, callBack) {
+        //{user}/work/{task}
+        var url = "/process/" + task.userId + "/delete/" + task.taskId;
         $.ajax({
             "type": "POST",
             "contentType": "application/json;charset=utf-8",
             "url": url,
-            "data": JSON.stringify(params),
+            "dataType": "json",
+            "success": function (result) {
+                callBack(result);
+            }
+        });
+    },
+    "setPriority": function (task, callBack) {
+        var url = "/process/" + task.priority + "/setPriority/" +task.userId+"/task/"+ task.taskId;
+        $.ajax({
+            "type": "POST",
+            "contentType": "application/json;charset=utf-8",
+            "url": url,
             "dataType": "json",
             "success": function (result) {
                 callBack(result);

@@ -32,6 +32,25 @@ public class ProcessContext {
     @Column(name="OPT_USER")
     private String optUser;
 
+    private String colourFlag;
+    private String opinion;
+
+    public String getOpinion() {
+        return opinion;
+    }
+
+    public void setOpinion(String opinion) {
+        this.opinion = opinion;
+    }
+
+    public String getColourFlag() {
+        return colourFlag;
+    }
+
+    public void setColourFlag(String colourFlag) {
+        this.colourFlag = colourFlag;
+    }
+
     public String getId() {
         return id;
     }
