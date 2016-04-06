@@ -97,6 +97,7 @@
   </tr>
   </thead>
 </table>
+<!--
 <table class="easyui-datagrid" title="服务公共代码" 
 			data-options="
 			rownumbers:true,
@@ -122,6 +123,7 @@
     </tr>
   </thead>
 </table>
+-->
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/resources/js/ui.js"></script>
