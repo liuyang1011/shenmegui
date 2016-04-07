@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
 <link href="/resources/css/css.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="/jsp/version/version.js"></script>
+  <script type="text/javascript" src="/js/version/versionManager.js"></script>
 </head>
 
 <body>
@@ -46,7 +47,42 @@
 <table id="operationList" class="easyui-datagrid" title="服务规范定义列表"
        data-options="
 			rownumbers:true,
-			singleSelect:false,
+			singleSelect:true,
+			url:'',
+			method:'get',
+			pagination:false,
+				pageSize:10,
+				 rowStyler:function(index, row){
+				                if(row.colorType=='green'){
+                                  return 'background-color:green;';
+				                }
+				                if(row.colorType=='yellow'){
+                                  return 'background-color:yellow;';
+				                }
+                        }
+				" style="height:365px; width:100%;">
+  <thead>
+  <tr>
+    <th data-options="field:'service.serviceId'" formatter='service.serviceId'>服务代码
+    </th>
+    <th data-options="field:'service.serviceName'"
+        formatter='service.serviceName'>服务名称</th>
+    <th data-options="field:'operationId' ,width:40,align:'left'">服务场景</th>
+    <th data-options="field:'operationName',width:120">服务场景名称</th>
+    <th data-options="field:'operationDesc',width:250">场景描述</th>
+    <th data-options="field:'versionHis.optType'" formatter="versionHis.optType">修订类型</th>
+    <th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>
+    <th data-options="field:'customer',width:100">消费者 </th>
+    <th data-options="field:'privater',width:100">提供者 </th>
+    <th data-options="field:'targetId',width:200,formatter:formatConsole">操作</th>
+  </tr>
+  </thead>
+</table>
+
+<table id="operationListNew" class="easyui-datagrid" title="服务规范定义列表(最新版本)"
+       data-options="
+			rownumbers:true,
+			singleSelect:true,
 			url:'',
 			method:'get',
 			pagination:false,
@@ -54,22 +90,30 @@
 				" style="height:365px; width:100%;">
   <thead>
   <tr>
-    <th data-options="field:'productid',checkbox:true"></th>
     <th data-options="field:'service.serviceId'" formatter='service.serviceId'>服务代码
     </th>
     <th data-options="field:'service.serviceName'"
         formatter='service.serviceName'>服务名称</th>
     <th data-options="field:'operationId' ,width:40,align:'left'">服务场景</th>
-    <th data-options="field:'operationName',width:80,align:'right'">服务场景名称</th>
-    <th data-options="field:'operationDesc',width:280,align:'left'">场景描述</th>
+    <th data-options="field:'operationName',width:120">服务场景名称</th>
+    <th data-options="field:'operationDesc',width:250">场景描述</th>
     <th data-options="field:'versionHis.optType'" formatter="versionHis.optType">修订类型</th>
-    <th data-options="field:'versionHis.optUser'" formatter="versionHis.optUser">发布用户</th>
-    <th data-options="field:'versionHis.optDate'" formatter="versionHis.optDate">发布时间</th>
-    <th data-options="field:'versionHis.versionDesc'" formatter="versionHis.versionDesc">发布说明</th>
     <th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>
+    <th data-options="field:'customer',width:100">消费者 </th>
+    <th data-options="field:'privater',width:100">提供者 </th>
+    <th data-options="field:'targetId',width:200,formatter:formatConsole">操作</th>
   </tr>
   </thead>
 </table>
+<table >
+  <tr>
+    <td style="width:25px;background-color:green"></td>
+    <td style="font-size:  x-small;font-weight: bold">新增</td>
+    <td style="width:25px;background-color:yellow"></td>
+    <td style="font-size:  x-small;font-weight: bold">修改</td>
+  </tr>
+</table>
+<!--
 <table id="invokeList" class="easyui-datagrid" title="服务接口映射列表"
        data-options="
 				rownumbers:true,
@@ -97,7 +141,6 @@
   </tr>
   </thead>
 </table>
-<!--
 <table class="easyui-datagrid" title="服务公共代码" 
 			data-options="
 			rownumbers:true,
@@ -124,6 +167,10 @@
   </thead>
 </table>
 -->
+<div id="versionDlg" class="easyui-dialog"
+     style="width:400px;height:auto;padding:10px 20px" closed="true"
+     resizable="true"></div>
+
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/resources/js/ui.js"></script>
@@ -133,7 +180,7 @@
     $.ajax({
       type : "get",
       async : false,
-      url : "/baseLine/getBLOperationHiss",
+      url : "/baseLine/getOneRows",
       dataType : "json",
       data : {"baseId" : baseId},
       success : function(data) {
@@ -143,13 +190,22 @@
     $.ajax({
       type : "get",
       async : false,
-      url : "/baseLine/getBLInvoke",
+      url : "/baseLine/getOneRowsNew",
       dataType : "json",
-      data : {"baseId" :baseId},
       success : function(data) {
-        $("#invokeList").datagrid("loadData", data);
+        $("#operationListNew").datagrid("loadData", data);
       }
     });
+//    $.ajax({
+//      type : "get",
+//      async : false,
+//      url : "/baseLine/getBLInvoke",
+//      dataType : "json",
+//      data : {"baseId" :baseId},
+//      success : function(data) {
+//        $("#invokeList").datagrid("loadData", data);
+//      }
+//    });
 
 
   })
@@ -165,6 +221,39 @@
 					url : "/jsp/version/grid.jsp"
 				});	
 		}
+
+  function formatConsole(value, row, index){
+    var s = '<a onclick="comparePage(\'' + row.autoId + '\')" class="easyui-linkbutton l-btn l-btn-small" href="javascript:void(0)"  id="comparebtn'+value+'">' +
+            '<span class="l-btn-text">版本对比</span>&nbsp;</span></span></a>';
+    return s;
+
+  }
+  //弹出对比页面
+  function comparePage(autoId) {
+    $.ajax({
+      type: "get",
+      async: false,
+      url: "/versionHis/judgeVersionPre?autoId=" + autoId,
+      dataType: "json",
+      success: function (data) {
+        if (data.autoId != null) {
+          var urlPath = "/jsp/version/sdaComparePage.jsp?autoId1=" + autoId + "&type=1&autoId2=" + data.autoId + "&versionId=" + data.id;
+          $("#versionDlg").dialog({
+            title: '版本对比',
+            left: '50px',
+            width: 1000,
+            height: 'auto',
+            closed: false,
+            cache: false,
+            href: urlPath,
+            modal: true
+          });
+        } else {
+          alert("该版本为初始版本!");
+        }
+      }
+    });
+  }
 	</script>
 
 </body>

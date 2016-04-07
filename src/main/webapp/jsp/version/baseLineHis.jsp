@@ -210,7 +210,7 @@
     
       <th data-options="field:'serviceId'">服务编号 </th>
       <th data-options="field:'operationId'">场景编号</th>
-      <th data-options="field:'systemId'">系统编号 </th>
+      <th data-options="field:'systemNo'">系统编号 </th>
       <th data-options="field:'systemChineseName'">系统名称 </th>
       <th data-options="field:'interfaceId'">交易码 </th>
       <th data-options="field:'interfaceName'">接口 </th>

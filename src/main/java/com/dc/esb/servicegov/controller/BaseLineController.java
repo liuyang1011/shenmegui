@@ -10,6 +10,7 @@ import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.BaseLine;
 import com.dc.esb.servicegov.entity.OperationLog;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.vo.OperationHisVO;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 
@@ -80,6 +81,7 @@ public class BaseLineController {
         if (StringUtils.isNotEmpty(blDesc)) {
             hql += "and blDesc like '%" + blDesc + "%' ";
         }
+        hql+=" order by optDate desc";
         List<?> rows = baseLineServiceImpl.findBy(hql,page);
         result.put("total", page.getResultCount());
         result.put("rows", rows);
@@ -123,6 +125,30 @@ public class BaseLineController {
             model.addObject("baseLine", baseLineServiceImpl.getById(baseId));
         }
         return model;
+    }
+
+    /**
+     * 版本公告---服务规范定义列表数据
+     * @param baseId
+     * @return
+     */
+    @RequestMapping("/getOneRows")
+    @ResponseBody
+    public List<?> getOneRows(String baseId) {
+        String hql="from BaseLine order by optDate desc";
+        List<BaseLine> lines=baseLineServiceImpl.findBy(hql);
+        List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+        List<OperationHisVO> baseLine=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(baseId,baseLineServiceImpl);
+        return baseLineServiceImpl.getColorOneRow(baseline0,baseLine);
+    }
+    @RequestMapping("/getOneRowsNew")
+    @ResponseBody
+    public List<?> getOneRowsNew() {
+        String hql="from BaseLine order by optDate desc";
+        List<BaseLine> lines=baseLineServiceImpl.findBy(hql);
+        List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+        List<OperationHisVO> baseline=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+        return baseLineServiceImpl.getColorOneRow(baseline0,baseline);
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

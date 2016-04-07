@@ -1,10 +1,6 @@
 package com.dc.esb.servicegov.service.impl;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,9 +8,11 @@ import com.dc.esb.servicegov.dao.impl.OperationDAOImpl;
 import com.dc.esb.servicegov.dao.impl.OperationHisDAOImpl;
 import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
 
+import com.dc.esb.servicegov.vo.OperationHisVO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +97,82 @@ public class BaseLineServiceImpl extends AbstractBaseService<BaseLine, String> {
         return operationHisServiceImpl.getBLOperationHiss(baseId);
     }
 
+    /**
+     * 版本公告服务规范定义列表与服务接口映射列表数据合并
+     * @param baseId
+     * @return
+     */
+    public List<?> getOneRow(String baseId,BaseLineServiceImpl baseLineServiceImpl){
+        List<OperationHis> operationHises=(List<OperationHis>)baseLineServiceImpl.getBLOperationHiss(baseId);
+        List<ServiceInvokeJson> serviceInvokeJsons=(List<ServiceInvokeJson>)serviceInvokeServiceImpl.getBLInvoke(baseId);
+        List<OperationHisVO> operationHisVOList=new ArrayList<OperationHisVO>();
+        for(OperationHis op:operationHises){
+            OperationHisVO opVO=new OperationHisVO();
+            String opServiceId=op.getServiceId();
+            for(ServiceInvokeJson se:serviceInvokeJsons){
+                String seServiceId=se.getServiceId();
+                if(opServiceId.equals(seServiceId)){
+                    opVO.setService(op.getService());
+                    opVO.setOperationId(op.getOperationId());
+                    opVO.setOperationName(op.getOperationName());
+                    opVO.setOperationDesc(op.getOperationDesc());
+                    opVO.setVersionHis(op.getVersionHis());
+                    opVO.setAutoId(op.getVersionHis().getAutoId());
+                    opVO.setTargetId(op.getAutoId());
+                    if("1".equals(se.getType())){
+                        //消费者
+                        opVO.setCustomer(se.getSystemChineseName());
+                    }
+                    if("0".equals(se.getType())){
+                        //提供者
+                        opVO.setPrivater(se.getSystemChineseName());
+                    }
+
+                }
+            }
+            operationHisVOList.add(opVO);
+        }
+        //获取最新版本的内容
+        return operationHisVOList;
+    }
+
+   public List<OperationHisVO> getColorOneRow(List<OperationHisVO> baseLine0,List<OperationHisVO> baseLine){
+       List<OperationHisVO> operationHisVOList=new ArrayList<OperationHisVO>();
+       //确定是否是最新的版本
+       if(baseLine.containsAll(baseLine0)){
+           operationHisVOList.addAll(baseLine);
+           return operationHisVOList;
+       }else{
+           //判断新增或修改的服务内容
+           StringBuilder compareStr=new StringBuilder("");
+           for(int i=0;i<baseLine0.size();i++){
+               OperationHisVO vo=(OperationHisVO)baseLine0.get(i);
+               compareStr.append(vo.getService().getServiceId()+vo.getOperationId());
+               compareStr.append("|");
+               compareStr.append(vo.getVersionHis().getCode());
+               compareStr.append(",");
+           }
+           for(OperationHisVO vo:baseLine){
+               String unineBaseLine=vo.getService().getServiceId()+vo.getOperationId();
+                int i=compareStr.indexOf(unineBaseLine);
+               if(i==-1){
+                   vo.setColorType("green");
+               }else{
+                    String oneRow=compareStr.substring(i,compareStr.indexOf(",",i+1));
+                   int ii=oneRow.indexOf("|");
+                   String code=oneRow.substring(ii+1);
+                   if(!code.equals(vo.getVersionHis().getCode())){
+                       vo.setColorType("yellow");
+                   }
+
+               }
+           }
+            operationHisVOList.addAll(baseLine);
+
+       }
+
+        return operationHisVOList;
+   }
     @Override
     public HibernateDAO<BaseLine, String> getDAO() {
         return baseLineDAO;
