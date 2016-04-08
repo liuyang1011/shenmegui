@@ -51,7 +51,15 @@
 			url:'',
 			method:'get',
 			pagination:false,
-				pageSize:10
+				pageSize:10,
+				 rowStyler:function(index, row){
+				                if(row.colorType=='green'){
+                                  return 'background-color:green;';
+				                }
+				                if(row.colorType=='yellow'){
+                                  return 'background-color:yellow;';
+				                }
+				            }
 				" style="height:365px; width:100%;">
   <thead>
   <tr>
@@ -77,15 +85,7 @@
 			url:'',
 			method:'get',
 			pagination:false,
-				pageSize:10,
-				 rowStyler:function(index, row){
-				                if(row.colorType=='green'){
-                                  return 'background-color:green;';
-				                }
-				                if(row.colorType=='yellow'){
-                                  return 'background-color:yellow;';
-				                }
-                        }
+				pageSize:10
 				" style="height:365px; width:100%;">
   <thead>
   <tr>
@@ -180,20 +180,21 @@
     $.ajax({
       type : "get",
       async : false,
-      url : "/baseLine/getOneRows",
+      url : "/baseLine/getOneRowsNew",
       dataType : "json",
       data : {"baseId" : baseId},
       success : function(data) {
-        $("#operationList").datagrid("loadData", data);
+        $("#operationListNew").datagrid("loadData", data);
       }
     });
     $.ajax({
       type : "get",
       async : false,
-      url : "/baseLine/getOneRowsNew",
+      url : "/baseLine/getOneRows",
       dataType : "json",
+      data : {"baseId" : baseId},
       success : function(data) {
-        $("#operationListNew").datagrid("loadData", data);
+        $("#operationList").datagrid("loadData", data);
       }
     });
 //    $.ajax({

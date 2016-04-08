@@ -137,26 +137,37 @@ public class BaseLineController {
     public List<?> getOneRows(String baseId) {
         String hql="from BaseLine order by optDate desc";
         List<BaseLine> lines=baseLineServiceImpl.findBy(hql);
-
-        if(baseId.equals(lines.get(0).getBaseId())){
-            List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
-            List<OperationHisVO> baseLine=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(1).getBaseId(),baseLineServiceImpl);
-            return baseLineServiceImpl.getColorOneRow(baseline0,baseLine);
-        }else{
-            List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
-            List<OperationHisVO> baseLine=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(baseId,baseLineServiceImpl);
-            return baseLineServiceImpl.getColorOneRow(baseline0,baseLine);
+        if(lines.size()<1){
+            return lines;
         }
-
+        if(baseId.equals(lines.get(0).getBaseId())){
+            List<OperationHisVO> baseline0 = (List<OperationHisVO>) baseLineServiceImpl.getOneRow(lines.get(1).getBaseId(), baseLineServiceImpl);
+            List<OperationHisVO> baseLine = baseline0;
+            return baseLineServiceImpl.getColorOneRow(baseline0, baseLine);
+        }else {
+            List<OperationHisVO> baseline0 = (List<OperationHisVO>) baseLineServiceImpl.getOneRow(baseId, baseLineServiceImpl);
+            List<OperationHisVO> baseLine =baseline0;
+            return baseLineServiceImpl.getColorOneRow(baseline0, baseLine);
+        }
     }
     @RequestMapping("/getOneRowsNew")
     @ResponseBody
-    public List<?> getOneRowsNew() {
+    public List<?> getOneRowsNew(String baseId) {
         String hql="from BaseLine order by optDate desc";
         List<BaseLine> lines=baseLineServiceImpl.findBy(hql);
-        List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
-        List<OperationHisVO> baseline=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
-        return baseLineServiceImpl.getColorOneRow(baseline0,baseline);
+        if(lines.size()<1){
+            return lines;
+        }
+        if(baseId.equals(lines.get(0).getBaseId())){
+            List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+            List<OperationHisVO> baseline=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(1).getBaseId(),baseLineServiceImpl);
+            return baseLineServiceImpl.getColorOneRow(baseline,baseline0);
+        }else{
+            List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+            List<OperationHisVO> baseline=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(baseId,baseLineServiceImpl);
+            return baseLineServiceImpl.getColorOneRow(baseline,baseline0);
+        }
+
     }
 
     /**
