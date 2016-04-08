@@ -42,7 +42,7 @@
     $("#baseLineHis").datagrid({
       rownumbers:true,
       singleSelect:true,
-      url:'/baseLine/getBaseLine',
+      url:'/baseLine/getBaseLineReleaseHis',
       method:'get',
       pagination:true,
       pageSize:10
@@ -51,7 +51,7 @@
   function getBaseLine(){
     var code = $("#code").textbox("getValue");
     var blDesc = $("#blDesc").textbox("getValue");
-    var urlPath = "/baseLine/getBaseLine";
+    var urlPath = "/baseLine/getBaseLineReleaseHis";
 
     var queryParams = $('#baseLineHis').datagrid('options').queryParams;
     queryParams.code = encodeURI(code);

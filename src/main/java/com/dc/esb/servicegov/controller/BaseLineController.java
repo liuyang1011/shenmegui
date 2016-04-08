@@ -137,9 +137,17 @@ public class BaseLineController {
     public List<?> getOneRows(String baseId) {
         String hql="from BaseLine order by optDate desc";
         List<BaseLine> lines=baseLineServiceImpl.findBy(hql);
-        List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
-        List<OperationHisVO> baseLine=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(baseId,baseLineServiceImpl);
-        return baseLineServiceImpl.getColorOneRow(baseline0,baseLine);
+
+        if(baseId.equals(lines.get(0).getBaseId())){
+            List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+            List<OperationHisVO> baseLine=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(1).getBaseId(),baseLineServiceImpl);
+            return baseLineServiceImpl.getColorOneRow(baseline0,baseLine);
+        }else{
+            List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
+            List<OperationHisVO> baseLine=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(baseId,baseLineServiceImpl);
+            return baseLineServiceImpl.getColorOneRow(baseline0,baseLine);
+        }
+
     }
     @RequestMapping("/getOneRowsNew")
     @ResponseBody
@@ -149,6 +157,45 @@ public class BaseLineController {
         List<OperationHisVO> baseline0=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
         List<OperationHisVO> baseline=(List<OperationHisVO>)baseLineServiceImpl.getOneRow(lines.get(0).getBaseId(),baseLineServiceImpl);
         return baseLineServiceImpl.getColorOneRow(baseline0,baseline);
+    }
+
+    /**
+     * 版本公告---历史版本查询
+     * @param code
+     * @param blDesc
+     * @param req
+     * @return
+     */
+    @RequiresPermissions({"baseLine-get"})
+    @RequestMapping("/getBaseLineReleaseHis")
+    @ResponseBody
+    public Map<String, Object> getBaseLineReleaseHis(String code, String blDesc,HttpServletRequest req) {
+        int pageNo = Integer.parseInt(req.getParameter("page"));
+        int rowCount = Integer.parseInt(req.getParameter("rows"));
+        String hql = "from "+ BaseLine.class.getName() +" where 1=1 ";
+        if (StringUtils.isNotEmpty(code)) {
+            hql += "and code like '%" + code + "%' ";
+        }
+        if (StringUtils.isNotEmpty(blDesc)) {
+            hql += "and blDesc like '%" + blDesc + "%' ";
+        }
+        Page page = baseLineServiceImpl.getPageBy(hql,rowCount);
+        page.setPage(pageNo);
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        hql = " from "+ BaseLine.class.getName() +" where 1=1 ";
+        if (StringUtils.isNotEmpty(code)) {
+            hql += "and code like '%" + code + "%' ";
+        }
+        if (StringUtils.isNotEmpty(blDesc)) {
+            hql += "and blDesc like '%" + blDesc + "%' ";
+        }
+        hql+=" order by optDate desc";
+        List<?> rows = baseLineServiceImpl.findBy(hql,page);
+        rows.remove(0);
+        result.put("total", page.getResultCount());
+        result.put("rows", rows);
+        return result;
     }
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})

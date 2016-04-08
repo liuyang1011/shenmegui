@@ -44,7 +44,33 @@
  </table>
 
 </fieldset>
-<table id="operationList" class="easyui-datagrid" title="服务规范定义列表"
+<table id="operationListNew" class="easyui-datagrid" title="服务规范定义列表(最新版本)"
+       data-options="
+			rownumbers:true,
+			singleSelect:true,
+			url:'',
+			method:'get',
+			pagination:false,
+				pageSize:10
+				" style="height:365px; width:100%;">
+  <thead>
+  <tr>
+    <th data-options="field:'service.serviceId'" formatter='service.serviceId'>服务代码
+    </th>
+    <th data-options="field:'service.serviceName'"
+        formatter='service.serviceName'>服务名称</th>
+    <th data-options="field:'operationId' ,width:40,align:'left'">服务场景</th>
+    <th data-options="field:'operationName',width:120">服务场景名称</th>
+    <th data-options="field:'operationDesc',width:250">场景描述</th>
+    <th data-options="field:'versionHis.optType'" formatter="versionHis.optType">修订类型</th>
+    <th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>
+    <th data-options="field:'customer',width:100">消费者 </th>
+    <th data-options="field:'privater',width:100">提供者 </th>
+    <th data-options="field:'targetId',width:200,formatter:formatConsole">操作</th>
+  </tr>
+  </thead>
+</table>
+<table id="operationList" class="easyui-datagrid" title="服务规范定义列表(历史版本)"
        data-options="
 			rownumbers:true,
 			singleSelect:true,
@@ -79,32 +105,6 @@
   </thead>
 </table>
 
-<table id="operationListNew" class="easyui-datagrid" title="服务规范定义列表(最新版本)"
-       data-options="
-			rownumbers:true,
-			singleSelect:true,
-			url:'',
-			method:'get',
-			pagination:false,
-				pageSize:10
-				" style="height:365px; width:100%;">
-  <thead>
-  <tr>
-    <th data-options="field:'service.serviceId'" formatter='service.serviceId'>服务代码
-    </th>
-    <th data-options="field:'service.serviceName'"
-        formatter='service.serviceName'>服务名称</th>
-    <th data-options="field:'operationId' ,width:40,align:'left'">服务场景</th>
-    <th data-options="field:'operationName',width:120">服务场景名称</th>
-    <th data-options="field:'operationDesc',width:250">场景描述</th>
-    <th data-options="field:'versionHis.optType'" formatter="versionHis.optType">修订类型</th>
-    <th data-options="field:'versionHis.code'" formatter="versionHis.code">版本号</th>
-    <th data-options="field:'customer',width:100">消费者 </th>
-    <th data-options="field:'privater',width:100">提供者 </th>
-    <th data-options="field:'targetId',width:200,formatter:formatConsole">操作</th>
-  </tr>
-  </thead>
-</table>
 <table >
   <tr>
     <td style="width:25px;background-color:green"></td>
