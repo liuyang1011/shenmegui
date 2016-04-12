@@ -15,7 +15,7 @@
     <legend>导入Excel</legend>
     <form id="uploadimg-form"  action="/mappingImport/fieldImport" method="post" enctype="multipart/form-data" onsubmit="uploading()">
     <shiro:hasPermission name="importExcel-update">
-        <input type="file" title="选择文件" name="file" id="file"/>
+        <input type="file" title="选择文件" name="file" id="file" style="width:100%"/>
         <br /><br />
         <select name="select">
             <option value="Y">覆盖</option>

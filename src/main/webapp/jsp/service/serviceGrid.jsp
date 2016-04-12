@@ -495,7 +495,7 @@
     </shiro:hasPermission>
 
 //    废弃
-<shiro:hasPermission name="operation-drop">
+<shiro:hasPermission name="operation-update">
     toolbar.push({
         text: '废弃',
         iconCls: 'icon-audit',
@@ -526,7 +526,7 @@
             }
         }
     });
-</shiro:hasPermission>
+    </shiro:hasPermission>
     <shiro:hasPermission name="excelExport-get">
     toolbar.push({
         text:'导出EXCEL',

@@ -393,8 +393,8 @@ public class SystemController {
     @ResponseBody
     List<TreeNode> getAllTreeBean() {
         List<TreeNode> systemTree = new ArrayList<TreeNode>();
-        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAll();
-        for(com.dc.esb.servicegov.entity.System system : systems){
+        List<System> systems = systemService.getAll();
+        for(System system : systems){
             TreeNode systemTreeNode = new TreeNode();
             systemTreeNode.setId(system.getSystemId());
             systemTreeNode.setText(system.getSystemChineseName());

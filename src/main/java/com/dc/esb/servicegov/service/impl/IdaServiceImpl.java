@@ -625,12 +625,17 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 	 * @return
 	 */
 	public Ida getByInterfaceIdStructName(String interfaceId, String structName){
-		String hql = " from Ida where interfaceId = ? and structName = ?";
+		String hql = " from Ida where interfaceId = ? and structName = ? order by seq asc";
 		Ida ida = idaDAOImpl.findUnique(hql, interfaceId, structName);
 		return ida;
 	}
-
-	public Ida getByHeadIdIdStructName(String headId, String structName){
+	/**
+	 * 查询报文头下某个名称的节点
+	 * @param headId
+	 * @param structName
+	 * @return
+	 */
+	public Ida getByHeadIdeIdStructName(String headId, String structName){
 		String hql = " from Ida where headId = ? and structName = ?";
 		Ida ida = idaDAOImpl.findUnique(hql, headId, structName);
 		return ida;
@@ -648,5 +653,12 @@ public class IdaServiceImpl extends AbstractBaseService<Ida, String> implements 
 		}
 		return  result;
 	}
-
+	public List<Ida> findByParentIdOrder(String parentId){
+		if(org.apache.commons.lang.StringUtils.isNotEmpty(parentId)){
+			String hql = " from Ida where _parentId = ? order by seq asc";
+			List<Ida> result = this.find(hql, parentId);
+			return result;
+		}
+		return null;
+	}
 }

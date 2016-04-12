@@ -89,12 +89,10 @@
 
 </script>
 
-<div onclick="aler(2)">
-    1231231
-</div>
+
 <!-- table node type -->
 <script type="jtk" id="tmplTable">
-    <div class="table node" onclick="alert(0)">
+    <div class="table node">
         <div class="name">
             <div class="delete" title="Click to delete">
                 <i class="fa fa-times"/>
@@ -114,21 +112,6 @@
     </div>
 
 </script>
-<script type="jtk" id="tmplRoot">
-    <div class="table node rootnode">
-        <div class="name">
-            <span>${name}</span>
-        </div>
-        <ul class="table-columns">
-            <r-each in="columns">
-                <r-tmpl id="tmplColumn"/>
-            </r-each>
-        </ul>
-        <jtk-source port-type="source" filter=".outer"/>
-        <jtk-target port-type="target"/>
-    </div>
-</script>
-
 
 <!-- view node type -->
 <script type="jtk" id="tmplView">
@@ -265,3 +248,5 @@
     <input type="text" size="50" jtk-focus jtk-att="name" jtk-commit="true"/>
 
 </script>
+
+

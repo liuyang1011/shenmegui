@@ -54,10 +54,9 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
                 hql += " and o.optDate > '" + values.get("startDate")[0] + "' ";
             }
         }
-        if(values.get("endDate") != null && values.get("endDate").length > 0)
-        {
+        if(values.get("endDate") != null && values.get("endDate").length > 0){
             if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
-                hql += " and o.optDate < '" + values.get("endDate")[0] + "' ";
+                hql += " and o.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
             }
         }
         long count = (Long)operationLogDAO.findUnique(hql);
@@ -77,7 +76,7 @@ public class SystemLogServiceImpl  extends AbstractBaseService<OperationLog,Stri
         }
         if(values.get("endDate") != null && values.get("endDate").length > 0){
             if (StringUtils.isNotEmpty(values.get("endDate")[0])) {
-                hql += " and o.optDate < '" + values.get("endDate")[0] + "' ";
+                hql += " and o.optDate < '" + values.get("endDate")[0] + " 23:59:59' ";
             }
         }
          hql += " order by optDate desc";

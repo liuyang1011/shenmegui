@@ -31,9 +31,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
   <tr>
      <th width="15%">服务代码</th>
-    <td width="35%" style="font-size: small">${service.serviceId }</td>
+    <td width="35%">${service.serviceId }</td>
     <th width="15%">服务名称</th>
-    <td width="35%" style="font-size: small">${service.serviceName }</td>
+    <td width="35%">${service.serviceName }</td>
    </tr>
   <%--<tr>
      <th>服务头代码</th>
@@ -45,28 +45,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
    </tr>--%>
   <tr>
      <th>场景号</th>
-    <td style="font-size: small">${operation.operationId }</td>
+    <td>${operation.operationId }</td>
      <th>场景名称</th>
-   		 <td style="font-size: small">${operation.operationName }</td>
+   		 <td>${operation.operationName }</td>
 
      </tr>
     <tr>
         <th>版本号</th>
-        <td style="font-size: small">${operation.version.code }</td>
+        <td>${operation.version.code }</td>
         <th>版本描述</th>
-        <td style="font-size: small">${operation.version.remark} </td>
+        <td>${operation.version.remark} </td>
     </tr>
    <tr>
      <th>最后更新时间</th>
-   		 <td style="font-size: small">${operation.optDate }</td>
+   		 <td>${operation.optDate }</td>
    	 <th>最后更新用户</th>
-    <td style="font-size: small">${operation.optUser }</td>
+    <td>${operation.optUser }</td>
    </tr>
     <tr>
         <th>功能描述</th>
-        <td style="font-size: small">${operation.operationDesc }</td>
+        <td>${operation.operationDesc }</td>
         <th>备注</th>
-        <td style="font-size: small">${operation.operationRemark }</td>
+        <td>${operation.operationRemark }</td>
     </tr>
 </table>
 

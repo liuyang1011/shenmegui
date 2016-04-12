@@ -537,7 +537,7 @@ public abstract class HibernateEntityDAO<T> extends HibernateDaoSupport {
      * @param entity 要获取主键的对象
      * @return 取得对象的主键值
      * @throws IllegalAccessException
-     * @throws java.lang.reflect.InvocationTargetException
+     * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
     public Serializable getId(Object entity) throws IllegalAccessException,

@@ -38,8 +38,12 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
     private VersionServiceImpl versionService;
     @Autowired
     private MetadataOutdateServiceImpl metadataHisService;
+
+    public Metadata getEntityByMetaId(String metadtaId){
+        return metadataDAOImpl.getEntity(metadtaId);
+    }
     public List<Metadata> getAllMetadata() {
-        String hql = " from " + Metadata.class.getName() + " order by METADATA_ID asc";
+        String hql = " from " + Metadata.class.getName() + " order by type, METADATA_ID asc";
     	List<Metadata> list = metadataDAOImpl.find(hql);
         return list;
     }
@@ -375,6 +379,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
         private String metadataName;
         private String chineseName;
         private String categoryWordId;
+        private String metaType;
         private String remark;
         private String type;
         private String length;
@@ -403,6 +408,7 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
             setMetadataName(md.getMetadataName());
             setChineseName(md.getChineseName());
             setCategoryWordId(md.getCategoryWordId());
+            setMetaType(md.getMetaType());
             setRemark(md.getRemark());
             setType(md.getType());
             setLength(md.getLength());
@@ -459,6 +465,10 @@ public class MetadataServiceImpl extends AbstractBaseService<Metadata,String>{
         public void setCategoryWordId(String categoryWordId) {
             this.categoryWordId = categoryWordId;
         }
+
+        public String getMetaType(){return metaType;}
+
+        public void setMetaType(String metaType){this.metaType = metaType;}
 
         public String getRemark() {
             return remark;

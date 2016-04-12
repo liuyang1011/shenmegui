@@ -31,7 +31,7 @@ public class HsBankISO8583ConfigExportGenerator extends ConfigExportGenerator{
      * @param path
      */
     @Override
-    public void  generateRequest(ServiceInvoke serviceInvoke, String path){
+    public void  generateInRequest(ServiceInvoke serviceInvoke, String path){
         try {
             ClassLoader loader = this.getClass().getClassLoader();
             //模板路径
@@ -56,7 +56,7 @@ public class HsBankISO8583ConfigExportGenerator extends ConfigExportGenerator{
      * @param path
      */
     @Override
-    public void  generateResponse(ServiceInvoke serviceInvoke, String path){
+    public void  generateInResponse(ServiceInvoke serviceInvoke, String path){
         try {
             ClassLoader loader = this.getClass().getClassLoader();
             //模板路径
@@ -72,6 +72,15 @@ public class HsBankISO8583ConfigExportGenerator extends ConfigExportGenerator{
         }catch (Exception e){
             log.error("生成response文件失败！", e);
         }
+    }
+    @Override
+    public void  generateOutRequest(ServiceInvoke serviceInvoke, String path){
+        generateInRequest(serviceInvoke, path);
+    }
+
+    @Override
+    public void  generateOutResponse(ServiceInvoke serviceInvoke, String path){
+        generateInResponse(serviceInvoke, path);
     }
     public void fillElement(Element rootElement, ServiceInvoke serviceInvoke, String structName){
         String serviceId = serviceInvoke.getServiceId();

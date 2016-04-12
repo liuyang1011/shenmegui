@@ -7,6 +7,7 @@ import com.dc.esb.servicegov.dao.support.HibernateDAO;
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.dao.support.SearchCondition;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.jsonObj.ServiceInvokeJson;
 import com.dc.esb.servicegov.service.InterfaceInvokeService;
 import com.dc.esb.servicegov.service.support.AbstractBaseService;
 import com.dc.esb.servicegov.service.support.Constants;
@@ -62,6 +63,10 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     private ServiceCategoryDAOImpl scDao;
     @Autowired
     private InterfaceInvokeDAOImpl interfaceInvokeDAO;
+    @Autowired
+    private ProtocolServiceImpl protocolService;
+    @Autowired
+    private GeneratorServiceImpl generatorService;
 
     public List<Operation> getOperationByServiceId(String serviceId) {
         return operationDAOImpl.findBy("serviceId", serviceId);
@@ -347,9 +352,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
             String operationHisAutoId = operationHis.getAutoId();
             sdaService.backUpSdaByCondition(params, operationHisAutoId);
             //备份SLA
-            //slaService.backUpSLAByCondition(params, operationHisAutoId);
+            slaService.backUpSLAByCondition(params, operationHisAutoId);
             //备份OLA
-            //olaService.backUpByCondition(params, operationHisAutoId);
+            olaService.backUpByCondition(params, operationHisAutoId);
             operation.setState(Constants.Operation.LIFE_CYCLE_STATE_PUBLISHED);
             operationDAOImpl.save(operation);
         }
@@ -676,6 +681,9 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
 
             if(operation != null){
                 List<InterfaceInvoke> iiList = interfaceInvokeDAO.getByOperation(operation.getServiceId(), operation.getOperationId());
+                if(null == iiList || 0 == iiList.size()){
+                    iiList = insertInterfaceInvoke(operation.getServiceId(),operation.getOperationId());
+                }
                 for(InterfaceInvoke ii : iiList){
                     ConfigVO configVO = new ConfigVO();
                     configVO.setServiceId(operation.getServiceId());
@@ -692,6 +700,27 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                                     configVO.setProInterfaceName(inter.getInterfaceName());
                                 }
                             }
+                            if(StringUtils.isNotEmpty(siPro.getProtocolId())){
+                                Protocol protocol = protocolService.findUniqueBy("protocolId", siPro.getProtocolId());
+                                Generator generator = protocol.getGenerator();
+                                if(null != protocol && null != generator){
+                                    configVO.setProIsStandard(siPro.getIsStandard()); //0; 标准， 1：非标
+                                    configVO.setProGeneratorId(generator.getId());
+                                    configVO.setProGeneratorName(generator.getName());
+                                }else{
+                                    configVO.setProIsStandard("0"); //0; 标准， 1：非标
+                                    configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                                    configVO.setProGeneratorName(Constants.DEFAULT_GENERATOR_Name);
+                                }
+                            }else{
+                                configVO.setProIsStandard("0"); //0; 标准， 1：非标
+                                configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                                configVO.setProGeneratorName(Constants.DEFAULT_GENERATOR_Name);
+                            }
+                        }else{
+                            configVO.setProIsStandard("0"); //0; 标准， 1：非标
+                            configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                            configVO.setProGeneratorName(Constants.DEFAULT_GENERATOR_Name);
                         }
                         ServiceInvoke siCon = ii.getConsumer();
                         if(siCon != null){
@@ -703,15 +732,30 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
                                     configVO.setConInterfaceName(inter.getInterfaceName());
                                 }
                             }
+                            if(StringUtils.isNotEmpty(siCon.getProtocolId())){
+                                Protocol protocol = protocolService.findUniqueBy("protocolId", siCon.getProtocolId());
+                                Generator generator = protocol.getGenerator();
+                                if(null != protocol && null != generator){
+                                    configVO.setConIsStandard(siCon.getIsStandard()); //0; 标准， 1：非标
+                                    configVO.setConGeneratorId(generator.getId());
+                                    configVO.setConGeneratorName(generator.getName());
+                                }else{
+                                    configVO.setConIsStandard("0"); //0; 标准， 1：非标
+                                    configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                                    configVO.setConGeneratorName(Constants.DEFAULT_GENERATOR_Name);
+                                }
+                            }else{
+                                configVO.setConIsStandard("0"); //0; 标准， 1：非标
+                                configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                                configVO.setConGeneratorName(Constants.DEFAULT_GENERATOR_Name);
+                            }
+                        }else{
+                            configVO.setConIsStandard("0"); //0; 标准， 1：非标
+                            configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
+                            configVO.setConGeneratorName(Constants.DEFAULT_GENERATOR_Name);
                         }
-                    }
-                    configVO.setConIsStandard("0"); //0; 标准， 1：非标
-                    configVO.setConGeneratorId(Constants.DEFAULT_GENERATOR_ID);
-                    configVO.setConGeneratorName("XML标准拆组包生成器");
 
-                    configVO.setProIsStandard("0"); //0; 标准， 1：非标
-                    configVO.setProGeneratorId(Constants.DEFAULT_GENERATOR_ID);
-                    configVO.setProGeneratorName("XML标准拆组包生成器");
+                    }
                     result.add(configVO);
                 }
 
@@ -722,6 +766,40 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         return result;
 
     }
+
+    /**
+     * SERVICE_INVOKE表中有数据，interface_invoke表中无数据情况
+     * @param serviceId 服务码
+     * @param operationId 场景码
+     * @return
+     */
+    public List<InterfaceInvoke> insertInterfaceInvoke(String serviceId,String operationId){
+        List<InterfaceInvoke> list = new ArrayList<InterfaceInvoke>();
+        if(null != serviceId && null != operationId){
+            List<ServiceInvokeJson>  serviceInvokeJsons = serviceInvokeService.findJsonBySO(serviceId, operationId);
+            if(null != serviceInvokeJsons && 0 < serviceInvokeJsons.size()){
+                String conInvokeId = null;
+                String proInvokeId = null;
+                for(ServiceInvokeJson serviceInvokeJson:serviceInvokeJsons){
+                    InterfaceInvoke interfaceInvoke = new InterfaceInvoke();
+                    if("0".equals(serviceInvokeJson.getType())){
+                        proInvokeId = serviceInvokeJson.getInvokeId();
+                        if("1".equals(serviceInvokeJson.getType())){
+                            conInvokeId = serviceInvokeJson.getInvokeId();
+                            interfaceInvoke.setConsumerInvokeId(conInvokeId);
+                        }
+                        interfaceInvoke.setProviderInvokeId(proInvokeId);
+                        interfaceInvokeDAO.save(interfaceInvoke);
+                        list.add(interfaceInvoke);
+                    }
+                }
+                return list;
+            }
+        }
+        return null;
+    }
+
+
 
     public static class OperationBean{
         private String operationId;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IdaService  extends BaseService<Ida, String> {
-    public void deletes(String [] ids);
+    public void deletes(String[] ids);
 
     public void saveOrUpdate(Ida[] idas);
 
@@ -16,10 +16,10 @@ public interface IdaService  extends BaseService<Ida, String> {
 
     public boolean deleteList(List<Ida> list);
 
-    public List<IdaServiceImpl.IdaMappingBean> findIdaMappingBy(Map<String,String> map,String orderByProperties,String serviceId, String operationId);
+    public List<IdaServiceImpl.IdaMappingBean> findIdaMappingBy(Map<String, String> map, String orderByProperties, String serviceId, String operationId);
 
-    public List findIdas(Map<String,String> reqMap, String orderStr);
+    public List findIdas(Map<String, String> reqMap, String orderStr);
     public boolean moveDown(String id);
     public boolean moveUp(String id);
-    public boolean uniqueValid(String structName,String headId);
+    public boolean uniqueValid(String structName, String headId);
 }

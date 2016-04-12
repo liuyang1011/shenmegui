@@ -19,13 +19,13 @@ public interface IMetadataConfigGenerator {
      * @param idas 接口定义
      * @return
      */
-    public File generatorIn(List<Ida> idas,List<SDA> sdas,ExportBean export);
+    public File generatorIn(List<Ida> idas, List<SDA> sdas, ExportBean export);
 
     /**
      * 生成文件目录放到generatorIn(前缀路径/in_config/metadata) 前缀路径/out_config/metadata
      * @param sdas 服务定义
      */
-    public void generatorOut(List<Ida> idas,List<SDA> sdas,ExportBean export);
+    public void generatorOut(List<Ida> idas, List<SDA> sdas, ExportBean export);
 
     public void setSystemService(SystemService systemService);
 

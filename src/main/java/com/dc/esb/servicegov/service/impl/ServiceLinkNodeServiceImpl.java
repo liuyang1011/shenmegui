@@ -75,9 +75,6 @@ public class ServiceLinkNodeServiceImpl extends AbstractBaseService<ServiceLinkN
             if("connectionDesc".equalsIgnoreCase(propertyName)){
                 serviceLinkNodeVO.setConnectionDesc(propertyValue);
             }
-            if("linkCondition".equalsIgnoreCase(propertyName)){
-                serviceLinkNodeVO.setLinkCondition(propertyValue);
-            }
         }
         return serviceLinkNodeVO;
     }

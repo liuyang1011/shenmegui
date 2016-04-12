@@ -76,7 +76,7 @@ public class ExcelExportInterfaceImpl extends AbstractBaseService {
             Interface inter = interfaceDAO.findUniqueBy("interfaceId", id);
             list.add(inter);
         }
-        com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", systemId);
+        System system = systemDAO.findUniqueBy("systemId", systemId);
 
         HSSFWorkbook workbook = fillExcel(list,system);
         return workbook;

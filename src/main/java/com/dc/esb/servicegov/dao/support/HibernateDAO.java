@@ -4,6 +4,7 @@ import com.dc.esb.servicegov.util.ReflectionUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -793,7 +794,6 @@ public class HibernateDAO<T, PK extends Serializable> {
         List list = query.list();
         return list;
     }
-
     public List<T> exeSQL(String sql,Page page,ArrayList<SearchCondition> searchConds){
         SQLQuery query = getSession().createSQLQuery(sql);
         for (int i = 0; i < searchConds.size(); i++) {

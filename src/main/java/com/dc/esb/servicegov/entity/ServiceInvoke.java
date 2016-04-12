@@ -47,7 +47,7 @@ public class ServiceInvoke {
 	@JoinColumn(name = "INTERFACE_ID", insertable = false, updatable = false)
 	private Interface inter;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="SYSTEM_ID", insertable = false, updatable = false)
 	private System system;
 

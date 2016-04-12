@@ -18,6 +18,8 @@ public class Metadata implements Serializable {
     private String chineseName;
     @Column(name = "CATEGORY_WORD_ID", length = 50)
     private String categoryWordId;
+    @Column(name = "METATYPE",length = 50)
+    private String metaType;
     @Column(name = "REMARK", length = 1023)
     private String remark;
     @Column(name = "TYPE", length = 30)
@@ -80,6 +82,14 @@ public class Metadata implements Serializable {
 
     public void setMetadataId(String metadataId) {
         this.metadataId = metadataId;
+    }
+
+    public String getMetaType() {
+        return metaType;
+    }
+
+    public void setMetaType(String metaType) {
+        this.metaType = metaType;
     }
 
     public String getMetadataName() {

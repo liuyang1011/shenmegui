@@ -22,7 +22,7 @@
 				系统ID
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemIdText" data-options="required:true, validType:['intOrFloat']">
+				<input class="easyui-textbox" type="text" id="systemIdText" data-options="required:true">
 			</td>
 		</tr>
 		<tr>
@@ -30,7 +30,7 @@
 				系统简称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemAbText" data-options="required:true, validType:['englishB']">
+				<input class="easyui-textbox" type="text" id="systemAbText" data-options="required:true">
 			</td>
 		</tr>
 		<tr>

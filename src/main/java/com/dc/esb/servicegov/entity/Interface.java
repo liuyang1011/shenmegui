@@ -42,6 +42,9 @@ public class Interface {
 
 	private String protocolName;
 
+	@Transient
+	private String systemChineseName;
+
 	public static String[] simpleFields(){
 		String[] fields = {"interfaceId", "interfaceName"};
 		return fields;
@@ -179,5 +182,13 @@ public class Interface {
 
 	public void setVersion(Version version) {
 		this.version = version;
+	}
+
+	public String getSystemChineseName() {
+		return systemChineseName;
+	}
+
+	public void setSystemChineseName(String systemChineseName) {
+		this.systemChineseName = systemChineseName;
 	}
 }

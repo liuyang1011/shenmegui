@@ -66,11 +66,11 @@ public interface BaseService<T, PK extends Serializable> {
 
 	public Page findBy(SearchCondition searchCond, int pageSize);
 
-	public List<T> findBy(String hql, Page page,List<SearchCondition> searchConds);
+	public List<T> findBy(String hql, Page page, List<SearchCondition> searchConds);
 
 	public List<T> findBy(String hql);
 
-	public T findUniqueBy(Map<String,String> params);
+	public T findUniqueBy(Map<String, String> params);
 
 	public T findUniqueBy(String name, Object value);
 

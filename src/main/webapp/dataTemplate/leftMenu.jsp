@@ -52,23 +52,29 @@
 <ul id="menu-tree">
     <li><a href="javascript:;" class="openable" mid="3.1">元数据管理</a>
         <ul>
+            <shiro:hasPermission name="englishWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.2">英文单词及缩写管理</a></li>
+            </shiro:hasPermission>
+            <shiro:hasPermission name="categoryWord-get">
                 <li><a href="javascript:;" class="openable" mid="3.3">类别词管理</a></li>
-            <li><a href="javascript:;" class="openable" mid="3.4">元数据管理</a></li>
+            </shiro:hasPermission>
+            <li><a href="javascript:;" class="openable" mid="3.4">数据字典管理</a></li>
             <li><a href="javascript:;" class="openable" mid="3.5" style="display: none">数据类型映射</a></li>
+            <li><a href="javascript:;" class="openable" mid="3.7">元数据管理</a></li>
         </ul>
     </li>
     <li><a href="javascript:;" class="openable" mid="3.6">公共代码管理</a></li>
     <shiro:lacksRole name="游客">
-        <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
-            <ul>
-                <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
-                <li><a href="javascript:;" class="openable" mid="9.2">字段映射导入</a></li>
-                <%--<li><a href="javascript:;" class="openable" mid="9.3">服务视图导出</a></li>--%>
-                <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
-                <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
-            </ul>
-        </li>
+    <li><a href="javascript:;" class="openable" mid="9.1">资源导入</a>
+        <ul>
+            <li><a href="javascript:;" class="openable" mid="9.5">数据字典导入</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.2">字段映射导入</a></li>
+            <%--<li><a href="javascript:;" class="openable" mid="9.3">服务视图导出</a></li>--%>
+            <li><a href="javascript:;" class="openable" mid="9.4">接口导入</a></li>
+            <li><a href="javascript:;" class="openable" mid="9.7">元数据导入</a></li>
+            <%--<li><a href="javascript:;" class="openable" mid="9.4">文件管理</a></li>--%>
+        </ul>
+    </li>
     </shiro:lacksRole>
 </ul>
 <%
@@ -247,74 +253,6 @@
     }
 
 </script>
-<%
-    }
-    if (mid.equals("17")) {
-%>
-<div class="tree-filter">
-    <input class="easyui-searchbox" id="serviceidentifytreefilter" style="width:100%">
-
-</div>
-<ul class="easyui-tree mxserviceidentifytree" style="overflow:scroll;height:90%"></ul>
-<script>
-    $('.mxserviceidentifytree').tree({
-        url:'/service/getTree',
-        method:'get',
-        animate:true,
-        onLoadSuccess:function(node, data){
-            parse(data);
-            var title = "服务识别";
-            var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="/jsp/serviceIdentify/interface_search.jsp" style="width:100%;height:98%;"></iframe>';
-            if ($('#mainContentTabs').tabs('exists',title)) {
-                $('#mainContentTabs').tabs('select',title);
-            }else{
-                $('#mainContentTabs').tabs('add', {
-                    title: title,
-                    content: content,
-                    closable: true
-                });
-            }
-        }
-    });
-    function parse(data){
-        $.each(data, function (index, item) {
-            if(item.children.length > 1){
-                parse(item.children);
-            }else{
-                if(item.type == "serviceCategory"){
-                    item.iconCls = "icon-add";
-                }
-            }
-        });
-    }
-
-</script>
-
-<%
-    }
-    if (mid.equals("18")) {
-%>
-<div class="tree-filter">
-    <input class="easyui-searchbox" id="servicetreefilter" style="width:100%">
-
-</div>
-<ul class="easyui-tree mxservicetree" style="overflow:scroll;height:90%"
-    data-options="url:'/service/getTree',method:'get',animate:true"></ul>
-<script>
-    var title = "调用地址查询";
-    var content = '<iframe scrolling="auto"  name="searchFrame" id="searchFrame" frameborder="0"  src="/jsp/service/ip_search.jsp" style="width:100%;height:98%;"></iframe>';
-    if ($('#mainContentTabs').tabs('exists',title)) {
-        $('#mainContentTabs').tabs('select',title);
-    }else{
-        $('#mainContentTabs').tabs('add', {
-            title: title,
-            content: content,
-            closable: true
-        });
-    }
-
-</script>
-
 <%
     }
 %>

@@ -26,7 +26,7 @@ public class ServiceLinkNode {
     @Column(name="ESB_ACCESS_PATTERN")
     private String esbAccessPattern;
 
-    @Column(name="ESB_CONDITION")
+    @Column(name="CONDITION")
     private String condition;
 
     public String getId() {

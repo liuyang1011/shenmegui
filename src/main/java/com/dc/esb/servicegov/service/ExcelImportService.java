@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ExcelImportService {
     public List executeImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap);
 
-    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap ,ExcelImportServiceImpl.IndexDO indexDO);
+    public List executeInterfaceImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, ExcelImportServiceImpl.IndexDO indexDO);
 
 
     public boolean existSystem(String systemId);
@@ -33,13 +33,13 @@ public interface ExcelImportService {
     public Map<String, Object> getInterfaceOutputArg(Sheet sheet);
 
     public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet);
-    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO);
+    public Map<String, Object> getInterfaceAndServiceInfo(Sheet tranSheet, ExcelImportServiceImpl.IndexDO indexDO);
 
     public Map<String, Object> getInterfaceInfo(Sheet tranSheet);
 
-    public ServiceInvoke addServiceInvoke(String invokeSystemId,String serviceId,String operationId,String type,String isStandard);
+    public ServiceInvoke addServiceInvoke(String invokeSystemId, String serviceId, String operationId, String type, String isStandard);
 
-    public Map<String, Object> getServiceInfo(Sheet tranSheet,ExcelImportServiceImpl.IndexDO indexDO);
+    public Map<String, Object> getServiceInfo(Sheet tranSheet, ExcelImportServiceImpl.IndexDO indexDO);
     public  Map<String, Object> getStandardInputArg(Sheet sheet);
     public Map<String, Object> getStandardOutputArg(Sheet sheet);
     public List executeStandardImport(Map<String, Object> infoMap, Map<String, Object> inputMap, Map<String, Object> outMap, Map<String, String> publicMap, Map<String, Object> headMap);

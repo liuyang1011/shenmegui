@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.controller;
 
 import com.dc.esb.servicegov.entity.OperationLog;
+import com.dc.esb.servicegov.export.impl.XssfMappingFileExport;
 import com.dc.esb.servicegov.service.impl.ExcelExportInterfaceImpl;
 import com.dc.esb.servicegov.service.impl.ExcelExportServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
@@ -11,6 +12,8 @@ import com.dc.esb.servicegov.vo.ReuseRateListVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -23,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Administrator on 2015/7/14.
@@ -44,6 +46,8 @@ public class ExcelExportController {
 
     @Autowired
     private ExcelExportInterfaceImpl excelExportInterfaceImpl;
+    @Autowired
+    private XssfMappingFileExport xssfMappingFileExport;
 
     @ExceptionHandler({UnauthenticatedException.class, UnauthorizedException.class})
     public String processUnauthorizedException() {
@@ -62,7 +66,7 @@ public class ExcelExportController {
         OperationLog operationLog = systemLogService.record("字段映射文档","导出EXCEL","根据分类或者服务导出，具体参数：id"+id+", 类型:"+type);
 
         String fileName = type+"_"+id + new Date().getTime();
-        HSSFWorkbook workbook = excelExportServiceImpl.genderExcel(id, type);
+        Workbook workbook = xssfMappingFileExport.genderExcel(id, type);
         boolean result = export(request, response, fileName, workbook);
 
         systemLogService.updateResult(operationLog);
@@ -77,7 +81,8 @@ public class ExcelExportController {
         OperationLog operationLog = systemLogService.record("字段映射文档","导出EXCEL","根据服务场景列表导出");
 
         String fileName = "operation_" + new Date().getTime();
-        HSSFWorkbook workbook = excelExportServiceImpl.genderExcelByOperation(pkvo);
+        Workbook workbook = xssfMappingFileExport.genderExcelByOperation(pkvo);
+//        HSSFWorkbook workbook = excelExportServiceImpl.genderExcelByOperation(pkvo);
 
         boolean result = export(request, response, fileName, workbook);
         systemLogService.updateResult(operationLog);
@@ -95,7 +100,7 @@ public class ExcelExportController {
         OperationLog operationLog = systemLogService.record("字段映射文档","导出EXCEL","根据系统ID，具体参数：系统编码["+ systemId + "]");
 
         String fileName = systemId + new Date().getTime();
-        HSSFWorkbook workbook = excelExportServiceImpl.genderExcelBySystemId(systemId);
+        Workbook workbook = xssfMappingFileExport.genderExcelBySystemId(systemId);
         boolean result = export(request, response, fileName, workbook);
 
         systemLogService.updateResult(operationLog);
@@ -229,6 +234,49 @@ public class ExcelExportController {
             response.setContentType("application/vnd.ms-excel");
             codedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
             response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xls");
+            // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
+            // 产生工作簿对象
+//            HSSFWorkbook workbook = excelExportServiceImpl.genderRelease(listVO);
+            fOut = response.getOutputStream();
+            if(workbook != null){
+                workbook.write(fOut);
+            }
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if(fOut != null){
+                    fOut.flush();
+                    fOut.close();
+                }
+            }
+            catch (IOException e)
+            {
+                log.error("IO异常");
+            }
+        }
+        return true;
+
+    }
+
+    public boolean  export(HttpServletRequest request, HttpServletResponse response, String fileName, Workbook workbook ){
+        String codedFileName = null;
+        OutputStream fOut = null;
+        try
+        {
+            // 进行转码，使其支持中文文件名
+            response.setContentType("application/vnd.ms-excel");
+            codedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            response.setHeader("content-disposition", "attachment;filename=" + codedFileName + ".xlsx");
             // response.addHeader("Content-Disposition", "attachment;   filename=" + codedFileName + ".xls");
             // 产生工作簿对象
 //            HSSFWorkbook workbook = excelExportServiceImpl.genderRelease(listVO);

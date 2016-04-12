@@ -89,9 +89,38 @@ public class SDA extends IExportableNode implements Serializable {
 	@Column(name = "xpath")
 	private String xpath;
 
+	@Transient
+	private String isParentFlag; //是否父节点标志
+
 //	@ManyToOne()
 //	@JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
 //	private SDA parent;
+	public SDA(){}
+
+	public SDA(String id, String structName, String structAlias, String metadataId, int seq, String parentId, String serviceId, String optUser, String optDate, String operationId, String desc, String remark, String headId, String serviceHeadId, String version, String type, String length, String required, String argType, String constraint, String xpath, String isParentFlag) {
+		this.id = id;
+		this.structName = structName;
+		this.structAlias = structAlias;
+		this.metadataId = metadataId;
+		this.seq = seq;
+		this.parentId = parentId;
+		this.serviceId = serviceId;
+		this.optUser = optUser;
+		this.optDate = optDate;
+		this.operationId = operationId;
+		this.desc = desc;
+		this.remark = remark;
+		this.headId = headId;
+		this.serviceHeadId = serviceHeadId;
+		this.version = version;
+		this.type = type;
+		this.length = length;
+		this.required = required;
+		this.argType = argType;
+		this.constraint = constraint;
+		this.xpath = xpath;
+		this.isParentFlag = isParentFlag;
+	}
 
 	public String getConstraint() {
 		return constraint;
@@ -274,4 +303,23 @@ public class SDA extends IExportableNode implements Serializable {
 //		this.parent = parent;
 //	}
 
+
+	public String getIsParentFlag() {
+		return isParentFlag;
+	}
+
+	public void setIsParentFlag(String isParentFlag) {
+		this.isParentFlag = isParentFlag;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(null != obj &&  obj instanceof  SDA){
+			SDA target = (SDA)obj;
+			if(this.id.equalsIgnoreCase(target.getId())){
+				return true;
+			}
+		}
+		return false;
+	}
 }

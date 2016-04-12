@@ -24,8 +24,8 @@ import java.util.Map;
  * This class is used to deserialize <code>&lt;schema&gt;</code> elements into
  * Schema instances.
  *
- * @see com.dc.esb.servicegov.wsdl.extensions.schema.SchemaImpl
- * @see com.dc.esb.servicegov.wsdl.extensions.schema.SchemaSerializer
+ * @see SchemaImpl
+ * @see SchemaSerializer
  */
 public class SchemaDeserializer implements ExtensionDeserializer, Serializable {
 
@@ -41,7 +41,7 @@ public class SchemaDeserializer implements ExtensionDeserializer, Serializable {
      * Set the WSDLLocator to be used by the deserializer on this thread.
      *
      * @param loc The WSDLLocator to be used.
-     * @see javax.wsdl.xml.WSDLLocator
+     * @see WSDLLocator
      */
     public static void setLocator(WSDLLocator loc) {
         wsdlLocator.set(loc);

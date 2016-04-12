@@ -85,9 +85,8 @@
 /* ----------------------------------------------------------------------------------------------------- */
 
 .table, .view {
-    background-color: white;
-    /*background-color: #3E7E9C;*/
-    border-radius: 10px;
+    background-color: #3E7E9C;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 10px;
     position: absolute;
@@ -96,29 +95,17 @@
     min-width:80px;
     min-height:30px;
     width: auto;
-    border:1px solid #49a3f9;
-    /*border:1px solid #ccc;*/
-}
-
-.rootnode {
-   border: 1px solid #ff3e02;
+    border:1px solid #ccc;
 }
 
 .table .name, .view .name, .table li.jsplumb-draggable, .view li.jsplumb-draggable {
-    background-color: #ffffff;
-    /*background-color: #3E7E9C;*/
-    /*color: #f7ebca;*/
-    color: #0067c9;
+    background-color: #3E7E9C;
+    color: #f7ebca;
     cursor: move;
     font-size: 13px;
     line-height: 24px;
     padding: 6px;
     text-align: center;
-    /*border-bottom: 1px solid #49a3f9;*/
-}
-
-.rootnode .name{
-    color: #ff3e02;
 }
 
 
@@ -137,28 +124,21 @@
 
 
 .table {
-    width:80px;
+    width:100px;
     margin-bottom: 0;
-    min-width: 150px;
+    min-width: 200px;
 }
 
 .table-columns {
     margin:0;
     padding:0;
-    color:#0067c9;
-    border-top:1px solid #49a3f9;
-}
-
-.rootnode .table-columns{
-    color:#ff3e02;
-    border-top:1px solid #ff3e02;
 }
 
 .table-column {
     list-style-type: none;
     padding: 4px 6px;
-    text-align: center;
 }
+
 
 .table-column-delete, .view-delete {
     color: #407364;
@@ -192,8 +172,7 @@
 }
 
 .table-column-type-varchar {
-    /*background-color: #cbeae1;*/
-    background-color: white;
+    background-color: #cbeae1;
 }
 
 .table-column-type-integer {

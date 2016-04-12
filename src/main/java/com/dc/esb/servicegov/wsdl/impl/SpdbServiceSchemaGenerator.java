@@ -1,16 +1,13 @@
 package com.dc.esb.servicegov.wsdl.impl;
 
-import com.dc.esb.servicegov.entity.Metadata;
-import com.dc.esb.servicegov.entity.Operation;
-import com.dc.esb.servicegov.entity.SDA;
-import com.dc.esb.servicegov.entity.Service;
-import com.dc.esb.servicegov.service.impl.MetadataServiceImpl;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.SDAServiceImpl;
+import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.wsdl.WSDLGenerator;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.aspectj.apache.bcel.classfile.Constant;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
@@ -19,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.System;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,6 +35,21 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
     private OperationServiceImpl operationService;
     @Autowired
     private MetadataServiceImpl metadataService;
+    @Autowired
+    private ServiceInvokeServiceImpl serviceInvokeService;
+    @Autowired
+    private InterfaceHeadRelateServiceImpl interfaceHeadRelateService;
+    @Autowired
+    private IdaServiceImpl idaService;
+    @Autowired
+    private InterfaceHeadServiceImpl interfaceHeadService;
+    @Autowired
+    private LocalHeadGenerator localHeadGenerator;
+    @Autowired
+    private SystemServiceImpl systemService;
+
+//    private static String[] LOCAL_HEAD_SYSTEM = {"B78", "B90"}; //需要加入Localhead的系统
+    private static String[] NO_LOCAL_HEAD_SYSTEM = {"B48"}; //需要加入Localhead的系统
 
     private static final Log log = LogFactory.getLog(SpdbServiceSchemaGenerator.class);
     private static final Namespace NS_URI_XMLNS = new Namespace("x", "http://www.w3.org/2001/XMLSchema");
@@ -47,43 +57,35 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
     private static final QName QN_COMPLEX_TYPE = new QName("complexType", NS_URI_XMLNS);
     private static final QName QN_SEQ = new QName("sequence", NS_URI_XMLNS);
 
-    private Map<String, String> uniqueMap = new HashMap<String, String>();
+    private List<String> uniqueList = new ArrayList<String>();
 
     @Override
     public boolean generate(List<Service> services) throws Exception {
         return false;
     }
 
-    private List<Service> getAbstractService(Service service){
-//        return  serviceManager.getParentService(service);
-        return null;
-    }
+    public boolean generate(String serviceId, List<OperationPK> operationPKs, String dirPath) {
 
-    public boolean generate(Service serviceDO, String dirPath) {
-
-        String serviceId = serviceDO.getServiceId();
-        String tmpServiceId = serviceId;
+        String tmpServiceId = serviceId ;
         BufferedOutputStream schemaOut = null;
         try {
+            uniqueList.clear();
 //            List<Service> sHeadServices = serviceManager.getServiceById("SHEAD");
 //            List<Service> sHeadServices = getAbstractService(serviceDO);
             Document document = DocumentHelper.createDocument();
             Element schemaRoot = document.addElement(new QName("schema", new Namespace("x", "http://www.w3.org/2001/XMLSchema")));
-            schemaRoot.addNamespace("d", "http://esb.spdbbiz.com/metadata");
-            schemaRoot.addNamespace("s", "http://esb.spdbbiz.com/services/" + tmpServiceId);
-            schemaRoot.addAttribute("targetNamespace", "http://esb.spdbbiz.com/services/" + tmpServiceId);
+            schemaRoot.addNamespace("d", "http://esb.dcitsbiz.com/metadata");
+            schemaRoot.addNamespace("s", "http://esb.dcitsbiz.com/services/" + tmpServiceId);
+            schemaRoot.addAttribute("targetNamespace", "http://esb.dcitsbiz.com/services/" + tmpServiceId);
             schemaRoot.addAttribute("elementFormDefault", "qualified");
             schemaRoot.addAttribute("attributeFormDefault", "qualified");
             Element metadataImportElem = schemaRoot.addElement(new QName("import", NS_URI_XMLNS));
-            metadataImportElem.addAttribute("namespace", "http://esb.spdbbiz.com/metadata");
+            metadataImportElem.addAttribute("namespace", "http://esb.dcitsbiz.com/metadata");
             metadataImportElem.addAttribute("schemaLocation", "SoapHeader.xsd");
-
-            Element reqHeaderElem = schemaRoot.addElement(QN_ELEM);
-            reqHeaderElem.addAttribute("name", "ReqSysHead");
-            reqHeaderElem.addAttribute("type", "d:ReqSysHeadType");
-            Element rspHeaderElem = schemaRoot.addElement(QN_ELEM);
-            rspHeaderElem.addAttribute("name", "RspSysHead");
-            rspHeaderElem.addAttribute("type", "d:RspSysHeadType");
+            //引入localhead命名空间
+            Date start = new Date();
+            importReqLocalHeadNamespace(operationPKs, schemaRoot, dirPath);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>导入报文头命名空间耗时：" + (new Date().getTime() - start.getTime()) + "ms<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
             Element reqAppheadComplexType = schemaRoot.addElement(QN_COMPLEX_TYPE);
             reqAppheadComplexType.addAttribute("name", "ReqAppHeadType");
@@ -102,75 +104,95 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
             for(SDA resChild : resChildren){
                 renderAppHeadSDA(resChild, resSequence);
             }
-
-            List<Operation> operations = operationService.getOperationByServiceId(serviceDO.getServiceId());
-            for (Operation operationDO : operations) {
-                log.error("开始处理场景["+operationDO.getServiceId()+"]");
-                String operationId = operationDO.getOperationId();
-                //Todo
-                String tmpOperationId = "Op" + handleDupOperationIdIssue(operationId);
+            log.info("开始处理服务[" + tmpServiceId + "]");
+//            String operationId = operationPK.getOperationId();
+            //Todo
+//            String tmpOperationId = "Op" + operationPK.getOperationId();
+            for(OperationPK operationPK : operationPKs){
+                Date start2 = new Date();
                 Element reqOperation = schemaRoot.addElement(QN_ELEM);
-                reqOperation.addAttribute("name", "Req" + tmpOperationId);
-                String reqOperationTypeName = "s:Req" + tmpOperationId + "Type";
+                reqOperation.addAttribute("name", "Req" + tmpServiceId + operationPK.getOperationId());
+                String reqOperationTypeName = "s:Req" + tmpServiceId + operationPK.getOperationId() + "Type";
                 reqOperation.addAttribute("type", reqOperationTypeName);
                 Element reqOperationType = schemaRoot.addElement(QN_COMPLEX_TYPE);
-                reqOperationType.addAttribute("name", "Req" + tmpOperationId + "Type");
+                reqOperationType.addAttribute("name", "Req" + tmpServiceId + operationPK.getOperationId() + "Type");
                 Element reqOperationTypeSeq = reqOperationType.addElement(QN_SEQ);
+
+                Element reqHeaderElem = reqOperationTypeSeq.addElement(QN_ELEM);
+                reqHeaderElem.addAttribute("name", "ReqSysHead");
+                reqHeaderElem.addAttribute("type", "d:ReqSysHeadType");
+
                 Element reqSvcHeaderElem = reqOperationTypeSeq.addElement(QN_ELEM);
                 reqSvcHeaderElem.addAttribute("name", "ReqAppHead");
                 reqSvcHeaderElem.addAttribute("type", "s:ReqAppHeadType");
+
+                //localHead
+                addLocalHeadElem(operationPK, reqOperationTypeSeq, "Req");
+//                Element reqLocalHeadElem = reqOperationTypeSeq.addElement(QN_ELEM);
+//                reqLocalHeadElem.addAttribute("name", "ReqLocalHead");
+//                Element reqLocalHeadComplexType = reqLocalHeadElem.addElement(QN_COMPLEX_TYPE);
+//                Element reqLocalHeadTypeSeq = reqLocalHeadComplexType.addElement(QN_SEQ);
+//                //如果提供方是非标，则在body中加入报文头元素
+//                interfaceHeadDeal(operationPK, Constants.ElementAttributes.REQUEST_NAME, reqLocalHeadTypeSeq, schemaRoot);
+
                 Element reqSvcBodyElem = reqOperationTypeSeq.addElement(QN_ELEM);
-                reqSvcBodyElem.addAttribute("name", "AppBody");
+                reqSvcBodyElem.addAttribute("name", "ReqAppBody");
                 reqSvcBodyElem.addAttribute("minOccurs", "0");
                 Element reqSvcBodyComplexType = reqSvcBodyElem.addElement(QN_COMPLEX_TYPE);
                 Element reqSvcBodyTypeSeq = reqSvcBodyComplexType.addElement(QN_SEQ);
-
-                SDA reqSDA = sdaService.getByStructName(operationDO.getServiceId(), operationDO.getOperationId(), Constants.ElementAttributes.REQUEST_NAME);
+                //没有在LocalHeadSystem中的系统如果含有报文头则加入body
+                interfaceHeadDeal(operationPK, Constants.ElementAttributes.REQUEST_NAME, reqSvcBodyTypeSeq, schemaRoot);
+                SDA reqSDA = sdaService.getByStructName(operationPK.getServiceId(), operationPK.getOperationId(), Constants.ElementAttributes.REQUEST_NAME);
                 List<SDA> reqBodyChildren = sdaService.getChildren(reqSDA);
                 for(SDA reqBodyChild : reqBodyChildren){
-                    renderAppBodydSDA(reqBodyChild, reqSvcBodyTypeSeq, schemaRoot);
+                    // renderAppBodydSDA(reqBodyChild, reqSvcBodyTypeSeq, schemaRoot);
+                    renderAppHeadSDA(reqBodyChild, reqSvcBodyTypeSeq);
                 }
                 //rsp
 
                 Element rspOperation = schemaRoot.addElement(QN_ELEM);
-                rspOperation.addAttribute("name", "Rsp" + tmpOperationId);
-                String rspOperationTypeName = "s:Rsp" + tmpOperationId + "Type";
+                rspOperation.addAttribute("name", "Rsp" + tmpServiceId + operationPK.getOperationId());
+                String rspOperationTypeName = "s:Rsp" + tmpServiceId + operationPK.getOperationId() + "Type";
                 rspOperation.addAttribute("type", rspOperationTypeName);
                 Element rspOperationType = schemaRoot.addElement(QN_COMPLEX_TYPE);
-                rspOperationType.addAttribute("name", "Rsp" + tmpOperationId + "Type");
+                rspOperationType.addAttribute("name", "Rsp" + tmpServiceId + operationPK.getOperationId() + "Type");
                 Element rspOperationTypeSeq = rspOperationType.addElement(QN_SEQ);
+
+                Element rspHeaderElem = rspOperationTypeSeq.addElement(QN_ELEM);
+                rspHeaderElem.addAttribute("name", "RspSysHead");
+                rspHeaderElem.addAttribute("type", "d:RspSysHeadType");
+
+
                 Element rspSvcHeaderElem = rspOperationTypeSeq.addElement(QN_ELEM);
                 rspSvcHeaderElem.addAttribute("name", "RspAppHead");
                 rspSvcHeaderElem.addAttribute("type", "s:RspAppHeadType");
+
+                //localHead
+                //localHead
+                addLocalHeadElem(operationPK, rspOperationTypeSeq, "Rsp");
+//                Element rspLocalHeadElem = rspOperationTypeSeq.addElement(QN_ELEM);
+//                rspLocalHeadElem.addAttribute("name", "RspLocalHead");
+//                Element rspLocalHeadComplexType = rspLocalHeadElem.addElement(QN_COMPLEX_TYPE);
+//                Element rspLocalHeadTypeSeq = rspLocalHeadComplexType.addElement(QN_SEQ);
+//                //如果提供方是非标，则在body中加入报文头元素
+//                interfaceHeadDeal(operationPK, Constants.ElementAttributes.RESPONSE_NAME, rspLocalHeadTypeSeq, schemaRoot);
+
                 Element rspSvcBodyElem = rspOperationTypeSeq.addElement(QN_ELEM);
                 rspSvcBodyElem.addAttribute("minOccurs", "0");
-                rspSvcBodyElem.addAttribute("name", "AppBody");
+                rspSvcBodyElem.addAttribute("name", "RspAppBody");
                 Element rspSvcBodyComplexType = rspSvcBodyElem.addElement(QN_COMPLEX_TYPE);
                 Element rspSvcBodyTypeSeq = rspSvcBodyComplexType.addElement(QN_SEQ);
-                SDA resSDA = sdaService.getByStructName(operationDO.getServiceId(), operationDO.getOperationId(), Constants.ElementAttributes.RESPONSE_NAME);
+                //如果提供方是非标，则在body中加入报文头元素
+                interfaceHeadDeal(operationPK, Constants.ElementAttributes.RESPONSE_NAME, rspSvcBodyTypeSeq, schemaRoot);
+                SDA resSDA = sdaService.getByStructName(operationPK.getServiceId(), operationPK.getOperationId(), Constants.ElementAttributes.RESPONSE_NAME);
                 List<SDA> resBodyChildren = sdaService.getChildren(resSDA);
                 for(SDA resBodyChild : resBodyChildren){
-                    renderAppBodydSDA(resBodyChild, rspSvcBodyTypeSeq, schemaRoot);
+                    // renderAppBodydSDA(resBodyChild, rspSvcBodyTypeSeq, schemaRoot);
+                    renderAppHeadSDA(resBodyChild, rspSvcBodyTypeSeq);
                 }
-//                List<SDA> rspChildSDAs = rspSDA.getChildNode();
-//                SDA rspSvcBodySDA = null;
-//                for (SDA rspChildSDA : rspChildSDAs) {
-//                    if ("svcbody".equalsIgnoreCase(rspChildSDA.getStructName())) {
-//                        rspSvcBodySDA = rspChildSDA;
-//                        break;
-//                    }
-//                }
-//                if (null != rspSvcBodySDA) {
-//                    List<SDA> svcBodySubSDAs = rspSvcBodySDA.getChildNode();
-//                    if (null != svcBodySubSDAs) {
-//                        for (SDA svcBodySubSDA : svcBodySubSDAs) {
-//                            renderSDA(svcBodySubSDA, rspSvcBodyTypeSeq, schemaRoot);
-//                        }
-//                    } else {
-//                        log.warn("svc body 没有内容！");
-//                    }
-//                }
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>处理场景耗时：" + (new Date().getTime() - start2.getTime()) + "ms<<<<<<<<<<<<<<<<<<<<<<<<<<");
             }
+
             // 美化格式
             File schemaFile = new File(dirPath + File.separator + tmpServiceId + ".xsd");
             if (!schemaFile.exists()) {
@@ -180,9 +202,9 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
             schemaOut = new BufferedOutputStream(new FileOutputStream(schemaFile));
 //            BufferedOutputStream wsdlOut = new BufferedOutputStream(new FileOutputStream(wsdlFile));
 
-            XMLWriter writer = null;
+            com.dc.esb.servicegov.util.XMLWriter writer = null;
             OutputFormat format = OutputFormat.createPrettyPrint();
-            writer = new XMLWriter(schemaOut, format);
+            writer = new com.dc.esb.servicegov.util.XMLWriter(schemaOut, format);
             writer.write(document);
 
             return true;
@@ -193,7 +215,6 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
         } catch (IOException e) {
             log.error(e, e);
         } finally {
-            uniqueMap.clear();
             if (null != schemaOut) {
 
                 try {
@@ -205,34 +226,94 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
         }
         return true;
     }
+
+    public void interfaceHeadDeal(OperationPK operationPK, String structName, Element bodyElement, Element rootElement ){
+    //查询非标提供者
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.operationId=? and si.serviceId = ? and type = ? " +
+                "and isStandard = ?";
+        List interfaces = serviceInvokeService.find(hql, operationPK.getOperationId(), operationPK.getServiceId(), Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if(null != interfaces && 0 < interfaces.size()){
+            //如果有多个非标借口提供者
+            for(Object inter : interfaces){
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if(null != relates && 0 < relates.size()){
+                    for(InterfaceHeadRelate interfaceHeadRelate : relates){
+                        String headId = interfaceHeadRelate.getHeadId();
+                        InterfaceHead interfaceHead = interfaceHeadService.getById(headId);
+                        //查询系统信息
+                        if(!Arrays.asList(NO_LOCAL_HEAD_SYSTEM).contains(interfaceHead.getSystemId())){
+                           return;
+                        }
+                        Map<String, String> params = new HashMap<String,String>();
+                        params.put("headId", headId);
+                        params.put("structName", structName);
+//                    String hql2 = " from Ida where headId = ? and structName = ?";
+                        Ida ida = idaService.findUniqueBy(params);
+                        if(null != ida){
+                            String hql3 = " from Ida where _parentId = ? and structName is not null";
+                            List<Ida> children = idaService.find(hql3, ida.getId());
+                            for(Ida child : children){
+                                params.clear();
+                                params.put("headId", headId);
+                                params.put("xpath", child.getXpath());
+                                if(StringUtils.isNotEmpty(child.getSdaId())){
+                                    params.put("id", child.getSdaId());
+                                }
+                                SDA sda = sdaService.findUniqueBy(params);
+                                renderAppBodyHeadSDA(sda, bodyElement);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+    }
+
     public void renderAppHeadSDA(SDA sda,  Element parentElem){
         if(null != sda){
             Element element = parentElem.addElement(new QName("element", NS_URI_XMLNS));
             element.addAttribute("name", sda.getStructName());
-            if("array".equalsIgnoreCase(sda.getType())){
+            if(StringUtils.isNotEmpty(sda.getType()) && ("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType()))){
                 element.addAttribute("maxOccurs", "unbounded");
-            }
-            List<SDA> children = sdaService.getChildren(sda);
-            if(null != children && 0 < children.size()){
-                Element complexType = element.addElement(new QName("complexType", NS_URI_XMLNS));
-                Element sequence = complexType.addElement(new QName("sequence", NS_URI_XMLNS));
 
-                for(SDA child : children){
-                    renderAppHeadSDA(child, sequence);
+                List<SDA> children = sdaService.getChildren(sda);
+                if(null != children && 0 < children.size()){
+                    Element complexType = element.addElement(new QName("complexType", NS_URI_XMLNS));
+                    Element sequence = complexType.addElement(new QName("sequence", NS_URI_XMLNS));
+
+                    for(SDA child : children){
+                        renderAppHeadSDA(child, sequence);
+                    }
                 }
-            }else{
-                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
-                if(null != metadata){
-                    if ("number".equalsIgnoreCase(metadata.getType())) {
+            }
+            else{
+                if(StringUtils.isNotEmpty(sda.getType())){
+                    if (sda.getType().toLowerCase().contains("number")) {
                         element.addAttribute("type", "x:decimal");
-                    } else if ("int".equalsIgnoreCase(metadata.getType())) {
+                    } else if (sda.getType().toLowerCase().contains("int")) {
                         element.addAttribute("type", "x:int");
-                    } else if ("double".equalsIgnoreCase(metadata.getType())) {
+                    } else if (sda.getType().toLowerCase().contains("double")) {
                         element.addAttribute("type", "x:double");
                     } else {
                         element.addAttribute("type", "x:string");
                     }
                 }
+
+//                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+//                if(null != metadata){
+//                    if ("number".equalsIgnoreCase(metadata.getType())) {
+//                        element.addAttribute("type", "x:decimal");
+//                    } else if ("int".equalsIgnoreCase(metadata.getType())) {
+//                        element.addAttribute("type", "x:int");
+//                    } else if ("double".equalsIgnoreCase(metadata.getType())) {
+//                        element.addAttribute("type", "x:double");
+//                    } else {
+//                        element.addAttribute("type", "x:string");
+//                    }
+//                }
                 if("Y".equalsIgnoreCase(sda.getRequired())){
                     element.addAttribute("minOccurs", "1");
                 }else{
@@ -241,176 +322,179 @@ public class SpdbServiceSchemaGenerator implements WSDLGenerator<List<Service>> 
             }
         }
     }
-    public void renderAppBodydSDA(SDA sda,  Element parentElem, Element rootElement){
-        if(null != sda){
-            Element element = parentElem.addElement(new QName("element", NS_URI_XMLNS));
-            if("array".equalsIgnoreCase(sda.getType())){
-                element.addAttribute("maxOccurs", "unbounded");
-            }
-            List<SDA> children = sdaService.getChildren(sda);
-            if(null != children && 0 < children.size()){
-                element.addAttribute("name", sda.getStructName());
-                Element complexType = parentElem.addElement(new QName("complexType", NS_URI_XMLNS));
-                Element sequence = complexType.addElement(new QName("sequence", NS_URI_XMLNS));
 
-                for(SDA child : children){
-                    renderAppBodydSDA(child, sequence, rootElement);
-                }
-            }else{
-                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
-                if(null != metadata){
-                    if(!uniqueMap.containsKey(metadata.getMetadataId())){
-                        Element cacheElement = rootElement.addElement(QN_ELEM);
-                        cacheElement.addAttribute("name", sda.getStructName());
-                        if ("number".equalsIgnoreCase(metadata.getType())) {
-                            cacheElement.addAttribute("type", "x:decimal");
-                        } else if ("int".equalsIgnoreCase(metadata.getType())) {
-                            cacheElement.addAttribute("type", "x:int");
-                        } else if ("double".equalsIgnoreCase(metadata.getType())) {
-                            cacheElement.addAttribute("type", "x:double");
-                        } else {
-                            cacheElement.addAttribute("type", "x:string");
+    public void renderAppBodyHeadSDA(SDA sda,  Element parentElem){
+        if(null != sda){
+            if(!"SYS_HEAD".equalsIgnoreCase(sda.getConstraint()) && !"APP_HEAD".equalsIgnoreCase(sda.getConstraint())){
+                Element element = parentElem.addElement(new QName("element", NS_URI_XMLNS));
+                element.addAttribute("name", sda.getStructName());
+                if(StringUtils.isNotEmpty(sda.getType()) && ("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType()))){
+                    element.addAttribute("maxOccurs", "unbounded");
+
+                    List<SDA> children = sdaService.getChildren(sda);
+                    if(null != children && 0 < children.size()){
+//                    element.addAttribute("name", sda.getStructName());
+                        Element complexType = element.addElement(new QName("complexType", NS_URI_XMLNS));
+                        Element sequence = complexType.addElement(new QName("sequence", NS_URI_XMLNS));
+
+                        for(SDA child : children){
+                            renderAppBodyHeadSDA(child, sequence);
                         }
                     }
-                    element.addAttribute("ref", "s:" + metadata.getMetadataId());
+                }
+                else{
+                    if(StringUtils.isNotEmpty(sda.getType())){
+                        if (sda.getType().toLowerCase().contains("number")) {
+                            element.addAttribute("type", "x:decimal");
+                        } else if (sda.getType().toLowerCase().contains("int")) {
+                            element.addAttribute("type", "x:int");
+                        } else if (sda.getType().toLowerCase().contains("double")) {
+                            element.addAttribute("type", "x:double");
+                        } else {
+                            element.addAttribute("type", "x:string");
+                        }
+                    }
+                    if("Y".equalsIgnoreCase(sda.getRequired())){
+                        element.addAttribute("minOccurs", "1");
+                    }else{
+                        element.addAttribute("minOccurs", "0");
+                    }
                 }
             }
-            if("Y".equalsIgnoreCase(sda.getRequired())){
-                element.addAttribute("minOccurs", "1");
-            }else {
-                element.addAttribute("minOccurs", "0");
+        }
+    }
+
+    public void renderAppBodydSDA(SDA sda,  Element parentElem, Element rootElement){
+        if(null != sda){
+            if(!"SYS_HEAD".equalsIgnoreCase(sda.getConstraint()) && !"APP_HEAD".equalsIgnoreCase(sda.getConstraint())){
+                Element element = parentElem.addElement(new QName("element", NS_URI_XMLNS));
+
+                if("array".equalsIgnoreCase(sda.getType())){
+                    element.addAttribute("name", sda.getStructName());
+
+                    List<SDA> children = sdaService.getChildren(sda);
+                    if(null != children && 0 < children.size()){
+                        element.addAttribute("type", "s:"+sda.getStructName());
+                        element.addAttribute("nillable", "false");
+                        element.addAttribute("maxOccurs", "unbounded");
+
+                        Element appBodyComplexType = rootElement.addElement(QN_COMPLEX_TYPE);
+                        appBodyComplexType.addAttribute("name", sda.getStructName());
+                        Element sequence = appBodyComplexType.addElement(QN_SEQ);
+                        for(SDA child : children){
+                            renderAppBodydSDA(child, sequence, rootElement);
+                        }
+
+                    }
+                }
+                else{
+                    Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
+                    if(null != metadata){
+                        if(!uniqueList.contains(metadata.getMetadataId())){//如果未存在root下
+                            uniqueList.add(metadata.getMetadataId());
+                            Element cacheElement = rootElement.addElement(QN_ELEM);
+                            cacheElement.addAttribute("name", sda.getStructName());
+                            if ("number".equalsIgnoreCase(metadata.getType())) {
+                                cacheElement.addAttribute("type", "x:decimal");
+                            } else if ("int".equalsIgnoreCase(metadata.getType())) {
+                                cacheElement.addAttribute("type", "x:int");
+                            } else if ("double".equalsIgnoreCase(metadata.getType())) {
+                                cacheElement.addAttribute("type", "x:double");
+                            } else {
+                                cacheElement.addAttribute("type", "x:string");
+                            }
+                        }
+                        element.addAttribute("ref", "s:" + metadata.getMetadataId());
+
+                    }
+                }
+                if("Y".equalsIgnoreCase(sda.getRequired())){
+                    element.addAttribute("minOccurs", "1");
+                }else {
+                    element.addAttribute("minOccurs", "0");
+                }
             }
         }
     }
-    private Element parseStruct(String nodeName, Element element, Element typeParentElem) {
+    //引入localhead命名空间
+    public void importReqLocalHeadNamespace(List<OperationPK> operationPKs, Element schemaRoot, String dirPath){
+        List<String> systemCache = new ArrayList<String>();
+        for(OperationPK operationPK : operationPKs) {
+            String hql = "select distinct si.interfaceId from ServiceInvoke si where si.operationId=? and si.serviceId = ? and type = ? " +
+                    "and isStandard = ?";
+            //查询提供方非标接口
+            List interfaces = serviceInvokeService.find(hql, operationPK.getOperationId(), operationPK.getServiceId(), Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
 
-//        List<MetaStructNode> metaStructNodes = metaStructNodeDAO.findBy("structId", nodeName);
-//        for (MetaStructNode metaStructNode : metaStructNodes) {
-//            MetadataViewBean metadata = null;
-////            MetadataViewBean metadata = metadataManager.getMetadataById(metaStructNode.getElementId());
-//            String metadataId = metadata.getMetadataId();
-//            String metadataType = metadata.getType();
-//            Element nodeElement = element.addElement(QN_ELEM);
-//            nodeElement.addAttribute("ref", "s:" + metadataId);
-//            if("N".equalsIgnoreCase(metaStructNode.getRequired())) {
-//                nodeElement.addAttribute("minOccurs", "0");
-//            }
-//            if (!uniqueMap.containsKey(metadataId)) {
-//                Element nodeTypeElement = typeParentElem.addElement(QN_ELEM);
-//                nodeTypeElement.addAttribute("name", metadataId);
-//                if ("number".equalsIgnoreCase(metadataType)) {
-//                    nodeTypeElement.addAttribute("type", "x:decimal");
-//                } else if ("string".equalsIgnoreCase(metadataType)) {
-//                    nodeTypeElement.addAttribute("type", "x:string");
-//                } else {
-//                    nodeTypeElement.addAttribute("type", "x:int");
-//                }
-//                uniqueMap.put(metadataId, null);
-//            } else {
-//                log.error(metadataId + "重复");
-//            }
-//        }
+            if (null != interfaces && 0 < interfaces.size()) {
+                for (Object inter : interfaces) {
+                    String interfaceId = inter.toString();
+                    List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                    if (null != relates && 0 < relates.size()) {
+                        for (InterfaceHeadRelate interfaceHeadRelate : relates) {
+                            String headId = interfaceHeadRelate.getHeadId();
+                            InterfaceHead interfaceHead = interfaceHeadService.getById(headId);
+                            //查询系统信息
+                            com.dc.esb.servicegov.entity.System system = systemService.getById(interfaceHead.getSystemId());
+                            if(!Arrays.asList(NO_LOCAL_HEAD_SYSTEM).contains(system.getSystemId())){
+                                String systemAb = system.getSystemAb();
+                                if(null != interfaceHead){
+                                    if(!systemCache.contains(interfaceHead.getSystemId())){
+                                        systemCache.add(interfaceHead.getSystemId());
+                                        schemaRoot.addNamespace(systemAb, "http://esb.dcitsbiz.com/" + systemAb);
 
+                                        Element metadataImportElem = schemaRoot.addElement(new QName("import", NS_URI_XMLNS));
+                                        metadataImportElem.addAttribute("namespace", "http://esb.dcitsbiz.com/" + systemAb);
+                                        metadataImportElem.addAttribute("schemaLocation",  systemAb+".xsd");
 
-        return null;
+                                        localHeadGenerator.generate(interfaceHead.getSystemId(), dirPath);
+                                    }
+                                }
+                            }
 
-    }
-
-    private void renderType(SDA sda, Element parentElem, Element typeParentElem) throws DataException {
-//        SDANode sdaNode = sda.getValue();
-//        if (null != sdaNode) {
-//            Element nodeElement = null;
-//            if (null != parentElem) {
-//                nodeElement = parentElem.addElement(QN_ELEM);
-//            }
-//            String nodeType = sdaNode.getType().trim();
-//            String required = sdaNode.getRequired();
-//            boolean isComplexNode = null != sda.getChildNode() && sda.getChildNode().size() > 0;
-//            if ("array".equalsIgnoreCase(nodeType) || isComplexNode) {
-//                if (null != parentElem) {
-//                    nodeElement.addAttribute("name", sdaNode.getStructName());
-//                    if ("array".equalsIgnoreCase(nodeType)) {
-//                        nodeElement.addAttribute("maxOccurs", "unbounded");
-//                    }
-//                    nodeElement.addAttribute("type", "s:" + sdaNode.getStructName() + "Type");
-//                }
-//                if (!uniqueMap.containsKey(sdaNode.getStructName())) {
-//                    Element arrayTypeElement = typeParentElem.addElement(QN_COMPLEX_TYPE);
-//                    arrayTypeElement.addAttribute("name", sdaNode.getStructName() + "Type");
-//                    Element arrayTypeSeq = arrayTypeElement.addElement(QN_SEQ);
-//
-//                    List<SDA> childSDAs = sda.getChildNode();
-//                    if (null != childSDAs) {
-//                        for (SDA childSDA : childSDAs) {
-//                            renderType(childSDA, arrayTypeSeq, typeParentElem);
-//                        }
-//                    }
-//                    uniqueMap.put(sdaNode.getStructName(), null);
-//                } else {
-//                    log.error(sdaNode.getStructName() + "重复");
-//                }
-//
-//            } else {
-//                String metadataId = sdaNode.getMetadataId();
-//                if (null != metadataId) {
-//                    metadataId = metadataId.trim();
-//                    MetadataViewBean metadata = null;
-////                    MetadataViewBean metadata = metadataManager.getMetadataById(metadataId);
-//                    String metadataType = metadata.getType();
-//                    if (null != parentElem) {
-//                        nodeElement.addAttribute("ref", "s:" + metadataId);
-//                    }
-//
-//                    if (!uniqueMap.containsKey(sdaNode.getStructName())) {
-//                        Element nodeTypeElement = typeParentElem.addElement(QN_ELEM);
-//                        nodeTypeElement.addAttribute("name", metadataId);
-//                        if ("number".equalsIgnoreCase(metadataType)) {
-//                            nodeTypeElement.addAttribute("type", "x:decimal");
-//                        } else if ("string".equalsIgnoreCase(metadataType)) {
-//                            nodeTypeElement.addAttribute("type", "x:string");
-//                        } else {
-//                            nodeTypeElement.addAttribute("type", "x:int");
-//                        }
-//                        uniqueMap.put(sdaNode.getStructName(), null);
-//                    } else {
-//                        log.error(sdaNode.getStructName() + "重复");
-//                    }
-//
-//                } else {
-//                    throw new DataException("sda非法，服务字段几点必须有元数据！");
-//                }
-//            }
-//
-//            if ("Y".equalsIgnoreCase(required)) {
-//                if (null != parentElem) {
-//                    nodeElement.addAttribute("minOccurs", "1");
-//                }
-//            } else {
-//                if (null != parentElem) {
-//                    nodeElement.addAttribute("minOccurs", "0");
-//                }
-//
-//            }
-//
-//        }
-    }
-
-    public boolean generate(String serviceId, String dirPath) {
-
-//        List<Service> services = serviceManager.getServiceById(serviceId);
-        List<Service> services = null;
-        for (Service service : services) {
-            generate(service, dirPath);
+                        }
+                    }
+                }
+            }
         }
-        return true;
     }
 
-    public String handleDupOperationIdIssue(String operationId){
-        if(operationId.indexOf("-") > -1){
-            String tmpOperationId = operationId.substring(0, operationId.indexOf("-"));
-            return tmpOperationId;
-        }else{
-            return operationId;
+    /**
+     *
+     * @param operationPK
+     * @param parentElem
+     * @param type Req或Rsp
+     */
+    public void addLocalHeadElem(OperationPK operationPK, Element parentElem, String type){
+        List<String> cacheHeadList = new ArrayList<String>();//报文头缓存，防止在一个场景中一个系统有多个接口关联相同报文头
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.operationId=? and si.serviceId = ? and type = ? " +
+                "and isStandard = ?";
+        //查询提供方非标接口
+        List interfaces = serviceInvokeService.find(hql, operationPK.getOperationId(), operationPK.getServiceId(), Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if (null != interfaces && 0 < interfaces.size()) {
+            for (Object inter : interfaces) {
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if (null != relates && 0 < relates.size()) {
+                    for (InterfaceHeadRelate interfaceHeadRelate : relates) {
+                        String headId = interfaceHeadRelate.getHeadId();
+                        if(!cacheHeadList.contains(headId)){
+                            InterfaceHead interfaceHead = interfaceHeadService.getById(headId);
+                            if (null != interfaceHead) {
+                                //查询系统信息
+                                com.dc.esb.servicegov.entity.System system = systemService.getById(interfaceHead.getSystemId());
+                                String systemAb = system.getSystemAb();
+                                if(!Arrays.asList(NO_LOCAL_HEAD_SYSTEM).contains(system.getSystemId())){
+                                    Element reqHeaderElem = parentElem.addElement(QN_ELEM);
+                                    String elemName = type + "LocalHead";
+                                    reqHeaderElem.addAttribute("name", elemName);
+                                    reqHeaderElem.addAttribute("type", systemAb + ":" + type + "LocalHeadType");
+                                }
+                            }
+                            cacheHeadList.add(headId);
+                        }
+                    }
+                }
+            }
         }
     }
 }

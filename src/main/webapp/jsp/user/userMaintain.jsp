@@ -111,11 +111,11 @@
 			var checkedItems = $('#tt').edatagrid('getChecked');
             if (checkedItems != null && checkedItems.length > 0) {
 				uiinit.win({
- 					w : 900,
- 					iconCls : 'icon-edit',
- 					title : "修改用户",
+					w : 900,
+					iconCls : 'icon-edit',
+					title : "修改用户",
 					url : "/user/getById/"+row.id
- 				})
+				})
 			  }else {
                 alert("请选中要修改的数据！");
              }
@@ -150,7 +150,7 @@
 		   }
 		},
 		</shiro:hasRole>
-		<shiro:hasPermission name="password-update">
+		<shiro:hasRole name="admin">
 		{
 			text : '修改密码',
 			iconCls : 'icon-qxfp',
@@ -169,7 +169,7 @@
 			 }
 		   }
 		},
-		</shiro:hasPermission>
+		</shiro:hasRole>
 		<shiro:hasRole name="admin">
 		{
 			text : '初始化密码',

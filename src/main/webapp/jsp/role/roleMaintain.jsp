@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"
          errorPage="" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -45,7 +46,7 @@
 
 </fieldset>
 </form>
-<table id="tt" style="height:500px; width:auto;" title="所有角色">
+<table id="tt" style="height:500px; width:auto;" title="所有角色" data-options="toolbar:toolbar">
     <thead>
     <tr>
         <th data-options="field:'role',checkbox:true"></th>
@@ -66,8 +67,9 @@
 <script type="text/javascript" src="/plugin/json/json2.js"></script>
 <script type="text/javascript" src="/js/role/roleManager.js"></script>
 <script type="text/javascript">
-
-    var toolbar = [{
+    var toolbar = [
+        <shiro:hasRole name="admin">
+        {
         text: '新增',
         iconCls: 'icon-add',
         handler: function () {
@@ -145,14 +147,16 @@
              }
 		   }
 		}
+            </shiro:hasRole>
     ];
+
     $(function () {
+
         $('#tt').datagrid({
             rownumbers: true,
             singleSelect: true,
             url: '/role/getAll',
             method: 'get',
-            toolbar: toolbar,
             pagination: true,
             pageSize: 10,
             onLoadError: function (responce) {

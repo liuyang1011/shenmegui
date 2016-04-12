@@ -23,6 +23,8 @@ public class Ida extends IExportableNode {
     @Column(name = "METADATA_ID")
     private String metadataId;
 
+    @Column(name = "METATYPE")
+    private String metaType;
     @Column(name = "SEQ")
     private int seq;
 
@@ -107,6 +109,14 @@ public class Ida extends IExportableNode {
 
     public void setMetadataId(String metadataId) {
         this.metadataId = metadataId;
+    }
+
+    public String getMetaType() {
+        return metaType;
+    }
+
+    public void setMetaType(String metaType) {
+        this.metaType = metaType;
     }
 
     public int getSeq() {

@@ -28,7 +28,7 @@
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>元数据名称</th>
+            <th>数据字典</th>
             <td><input class="easyui-textbox" type="text" name="metadataId" value="${entity.metadataId }"
                        data-options="required:true,validType:['englishB']"></td>
         </tr>
@@ -63,6 +63,10 @@
 
                        value='${entity.categoryWordId }'
                        style="width: 100px; "/></td>
+        </tr>
+        <tr>
+            <th>元数据</th>
+            <td><input class="easyui-textbox" type="text" name="metaTypew" value="${entity.metaType}"></td>
         </tr>
         <tr style="display:none;">
             <th>业务定义</th>

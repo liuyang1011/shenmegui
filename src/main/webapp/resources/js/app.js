@@ -32,25 +32,25 @@ var SYSMENU = {
                     searcher: function (value, name) {
                         $('.mslinktree').tree('doFilter', value);
                     },
-                    prompt: '请输入关键词'
+                    prompt: '请输入关键词，，右键节点展示操作菜单'
                 });
                 $('#servicetreefilter').searchbox({
                     "searcher": function (value, name) {
                         $('.mxservicetree').tree('doFilter', value);
                     },
-                    prompt: '请输入服务名'
+                    prompt: '请输入服务名，右键节点展示操作菜单'
                 });
                 $('#mxinterfacetreefilter').searchbox({
                     searcher: function (value, name) {
                         $('.msinterfacetree').tree('doFilter', value);
                     },
-                    prompt: '请输入关键词'
+                    prompt: '请输入关键词，右键节点展示操作菜单'
                 });
                 $('#mxinterfaceheadtreefilter').searchbox({
                     searcher: function (value, name) {
                         $('.mxsysadmintree').tree('doFilter', value);
                     },
-                    prompt: '请输入关键词'
+                    prompt: '请输入关键词，右键节点展示操作菜单'
                 });
                 $('#serviceidentifytreefilter').searchbox({
                     "searcher": function (value, name) {
@@ -421,34 +421,6 @@ var SYSMENU = {
                         }
                     }
                 });
-                //服务识别
-                $('.mxserviceidentifytree').tree({
-                    onClick: function (node) {
-                        if (node.type == 'service') {//打开服务场景
-                            if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
-                                var mid = node.id;
-                                var title = node.text;
-                                if ($('#mainContentTabs').tabs('exists', title)) {
-                                    $('#mainContentTabs').tabs('select', title);
-                                } else {
-                                    var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
-                                    $('#mainContentTabs').tabs('add', {
-                                        title: title,
-                                        content: content,
-                                        closable: true,
-                                        fit:true
-                                    });
-                                }
-                            } else {
-                                var mid = node.id;
-                                var title = node.text;
-                                if ($('#mainContentTabs').tabs('exists', title)) {
-                                    $('#mainContentTabs').tabs('select', title);
-                                }
-                            }
-                        }
-                    }
-                });
                 SYSTABMENU.init();
             });
         });
@@ -478,12 +450,6 @@ var SYSMENU = {
                     $('.mxsysadmintree').tree('doFilter', value);
                 },
                 prompt: '请输入关键词'
-            });
-            $('#serviceidentifytreefilter').searchbox({
-                "searcher": function (value, name) {
-                    $('.mxserviceidentifytree').tree('doFilter', value);
-                },
-                prompt: '请输入服务名'
             });
 
             //报文管理
@@ -773,34 +739,6 @@ var SYSMENU = {
                     }
                 }
             });
-            //服务识别
-            $('.mxserviceidentifytree').tree({
-                onClick: function (node) {
-                    if (node.type == 'service') {//打开服务场景
-                        if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
-                            var mid = node.id;
-                            var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)) {
-                                $('#mainContentTabs').tabs('select', title);
-                            } else {
-                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
-                                $('#mainContentTabs').tabs('add', {
-                                    title: title,
-                                    content: content,
-                                    closable: true,
-                                    fit:true
-                                });
-                            }
-                        } else {
-                            var mid = node.id;
-                            var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)) {
-                                $('#mainContentTabs').tabs('select', title);
-                            }
-                        }
-                    }
-                }
-            });
             SYSTABMENU.init();
         });
     },
@@ -832,12 +770,7 @@ var SYSMENU = {
                 },
                 prompt: '请输入关键词'
             });
-            $('#serviceidentifytreefilter').searchbox({
-                "searcher": function (value, name) {
-                    $('.mxserviceidentifytree').tree('doFilter', value);
-                },
-                prompt: '请输入服务名'
-            });
+
             //报文管理
             $('.mxsysadmintree').tree({
                 onContextMenu: function (e, node) {
@@ -1135,34 +1068,6 @@ var SYSMENU = {
                     }
                 }
             });
-            //服务识别
-            $('.mxserviceidentifytree').tree({
-                onClick: function (node) {
-                    if (node.type == 'service') {//打开服务场景
-                        if ($("#serviceFrame" + node.id).size() == 0) {//如果没有打开基本信息，则新创建基本信息
-                            var mid = node.id;
-                            var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)) {
-                                $('#mainContentTabs').tabs('select', title);
-                            } else {
-                                var content = '<iframe scrolling="auto"  name="serviceFrame' + node.id + '" id="serviceFrame' + node.id + '" frameborder="0"  src="' + LOAD_URL.SERVICEUI_LW + "?serviceId=" + node.id+'&_t='+new Date().getTime() + '" style="width:100%;height:97%;"></iframe>';
-                                $('#mainContentTabs').tabs('add', {
-                                    title: title,
-                                    content: content,
-                                    closable: true,
-                                    fit:true
-                                });
-                            }
-                        } else {
-                            var mid = node.id;
-                            var title = node.text;
-                            if ($('#mainContentTabs').tabs('exists', title)) {
-                                $('#mainContentTabs').tabs('select', title);
-                            }
-                        }
-                    }
-                }
-            });
             SYSTABMENU.init();
             var reloadTime = 100;
             while (!flag && reloadTime > 0) {
@@ -1262,16 +1167,21 @@ function SetWinHeight(obj) {
 }
 
 function userPage(){
-    $('#userDlg').dialog({
-        title: '用户信息',
-        width: '550px',
-        left:'450px',
-        height:'403px',
-        closed: false,
-        cache: false,
-        href: '/user/getUserInfo',
-        modal: true
+    uiinit.win({
+        w: 800,
+        title: "用户信息",
+        url: "/user/getSelf"
     });
+    //$('#userDlg').dialog({
+    //    title: '用户信息',
+    //    width: '550px',
+    //    left:'450px',
+    //    height:'403px',
+    //    closed: false,
+    //    cache: false,
+    //    href: '/jsp/user/userModify.jsp',
+    //    modal: true
+    //});
 }
 
 $(function () {

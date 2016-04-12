@@ -1,24 +1,18 @@
 package com.dc.esb.servicegov.controller;
 
-import static com.dc.esb.servicegov.service.support.Constants.STATE_PASS;
-import static com.dc.esb.servicegov.service.support.Constants.STATE_UNPASS;
-
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.dc.esb.servicegov.dao.support.Page;
 import com.dc.esb.servicegov.entity.*;
+
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.util.DateUtils;
 import com.dc.esb.servicegov.util.TreeNode;
 import com.dc.esb.servicegov.vo.InterfaceInvokeVO;
 import com.dc.esb.servicegov.vo.InterfaceInvokeVO2;
 import com.dc.esb.servicegov.vo.OperationExpVO;
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -35,22 +29,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.util.JSONUtil;
-import net.sf.json.JSONArray;
-import net.sf.json.JsonConfig;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.dc.esb.servicegov.service.support.Constants.STATE_PASS;
-import static com.dc.esb.servicegov.service.support.Constants.STATE_UNPASS;
 
 @Controller
 @RequestMapping("/operation")
@@ -451,7 +435,7 @@ public class OperationController {
             String[] per = serviceOperationIdPair.split(",");
             String operationId = per[0];
             String serviceId = per[1];
-            com.dc.esb.servicegov.entity.ProcessContext processContext = new com.dc.esb.servicegov.entity.ProcessContext();
+            ProcessContext processContext = new ProcessContext();
             processContext.setName("服务审核");
             processContext.setProcessId(processId);
             processContext.setKey("operation");

@@ -3,6 +3,8 @@ package com.dc.esb.servicegov.dao.impl;
 import com.dc.esb.servicegov.entity.Ida;
 import com.dc.esb.servicegov.entity.Operation;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import com.dc.esb.servicegov.entity.SDA;
@@ -56,5 +58,16 @@ public class SDADAOImpl extends BaseDAOImpl<SDA> {
             }
         }
         return null;
+    }
+
+    public List<SDA> exeSQLGetList(String sql,final Object... values){
+        Query query = getSession().createSQLQuery(sql).setResultTransformer(Transformers.aliasToBean(SDA.class));
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                query.setParameter(i, values[i]);
+            }
+        }
+        List list = query.list();
+        return list;
     }
 }

@@ -55,10 +55,13 @@ public class EsbServerServiceImpl extends AbstractBaseService<EsbServer, String>
             String outPath =  path + File.separator + "out_config";
                 //TODO 选择更新数据字典
             File metadataFile = metadataConfigGenerator.generate();
-            File inMetadataFile = new File(inPath + File.separator + metadataFile.getName());
-            File outMetadataFile = new File(outPath + File.separator + metadataFile.getName());
-            FileUtils.copyFile(metadataFile, inMetadataFile);
-            FileUtils.copyFile(metadataFile, outMetadataFile);
+            if("true".equalsIgnoreCase(dicSync)){
+                File inMetadataFile = new File(inPath + File.separator + metadataFile.getName());
+                File outMetadataFile = new File(outPath + File.separator + metadataFile.getName());
+                FileUtils.copyFile(metadataFile, inMetadataFile);
+                FileUtils.copyFile(metadataFile, outMetadataFile);
+            }
+
             File[] inFiles = new File(inPath).listFiles();
             File[] outFiles = new File(outPath).listFiles();
 

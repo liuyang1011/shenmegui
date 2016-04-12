@@ -118,10 +118,18 @@ if(mid.equals("1.15")){
 <%
 	if(mid.equals("3.4")){
 %>
-{"success":true,"url":"/dataTemplate/grid7.jsp","title":"元数据管理"}
+{"success":true,"url":"/dataTemplate/grid7.jsp","title":"数据字典管理"}
 <%
 	}
 	
+%>
+<%
+	if(mid.equals("3.7")){
+%>
+{"success":true,"url":"/jsp/metaType/metaType.jsp","title":"元数据管理"}
+<%
+	}
+
 %>
 <%
 	if(mid.equals("3.6")){
@@ -136,6 +144,15 @@ if(mid.equals("1.15")){
 	if(mid.equals("9.5")){
 %>
 {"success":true,"url":"/jsp/metadata/metadata_import.jsp","title":"数据字典导入"}
+<%
+	}
+
+%>
+
+<%
+	if(mid.equals("9.7")){
+%>
+{"success":true,"url":"/jsp/metaType/import_metaType.jsp","title":"元数据导入"}
 <%
 	}
 

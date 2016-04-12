@@ -1,6 +1,5 @@
 package com.dc.esb.servicegov.controller;
 
-import com.dc.esb.servicegov.dao.impl.EsbDAOImpl;
 import com.dc.esb.servicegov.service.impl.EnglishWordServiceImpl;
 import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
 import com.dc.esb.servicegov.service.impl.UserServiceImpl;
@@ -33,8 +32,6 @@ public class LoginController {
     private UserServiceImpl userService;
     @Autowired
     private EnglishWordServiceImpl englishWordService;
-    @Autowired
-    private EsbDAOImpl esbDAO;
 
     private static final Log log = LogFactory.getLog(LoginController.class);
 

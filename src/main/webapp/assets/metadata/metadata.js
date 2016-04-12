@@ -98,7 +98,7 @@ function judegeOperation(){
 	});
 	return result;
 }
-function save(formId){
+function add(formId){
 	if(!$("#"+formId).form('validate')){
 		return false;
 	}

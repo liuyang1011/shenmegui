@@ -10,7 +10,6 @@ import org.dom4j.io.XMLWriter;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2015/7/16.
@@ -114,58 +113,7 @@ public class FileUtil {
 
         logger.info("复制结束...");
     }
-    public static void copyFile(String srcFile, String destFile, Map<String, String> map) throws Exception {
-        logger.info("复制文件开始，srcFile:" + srcFile + ",destFile:" + destFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(srcFile)),
-                "utf-8"));
-        File dFile = new File(destFile);
-        if (!dFile.isFile()) {
-            dFile.getParentFile().mkdirs();
-            dFile.createNewFile();
-        }
 
-
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(destFile)),
-                "utf-8"));
-
-        String temp = null;
-        while ((temp = reader.readLine()) != null) {
-            String body = temp;
-            for(String key : map.keySet()){
-                if (temp.indexOf(key) != -1) {
-                    body = temp.replace(key, map.get(key));
-                }
-            }
-            writer.write(body);
-            writer.newLine();
-        }
-
-        writer.close();
-        if (writer != null) {
-            writer.close();
-            writer = null;
-        }
-        if (reader != null) {
-            reader.close();
-            reader = null;
-        }
-
-        //格式化xml
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(destFile);
-        FileOutputStream out = new FileOutputStream(destFile, false);
-        OutputFormat format = OutputFormat.createPrettyPrint();
-        format.setEncoding("utf-8");
-        XMLWriter formatWriter = new XMLWriter(new OutputStreamWriter(out, "utf-8"), format);// 重新写回到原来的xml文件中
-
-        formatWriter.write(document);
-
-        formatWriter.close();
-        out.close();
-
-
-        logger.info("复制结束...");
-    }
 
     public static void copyFile(String srcFile, String destFile, String requestTxt, String responseText, String reqHeadTxt, String rspHeadTxt) throws Exception {
         logger.info("复制文件开始，srcFile:" + srcFile + ",destFile:" + destFile);

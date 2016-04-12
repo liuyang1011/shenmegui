@@ -77,7 +77,7 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
             String channel__service_path = loader.getResource("gzns_template/in_config/channel_service_template.xml").getPath();
             String service_system__path = loader.getResource("gzns_template/in_config/service_system_template.xml").getPath();
 
-            com.dc.esb.servicegov.entity.System provide_system = systemService.getById(export.getProviderSystemId());
+            System provide_system = systemService.getById(export.getProviderSystemId());
             System consumer_system = systemService.getById(export.getConsumerSystemId());
 
             requestText = ExportUtil.generateBaseMappingXML(resIdas, "response", consumer_system.getSystemAb(),
@@ -172,7 +172,7 @@ public class GZNSXMLConfigGenerator implements IMetadataConfigGenerator {
             String channel__service_path = loader.getResource("gzns_template/out_config/channel_service_template.xml").getPath();
             String service_system__path = loader.getResource("gzns_template/out_config/service_system_template.xml").getPath();
 
-            com.dc.esb.servicegov.entity.System provide_system = systemService.getById(export.getProviderSystemId());
+            System provide_system = systemService.getById(export.getProviderSystemId());
 
             requestText = ExportUtil.generateBaseMappingXML(reqIdas, "request", provide_system.getSystemAb(),
                     sdaService, export.getServiceId(), export.getOperationId());

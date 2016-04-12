@@ -39,7 +39,7 @@ public class UserSystemRelationController {
     @RequestMapping(value = "/getByUserId")
     public @ResponseBody
     List<SystemVO> getByUserId(String userId){
-        List<com.dc.esb.servicegov.entity.System> list = systemService.getByUserId(userId);
+        List<System> list = systemService.getByUserId(userId);
         String hql = " from System order by systemId asc";
         List<System> all = systemService.find(hql);
         List<SystemVO> result = new ArrayList<SystemVO>();

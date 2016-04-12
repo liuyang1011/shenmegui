@@ -28,13 +28,13 @@
 <form class="formui" id="metadataForm" action="/metadata/add" method="post">
     <table border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <th>元数据名称</th>
+            <th>数据字典名称</th>
             <td><input class="easyui-textbox" type="text" name="metadataId"
-                       data-options="required:true, validType:['unique','englishB']"></td>
+                       data-options="required:true, validType:['englishB']"></td>
         </tr>
         <tr>
             <th>中文名称</th>
-            <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['uniqueName','chineseB']"></td>
+            <td><input class="easyui-textbox" type="text" name="chineseName" data-options="required:true, validType:['chineseB']"></td>
         </tr>
         <tr  style="display:none;">
             <th>别名</th>
@@ -60,6 +60,10 @@
 					"
                     /></td>
         </tr>
+        <tr>
+        <th>元数据</th>
+        <td><input class="easyui-textbox" type="text" name="metaType" id="metaType"></td>
+    </tr>
         <tr style="display:none;">
             <th>业务定义</th>
             <td><input class="easyui-textbox" type="text" name="bussDefine"></td>
@@ -113,7 +117,7 @@
         <tr>
             <td colspan="2" style="text-align:center">
                 <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onClick="$('#w').window('close')">取消</a>
-                <a href="#" onclick="save('metadataForm')" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+                <a href="#" onclick="save()" class="easyui-linkbutton" iconCls="icon-save">保存</a>
             </td>
         </tr>
     </table>
@@ -158,6 +162,26 @@
     });
     if(typeof(processId) != 'undefined'){
         $('#taskIdInput').val(processId);
+    }
+    function save(){
+        if($('#metadataForm').form('validate')){
+            var params = $("#metadataForm").serialize();
+            $.ajax({
+                type: "post",
+                async: false,
+                url: '/metadata/add',
+                dataType: "json",
+                data: params,
+                success: function (data) {
+
+                    alert('保存成功 ！');
+                    $('#w').dialog('close');
+                    $("#metadataList").datagrid('reload');
+                }
+            });
+        }else{
+            return false;
+        }
     }
 </script>
 

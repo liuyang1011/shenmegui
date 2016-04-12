@@ -62,6 +62,14 @@
 				</tr>
 				<tr>
 					<th><nobr>
+						接口ID
+					</nobr>
+					</th>
+					<td>
+						<select class="easyui-textbox" type="text" id="interfaceId" style="width: 170px">
+						</select>
+					</td>
+					<th><nobr>
 						接口标签
 					</nobr>
 					</th>
@@ -85,10 +93,12 @@
 						<select class="easyui-combobox" id="protocolIdSearch" style="width: 165px" panelHeight="auto" data-options="editable:false">
                         </select>
 					</td>
+				</tr>
+				<tr>
 					<td>
 						&nbsp;
 					</td>
-					<td align="right">
+					<td>
 						<a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
 						<a href="#" id="clean" onclick="$('#searchForm').form('clear');" class="easyui-linkbutton" iconCls="icon-clear" style="margin-left:1em" >清空</a>
 					</td>
@@ -194,7 +204,7 @@
 							w:500,
 							iconCls:'icon-add',
 							title:"关联报文头",
-							url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId="+${param.systemId}
+							url : "/jsp/interface/header_relate.jsp?interfaceId="+interfaceId +"&systemId=${param.systemId}"
 						});
 					}else{
 						alert("请选择要关联的行");
@@ -239,7 +249,7 @@
 
 					}
 
-					var systemId = ${param.systemId };
+					var systemId = "${param.systemId }";
 					if(row){
 						var form=$("<form>");//定义一个form表单
 						form.attr("style","display:none");
@@ -429,13 +439,14 @@
 		 }
 		 
 		 function searchData(){
-		 
+			 var interfaceId  = $("#interfaceId").textbox('getValue');
 		  	 var ecode = $("#ecode").val();
 		 	 var interfaceName = $("#interfaceName").val();
 		 	 var desc = $("#remarkSearch").val();
 		 	 var status = $("#statusSearch").combobox('getValue');
 			 var interfaceTag = $("#interfaceTag").textbox('getValue');
 		 	 var queryParams = $('#tg').datagrid('options').queryParams;
+			 queryParams.interfaceId = interfaceId;
              queryParams.ecode = ecode;
              queryParams.interfaceName = interfaceName;
              queryParams.desc = encodeURI(desc);

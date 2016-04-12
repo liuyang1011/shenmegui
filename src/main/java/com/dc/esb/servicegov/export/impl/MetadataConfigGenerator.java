@@ -36,18 +36,18 @@ public class MetadataConfigGenerator implements IConfigGenerator {
 		Document doc = DocumentHelper.createDocument();
 		Element rootElement = doc.addElement("metadata");//根节点
 		for (int i = 0; i < metadatas.size(); i++) {
+			Metadata metadata = metadatas.get(i);
 			//子节点
-			Element info = rootElement.addElement(metadatas.get(i)
-					.getMetadataId());
+			Element info = rootElement.addElement(metadata.getMetadataId());
 			//向根节点下面的子节点插入属性
 			String typeStr = "";
-			if("array".equalsIgnoreCase(metadatas.get(i).getType())){//常熟ESB业务要求：不需要scale属性，类型除了array全部是string
+			if("array".equalsIgnoreCase(metadata.getType()) || "struct".equalsIgnoreCase(metadata.getType())){//常熟ESB业务要求：不需要scale属性，类型除了array全部是string
 				typeStr = "array";
 			}else{
 				typeStr = "string";
 			}
 			addAttribute(info, "type", typeStr);
-			if (!"array".equalsIgnoreCase(metadatas.get(i).getType()) && !"struct".equalsIgnoreCase(metadatas.get(i).getType()) ) {//判断子节点是否为数组
+			if (!"array".equalsIgnoreCase(metadata.getType()) && !"struct".equalsIgnoreCase(metadata.getType()) ) {//判断子节点是否为数组
 				addAttribute(info,"length", metadatas.get(i).getLength() );
 				addAttribute(info,"chinese_name", metadatas.get(i).getChineseName());
 //				addAttribute(info, "scale", metadatas.get(i).getScale());

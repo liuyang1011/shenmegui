@@ -3,25 +3,20 @@ package com.dc.esb.servicegov.controller;
 import com.dc.esb.servicegov.entity.ProcessContext;
 import com.dc.esb.servicegov.process.impl.JbpmSupport;
 import com.dc.esb.servicegov.service.impl.ProcessContextServiceImpl;
-import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -53,33 +48,13 @@ public class ProcessController {
     @RequestMapping("{user}/list")
     public
     @ResponseBody
-    List<TaskSummary> list(@PathVariable("user") String user, Model model,HttpServletRequest req) {
+    List<TaskSummary> list(@PathVariable("user") String user, Model model) {
         log.info(user + " list his tasks");
-        String processInstanceId=req.getParameter("processInstanceId");
-        String taskId=req.getParameter("taskId");
         TaskService taskService = jbpmSupport.getTaskService();
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(user, "en-UK");
         log.info("\n***Task size::" + tasks.size() + "***\n");
-        List<TaskSummary> newTasks=new ArrayList<TaskSummary>();
-        for(int i=0;i<tasks.size();i++){
-            log.info(tasks.get(i).getId() + " :: " + tasks.get(i).getActualOwner());
-            String  newPid=String.valueOf(tasks.get(i).getProcessInstanceId());
-            String  newTid=String.valueOf(tasks.get(i).getId());
-            if(processInstanceId!=null&&!"null".equals(processInstanceId)){
-                if(newPid.equals(processInstanceId)){
-                    newTasks.add(tasks.get(i));
-                    return newTasks;
-                }
-
-              }else if(taskId!=null&&!"null".equals(taskId)){
-                if(newTid.equals(taskId)){
-                    newTasks.add(tasks.get(i));
-                    return newTasks;
-                }
-
-            }
-
-
+        for (TaskSummary taskSummary : tasks) {
+            log.info(taskSummary.getId() + " :: " + taskSummary.getActualOwner());
         }
         return tasks;
     }
@@ -138,13 +113,7 @@ public class ProcessController {
         }
         return true;
     }
-    @RequestMapping(value = "{user}/obsolete/{taskId}", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    boolean obsolete(@PathVariable("user") String user, @PathVariable("taskId") Long taskId, Model model) {
-        processContextService.obsolete(taskId);
-        return true;
-    }
+
     @RequestMapping(value = "{user}/work/{task}", method = RequestMethod.POST)
     public
     @ResponseBody

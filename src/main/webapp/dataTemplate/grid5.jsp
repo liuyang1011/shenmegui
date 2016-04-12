@@ -69,19 +69,19 @@
         var toolbar = [];
         <shiro:hasPermission name="englishWord-add">
             toolbar.push(
-                    {
-                        text: '新增',
+            {
+                text: '新增',
+                iconCls: 'icon-add',
+                handler: function () {
+                    uiinit.win({
+                        top:"20px",
+                        left:"150px",
+                        w: 500,
                         iconCls: 'icon-add',
-                        handler: function () {
-                            uiinit.win({
-                                top:"20px",
-                                left:"150px",
-                                w: 500,
-                                iconCls: 'icon-add',
-                                title: "新增英文单词",
-                                url: "/jsp/englishWord/add.jsp"
-                            });
-                        }
+                        title: "新增英文单词",
+                        url: "/jsp/englishWord/add.jsp"
+                    });
+                }
                     }
             );
         </shiro:hasPermission>

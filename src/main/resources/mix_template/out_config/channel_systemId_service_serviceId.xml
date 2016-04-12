@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdoroot package_type="mixed">
+    <header type="fix">
+        <PkgLength length="8" type="string" metadataid="PkgLength"/>
+        <ReqSeq length="22" type="string" metadataid="ReqSeq"/>
+        <ServiceID length="11" type="string" metadataid="ServiceID"/>
+        <ChannelID length="7" type="string" metadataid="ChannelID"/>
+        <LegOrgID length="12" type="string" metadataid="LegOrgID"/>
+        <ReqDate length="8" type="string" metadataid="ReqDate"/>
+        <ReqTime length="6" type="string" metadataid="ReqTime"/>
+        <MAC length="16" type="string" metadataid="MAC"/>
+        <Version length="6" type="string" metadataid="Version"/>
+        <Priority length="2" type="string" metadataid="Priority"/>
+        <ReqSysID length="3" type="string" metadataid="ReqSysID"/>
+        <DomainRef length="32" type="string" metadataid="DomainRef"/>
+        <AcceptLang length="7" type="string" metadataid="AcceptLang"/>
+        <GlobalSeq length="24" type="string" metadataid="GlobalSeq"/>
+        <OrgSysID length="3" type="string" metadataid="OrgSysID"/>
+        <RespSeq length="22" type="string" metadataid="RespSeq"/>
+        <RespDate length="8" type="string" metadataid="RespDate"/>
+        <RespTime length="6" type="string" metadataid="RespTime"/>
+        <TransStatus length="1" type="string" metadataid="TransStatus"/>
+        <RetCode length="10" type="string" metadataid="RetCode"/>
+        <RetMsg length="64" type="string" metadataid="RetMsg"/>
+        <RespSysID length="3" type="string" metadataid="RespSysID"/>
+        <TrackCode length="10" type="string" metadataid="TrackCode"/>
+        <ReseFlg length="1" type="string" metadataid="ReseFlg"/>
+        <ReseFld length="28" type="string" metadataid="ReseFld"/>
+        <SvcScn length="50" type="string" metadataid="SvcScn"/>
+        <TmlCd length="30" type="string" metadataid="TmlCd"/>
+        <TlrNo length="30" type="string" metadataid="TlrNo"/>
+        <BrId length="30" type="string" metadataid="BrId"/>
+        <syspinsd length="1" type="string" metadataid="syspinsd"/>
+        <jiaoyima length="4" type="string" metadataid="jiaoyima"/>
+    </header>
+    <root type="xml">
+        <sys>
+            <erortx metadataid="erortx"/>
+            <erorcd metadataid="erorcd"/>
+            <status metadataid="status"/>
+        </sys>
+    </root>
+</sdoroot>

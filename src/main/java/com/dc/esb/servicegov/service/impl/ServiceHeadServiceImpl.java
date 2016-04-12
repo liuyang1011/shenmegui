@@ -33,7 +33,7 @@ public class ServiceHeadServiceImpl extends AbstractBaseService<ServiceHead,Stri
     public long queryCount(Map<String, String[]> params){
         String hql = " select count(*) FROM ServiceHead where 1=1";
         hql += genderCondition(params);
-        long result = serviceHeadDAO.findUnique(hql);
+        Long result = serviceHeadDAO.findUnique(hql);
         return result;
     }
 
@@ -62,7 +62,7 @@ public class ServiceHeadServiceImpl extends AbstractBaseService<ServiceHead,Stri
     }
     public boolean uniqueName(String headName){
         String hql = " select count(*) from ServiceHead where headName=?";
-        long num = serviceHeadDAO.findUnique(hql, headName);
+        Long num = serviceHeadDAO.findUnique(hql, headName);
         if(num > 0){
             return false;
         }

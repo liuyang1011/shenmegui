@@ -15,81 +15,195 @@
 </head>
 
 <body>
-<fieldset style="height: 170px;">
-    <legend>节点信息</legend>
-        <table style="width:100%">
-            <tr>
-                <td>
-                    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
-                        <tr>
-                            <th>
-                                <NOBR>节点类型</NOBR>
-                            </th>
-                            <td><select name="nodeType" id="nodeType" panelHeight="auto" style="width:180px" editable="false"/></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <NOBR>交易属性标识</NOBR>
-                            </th>
-                            <td><select name="location" id="location" panelHeight="auto" style="width:180px" editable="false"/></td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <NOBR>节点业务分类</NOBR>
-                            </th>
-                            <td><input style="width: 180px" class="easyui-textbox" type="text" name="bussCategory" id="bussCategory" value="${node.bussCategory}"/></td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
-                        <tr>
-                            <td style="height: 1em;"></td>
-                        </tr>
-                            <tr>
-                                <th>
-                                    <NOBR>交易码</NOBR>
-                                </th>
-                                <td><input disabled="true" class="easyui-textbox" type="text" name="interfaceId"
-                                           id="interfaceId" value="${node.interfaceId}"/>&nbsp;<span style="font-size: small;font-weight: bold">${node.interfaceId==""?"":node.interfaceName}</span></span></td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    <NOBR>服务码</NOBR>
-                                </th>
-                                <td><input disabled="true" class="easyui-textbox" type="text" name="serviceId" id="serviceId"
-                                           value="${node.serviceId}"/>&nbsp;<span style="font-size: small;font-weight: bold">${node.serviceId==""?"":node.serviceName}</span></td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    <NOBR>场景码</NOBR>
-                                </th>
-                                <td><input disabled="true" class="easyui-textbox" type="text" name="operationId"
-                                           id="operationId" value="${node.operationId}"/>&nbsp;<span style="font-size: small;font-weight: bold">${node.operationId==""?"":node.operationName}</span></td>
-                            </tr>
-                    </table>
-                    <a href="#" id="saveNodeDepBtn" class="easyui-linkbutton" iconCls="icon-save"
-                       style="margin-left:0em">保存</a>
-                </td>
-            </tr>
-        </table>
-</fieldset>
-<table title="服务方信息" id="invokeLinkeTable" style="height:370px; width:99%;">
+<table style="width:100%">
+    <tr>
+        <td>
+            <fieldset style="height: 230px;">
+                <legend>交易属性</legend>
+                <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+                    <tr>
+                        <%--<th>接口ID</th>--%>
+                        <th>
+                            <NOBR>交易码</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="interfaceId"
+                                   id="interfaceId" value="${node.interfaceId}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>交易名称</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="interfaceName"
+                                   id="interfaceName" value="${node.interfaceName}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>服务码</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="serviceId" id="serviceId"
+                                   value="${node.serviceId}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>服务名称</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="serviceName"
+                                   id="serviceName" value="${node.serviceName}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>场景码</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="operationId"
+                                   id="operationId" value="${node.operationId}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>场景名称</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="operationName"
+                                   id="operationName" value="${node.operationName}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>调用类型</NOBR>
+                        </th>
+                        <td><input disabled="true" class="easyui-textbox" type="text" name="invokeType" id="invokeType"
+                                   value="${node.invokeType}"/></td>
+                    </tr>
+                </table>
+
+
+            </fieldset>
+        </td>
+        <td>
+            <fieldset style="height: 230px">
+                <legend>节点属性</legend>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th>
+                            <NOBR>节点类型</NOBR>
+                        </th>
+                        <td><select name="nodeType" id="nodeType" panelHeight="auto" style="width:180px" editable="false"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>交易属性标识</NOBR>
+                        </th>
+                        <td><select name="location" id="location" panelHeight="auto" style="width:180px" editable="false"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>节点业务分类</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="bussCategory" id="bussCategory"
+                                   value="${node.bussCategory}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>节点状态</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="status" id="status" value="${node.status}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height: 1em;"></td>
+                    </tr>
+                    <tr>
+                        <td style="height: 1em;"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <a href="#" id="saveNodeInfoBtn" class="easyui-linkbutton" iconCls="icon-save"
+                               style="margin-left:1em">保存</a>
+                        </th>
+                        <%--<td>
+                            <a href="#" id="refreshNodeInfoBtn" class="easyui-linkbutton" iconCls="icon-save"
+                               style="margin-left:1em">清空</a>
+                        </td>--%>
+                    </tr>
+                </table>
+
+
+            </fieldset>
+        </td>
+        <td>
+            <fieldset style="height: 230px">
+                <legend>节点依赖信息</legend>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th>
+                            <NOBR>ESB调用方式</NOBR>
+                        </th>
+                        <td><select name="esbAccessPattern" id="esbAccessPattern"panelHeight="auto" style="width:180px" editable="false"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>条件位</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="condition" id="condition"
+                                   value="${node.condition}"/></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <NOBR>条件信息</NOBR>
+                        </th>
+                        <td><input class="easyui-textbox" type="text" name="connectionDesc" id="connectionDesc"
+                                   value="${node.connectionDesc}"/></td>
+                    </tr>
+                    <tr>
+                        <td style="height: 1em;"></td>
+                    </tr>
+                    <tr>
+                        <td style="height: 1em;"></td>
+                    </tr>
+                    <tr>
+                        <td style="height: 1em;"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <a href="#" id="saveNodeDepBtn" class="easyui-linkbutton" iconCls="icon-save"
+                               style="margin-left:1em">保存</a>
+                        </th>
+                       <%-- <td>
+                            <a href="#" id="refreshNodeDepBtn" class="easyui-linkbutton" iconCls="icon-save"
+                               style="margin-left:1em">清空</a>
+                        </td>--%>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
+</table>
+
+<table title="相邻节点" id="invokeLinkeTable" style="height:370px; width:99%;">
     <thead>
     <tr>
         <th data-options="field:'productid',checkbox:true"></th>
-        <th data-options="field:'interfaceId'" width="8%">交易码</th>
-        <th data-options="field:'interfaceName'" width="8%">交易名称</th>
-        <th data-options="field:'serviceId'" width="8%">服务码</th>
-        <th data-options="field:'serviceName'" width="8%">服务名称</th>
-        <th data-options="field:'operationId'"width="8%">场景码</th>
-        <th data-options="field:'operationName'" width="8%">场景名称</th>
+        <th colspan="7">交易属性</th>
+        <th colspan="4">节点属性</th>
+        <th colspan="3">节点依赖信息</th>
+
+    </tr>
+    <tr>
+        <th data-options="field:'productid',checkbox:true"></th>
+        <th data-options="field:'interfaceId'" width="15%">交易码</th>
+        <th data-options="field:'interfaceName'" width="15%">交易名称</th>
+        <th data-options="field:'serviceId'" width="10%">服务码</th>
+        <th data-options="field:'serviceName'" width="15%">服务名称</th>
+        <th data-options="field:'operationId'"width="5%">场景码</th>
+        <th data-options="field:'operationName'" width="15%">场景名称</th>
         <th data-options="field:'invokeType'" width="6%">调用类型</th>
 
-        <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern' width="18%">ESB调用方式</th>
+        <th data-options="field:'nodeType'" formatter='formatter.nodeType' width="10%">节点类型</th>
+        <th data-options="field:'location'" formatter='formatter.location' width="10%">交易属性标识</th>
+        <th data-options="field:'bussCategory'" width="10%">节点业务分类</th>
+        <th data-options="field:'status'" width="10%">节点状态</th>
+
+        <th data-options="field:'esbAccessPattern'" formatter='formatter.esbAccessPattern' width="10%">ESB调用方式</th>
         <th data-options="field:'condition'" width="10%">条件位</th>
         <th data-options="field:'connectionDesc'" width="10%">条件信息</th>
-        <th data-options="field:'linkCondition'" width="10%">组合位</th>
     </tr>
     </thead>
 </table>
@@ -101,20 +215,21 @@
      resizable="true"></div>
 </body>
 <script type="text/javascript">
+
     var nodeId = "${nodeId}";
     var formatter = {
         esbAccessPattern: function (value, row, index) {
             if (value == 0) {
-                return "0-穿透模式";
+                return "穿透模式，ESB不负责任何处理";
             }
             if (value == 1) {
-                return "1-代理模式";
+                return "代理模式，ESB负责服务适配";
             }
             if (value == 2) {
-                return "2-寻址模式";
+                return "寻址模式，ESB提供寻址功能，仅负责寻址、监控";
             }
             if (value == 4) {
-                return "4-组合模式";
+                return "组合模式，ESB提供服务的组合";
             }
         },
         location: function (value, row, index) {
@@ -145,75 +260,38 @@
     var toolbar = [
         {
             text: "添加",
-            iconCls: 'icon-add',
+            iconCls: 'icon-qxfp',
             handler: function () {
-                var nodeType=$("#nodeType").combobox("getValue");
-                if(nodeType=="1"){
-                    alert("此节点不能添加服务方信息！");
-                    return;
-                }
                 $("#systemDlg").dialog({
-                    title: '服务方信息',
-                    width: 990,
-                    height: 520,
+                    title: '选择接口',
+                    width: 700,
+                    height: 500,
                     closed: false,
                     cache: false,
-                    left:10,
-                    top:15,
                     href: "/jsp/serviceLink/systemSelectDlg.jsp",
                     modal: true
                 });
             }
-        },{
+        }, {
             text: "删除",
-            iconCls: 'icon-remove',
+            iconCls: 'icon-qxfp',
             handler: function () {
                 var connections = [];
                 var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
                 var checkedItemNum = checkedItems.length;
-                if(checkedItemNum==0){
-                    alert("请选择一个节点删除");
-                    return;
-                }
                 for (var i = 0; i < checkedItemNum; i++) {
                     var connection = {};
                     connection.sourceId = nodeId;
                     connection.targetId = checkedItems[i].invokeId;
                     connections.push(connection);
                 }
-                var flag=confirm("确定删除吗？");
-                if(flag) {
-                    serviceLinkManager.delConnections(connections, function () {
-                        $("#systemDlg").window('close');
-                        $("#invokeLinkeTable").datagrid("reload");
 
-                    });
-                }
-            }
-        }, {
-            text: "修改",
-            iconCls: 'icon-edit',
-            handler: function () {
-                var checkedItems = $('#invokeLinkeTable').datagrid('getChecked');
-                var checkedItem;
-                if (checkedItems != null && checkedItems.length > 0) {
-                    if (checkedItems.length > 1) {
-                        alert("请选择一个节点进行修改！");
-                        return false;
-                    }
-                    else {
-                        checkedItem = checkedItems[0];
-                        $("#systemDlg").dialog({
-                            title: '节点信息修改',
-                            width: 500,
-                            height: 280,
-                            closed: false,
-                            cache: false,
-                            href: "/jsp/serviceLink/modifyProperties.jsp?nodeId=" + checkedItem.id,
-                            modal: true
-                        });
-                    }
-                }
+                serviceLinkManager.delConnections(connections, function () {
+                    alert("删除成功");
+                    $("#systemDlg").window('close');
+                    $("#invokeLinkeTable").datagrid("reload");
+
+                });
             }
         }
     ];
@@ -287,16 +365,16 @@
             valueField: 'value',
             textField: 'label',
             data: [{
-                label: '0-穿透模式',
+                label: '穿透模式，ESB不负责任何处理',
                 value: '0'
             },{
-                label: '1-代理模式',
+                label: '代理模式，ESB负责服务适配',
                 value: '1'
             },{
-                label: '2-寻址模式',
+                label: '寻址模式，ESB提供寻址功能，仅负责寻址、监控',
                 value: '2'
             },{
-                label: '4-组合模式',
+                label: '组合模式，ESB提供服务的组合',
                 value: '4'
             }]
         });
@@ -304,7 +382,9 @@
         if(esbAccessPattern != ""){
             $('#esbAccessPattern').combobox('setValue',esbAccessPattern);
         }
-        $("#saveNodeDepBtn").click(function () {
+
+
+        $("#saveNodeInfoBtn").click(function () {
             var nodeProperties = [];
             var nodeType = {
                 "invokeId": nodeId,
@@ -321,13 +401,64 @@
                 "propertyName": "bussCategory",
                 "propertyValue": $("#bussCategory").val()
             };
+            var status = {
+                "invokeId": nodeId,
+                "propertyName": "status",
+                "propertyValue": $("#status").val()
+            };
             nodeProperties.push(nodeType);
             nodeProperties.push(location);
             nodeProperties.push(bussCategory);
+            nodeProperties.push(status);
+            serviceLinkManager.saveNodeProperties(nodeProperties, function () {
+                alert("保存成功！");
+            });
+
+        });
+
+        $("#saveNodeDepBtn").click(function () {
+            var nodeProperties = [];
+            var esbAccessPattern = {
+                "invokeId": nodeId,
+                "propertyName": "esbAccessPattern",
+                "propertyValue": $('#esbAccessPattern').combobox('getValue')
+            };
+            var condition = {
+                "invokeId": nodeId,
+                "propertyName": "condition",
+                "propertyValue": $("#condition").val()
+            };
+            var conditionDesc = {
+                "invokeId": nodeId,
+                "propertyName": "connectionDesc",
+                "propertyValue": $("#connectionDesc").val()
+            };
+
+            nodeProperties.push(esbAccessPattern);
+            nodeProperties.push(condition);
+            nodeProperties.push(conditionDesc);
             serviceLinkManager.saveNodeProperties(nodeProperties, function () {
                 alert("保存成功！");
             });
         });
+
+        function selectTab(title, content) {
+            var exsit = parent.$('#subtab').tabs('getTab', title);
+            if (exsit == null) {
+                parent.$('#subtab').tabs('add', {
+                    title: title,
+                    content: content
+                });
+            } else {
+                parent.$('#subtab').tabs('update', {
+                    tab: exsit,
+                    options: {
+                        content: content
+                    }
+                });
+                parent.$('#subtab').tabs('select', title);
+            }
+        }
     });
 
 

@@ -1,22 +1,24 @@
 package com.dc.esb.servicegov.controller;
 
+import com.dc.esb.servicegov.dao.impl.SystemDAOImpl;
 import com.dc.esb.servicegov.entity.*;
+import com.dc.esb.servicegov.entity.System;
 import com.dc.esb.servicegov.export.IExportableNode;
 import com.dc.esb.servicegov.export.IMetadataConfigGenerator;
 import com.dc.esb.servicegov.export.IPackerParserConfigGenerator;
 import com.dc.esb.servicegov.export.bean.ExportBean;
 import com.dc.esb.servicegov.export.exception.ExportException;
 import com.dc.esb.servicegov.export.impl.ConfigBathGenerator;
+import com.dc.esb.servicegov.export.impl.ConfigExportGenerator;
 import com.dc.esb.servicegov.export.impl.StandardSOAPConfigGenerator;
 import com.dc.esb.servicegov.export.impl.StandardXMLConfigGenerator;
+import com.dc.esb.servicegov.export.task.ExportConfigTask;
+import com.dc.esb.servicegov.export.task.ExportWSDLTask;
 import com.dc.esb.servicegov.export.util.ExportUtil;
 import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.*;
-import com.dc.esb.servicegov.service.impl.InterfaceHeadServiceImpl;
-import com.dc.esb.servicegov.service.impl.LogInfoServiceImpl;
-import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
-import com.dc.esb.servicegov.service.impl.SystemLogServiceImpl;
+import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import com.dc.esb.servicegov.vo.ConfigListVO;
 import com.dc.esb.servicegov.vo.ConfigVO;
@@ -33,10 +35,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2015/7/14.
@@ -50,6 +53,8 @@ public class ConfigExportController {
     private SystemLogServiceImpl systemLogService;
     @Autowired
     SystemService systemService;
+    @Autowired
+    SystemDAOImpl systemDAO;
     @Autowired
     ServiceInvokeService serviceInvokeService;
     @Autowired
@@ -70,6 +75,11 @@ public class ConfigExportController {
     LogInfoServiceImpl logInfoService;
     @Autowired
     private InterfaceHeadServiceImpl interfaceHeadService;
+
+    @Autowired
+    private InterfaceInvokeServiceImpl interfaceInvokeService;
+
+    private static String errorMsg = null;
 
     @Autowired
     ConfigBathGenerator configBathGenerator;
@@ -336,7 +346,7 @@ public class ConfigExportController {
 
     private boolean contains(List<Map<String, String>> mapList, String systemId) {
         for (Map<String, String> map : mapList) {
-            java.util.Iterator iter = map.keySet().iterator();
+            Iterator iter = map.keySet().iterator();
             while (iter.hasNext()) {
                 String value = map.get(iter.next());
                 if (systemId.equals(value)) {
@@ -369,11 +379,21 @@ public class ConfigExportController {
 
     /*根据场景列表导出字段映射*/
     @RequiresPermissions({"exportConfig-get"})
-    @RequestMapping(method = RequestMethod.POST, value = "/getConfigVo", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/getConfigVo/{consumer}", headers = "Accept=application/json")
     public
     @ResponseBody
-    List<ConfigVO> getConfigVo(@RequestBody List list) {
+    List<ConfigVO> getConfigVo(@RequestBody List list,@PathVariable String consumer) {
         List<ConfigVO> result = operationService.getConfigVo(list);
+        if(!"null".equals(consumer)){//前端送的是null用于标识
+            System system = systemDAO.getEntity(consumer);
+            String systemName = system.getSystemChineseName();
+            for(Iterator<ConfigVO> it = result.iterator();it.hasNext();){
+                ConfigVO configVO = it.next();
+                if(!systemName.equals(configVO.getConsumerName())){
+                    it.remove();//去除不想要的集合
+                }
+            }
+        }
         return result;
     }
 
@@ -389,9 +409,36 @@ public class ConfigExportController {
     public
     @ResponseBody
     List<String> exportBatch(HttpServletRequest request, HttpServletResponse response, ConfigListVO list) {
+        logger.info("**************开始导出配置文件......**************");
+        long time = java.lang.System.currentTimeMillis();
         OperationLog operationLog = systemLogService.record("导出", "配置文件导出","");
 
         String path  = configBathGenerator.generate(request, list);
+
+
+        //加入多线程
+//        int poolSize =  list.getList().size()>20 ? 20 : list.getList().size();
+//        String path = ConfigExportGenerator.class.getResource("/").getPath() + "/generator" + new Date().getTime();
+//        if(validate(list)){
+//            List<ExportConfigTask> taskLst = new ArrayList<ExportConfigTask>();
+//            CountDownLatch countDown = new CountDownLatch(list.getList().size());
+//            for(ConfigVO configVO : list.getList()){
+//                ExportConfigTask task = new ExportConfigTask();
+//                task.init(configBathGenerator,request,configVO,path,countDown);
+//                taskLst.add(task);
+//            }
+//            ExecutorService executor = Executors.newFixedThreadPool(poolSize);
+//            for (ExportConfigTask t : taskLst) {
+//                executor.execute(t);
+//            }
+//            try {
+//                countDown.await();
+//            } catch (InterruptedException e) {
+//                logger.error("Config export : " + countDown.getCount());
+//                e.printStackTrace();
+//            }
+//        }
+
         if(StringUtils.isNotEmpty(path)){
             ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
             InputStream in = null;
@@ -431,6 +478,92 @@ public class ConfigExportController {
             }
         }
         systemLogService.updateResult(operationLog);
+        long useTime = java.lang.System.currentTimeMillis() - time;
+        logger.info("**************导出配置文件共耗时:"+useTime/1000+"秒**************");
+        return null;
+    }
+    public boolean validate(ConfigListVO configListVO){
+        if(null == configListVO || 0 == configListVO.getList().size()){
+            errorMsg = "传入数据为空！";
+            return  false;
+        }
+        List<ConfigVO> list = configListVO.getList();
+        for(int i = 0; i < list.size(); i++){
+            ConfigVO configVO = list.get(i);
+            if(null == configVO){
+                errorMsg = "第"+ (i+1) + "条数据数据为空!";
+            }else{
+            }
+        }
+        return true;
+    }
+
+    @RequiresPermissions({"exportConfig-get"})
+    @RequestMapping(method = RequestMethod.GET  , value = "/exportBatchAll", headers = "Accept=application/json")
+    public
+    @ResponseBody
+    List<String> exportBatchAll(HttpServletRequest request, HttpServletResponse response) {
+        List<InterfaceInvoke> interfaceInvokes = interfaceInvokeService.getAll();
+        List<ConfigVO> configVOs = new ArrayList<ConfigVO>();
+
+        for(InterfaceInvoke interfaceInvoke : interfaceInvokes){
+            ConfigVO configVO = new ConfigVO();
+            configVO.setConsumerServiceInvokeId(interfaceInvoke.getConsumerInvokeId());
+            configVO.setProviderServiceInvokeId(interfaceInvoke.getProviderInvokeId());
+            configVO.setConGeneratorId("1");
+            configVO.setProGeneratorId("789d7027-efa0-4363-a067-f7b809b4fb8d");
+            configVOs.add(configVO);
+        }
+
+        ConfigListVO list = new ConfigListVO();
+        list.setList(configVOs);
+        logger.info("**************开始导出配置文件......**************");
+        long time = java.lang.System.currentTimeMillis();
+        OperationLog operationLog = systemLogService.record("导出", "配置文件导出","");
+
+        String path  = configBathGenerator.generate(request, list);
+
+        if(StringUtils.isNotEmpty(path)){
+            ZipUtil.compressZip(path, path + "/metadata.zip", "metadata.zip");
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                File metadata = new File(path + "/metadata.zip");
+
+                response.setContentType("application/zip");
+                response.addHeader("Content-Disposition",
+                        "attachment;filename=metadata.zip");
+                in = new BufferedInputStream(new FileInputStream(metadata));
+                out = new BufferedOutputStream(response.getOutputStream());
+                long fileLength = metadata.length();
+                byte[] cache = null;
+                if (fileLength > Integer.MAX_VALUE) {
+                    cache = new byte[Integer.MAX_VALUE];
+                } else {
+                    cache = new byte[(int) fileLength];
+                }
+                int i = 0;
+                while ((i = in.read(cache)) > 0) {
+                    out.write(cache, 0, i);
+                }
+                out.flush();
+            } catch (Exception e) {
+                logger.error(e,e);
+                printMsg(response, "导出配置文件出现错误,请检查数据！");
+            } finally {
+                try {
+                    in.close();
+                    out.close();
+                    FileUtil.deleteDirectory(new File(path));
+                } catch (Exception e) {
+                    logger.error("导出配置文件，关闭流异常," + e.getMessage(),e);
+                }
+
+            }
+        }
+        systemLogService.updateResult(operationLog);
+        long useTime = java.lang.System.currentTimeMillis() - time;
+        logger.info("**************导出配置文件共耗时:"+useTime/1000+"秒**************");
         return null;
     }
 }

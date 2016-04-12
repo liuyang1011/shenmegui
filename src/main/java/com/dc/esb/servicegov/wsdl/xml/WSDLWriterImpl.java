@@ -131,7 +131,8 @@ public class WSDLWriterImpl implements WSDLWriter {
 
         printExtensibilityElements(Definition.class, extElements, def, pw);
 
-        pw.println("</" + tagName + '>');
+        pw.print("</" + tagName + '>');
+
 
         pw.flush();
     }

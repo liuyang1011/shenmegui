@@ -286,7 +286,7 @@ public class ServiceInvokeServiceImpl extends AbstractBaseService<ServiceInvoke,
 
 	public boolean containOperation(String interfaceId){
 		String hql = "select count(*) from ServiceInvoke si where si.interfaceId = ? and si.operationId is not null and si.serviceId is not null";
-		long count = serviceInvokeDAOImpl.findUnique(hql, interfaceId);
+		Long count = serviceInvokeDAOImpl.findUnique(hql, interfaceId);
 		if(count > 0){
 			return true;
 		}

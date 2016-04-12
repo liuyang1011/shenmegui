@@ -138,7 +138,6 @@
             editNodes.push(node);
           }
         }
-        console.log(editNodes);
         editingId = undefined;
         var result = false;
         $.ajax({

@@ -34,7 +34,7 @@
         <th data-options="field:'id',checkbox:true,width:50"></th>
         <th data-options="field:'type',width:140, formatter:attrFormatter.type">属性</th>
         <th data-options="field:'value',width:140,align:'left'">值</th>
-        <th data-options="field:'remarks',width:140,align:'left'">值</th>
+        <th data-options="field:'remarks',width:140,align:'left'">说明</th>
     </tr>
     </thead>
 </table>

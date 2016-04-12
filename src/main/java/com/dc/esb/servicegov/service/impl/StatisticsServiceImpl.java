@@ -106,7 +106,7 @@ public class StatisticsServiceImpl implements StatisticsService{
 
         List<ReuseRateVO> voList = new ArrayList<ReuseRateVO>();
         for(Object[] strs: list){
-            com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", strs[0]);
+            System system = systemDAO.findUniqueBy("systemId", strs[0]);
             ReuseRateVO vo = new ReuseRateVO();
             vo.setType(String.valueOf(strs[1]));
             vo.setSystemChineseName(system.getSystemChineseName());
@@ -298,7 +298,7 @@ public class StatisticsServiceImpl implements StatisticsService{
 
         List<ReleaseVO> voList = new ArrayList<ReleaseVO>();
         for(Object[] strs : list){
-            com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", strs[0]);
+            System system = systemDAO.findUniqueBy("systemId", strs[0]);
             ReleaseVO vo = new ReleaseVO();
             vo.setType(String.valueOf(strs[1]));
             vo.setSystemChineseName(system.getSystemChineseName());
@@ -369,7 +369,7 @@ public class StatisticsServiceImpl implements StatisticsService{
 
         List<ReleaseVO> voList = new ArrayList<ReleaseVO>();
         for(Object[] strs : list){
-            com.dc.esb.servicegov.entity.System system = systemDAO.findUniqueBy("systemId", strs[0]);
+            System system = systemDAO.findUniqueBy("systemId", strs[0]);
             ReleaseVO vo = new ReleaseVO();
             vo.setType(String.valueOf(strs[1]));
             vo.setSystemChineseName(system.getSystemChineseName());

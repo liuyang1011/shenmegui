@@ -1,6 +1,7 @@
 package com.dc.esb.servicegov.wsdl.impl;
 
 import com.dc.esb.servicegov.entity.Operation;
+import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.entity.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,24 +29,25 @@ import java.util.List;
 public class ESBServiceDescriptorGenerator {
     private static final Log log = LogFactory.getLog(ESBServiceDescriptorGenerator.class);
 
-    public boolean generate(Service serviceDO, List<Operation> operations, String dirPath) {
+    public boolean generate(String serviceId, List<OperationPK> operationPKs,String dirPath) {
         BufferedOutputStream descOut = null;
         try {
+            String tmpServiceId = serviceId;
             Document document = DocumentHelper.createDocument();
             Element metadatasElement = document.addElement("metadatas");
             Element metadataElement = metadatasElement.addElement("metadata");
             Element serviceIdElement = metadataElement.addElement("serviceid");
-            serviceIdElement.addText(serviceDO.getServiceId());
+            serviceIdElement.addText(tmpServiceId);
             Element wsdlElement = metadataElement.addElement("wsdl");
-            for (Operation operation : operations) {
-                String operationId = operation.getOperationId();
+            for (OperationPK operationPK : operationPKs) {
+                String tmpOperationId = "op" + operationPK.getOperationId();
                 Element operationElement = wsdlElement.addElement("operation");
-                operationElement.addText(operationId);
+                operationElement.addText(tmpOperationId);
             }
             Element fileElement = wsdlElement.addElement("file");
-            fileElement.addText(serviceDO.getServiceId() + ".wsdl");
+            fileElement.addText(tmpServiceId + ".wsdl");
             Element xsdElement = metadataElement.addElement("xsd");
-            xsdElement.addElement("common").addText(serviceDO.getServiceId() + ".xsd");
+            xsdElement.addElement("common").addText(tmpServiceId + ".xsd");
 
             Element instanceElement = metadataElement.addElement("instance");
             instanceElement.addElement("in");
@@ -53,13 +55,13 @@ public class ESBServiceDescriptorGenerator {
 
             File descDir = new File(dirPath + File.separator + "Description");
             descDir.mkdirs();
-            File descFile = new File(descDir.getAbsolutePath() + File.separator + serviceDO.getServiceId() + ".xml");
+            File descFile = new File(descDir.getAbsolutePath() + File.separator + tmpServiceId + ".xml");
             descOut = new BufferedOutputStream(new FileOutputStream(descFile));
 //            BufferedOutputStream wsdlOut = new BufferedOutputStream(new FileOutputStream(wsdlFile));
 
-            XMLWriter writer = null;
+            com.dc.esb.servicegov.util.XMLWriter writer = null;
             OutputFormat format = OutputFormat.createPrettyPrint();
-            writer = new XMLWriter(descOut, format);
+            writer = new com.dc.esb.servicegov.util.XMLWriter(descOut, format);
             writer.write(document);
         } catch (Exception e) {
             log.error(e, e);

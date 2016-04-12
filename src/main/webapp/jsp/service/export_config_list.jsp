@@ -55,6 +55,10 @@
                     $.each(data.rows, function(i, row){
                         var rowIndex = $('#choosedList').datagrid('getRowIndex', row);
                         $('#choosedList').datagrid('beginEdit', rowIndex);
+                        var conEditor = $('#choosedList').datagrid('getEditor', {index:rowIndex,field:'conGeneratorName'});
+                        $(conEditor.target).combobox('setValue', row.conGeneratorId);
+                        var proEditor = $('#choosedList').datagrid('getEditor', {index:rowIndex,field:'proGeneratorName'});
+                        $(proEditor.target).combobox('setValue', row.proGeneratorId);
                     });
                     $(this).datagrid('selectAll');
                 },

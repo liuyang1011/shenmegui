@@ -13,8 +13,8 @@ import javax.xml.namespace.QName;
  * This class is used to deserialize arbitrary elements into
  * UnknownExtensibilityElement instances.
  *
- * @see javax.wsdl.extensions.UnknownExtensibilityElement
- * @see javax.wsdl.extensions.UnknownExtensionSerializer
+ * @see UnknownExtensibilityElement
+ * @see UnknownExtensionSerializer
  */
 public class UnknownExtensionDeserializer implements ExtensionDeserializer,
         java.io.Serializable {

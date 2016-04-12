@@ -42,17 +42,6 @@
     </div>
     <!-- /demo -->
 </div>
-<div id="mm" class="easyui-menu" style="width:120px;">
-    <div id="baseInfo" onclick="contextMenuManager.baseInfo()" data-options="iconCls:'icon-detail'">基本信息</div>
-    <div id="messageProtocol" onclick="contextMenuManager.messageProtocol()" data-options="iconCls:'icon-detail'">报文协议</div>
-    <div id="serviceInfo" onclick="contextMenuManager.serviceInfo()" data-options="iconCls:'icon-detail'">服务信息</div>
-    <div id="interfaceInfo" onclick="contextMenuManager.interfaceInfo()" data-options="iconCls:'icon-detail'">接口信息</div>
-    <%--<div id="openNode" onclick="contextMenuManager.openNode();" data-options="iconCls:'icon-detail'">打开节点</div>--%>
-    <%--<div id="closeNode" onclick="contextMenuManager.closeNode()" data-options="iconCls:'icon-detail'">关闭节点</div>--%>
-</div>
-<div id="opDialog" class="easyui-dialog"
-     style="width:400px;height:280px;padding:10px 20px" closed="true"
-     resizable="true"></div>
 <!-- JS -->
 <!-- support lib for bezier stuff -->
 <script src="/plugin/jsPlumb/lib/jsBezier-0.7.js"></script>
@@ -99,26 +88,11 @@
 
 <!--  demo code -->
 <!--<script src="demo.js"></script>-->
-<script type="text/javascript" src="/assets/serviceLink2.0/contextMenu.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.min.js"></script>
 <script src="/newui/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="/newui/plugins/select2/select2.full.min.js" type="text/javascript"></script>
 <script src="/assets/serviceLink/serviceLinkManager.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css"
-      href="/resources/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="/resources/themes/icon.css">
-<link href="/resources/css/css.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="/resources/js/jquery.easyui.min.js"></script>
 <script type="text/javascript">
-    function showContextMenu(invokeId){
-        window.document.oncontextmenu = function(){ return false;}
-        $('#mm').menu('show', {
-            left: event.x,
-            top: event.y
-        });
-        seelectedNode = {"id": invokeId};
-    }
-
     var userId = $("#userId").text();
     var containBlock = function containBlock(blocks, obj) {
 
@@ -216,14 +190,14 @@
             if (serviceId != null && operationId != null) {
                 serviceOperation = serviceId + operationId;
             }
-            context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" oncontextmenu="showContextMenu(\'' + invokeId + '\')" ondblclick="dblEvent(event)">' + contextName
-                    + '<div class="ep"></div>'
-                    + '<div>'
-                    + '系统ID: ' + systemId + '<br />'
-                    + '服务场景: ' + serviceOperation + '<br />'
-                    + '节点类型:' + type
-                    + '</div>'
-                    + '</div>';
+            context += '<div class="w" style="background-color:' + backgroundColor + '" id="' + invokeId + '" type="0" ondblclick="dblEvent(event)">' + contextName
+            + '<div class="ep"></div>'
+            + '<div>'
+            + '系统ID: ' + systemId + '<br />'
+            + '服务场景: ' + serviceOperation + '<br />'
+            + '节点类型:' + type
+            + '</div>'
+            + '</div>';
         };
         /**
          * 初始化块链接数据

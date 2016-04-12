@@ -18,6 +18,7 @@ public class MappingSheetRowVO {
     private int rowNum;
     private Ida ida = null;
     private SDA sda = null;
+    private String metaType = null;
 
     public MappingSheetRowVO() {
     }
@@ -26,14 +27,15 @@ public class MappingSheetRowVO {
         this.rowNum = rowNum;
         Row row = sheet.getRow(rowNum);
         if(null != row){
-            String idaEnName =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.idaEnNameCol));
-            String sdaEnName =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaEnNameCol));
+            String idaEnName =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.idaEnNameCol)).trim();
+            String sdaEnName =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaEnNameCol)).trim();
             if(StringUtils.isNotEmpty(idaEnName) || StringUtils.isNotEmpty(sdaEnName)){//如果ida和sda的英文名称都是空则不处理
                 String sdaChName =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaChNameCol));
                 String sdaTypeAndLength =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaTypeAndLengthCol));
                 String sdaConstraint =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaConstrantCol));
                 String sdaRequired =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaRequiredCol));
                 String sdaRemark =  ExcelTool.getInstance().getCellContent(row.getCell(sheetIndex.sdaRemarkCol));
+                metaType = ExcelTool.getInstance().getCellContent(row.getCell(13));//得到最后新加的一列元数据
                 sda = new SDA();
                 sda.setId(UUID.randomUUID().toString());
                 sda.setStructName(sdaEnName);
@@ -64,10 +66,30 @@ public class MappingSheetRowVO {
                 ida.setStructName(idaEnName);
                 ida.setStructAlias(idaChName);
                 ida.setType(idaType);
-                ida.setLength(idaLength);
+//                ida.setLength(idaLength);
                 ida.setRequired(idaRequired);
                 ida.setRemark(idaRemark);
                 ida.setState(Constants.IDA_STATE_COMMON);
+                //对IDA长度和精度进行划分
+                if(null != idaLength){
+                    String[] strArray = null;
+                    if(idaLength.startsWith("(")||idaLength.startsWith("（")){//若长度中有括号则去掉
+                        idaLength = idaLength.replace("(","");
+                        idaLength = idaLength.replace(")","");
+                        idaLength = idaLength.replace("（","");
+                        idaLength = idaLength.replace("）","");
+                    }
+                    strArray = idaLength.split(",");
+                    if(strArray.length == 1){
+                        strArray = idaLength.split("，");
+                    }
+                    if(strArray.length > 1){
+                        ida.setLength(strArray[0]);
+                        ida.setScale(strArray[1]);
+                    }else{
+                        ida.setLength(idaLength);
+                    }
+                }
                 if(StringUtils.isNotEmpty(sda.getMetadataId())){
                     ida.setMetadataId(sdaEnName);
                     ida.setSdaId(sda.getId());
@@ -84,7 +106,7 @@ public class MappingSheetRowVO {
                         }
                     }
                 }
-                if(null != sda && StringUtils.isNotEmpty(sda.getType()) && (("array").equalsIgnoreCase(sda.getType()) || ("struct").equalsIgnoreCase(sda.getType()))) {
+                if(null != sda && StringUtils.isNotEmpty(sda.getType()) && (sda.getType().toLowerCase().contains("array") || sda.getType().toLowerCase().contains("struct"))) {
                     if (StringUtils.isNotEmpty(sda.getRemark()) && sda.getRemark().toLowerCase().startsWith("start")) {//一个新数组加入父节点缓存
                         sdaParents.add(sda);
                         idaParents.add(ida);//sda为数组则对应ida节点一定为数组节点
@@ -124,5 +146,13 @@ public class MappingSheetRowVO {
 
     public void setRowNum(int rowNum) {
         this.rowNum = rowNum;
+    }
+
+    public String getMetaType() {
+        return metaType;
+    }
+
+    public void setMetaType(String metaType) {
+        this.metaType = metaType;
     }
 }

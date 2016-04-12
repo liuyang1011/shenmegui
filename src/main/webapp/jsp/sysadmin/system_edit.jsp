@@ -36,7 +36,7 @@
 				系统简称
 			</th>
 			<td>
-				<input class="easyui-textbox" type="text" id="systemAbText" value="${system.systemAb}"  data-options="required:true, validType:['englishB']">
+				<input class="easyui-textbox" type="text" id="systemAbText" value="${system.systemAb}"  data-options="required:true">
 			</td>
 		</tr>
 		<tr>

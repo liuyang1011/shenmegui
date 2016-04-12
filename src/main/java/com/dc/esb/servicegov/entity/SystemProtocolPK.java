@@ -1,4 +1,4 @@
-//package com.dc.esb.servicegov.entity;
+package com.dc.esb.servicegov.entity;//package com.dc.esb.servicegov.entity;
 //
 //import javax.persistence.Column;
 //import javax.persistence.Embeddable;

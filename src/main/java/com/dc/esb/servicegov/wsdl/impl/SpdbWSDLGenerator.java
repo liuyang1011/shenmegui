@@ -1,6 +1,8 @@
 package com.dc.esb.servicegov.wsdl.impl;
 
+import com.dc.esb.servicegov.entity.OperationPK;
 import com.dc.esb.servicegov.entity.Service;
+import com.dc.esb.servicegov.export.util.ZipUtil;
 import com.dc.esb.servicegov.service.impl.OperationServiceImpl;
 import com.dc.esb.servicegov.service.impl.ServiceServiceImpl;
 import com.dc.esb.servicegov.wsdl.WSDLGenerator;
@@ -23,8 +25,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.dc.esb.servicegov.service.impl.WSDLConstants.*;
 
@@ -37,6 +38,9 @@ import static com.dc.esb.servicegov.service.impl.WSDLConstants.*;
 @Component
 public class SpdbWSDLGenerator  {
     private static final Log log = LogFactory.getLog(SpdbWSDLGenerator.class);
+
+    private static String URL = "http://159.1.65.151:39001/EsbWebService/S";
+
     @Autowired
     private ServiceServiceImpl serviceService;
     @Autowired
@@ -55,28 +59,8 @@ public class SpdbWSDLGenerator  {
 
         return threadId + "-" + System.currentTimeMillis();
     }
-
-    public boolean generate(List<com.dc.esb.servicegov.entity.Service> services, String path){
-        if (services != null) {
-            for(com.dc.esb.servicegov.entity.Service serviceDO : services){
-                generate(serviceDO, path);
-            }
-        }
-
-        return true;
-    }
-
-    public File generate(String id, String path){
-        com.dc.esb.servicegov.entity.Service service = serviceService.getUniqueByServiceId(id);
-        if(null != service){
-            return generate(service, path);
-        }
-        return null;
-    }
-
-    public File generate(com.dc.esb.servicegov.entity.Service serviceDO, String dirPath) {
+    public File generateByService(String serviceId, List<OperationPK> operationPKs, String dirPath) {
         BufferedOutputStream wsdlOut = null;
-        String serviceId = serviceDO.getServiceId();
         String tmpServiceId = serviceId;
 //        String workspacePath = getWorkSpace();
 //        String dirPath = workspacePath + File.separator + serviceId;
@@ -86,11 +70,17 @@ public class SpdbWSDLGenerator  {
         File dir = new File(dirPath);
         dir.mkdirs();
         try {
-            List<com.dc.esb.servicegov.entity.Operation> operations = operationService.getOperationByServiceId(serviceId);
-            serviceSchemaGenerator.generate(serviceDO, dirPath);
-            esbServiceDescriptorGenerator.generate(serviceDO, operations, dirPath);
-            metadataSchemaGenerator.generate(dirPath, serviceId);
-            String tns = "http://esb.spdbbiz.com/services/" + tmpServiceId + "/wsdl";
+//            List<com.dc.esb.servicegov.entity.Operation> operations = operationService.getOperationByServiceId(serviceId);
+            Date start = new Date();
+            serviceSchemaGenerator.generate(serviceId, operationPKs, dirPath);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>生成xsd内容文件耗时："+(new Date().getTime() - start.getTime()) + "ms<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            Date start1 = new Date();
+            esbServiceDescriptorGenerator.generate(serviceId, operationPKs, dirPath);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>生成描述文件耗时：" + (new Date().getTime() - start1.getTime()) + "ms<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            Date start2 = new Date();
+            metadataSchemaGenerator.generate(dirPath);
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>生成系统头文件耗时：" + (new Date().getTime() - start2.getTime()) + "ms<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            String tns = "http://esb.dcitsbiz.com/services/" + tmpServiceId + "/wsdl";
             WSDLFactory wsdlFactory = WSDLFactory.newInstance();
             //Create Definition
             Definition wsdlDefinition = createDefinition(tmpServiceId, wsdlFactory);
@@ -109,48 +99,26 @@ public class SpdbWSDLGenerator  {
             soapBinding.setTransportURI("http://schemas.xmlsoap.org/soap/http");
             binding.addExtensibilityElement(soapBinding);
             //Create
-
-            if (null != operations) {
-                for (com.dc.esb.servicegov.entity.Operation operationDO : operations) {
-
-                    String operationId = operationDO.getOperationId();
-                    String tmpOperationId = "Op" + handleDupOperationIdIssue(operationId);
+            if (null != operationPKs) {
+                for (OperationPK operationPK : operationPKs) {
+                    String operationId = operationPK.getOperationId();
+                    String tmpOperationId = "op" + operationId;
                     //Create Rep and Rsp Parts
                     Part bodyReqPart = wsdlDefinition.createPart();
-                    bodyReqPart.setName("Req" + tmpOperationId);
+                    bodyReqPart.setName("Req" + operationPK.getServiceId() + operationPK.getOperationId());
 //                    bodyReqPart.setTypeName(new QName("http://esb.spdbbiz.com/services/" + serviceId, "Req" + operationId, "s"));
-                    bodyReqPart.setElementName(new QName("http://esb.spdbbiz.com/services/" + tmpServiceId, "Req" + tmpOperationId, "s"));
+                    bodyReqPart.setElementName(new QName("http://esb.dcitsbiz.com/services/" + tmpServiceId, "Req" + operationPK.getServiceId() + operationPK.getOperationId(), "s"));
                     Part bodyRspPart = wsdlDefinition.createPart();
-                    bodyRspPart.setName("Rsp" + tmpOperationId);
+                    bodyRspPart.setName("Rsp" + operationPK.getServiceId() + operationPK.getOperationId());
 //                    bodyRspPart.setTypeName(new QName("http://esb.spdbbiz.com/services/" + serviceId, "Rsp" + operationId, "s"));
-                    bodyRspPart.setElementName(new QName("http://esb.spdbbiz.com/services/" + tmpServiceId, "Rsp" + tmpOperationId, "s"));
-
-                    Part headerReqPart = wsdlDefinition.createPart();
-                    headerReqPart.setName("ReqSysHead");
-                    headerReqPart.setElementName(new QName("http://esb.spdbbiz.com/services/" + tmpServiceId , "ReqSysHead", "s"));
-                    Part headerRspPart = wsdlDefinition.createPart();
-                    headerRspPart.setName("RspSysHead");
-                    headerRspPart.setElementName(new QName("http://esb.spdbbiz.com/services/" + tmpServiceId , "RspSysHead", "s"));
-
-
-                    //Create messages
-                    Message headerReqMessage = wsdlDefinition.createMessage();
-                    headerReqMessage.setQName(new QName(tns, "ReqSysHead"));
-                    headerReqMessage.addPart(headerReqPart);
-                    headerReqMessage.setUndefined(false);
-                    Message headerRspMessage = wsdlDefinition.createMessage();
-                    headerRspMessage.setQName(new QName(tns, "RspSysHead"));
-                    headerRspMessage.addPart(headerRspPart);
-                    headerRspMessage.setUndefined(false);
-                    wsdlDefinition.addMessage(headerReqMessage);
-                    wsdlDefinition.addMessage(headerRspMessage);
+                    bodyRspPart.setElementName(new QName("http://esb.dcitsbiz.com/services/" + tmpServiceId, "Rsp" + operationPK.getServiceId() + operationPK.getOperationId(), "s"));
 
                     Message bodyReqMessage = wsdlDefinition.createMessage();
-                    bodyReqMessage.setQName(new QName(tns, "Req" + tmpOperationId));
+                    bodyReqMessage.setQName(new QName(tns, "Req" + operationPK.getServiceId() + operationPK.getOperationId()));
                     bodyReqMessage.addPart(bodyReqPart);
                     bodyReqMessage.setUndefined(false);
                     Message bodyRspMessage = wsdlDefinition.createMessage();
-                    bodyRspMessage.setQName(new QName(tns, "Rsp" + tmpOperationId));
+                    bodyRspMessage.setQName(new QName(tns, "Rsp" + operationPK.getServiceId() + operationPK.getOperationId()));
                     bodyRspMessage.addPart(bodyRspPart);
                     bodyRspMessage.setUndefined(false);
                     wsdlDefinition.addMessage(bodyReqMessage);
@@ -181,9 +149,9 @@ public class SpdbWSDLGenerator  {
                     //Create SOAP header use = "literal"
                     SOAPHeader inSOAPHeader = new SOAPHeaderImpl();
                     inSOAPHeader.setUse("literal");
-                    inSOAPHeader.setMessage(new QName(tns,"ReqSysHead"));
-                    inSOAPHeader.setPart("ReqSysHead");
-                    bindingInput.addExtensibilityElement(inSOAPHeader);
+//                    inSOAPHeader.setMessage(new QName(tns,"ReqSysHead"));
+//                    inSOAPHeader.setPart("ReqSysHead");
+//                    bindingInput.addExtensibilityElement(inSOAPHeader);
                     //创建 SOAP body ，设置 use = "literal"
                     SOAPBody inSOAPBody = new SOAPBodyImpl();
                     inSOAPBody.setUse("literal");
@@ -192,9 +160,9 @@ public class SpdbWSDLGenerator  {
                     BindingOutput bindingOutput = wsdlDefinition.createBindingOutput();
                     SOAPHeader outSOAPHeader = new SOAPHeaderImpl();
                     outSOAPHeader.setUse("literal");
-                    outSOAPHeader.setMessage(new QName(tns, "RspSysHead"));
-                    outSOAPHeader.setPart("RspSysHead");
-                    bindingOutput.addExtensibilityElement(outSOAPHeader);
+//                    outSOAPHeader.setMessage(new QName(tns, "RspSysHead"));
+//                    outSOAPHeader.setPart("RspSysHead");
+//                    bindingOutput.addExtensibilityElement(outSOAPHeader);
                     SOAPBody outSOAPBody = new SOAPBodyImpl();
                     outSOAPBody.setUse("literal");
                     bindingOutput.addExtensibilityElement(outSOAPBody);
@@ -204,46 +172,48 @@ public class SpdbWSDLGenerator  {
                     bindingOperation.setBindingOutput(bindingOutput);
                     binding.addBindingOperation(bindingOperation);
                 }
-                wsdlDefinition.addPortType(portType);
-                //设置绑定的端口类型
-                binding.setPortType(portType);
-                binding.setUndefined(false);
-                wsdlDefinition.addBinding(binding);
-
-                //创建 service
-                javax.wsdl.Service service = wsdlDefinition.createService();
-                service.setQName(new QName(tns, tmpServiceId));
-                //创建服务端口 port
-                Port port = wsdlDefinition.createPort();
-                //设置服务端口的 binding，名称，并添加SOAP地址
-                port.setBinding(binding);
-                port.setName("ESBServerSoapEndpoint");
-                SOAPAddress soapAddress = new SOAPAddressImpl();
-                soapAddress.setLocationURI("http://esb.spdbbiz.com:7701/services/" + tmpServiceId);
-                port.addExtensibilityElement(soapAddress);
-                service.addPort(port);
-                wsdlDefinition.addService(service);
-
-
-                wsdlDefinition.setTypes(types);
-                WSDLWriter writer = wsdlFactory.newWSDLWriter();
-
-                File wsdlFile = new File(dirPath + File.separator + tmpServiceId + ".wsdl");
-                if(!wsdlFile.exists()){
-                    wsdlFile.createNewFile();
-                }
-                System.out.println(wsdlFile.getAbsolutePath());
-                wsdlOut = new BufferedOutputStream(new FileOutputStream(wsdlFile));
-                writer.writeWSDL(wsdlDefinition, wsdlOut);
             }
+            wsdlDefinition.addPortType(portType);
+            //设置绑定的端口类型
+            binding.setPortType(portType);
+            binding.setUndefined(false);
+            wsdlDefinition.addBinding(binding);
 
+            //创建 service
+            javax.wsdl.Service service = wsdlDefinition.createService();
+            service.setQName(new QName(tns, "S"+tmpServiceId));
+            //创建服务端口 port
+            Port port = wsdlDefinition.createPort();
+            //设置服务端口的 binding，名称，并添加SOAP地址
+            port.setBinding(binding);
+            port.setName("ESBServerSoapEndpoint");
+            SOAPAddress soapAddress = new SOAPAddressImpl();
+            soapAddress.setLocationURI(URL +tmpServiceId);
+            port.addExtensibilityElement(soapAddress);
+            service.addPort(port);
+            wsdlDefinition.addService(service);
+
+
+            wsdlDefinition.setTypes(types);
+            WSDLWriter writer = wsdlFactory.newWSDLWriter();
+
+            File wsdlFile = new File(dirPath + File.separator + tmpServiceId + ".wsdl");
+            if(!wsdlFile.exists()){
+                wsdlFile.createNewFile();
+            }
+            System.out.println(wsdlFile.getAbsolutePath());
+            wsdlOut = new BufferedOutputStream(new FileOutputStream(wsdlFile));
+            writer.writeWSDL(wsdlDefinition, wsdlOut);
+//            }
+            String zipName = serviceId + "wsdl.zip";
+            ZipUtil.compressZip(dirPath, wsdlFile.getParentFile().getParent() + File.separator + zipName, zipName);
         } catch (Exception e) {
             log.error(e, e);
         }finally{
             try {
-            	if(wsdlOut != null){
-                  wsdlOut.close();
-            	}
+                if(wsdlOut != null){
+                    wsdlOut.close();
+                }
             } catch (IOException e) {
                 log.error(e,e);
             }
@@ -251,11 +221,11 @@ public class SpdbWSDLGenerator  {
         return null;
     }
 
-    private Definition createDefinition(String serviceId, WSDLFactory wsdlFactory) {
+    private Definition createDefinition(String tmpServiceId, WSDLFactory wsdlFactory) {
         Definition wsdlDefinition = null;
         try {
             wsdlDefinition = wsdlFactory.newDefinition();
-            String tns = "http://esb.spdbbiz.com/services/" + serviceId + "/wsdl";
+            String tns = "http://esb.dcitsbiz.com/services/" + tmpServiceId + "/wsdl";
             wsdlDefinition.setTargetNamespace(tns);
             wsdlDefinition.addNamespace("tns", tns);
             wsdlDefinition.addNamespace(HTTP_PREFIX, HTTP_NAMESPACE);
@@ -263,7 +233,8 @@ public class SpdbWSDLGenerator  {
             wsdlDefinition.addNamespace(SOAP_PREFIX, SOAP_NAMESPACE);
             wsdlDefinition.addNamespace(SOAP_NC_PREFIX, SOAP_NC_NAMESPACE);
             wsdlDefinition.addNamespace(XSD_PREFIX, XSD_NAMESPACE);
-            wsdlDefinition.addNamespace("s", "http://esb.spdbbiz.com/services/" + serviceId);
+            wsdlDefinition.addNamespace("s", "http://esb.dcitsbiz.com/services/" + tmpServiceId);
+            wsdlDefinition.addNamespace("d", "http://esb.dcitsbiz.com/services/" + tmpServiceId + "/metadata");
         } catch (Exception e) {
             //Todo
             log.error(e, e);
@@ -278,10 +249,10 @@ public class SpdbWSDLGenerator  {
             types = wsdlDefinition.createTypes();
             ExtensionRegistry extReg = wsdlDefinition.getExtensionRegistry();
             Schema schema = (Schema) extReg.createExtension(Types.class, new QName(XSD_NAMESPACE, "schema", XSD_PREFIX));
-            schema.setTargetNamespace("http://esb.spdbbiz.com/services/" + serviceId + "/wsdl");
+            schema.setTargetNamespace("http://esb.dcitsbiz.com/services/" + serviceId + "/wsdl");
             SchemaImport schemaImport = schema.createImport();
             schemaImport.setSchemaLocationURI(serviceId + ".xsd");
-            schemaImport.setNamespaceURI("http://esb.spdbbiz.com/services/" + serviceId);
+            schemaImport.setNamespaceURI("http://esb.dcitsbiz.com/services/" + serviceId);
             schema.addImport(schemaImport);
             types.addExtensibilityElement(schema);
         } catch (Exception e) {

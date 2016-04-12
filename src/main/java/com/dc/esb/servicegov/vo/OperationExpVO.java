@@ -2,10 +2,13 @@ package com.dc.esb.servicegov.vo;
 
 import com.dc.esb.servicegov.entity.Operation;
 
+import java.util.UUID;
+
 /**
  * Created by wang on 2015/8/11.
  */
 public class OperationExpVO {
+    private String autoId;
     private String serviceId;
     private String serviceName;
     private String serviceDesc;
@@ -21,6 +24,7 @@ public class OperationExpVO {
     private String optState;
     public OperationExpVO(){}
     public OperationExpVO(Operation o) {
+        this.autoId = o.getServiceId() + o.getOperationId();
         this.serviceId = o.getServiceId();
         this.serviceName = o.getService().getServiceName();
         this.serviceDesc = o.getService().getDesc();
@@ -138,5 +142,13 @@ public class OperationExpVO {
 
     public void setVersionRemark(String versionRemark) {
         this.versionRemark = versionRemark;
+    }
+
+    public String getAutoId() {
+        return autoId;
+    }
+
+    public void setAutoId(String autoId) {
+        this.autoId = autoId;
     }
 }

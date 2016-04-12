@@ -24,8 +24,8 @@ import static com.dc.esb.servicegov.wsdl.extensions.schema.SchemaConstants.*;
  * This class is used to serialize Schema instances
  * into the PrintWriter.
  *
- * @see com.dc.esb.servicegov.wsdl.extensions.schema.SchemaImpl
- * @see com.dc.esb.servicegov.wsdl.extensions.schema.SchemaDeserializer
+ * @see SchemaImpl
+ * @see SchemaDeserializer
  */
 public class SchemaSerializer implements ExtensionSerializer, Serializable {
     public static final long serialVersionUID = 1;

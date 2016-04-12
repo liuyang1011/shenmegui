@@ -59,7 +59,7 @@ public class ExtensionRegistry implements java.io.Serializable {
      * unexpected extensibility elements are encountered. Default value is
      * an instance of UnknownExtensionSerializer.
      *
-     * @see javax.wsdl.extensions.UnknownExtensionSerializer
+     * @see UnknownExtensionSerializer
      */
     public void setDefaultSerializer(ExtensionSerializer defaultSer) {
         this.defaultSer = defaultSer;
@@ -69,7 +69,7 @@ public class ExtensionRegistry implements java.io.Serializable {
      * Get the serializer to be used when none is found for an extensibility
      * element. Default value is an instance of UnknownExtensionSerializer.
      *
-     * @see javax.wsdl.extensions.UnknownExtensionSerializer
+     * @see UnknownExtensionSerializer
      */
     public ExtensionSerializer getDefaultSerializer() {
         return defaultSer;
@@ -81,7 +81,7 @@ public class ExtensionRegistry implements java.io.Serializable {
      * unexpected extensibility elements are encountered. Default value is
      * an instance of UnknownExtensionDeserializer.
      *
-     * @see javax.wsdl.extensions.UnknownExtensionDeserializer
+     * @see UnknownExtensionDeserializer
      */
     public void setDefaultDeserializer(ExtensionDeserializer defaultDeser) {
         this.defaultDeser = defaultDeser;
@@ -91,7 +91,7 @@ public class ExtensionRegistry implements java.io.Serializable {
      * Get the deserializer to be used when none is found for an encountered
      * element. Default value is an instance of UnknownExtensionDeserializer.
      *
-     * @see javax.wsdl.extensions.UnknownExtensionDeserializer
+     * @see UnknownExtensionDeserializer
      */
     public ExtensionDeserializer getDefaultDeserializer() {
         return defaultDeser;
@@ -170,8 +170,8 @@ public class ExtensionRegistry implements java.io.Serializable {
      *         property. If the defaultSerializer property is set to a non-null
      *         value, that value is returned; otherwise, a WSDLException is
      *         thrown.
-     * @see #registerSerializer(Class, QName, javax.wsdl.extensions.ExtensionSerializer)
-     * @see #setDefaultSerializer(javax.wsdl.extensions.ExtensionSerializer)
+     * @see #registerSerializer(Class, QName, ExtensionSerializer)
+     * @see #setDefaultSerializer(ExtensionSerializer)
      */
     public ExtensionSerializer querySerializer(Class parentType,
                                                QName elementType)
@@ -213,8 +213,8 @@ public class ExtensionRegistry implements java.io.Serializable {
      *         found, the behavior depends on the value of the defaultDeserializer
      *         property. If the defaultDeserializer property is set to a non-null
      *         value, that value is returned; otherwise, a WSDLException is thrown.
-     * @see #registerDeserializer(Class, QName, javax.wsdl.extensions.ExtensionDeserializer)
-     * @see #setDefaultDeserializer(javax.wsdl.extensions.ExtensionDeserializer)
+     * @see #registerDeserializer(Class, QName, ExtensionDeserializer)
+     * @see #setDefaultDeserializer(ExtensionDeserializer)
      */
     public ExtensionDeserializer queryDeserializer(Class parentType,
                                                    QName elementType)
@@ -364,7 +364,7 @@ public class ExtensionRegistry implements java.io.Serializable {
      * @param attrType   one of the constants defined on the AttributeExtensible
      *                   class
      * @see #queryExtensionAttributeType(Class, QName)
-     * @see javax.wsdl.extensions.AttributeExtensible
+     * @see AttributeExtensible
      */
     public void registerExtensionAttributeType(Class parentType,
                                                QName attrName,
@@ -392,7 +392,7 @@ public class ExtensionRegistry implements java.io.Serializable {
      * @param attrName   the qname of the extensibility attribute
      * @return one of the constants defined on the AttributeExtensible class
      * @see #registerExtensionAttributeType(Class, QName, int)
-     * @see javax.wsdl.extensions.AttributeExtensible
+     * @see AttributeExtensible
      */
     public int queryExtensionAttributeType(Class parentType, QName attrName) {
         Map innerExtensionAttributeTypeReg =

@@ -55,7 +55,7 @@ public class ResourceImportController {
     ) throws Exception {
         OperationLog operationLog = systemLogService.record("数据字典","导入","文件名称：" + file.getOriginalFilename());
 
-        ModelAndView mv = new org.springframework.web.servlet.ModelAndView("message");
+        ModelAndView mv = new ModelAndView("message");
         String url= "/jsp/metadata/metadata_import.jsp";
         String msg = "";
         response.setContentType("text/html");
@@ -100,8 +100,8 @@ public class ResourceImportController {
         if(StringUtils.isEmpty(msg)){
             msg = "上传成功！";
         }
-        mv.addObject("msg", msg);
-        mv.addObject("url", url);
+        mv.addObject("msg", msg);//弹出对话框
+        mv.addObject("url", url);//跳转链接
 
         systemLogService.updateResult(operationLog);
         return mv;

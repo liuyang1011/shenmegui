@@ -14,7 +14,8 @@ public class Constants {
     public static final String DELTED_FALSE = "0";//0:未删除，1：已删除
     public static final String DELTED_TRUE = "1";
 
-    public static final String DEFAULT_GENERATOR_ID = "0";//默认标准XML拆组包生成器
+    public static final String DEFAULT_GENERATOR_ID = "1";//默认标准XML拆组包生成器
+    public static final String DEFAULT_GENERATOR_Name = "标准WebService拆组包生成器";//默认标准XML拆组包生成器
 
     public static final String INTERFACE_STATUS_TC = "0";//0投产  1废弃
     public static final String INTERFACE_STATUS_FQ = "1";
@@ -67,6 +68,7 @@ public class Constants {
     }
 
     public static final String EXCEL_TEMPLATE_SERVICE = Constants.class.getResource("/").getPath() + "/template/excel_service_template.xls";
+    public static final String EXCEL_TEMPLATE_SERVICE_XLSX = Constants.class.getResource("/").getPath() + "/template/excel_service_template.xlsx";
     public static final String EXCEL_TEMPLATE_SERVICE_VIEW = Constants.class.getResource("/").getPath() + "/template/excel_service_view_template.xls";
     public static final String EXCEL_TEMPLATE_INTERFACE = Constants.class.getResource("/").getPath() + "/template/excel_interface_template.xls";
     public static final String EXCEL_TEMPLATE_SYSTEM_REUSERATE = Constants.class.getResource("/").getPath() + "/template/excel_system_reuserate_template.xls";
@@ -74,6 +76,9 @@ public class Constants {
     public static final String EXCEL_TEMPLATE_RELEASE_COUNT = Constants.class.getResource("/").getPath() + "/template/excel_release_count_template.xls";
     public static final String EXCEL_TEMPLATE_RELEASE_STATE = Constants.class.getResource("/").getPath() + "/template/excel_release_state_template.xls";
     public static final String EXCEL_TEMPLATE_DATA_DICTIONARY= Constants.class.getResource("/").getPath() + "/template/excel_data_dictionary_template.xls";
+    public static final String EXCEL_TEMPLATE_METATYPE_XLSX = Constants.class.getResource("/").getPath()+"/template/excel_metatype_template.xlsx";
+
+    public static final short EXCEL_ROW_DEFAULT_HEIGHT = 300;
 
     public static class Operation {
         public static final String OPT_STATE_UNAUDIT = "0";  //0.服务定义 1：审核通过，2：审核不通过, 3:已发布 4:已上线 5 已下线 6待审核 7修订 8下线 9废弃
@@ -181,14 +186,14 @@ public class Constants {
         public static final String STATUS_FORMAL = "正式";
         public static final String STATUS_OUTDATED = "过时";
 
-        public static final String ARRAY_TYPE = "Array";
-        public static final String STRUCT_TYPE = "Struct";
+        public static final String ARRAY_TYPE = "array";
+        public static final String STRUCT_TYPE = "struct";
     }
 
     public static class ServiceHead{
         public static final String DEFAULT_SYSHEAD_ID = "SYS_HEAD";
         public static final String DEFAULT_APPHEAD_ID = "APP_HEAD";
-        public static final String DEFAULT_HEAD_ID = "SYS_HEAD,APP_HEAD,LOCAL_HEAD";
+        public static final String DEFAULT_HEAD_ID = "SYS_HEAD,APP_HEAD";
 
         public static final String REQUIRED_Y = "Y";
         public static final String REQUIRED_N = "N";

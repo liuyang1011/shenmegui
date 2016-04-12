@@ -95,6 +95,7 @@ public class UserController {
     List<SGUser> getAllUser() {
         return userServiceImpl.getAll();
     }
+
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.POST, value = "/query", headers = "Accept=application/json")
     public
@@ -125,12 +126,29 @@ public class UserController {
 
     @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getById/{id}", headers = "Accept=application/json")
-    public ModelAndView getById(
+     public ModelAndView getById(
             @PathVariable String id) {
         SGUser user = userServiceImpl.getById(id);
         ModelAndView model = new ModelAndView();
         model.addObject("user", user);
         model.setViewName("user/userEdit");
+
+        List<UserRoleRelation> rs = userRoleRelationService.findBy("userId", user.getId());
+        String roleId = "";
+        for (UserRoleRelation us : rs) {
+            roleId += us.getRoleId() + ",";
+        }
+        roleId = roleId.substring(0, roleId.length() - 1);
+        model.addObject("roleId", roleId);
+        return model;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getSelf", headers = "Accept=application/json")
+    public ModelAndView getSelf() {
+        SGUser user = userServiceImpl.getById(SecurityUtils.getSubject().getPrincipal().toString());
+        ModelAndView model = new ModelAndView();
+        model.addObject("user", user);
+        model.setViewName("user/userModify");
 
         List<UserRoleRelation> rs = userRoleRelationService.findBy("userId", user.getId());
         String roleId = "";

@@ -67,7 +67,7 @@ public class InterfaceController {
         root.setId("root");
         root.setText("系统");
         root.setClick("system");
-        List<com.dc.esb.servicegov.entity.System> systems = new ArrayList<System>();
+        List<System> systems = new ArrayList<System>();
         if ("all".equals(systemIds)) {
             //增加排序
             systems = systemService.getAllOrderBySystemId();
@@ -106,7 +106,7 @@ public class InterfaceController {
         root.setClick("system");
 //        List<com.dc.esb.servicegov.entity.System> systems = systemService.getAllOrderBySystemId();
         String userId = SecurityUtils.getSubject().getPrincipal().toString();
-        List<com.dc.esb.servicegov.entity.System> systems = systemService.getByUserId(userId);//根据用户在usersystemrelation中查找
+        List<System> systems = systemService.getByUserId(userId);//根据用户在usersystemrelation中查找
         if(0 == systems.size()){
             systems = systemService.getAllOrderBySystemId();//如果在用户系统关系表中没有数据，默认为没有设置过，拥有所有系统的权限
         }
@@ -281,7 +281,7 @@ public class InterfaceController {
         }
 
 
-        com.dc.esb.servicegov.entity.ProcessContext processContext = new com.dc.esb.servicegov.entity.ProcessContext();
+        ProcessContext processContext = new ProcessContext();
         processContext.setName("接口定义");
         processContext.setProcessId(processId);
         processContext.setKey("interface");
@@ -408,6 +408,7 @@ public class InterfaceController {
 
         String rows = req.getParameter("rows");
 
+        String interfaceId = req.getParameter("interfaceId");
         String ecode = req.getParameter("ecode");
         String interfaceName = req.getParameter("interfaceName");
         String desc = req.getParameter("desc");
@@ -449,6 +450,15 @@ public class InterfaceController {
             searchCond.setFieldValue(systemId);
             searchConds.add(searchCond);
         }
+
+        if (interfaceId != null && !"".equals(interfaceId)) {
+            searchCond = new SearchCondition();
+            hql.append(" and t1.interfaceId like ?");
+            searchCond.setField("interfaceId");
+            searchCond.setFieldValue("%" + interfaceId + "%");
+            searchConds.add(searchCond);
+        }
+
         if (ecode != null && !"".equals(ecode)) {
             searchCond = new SearchCondition();
             hql.append(" and t1.ecode like ?");
@@ -531,6 +541,9 @@ public class InterfaceController {
                     if (p != null) {
                         i.setProtocolName(p.getProtocolName());
                     }
+                }
+                if(null != invoke.getSystem()){
+                    i.setSystemChineseName(invoke.getSystem().getSystemChineseName());
                 }
             }
             i.setHeadName(headName);

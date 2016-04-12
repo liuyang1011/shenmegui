@@ -6,6 +6,6 @@ import com.dc.esb.servicegov.service.support.BaseService;
 import java.util.List;
 
 public interface ServiceInvokeService extends BaseService<ServiceInvoke, String> {
-    public void updateProtocolId(String hql,String ...args );
+    public void updateProtocolId(String hql, String... args);
     public void deleteEntity(List<ServiceInvoke> list);
 }

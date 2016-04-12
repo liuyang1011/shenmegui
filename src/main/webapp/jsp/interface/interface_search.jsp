@@ -25,11 +25,18 @@
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <th><nobr>
+                    接口ID
+                </nobr>
+                </th>
+                <td>
+                    <input class="easyui-textbox" type="text" id="interfaceId"  style="width:100px">
+                </td>
+                <th><nobr>
                     交易码
                 </nobr>
                 </th>
                 <td>
-                    <input class="easyui-textbox" type="text" id="ecode">
+                    <input class="easyui-textbox" type="text" id="ecode" style="width:100px">
                 </td>
 
                 <th><nobr>
@@ -37,56 +44,22 @@
                 </nobr>
                 </th>
                 <td>
-                    <input class="easyui-textbox" type="text" id="interfaceName">
-                </td>
-                <th><nobr>
-                    接口功能描述
-                </nobr>
-                </th>
-                <td>
-                    <input class="easyui-textbox" type="text" id="remarkSearch">
+                    <input class="easyui-textbox" type="text" id="interfaceName" style="width:100px">
                 </td>
                 <th>
-                    <nobr>
-                        状态
-                    </nobr>
+                    <nobr>归属系统</nobr>
                 </th>
-                <td>
-
-                    <select id="statusSearch" class="easyui-combobox"  panelHeight="auto" style="width: 170px"  data-options="editable:false">
-                        <option value="">全部</option>
-                        <option value="0">投产</option>
-                        <option value="1">废弃</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <th><nobr>
-                    接口标签
-                </nobr>
-                </th>
-                <td>
-                    <select class="easyui-textbox" id="interfaceTag" style="width: 170px">
-                    </select>
-                </td>
-                <th><nobr>
-                    报文头
-                </nobr>
-                </th>
-                <td>
-                    <select class="easyui-combobox" id="headIdSearch" style="width: 170px" panelHeight="auto" data-options="editable:false">
-                    </select>
-                </td>
-                <th><nobr>
-                    通讯协议
-                </nobr>
-                </th>
-                <td>
-                    <select class="easyui-combobox" id="protocolIdSearch" style="width: 165px" panelHeight="auto" data-options="editable:false">
-                    </select>
-                </td>
-                <td>
-                    &nbsp;
+                <td><input name="systemId" id="systemId" class="easyui-combobox"
+                           data-options="
+                 method:'get',
+                 url:'/system/getSystemAll',
+                 textField:'chineseName',
+                 valueField:'id',
+                 onChange:function(newValue, oldValue){
+							this.value=newValue;
+				    }
+                 "
+                        >
                 </td>
                 <td align="right">
                     <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="searchData();">搜索</a>
@@ -98,7 +71,7 @@
 
     </fieldset>
 </form>
-<table id="tg" style="height: 370px; width: auto;">
+<table id="tg" style="width: auto;">
     <thead>
     <tr>
         <th data-options="field:'',checkbox:true"></th>
@@ -110,6 +83,9 @@
         </th>
         <th data-options="field:'interfaceName',width:'15%'">
             交易名称
+        </th>
+        <th data-options="field:'systemChineseName',width:'15%'">
+            归属系统
         </th>
         <th data-options="field:'desc',width:'15%'">
             接口功能描述
@@ -126,12 +102,6 @@
         <th data-options="field:'versionId',width:'10%'" formatter='formatter.version'>
             版本号
         </th>
-        <th data-options="field:'optDate',width:'15%',align:'center'">
-            修订时间
-        </th>
-        <th data-options="field:'optUser'">
-            更新用户
-        </th>
     </tr>
     </thead>
 </table>
@@ -142,55 +112,6 @@
 <div id="releaseDlg" class="easyui-dialog" closed="true" resizable="true"></div>
 <script type="text/javascript">
     var toolbar = [];
-    toolbar.push({
-        text:'导出',
-        iconCls:'icon-save',
-        handler:function(){
-            var row = $("#tg").treegrid("getSelected");
-            var rows = $("#tg").datagrid("getSelections");
-            var interfaceIds = "";
-            for(var per in rows){
-                if(per == rows.length-1){
-                    interfaceIds += rows[per].interfaceId;
-                }else{
-                    interfaceIds += rows[per].interfaceId + ",";
-                }
-
-            }
-            if(row){
-                var form=$("<form>");//定义一个form表单
-                form.attr("style","display:none");
-                form.attr("target","");
-                form.attr("method","post");
-                form.attr("action","/excelExporter/exportInterface");
-                var input1=$("<input>");
-                input1.attr("type","hidden");
-                input1.attr("name","ids");
-                input1.attr("value",interfaceIds);
-                var input2=$("<input>");
-                input2.attr("type","hidden");
-                input2.attr("name","type");
-                input2.attr("value","interface");
-                var input3=$("<input>");
-                input3.attr("type","hidden");
-//                input3.attr("name","systemId");
-//                input3.attr("value",systemId);
-
-
-                $("body").append(form);//将表单放置在web中
-                form.append(input1);
-                form.append(input2);
-                form.append(input3);
-
-                form.submit();//表单提交
-
-            }else{
-                alert("请选择要关联的行");
-            }
-
-        }
-    });
-
     toolbar.push({
         text: '历史版本',
         iconCls: 'icon-qxfp',
@@ -258,14 +179,13 @@
             title:'接口列表(双击表格行查看接口内容)',
             iconCls:'icon-edit',//图标
             width: '100%',
-            height: '500px',
             method:'post',
             collapsible: true,
             url:'/interface/getInterface/all',
             singleSelect:true,//是否单选
             pagination:true,//分页控件
-            pageSize: 15,//每页显示的记录条数，默认为10
-            pageList: [15,20,30],//可以设置每页记录条数的列表
+            pageSize: 20,//每页显示的记录条数，默认为10
+            pageList: [20,50,100],//可以设置每页记录条数的列表
             rownumbers:true,//行号
             toolbar: toolbar,
             onDblClickRow : dbClick
@@ -299,19 +219,16 @@
 
     function searchData(){
 
+        var interfaceId  = $("#interfaceId").val();
         var ecode = $("#ecode").val();
         var interfaceName = $("#interfaceName").val();
-        var desc = $("#remarkSearch").val();
-        var status = $("#statusSearch").combobox('getValue');
-        var interfaceTag = $("#interfaceTag").textbox('getValue');
+        var systemId = $("#systemId").combobox("getValue");
         var queryParams = $('#tg').datagrid('options').queryParams;
+        queryParams.interfaceId = interfaceId;
         queryParams.ecode = ecode;
         queryParams.interfaceName = interfaceName;
-        queryParams.desc = encodeURI(desc);
-        queryParams.interfaceTag = encodeURI(interfaceTag);
-        queryParams.status = status;
-        queryParams.protocolId = $("#protocolIdSearch").combobox('getValue');
-        queryParams.headId = $("#headIdSearch").combobox('getValue');
+        queryParams.systemId = systemId;
+
         $('#tg').datagrid('options').queryParams = queryParams;//传递值
         $("#tg").datagrid('reload');//重新加载table
     }

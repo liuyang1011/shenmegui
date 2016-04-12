@@ -41,9 +41,6 @@ public class PdfServiceImpl {
     private SDADAOImpl sdadao;
     @Autowired
     private ServiceCategoryDAOImpl serviceCategoryDAO;
-    @Autowired
-    private ExcelExportServiceImpl excelExportService;
-    int maxWidth = 520;
 
     private static final String serviceType = "service";
     private static final String serviceCategoryType0 = "root";

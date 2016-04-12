@@ -1,7 +1,6 @@
 package com.dc.esb.servicegov.export.impl;
 
 import com.dc.esb.servicegov.entity.*;
-import com.dc.esb.servicegov.export.util.FileUtil;
 import com.dc.esb.servicegov.service.impl.*;
 import com.dc.esb.servicegov.service.support.Constants;
 import org.apache.commons.lang.StringUtils;
@@ -18,10 +17,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.System;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/12/17.
@@ -40,85 +36,32 @@ public class ConfigExportGenerator {
     @Autowired
     IdaServiceImpl idaService;
     @Autowired
-    ServiceHeadServiceImpl serviceHeadService;
-    @Autowired
-    MetadataServiceImpl metadataService;
-    @Autowired
-    SDAAttrbuteServiceImpl sdaAttrbuteService;
-    @Autowired
-    IdaAttrbuteServiceImpl idaAttrbuteService;
+    ServiceInvokeServiceImpl serviceInvokeService;
 
-    String channel_service_path = "template/config_export/nbcb/channel_service_template.xml";//默认请求文件模板路径
-    String service_channel_path = "template/config_export/nbcb/service_system_template.xml";//默认响应文件模板路径
-
-    String sysHeadReq;
-    String appHeadReq;
-    String localHeadReq;
-    String requestText;
-    String responseText;
+    public List<String> uniqueList = new ArrayList<String>();
 
     public void generate(ServiceInvoke serviceInvoke, String path){
-        genrateServiceFile(serviceInvoke, path);
         if(Constants.INVOKE_TYPE_CONSUMER.equals(serviceInvoke.getType())){
             //生成文件路径
-            path = path + File.separator + "in_config" + File.separator + serviceInvoke.getSystem().getSystemAb();
-            generateInChannelServiceFile(serviceInvoke, path);
-            generateInServiceChannelFile(serviceInvoke, path);
+            path = path + File.separator + "in_config";
+            generateInRequest(serviceInvoke, path);
+            generateInResponse(serviceInvoke, path);
         }
         if(Constants.INVOKE_TYPE_PROVIDER.equals(serviceInvoke.getType())){
-            path = path + File.separator + "out_config" + File.separator + serviceInvoke.getSystem().getSystemAb();
-            generateOutChannelServiceFile(serviceInvoke, path);
-            generateOutServiceChannelFile(serviceInvoke, path);
+            path = path + File.separator + "out_config";
+            generateOutRequest(serviceInvoke, path);
+            generateOutResponse(serviceInvoke, path);
         }
-    }
-    /**
-     *例： channel_ANHUI_service_anhuiServiceV1.xml
-     * @param serviceInvoke
-     * @param path
-     */
-    public void  generateInChannelServiceFile(ServiceInvoke serviceInvoke, String path){
-        String filePath = getReqFilePath(serviceInvoke, path);
-        generateRequest(serviceInvoke, filePath);
-    }
-    //例：service_2001300000101_system_NWVS.xml
-    public void  generateInServiceChannelFile(ServiceInvoke serviceInvoke, String path){
-        String filePath = getResFilePath(serviceInvoke, path);
-        generateResponse(serviceInvoke, filePath);
-    }
-    public void  generateOutChannelServiceFile(ServiceInvoke serviceInvoke, String path){
-        String filePath = getReqFilePath(serviceInvoke, path);
-        generateResponse(serviceInvoke, filePath);
-    }
-    //例：service_2001300000101_system_NWVS.xml
-    public void  generateOutServiceChannelFile(ServiceInvoke serviceInvoke, String path){
-        String filePath = getResFilePath(serviceInvoke, path);
-        generateRequest(serviceInvoke, filePath);
-    }
+        genrateServiceFile(serviceInvoke, path);
 
-
+    }
     /**
      * 生成in_config文件
      * @param serviceInvoke
      * @param path
      */
-    public void  generateRequest(ServiceInvoke serviceInvoke, String path){
-        Map<String, String> map = new HashMap<String, String>();
-        Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
-        String[] headIds = operation.getHeadId().split("\\,");//服务报文头
-        for(String headId : headIds){
-            ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
-            map.put("${" + serviceHead.getHeadName() + "}$", getsServiceHeadStr(headId, Constants.ElementAttributes.REQUEST_NAME));//模板内容替换按照名称+$
-        }
-        map.put("${interfaceHead}$", getsInterfaceHeadStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
-        map.put("${standardBody}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
-        map.put("${unStandardBody}$", getUnStandardBodyStr(serviceInvoke, Constants.ElementAttributes.REQUEST_NAME));
-        try{
-            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + getChannelServicePath();
-            FileUtil.copyFile(srcPath, path, map);
-        }catch (Exception e){
-            log.error("生成请求文件出错", e);
-        }
-
+    public void  generateInRequest(ServiceInvoke serviceInvoke, String path){
+        log.info("generateInRequest");
     }
 
     /**
@@ -126,189 +69,21 @@ public class ConfigExportGenerator {
      * @param serviceInvoke
      * @param path
      */
-    public void  generateResponse(ServiceInvoke serviceInvoke, String path){
-        Map<String, String> map = new HashMap<String, String>();
-        Operation operation = operationService.getOperation(serviceInvoke.getServiceId(), serviceInvoke.getOperationId());
-        String[] headIds = operation.getHeadId().split("\\,");//服务报文头
-        for(String headId : headIds){
-            ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
-            map.put("${" + serviceHead.getHeadName() + "}$", getsServiceHeadStr(headId, Constants.ElementAttributes.RESPONSE_NAME));//模板内容替换按照名称+$
-        }
-        map.put("${interfaceHead}$", getsInterfaceHeadStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
-        map.put("${standardBody}$", getsStandardBodyStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
-        map.put("${unStandardBody}$", getUnStandardBodyStr(serviceInvoke, Constants.ElementAttributes.RESPONSE_NAME));
-        try{
-            String srcPath = ConfigExportGenerator.class.getResource("/").getPath() + getServiceChannelPath();
-            FileUtil.copyFile(srcPath, path, map);
-        }catch (Exception e){
-            log.error("生成response文件出错", e);
-        }
-
+    public void  generateOutResponse(ServiceInvoke serviceInvoke, String path){
+    }
+    public void  generateOutRequest(ServiceInvoke serviceInvoke, String path){
     }
 
-    //根据服务报文头获取字符串
-    public String getsServiceHeadStr(String headId, String targetName){
-        ServiceHead serviceHead = serviceHeadService.findUniqueBy("headId", headId);
-        Document doc = DocumentHelper.createDocument();
-        doc.setXMLEncoding("utf-8");
-        Element element = doc.addElement(serviceHead.getHeadName());
-
-        SDA reServiceHeadSDA = sdaService.getByStructName(headId, targetName);
-//            List<SDA> sdas = sdaService.getServiceHeadRequired(headId, reServiceHeadSDA.getId());//服务报文头必输SDA
-        List<SDA> sdas = sdaService.getServiceHeadAll(headId, reServiceHeadSDA.getId());//服务头全量;
-        for(SDA sda : sdas){
-            renderSDA(element, sda);
-        }
-        String str = getElementChildrenStr(element);
-        return str;
+    /**
+     * 生成esb响应文件
+     * @param serviceInvoke
+     * @param path
+     */
+    public void  generateInResponse(ServiceInvoke serviceInvoke, String path){
+        log.info("generateInRequest");
     }
 
 
-    //根据接口报文头获取字符串
-    public String getsInterfaceHeadStr(ServiceInvoke serviceInvoke, String targetName){
-        String str = "";
-        List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", serviceInvoke.getInterfaceId());
-        if(null != relates && 0 < relates.size()){
-            Document doc = DocumentHelper.createDocument();
-            doc.setXMLEncoding("utf-8");
-            Element element = doc.addElement("InterfaceHead");
-            for(InterfaceHeadRelate relate : relates){
-                String headId = relate.getHeadId();
-                Ida reInterfaceHeadIda = idaService.getByHeadIdIdStructName(headId, targetName);
-                List<Ida> idas = idaService.findBy("_parentId", reInterfaceHeadIda.getId());
-                for(Ida ida : idas){
-                    renderInterfaceHeadIda(element, ida, headId);
-                }
-            }
-            str = getElementChildrenStr(element);
-        }
-        return str;
-    }
-    //获取标准body
-    public String getsStandardBodyStr(ServiceInvoke serviceInvoke, String structName){
-        Document doc = DocumentHelper.createDocument();
-        doc.setXMLEncoding("utf-8");
-        Element element = doc.addElement("BODY");
-
-        String serviceId = serviceInvoke.getServiceId();
-        String operationId = serviceInvoke.getOperationId();
-        SDA sda = sdaService.getByStructName(serviceId, operationId, structName);
-        List<SDA> children = sdaService.getChildren(sda);
-        for(SDA child : children){
-            renderSDA(element, child);
-        }
-        String result = getElementChildrenStr(element);
-        return result;
-    }
-    //获取非标body
-    public String getUnStandardBodyStr(ServiceInvoke serviceInvoke, String structName){
-        String result = "";
-
-        String interfaceId = serviceInvoke.getInterfaceId();
-        if(StringUtils.isNotEmpty(interfaceId)){
-            Document doc = DocumentHelper.createDocument();
-            doc.setXMLEncoding("utf-8");
-            Element element = doc.addElement("BODY");
-            String serviceId = serviceInvoke.getServiceId();
-            String operationId = serviceInvoke.getOperationId();
-            Ida ida = idaService.getByInterfaceIdStructName(interfaceId, structName);
-            if(null != ida){
-                List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
-                for(Ida child : children){
-                    renderBodyIda(element, child, serviceId, operationId);
-                }
-            }
-            result = getElementChildrenStr(element);
-        }
-        return result;
-    }
-    //标准输出
-    public void renderSDA(Element parentElement, SDA sda){
-        Element element = parentElement.addElement(sda.getStructName());
-        element.addAttribute("metadataid", sda.getMetadataId());
-        sdaAttrbuteService.fillAttr(sda.getId(), element);//添加附加属性
-        List<SDA> children = sdaService.getChildren(sda);
-        if(null != children &&  0 < children.size()){
-            for(SDA child : children){
-                renderSDA(element, child);
-            }
-        }
-    }
-    //非标报文头输出
-    public void renderInterfaceHeadIda(Element parentElement, Ida ida, String headId){
-        if(null != ida && StringUtils.isNotEmpty(ida.getStructName())){
-            Element idaElement = parentElement.addElement(ida.getStructName());
-            idaAttrbuteService.fillAttr(ida.getId(), idaElement);//ida附加属性
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("headId", headId);
-            params.put("xpath", ida.getXpath());
-            SDA sda = sdaService.findUniqueBy(params);
-            if(null != sda){
-                sdaAttrbuteService.fillAttr(sda.getId(), idaElement);//SDA附加属性
-                addAttribute(idaElement, "metadataId", sda.getMetadataId());
-//                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
-//                if(null != metadata){
-//                    addAttribute(idaElement, "length", metadata.getLength());
-//                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
-//                }
-            }
-            List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
-            if(null != children && 0 < children.size()){
-                for(Ida child : children){
-                    renderInterfaceHeadIda(idaElement, child, headId);
-                }
-            }
-        }
-    }
-    //非标体输出
-    public void renderBodyIda(Element parentElement, Ida ida, String serviceId, String operationId ){
-        if(null != ida && StringUtils.isNotEmpty(ida.getStructName())){
-            Element idaElement = parentElement.addElement(ida.getStructName());
-            idaAttrbuteService.fillAttr(ida.getId(), idaElement);//ida附加属性
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("serviceId", serviceId);
-            params.put("operationId", operationId);
-            params.put("xpath", ida.getXpath());
-            SDA sda = sdaService.findUniqueBy(params);
-            if(null != sda){
-                sdaAttrbuteService.fillAttr(sda.getId(), idaElement);//sda附加属性
-                addAttribute(idaElement, "metadataId", sda.getMetadataId());
-//                Metadata metadata = metadataService.findUniqueBy("metadataId", sda.getMetadataId());
-//                if(null != metadata){
-//                    addAttribute(idaElement, "length", metadata.getLength());
-//                    addAttribute(idaElement, "type", "array".equalsIgnoreCase(metadata.getType()) ? "array" : "string");;
-//                }
-            }
-            List<Ida> children = idaService.getNotEmptyByParentId(ida.getId());
-            if(null != children && 0 < children.size()){
-                for(Ida child : children){
-                    renderBodyIda(idaElement, child, serviceId, operationId);
-                }
-            }
-        }
-    }
-    //获取节点内容生成字符串
-    public String getElementChildrenStr(Element element){
-        String str = "";
-        if(null != element){
-            List<Element> children = element.elements();
-            if(null != children && 0 < children.size()){
-                String elementName = element.getName();
-                str = element.asXML();
-                String startStr = "<" + elementName +">";
-                String endStr = "</" + elementName + ">";
-                str = str.substring(startStr.length());//从前端截取
-                if((str.length() - endStr.length()) <= 0){
-                    return "";
-                }else{
-                    str = str.substring(0, str.length() - endStr.length());//从尾端截取
-                }
-            }
-        }
-
-
-        return str;
-    }
     /**
      * 生成服务定义文件
      * @param serviceInvoke
@@ -317,28 +92,101 @@ public class ConfigExportGenerator {
      */
     public void genrateServiceFile(ServiceInvoke serviceInvoke, String path){
         try {
-            String serviceId = serviceInvoke.getServiceId();
-            String operationId = serviceInvoke.getOperationId();
-            Operation operation = operationService.getOperation(serviceId, operationId);
-            com.dc.esb.servicegov.entity.System system = serviceInvoke.getSystem();
-            String fileName = path + File.separator + "service_" + serviceId + operationId + ".xml";
+            uniqueList.clear();
+            String serviceId = null;
+            String operationId = null;
+            if(null != serviceInvoke){
+                serviceId = serviceInvoke.getServiceId();
+                operationId = serviceInvoke.getOperationId();
+            }
+            if(null != serviceId && null != operationId){
+                String fileName = path + File.separator + "service_" + serviceId + operationId + ".xml";
+                Document doc = DocumentHelper.createDocument();
+                Element rootElement = doc.addElement("S" + serviceId + operationId);//根节点
+                Element requestElement = rootElement.addElement("request");
+                Element reqSdoRoottElement = requestElement.addElement("sdoroot");
 
-            Document doc = DocumentHelper.createDocument();
-            Element rootElement = doc.addElement("S" + serviceId + operationId);//根节点
-            Element requestElement = rootElement.addElement("request");
-            Element reqSdoRoottElement = requestElement.addElement("sdoroot");
-            Element responseElement = rootElement.addElement("response");
-            Element resSdoRoottElement = responseElement.addElement("sdoroot");
-            fillServiceHead(operation, serviceInvoke.getInterfaceId(), reqSdoRoottElement, Constants.ElementAttributes.REQUEST_NAME, true);
-            fillServiceHead(operation, serviceInvoke.getInterfaceId(),resSdoRoottElement, Constants.ElementAttributes.RESPONSE_NAME, true);
-            fillBody(operation, serviceInvoke.getInterfaceId(), reqSdoRoottElement, Constants.ElementAttributes.REQUEST_NAME, true);
-            fillBody(operation, serviceInvoke.getInterfaceId(), resSdoRoottElement, Constants.ElementAttributes.RESPONSE_NAME, true);
+                //填充syshead
+                Element reqSysHeadElement = reqSdoRoottElement.addElement("SYS_HEAD");
+                SDA reqServiceHeadSDA = sdaService.getByStructName(Constants.ServiceHead.DEFAULT_SYSHEAD_ID, Constants.ElementAttributes.REQUEST_NAME);
+                List<SDA> reqSysHeadSdas = sdaService.getChildren(reqServiceHeadSDA);
+                if(null != reqSysHeadSdas){
+                    for(SDA sda : reqSysHeadSdas){
+                        renderServiceSysHeadSDA(reqSysHeadElement, sda);
+                    }
+                }else{
+                    log.error("无法获取syshead！");
+                }
+                //填充apphead
+                Element reqAppHeadElement = reqSdoRoottElement.addElement("APP_HEAD");
+                SDA reqAppHeadSDA = sdaService.getByStructName(Constants.ServiceHead.DEFAULT_APPHEAD_ID, Constants.ElementAttributes.REQUEST_NAME);
+                List<SDA> reqAppHeadSdas = sdaService.getChildren(reqAppHeadSDA);
+                if(null != reqAppHeadSdas){
+                    for(SDA sda : reqAppHeadSdas){
+                        renderServiceSysHeadSDA(reqAppHeadElement, sda);
+                    }
+                }else{
+                    log.error("无法获取apphead！");
+                }
+                //如果提供方有LocalHead，则在Root中加入LocalHead报文头元素
+                Element reqLocalHeadElement = reqSdoRoottElement.addElement("LOCAL_HEAD");
+                interfaceLocalHeadDeal(serviceId, operationId, Constants.ElementAttributes.REQUEST_NAME, reqSdoRoottElement, reqLocalHeadElement);
 
-            createFile(doc, fileName);
+                //填充body
+                //获取报文头元数据集合
+                Set<String> allReqMetadatas = getAllHeadMetadatas(Constants.ElementAttributes.REQUEST_NAME, serviceId, operationId);
+                Element reqBodyElement = reqSdoRoottElement.addElement("BODY");
+                //如果提供方是非标，则在body中加入报文头元素
+                interfaceHeadDeal(serviceId, operationId, Constants.ElementAttributes.REQUEST_NAME, reqBodyElement);
+                SDA reqSDA = sdaService.getByStructName(serviceId, operationId,  Constants.ElementAttributes.REQUEST_NAME);
+                List<SDA> reqSdas = sdaService.getChildren(reqSDA);
+                for(SDA sda : reqSdas){
+                    renderServiceSDAExistMetadata(reqBodyElement, sda, allReqMetadatas);
+                }
+
+                uniqueList.clear();
+                Element responseElement = rootElement.addElement("response");
+                Element resSdoRoottElement = responseElement.addElement("sdoroot");
+
+                //填充syshead
+                Element resSysHeadElement = resSdoRoottElement.addElement("SYS_HEAD");
+                SDA resServiceHeadSDA = sdaService.getByStructName(Constants.ServiceHead.DEFAULT_SYSHEAD_ID, Constants.ElementAttributes.RESPONSE_NAME);
+                List<SDA> resSysHeadSdas = sdaService.getChildren(resServiceHeadSDA);
+                for(SDA sda : resSysHeadSdas){
+                    renderServiceSysHeadSDA(resSysHeadElement, sda);
+                }
+
+                //填充apphead
+                Element resAppHeadElement = resSdoRoottElement.addElement("APP_HEAD");
+                SDA resAppHeadSDA = sdaService.getByStructName(Constants.ServiceHead.DEFAULT_APPHEAD_ID, Constants.ElementAttributes.RESPONSE_NAME);
+                List<SDA> reAppHeadSdas = sdaService.getChildren(resAppHeadSDA);
+                for(SDA sda : reAppHeadSdas){
+                    renderServiceSysHeadSDA(resAppHeadElement, sda);
+                }
+
+                //如果提供方有LocalHead，则在Root中加入LocalHead报文头元素
+                Element resLocalHeadElement = resSdoRoottElement.addElement("LOCAL_HEAD");
+                interfaceLocalHeadDeal(serviceId, operationId, Constants.ElementAttributes.RESPONSE_NAME, resSdoRoottElement, resLocalHeadElement);
+
+                //填充body
+                //获取报文头元数据集合
+                Set<String> allResMetadatas = getAllHeadMetadatas(Constants.ElementAttributes.RESPONSE_NAME, serviceId, operationId);
+                Element resBodyElement = resSdoRoottElement.addElement("BODY");
+                //如果提供方是非标，则在body中加入报文头元素
+                interfaceHeadDeal(serviceId, operationId, Constants.ElementAttributes.RESPONSE_NAME, resBodyElement);
+                SDA resSDA = sdaService.getByStructName(serviceId, operationId,  Constants.ElementAttributes.RESPONSE_NAME);
+                List<SDA> resSdas = sdaService.getChildren(resSDA);
+                for(SDA sda : resSdas){
+                    renderServiceSDAExistMetadata(resBodyElement, sda, allResMetadatas);
+                }
+                createFile(doc, fileName);
+            }
         }catch (Exception e){
             log.error("生成服务定义文件失败！", e);
         }
     }
+
+
 
     /**
      * 填充服务报文头元素
@@ -376,16 +224,20 @@ public class ConfigExportGenerator {
      */
     public void fillBody(Operation operation,String interfaceId, Element targetElement, String structName, boolean arrayFlag){
         Element bodyElement = targetElement.addElement("BODY");
+
+        //如果提供方是非标，则在body中加入报文头元素
+        interfaceHeadDeal(operation.getServiceId(), operation.getOperationId(), structName, bodyElement);
+
         SDA reSDA = sdaService.getByStructName(operation.getServiceId(), operation.getOperationId(), structName);
         List<SDA> sdas = sdaService.getChildExceptServiceHead(reSDA.getId(), operation.getHeadId());
-        if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
-            List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
-            for(InterfaceHeadRelate relate : relates){
-                InterfaceHead interfaceHead = relate.getInterfaceHead();
-                List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadBodySDAs(relate.getHeadId(), reSDA.getStructName() );
-                addListContent(sdas, interfaceheadSDAs);
-            }
-        }
+
+//        if(StringUtils.isNotEmpty(interfaceId)){//查询接口报文头中对应约束元素syshead，apphead的加入对应头标签，其他的加入body标签
+//            List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+//            for(InterfaceHeadRelate relate : relates){
+//                List<SDA> interfaceheadSDAs = sdaService.getByInterfaceHeadBodySDAs(relate.getHeadId(), reSDA.getStructName() );
+//                addListContent(sdas, interfaceheadSDAs);
+//            }
+//        }
         fillElement(bodyElement, sdas, arrayFlag);
     }
     public void fillElement(Element parentElement, List<SDA> children, boolean arrayFlag ){
@@ -399,7 +251,9 @@ public class ConfigExportGenerator {
                 }
                 Element childElement = element.addElement(child.getStructName());
                 addAttribute(childElement, "metadataid", child.getMetadataId());
-                addAttribute(childElement, "type", child.getType());
+                if(null != child.getType()){
+                    addAttribute(childElement, "type", child.getType().toLowerCase());
+                }
                 if("struct".equalsIgnoreCase(child.getType().toLowerCase())){
                     addAttribute(childElement, "is_struct", "true");
                 }else{
@@ -470,12 +324,414 @@ public class ConfigExportGenerator {
             log.error(e, e);
         }
     }
-    //获取模板路径，子类重写此方法替换模板
-    public String getChannelServicePath(){
-        return channel_service_path;
+
+
+    public void interfaceLocalHeadDeal(String serviceId, String operationId, String structName, Element parentElement, Element localHeadElement ){
+        //查询非标提供者
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.serviceId = ? and si.operationId=? and type = ? " +
+                "and isStandard = ?";
+        List interfaces = serviceInvokeService.find(hql, serviceId, operationId, Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if(null != interfaces && 0 < interfaces.size()){
+            //如果有多个非标借口提供者
+            log.warn("场景中存在非标提供者！");
+            for(Object inter : interfaces){
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if(null != relates && 0 < relates.size()){
+                    for(InterfaceHeadRelate interfaceHeadRelate : relates){
+                        String headId = interfaceHeadRelate.getHeadId();
+                        Map<String, String> params = new HashMap<String,String>();
+                        params.put("headId", headId);
+                        params.put("structName", structName);
+                        Ida ida = idaService.findUniqueBy(params);
+                        if(null != ida){
+                            String hql3 = " from Ida where _parentId = ? and structName is not null";
+                            List<Ida> children = idaService.find(hql3, ida.getId());
+                            for(Ida child : children){
+                                params.clear();
+                                params.put("headId", headId);
+                                params.put("xpath", child.getXpath());
+                                SDA sda = sdaService.findUniqueBy(params);
+                                if(null != sda && !Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())) {
+                                    if(null != sda.getConstraint() && sda.getConstraint().trim().equalsIgnoreCase("local_head")){
+                                        renderServiceSDA(localHeadElement, sda);
+                                    }else{
+                                        parentElement.remove(localHeadElement);
+                                    }
+                                }else{
+                                    parentElement.remove(localHeadElement);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+
+        }
     }
-    //获取模板路径，子类重写此方法替换模板
-    public String getServiceChannelPath(){
-        return service_channel_path;
+
+
+    public void interfaceHeadDeal(String serviceId, String operationId, String structName, Element bodyElement ){
+        //查询非标提供者
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.serviceId = ? and si.operationId=? and type = ? " +
+                "and isStandard = ?";
+        List interfaces = serviceInvokeService.find(hql, serviceId, operationId, Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if(null != interfaces && 0 < interfaces.size()){
+            //如果有多个非标借口提供者
+            for(Object inter : interfaces){
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if(null != relates && 0 < relates.size()){
+                    for(InterfaceHeadRelate interfaceHeadRelate : relates){
+                        String headId = interfaceHeadRelate.getHeadId();
+                        Map<String, String> params = new HashMap<String,String>();
+                        params.put("headId", headId);
+                        params.put("structName", structName);
+                        Ida ida = idaService.findUniqueBy(params);
+                        if(null != ida){
+                            String hql3 = " from Ida where _parentId = ? and structName is not null";
+                            List<Ida> children = idaService.find(hql3, ida.getId());
+                            for(Ida child : children){
+                                params.clear();
+                                params.put("headId", headId);
+                                params.put("xpath", child.getXpath());
+                                SDA sda = sdaService.findUniqueBy(params);
+                                if(null != sda && !Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())) {
+                                    if(null != sda.getConstraint() && sda.getConstraint().trim().equalsIgnoreCase("body")){
+                                        renderServiceSDA(bodyElement, sda);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+    }
+
+    public void renderServiceSDA(Element parent, SDA sda){
+        if(null != sda){
+            if(!Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())){
+                Element element = parent.addElement(sda.getStructName());
+                element.addAttribute("metadataid", sda.getMetadataId());
+                if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+                    element.addAttribute("type", sda.getType().toLowerCase());
+                    if("array".equalsIgnoreCase(sda.getType())){
+                        element.addAttribute("is_struct", "false");
+                        element.addAttribute("metadataid", sda.getMetadataId()+"_array");
+                    }
+                    if("struct".equalsIgnoreCase(sda.getType())){
+                        element.addAttribute("is_struct", "true");
+                    }
+                    List<SDA> children = sdaService.getChildren(sda);
+                    if(null != children && 0 < children.size()){
+                        Element sdoElemtn = element.addElement("sdo");
+                        for(SDA chid : children){
+                            renderServiceSDA(sdoElemtn, chid);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void renderServiceSysHeadSDA(Element parentElement, SDA sda){
+        Element element = parentElement.addElement(sda.getStructName());
+        element.addAttribute("metadataid", sda.getMetadataId());
+        if(null != sda && "array".equalsIgnoreCase(sda.getType())){
+            element.addAttribute("metadataid", sda.getMetadataId()+"_array");
+            element.addAttribute("type", "array");
+            element.addAttribute("is_struct", "false");
+        }
+        List<SDA> children = sdaService.getChildren(sda);
+        if(null != children &&  0 < children.size()){
+            Element sdoElemtn = element.addElement("sdo");
+            for(SDA child : children){
+                renderServiceSysHeadSDA(sdoElemtn, child);
+            }
+        }
+    }
+
+    public List<String> renderServiceSysHeadSDAWithList(Element parentElement, SDA sda){
+        List<String> list = new ArrayList<String>();
+        Element element = parentElement.addElement(sda.getStructName());
+        element.addAttribute("metadataid", sda.getMetadataId());
+        list.add(sda.getMetadataId());
+        if(null != sda && "array".equalsIgnoreCase(sda.getType())){
+            element.addAttribute("metadataid", sda.getMetadataId()+"_array");
+            list.add(sda.getMetadataId());
+            element.addAttribute("type", "array");
+            element.addAttribute("is_struct", "false");
+        }
+        List<SDA> children = sdaService.getChildren(sda);
+        if(null != children &&  0 < children.size()){
+            Element sdoElemtn = element.addElement("sdo");
+            for(SDA child : children){
+                renderServiceSysHeadSDA(sdoElemtn, child);
+            }
+        }
+        return list;
+    }
+
+
+    /**
+     * 获取报文头所有元数据集合
+     * @author yehu
+     * @param structName
+     * @param serviceId
+     * @param operationId
+     * @return
+     */
+    public Set<String> getAllHeadMetadatas(String structName, String serviceId, String operationId){
+        Set<String> allHeadMetadatas =  new HashSet<String>();
+
+
+        //填充reqsyshead
+        SDA reqSysHeadSDA = sdaService.getByStructName(Constants.ServiceHead.DEFAULT_SYSHEAD_ID, structName);
+        List<SDA> reqSysHeadChildren = sdaService.getChildren(reqSysHeadSDA);
+        for(SDA reqSysHeadChild : reqSysHeadChildren){
+            inputMetadata(allHeadMetadatas, reqSysHeadChild);
+        }
+
+        //填充reqapphead
+        SDA reqAppHeadSDA = sdaService.getByStructName(Constants.ServiceHead.DEFAULT_APPHEAD_ID, structName);
+        List<SDA> reqAppHeadChildren = sdaService.getChildren(reqAppHeadSDA);
+        for(SDA reqAppHeadChild : reqAppHeadChildren){
+            inputMetadata(allHeadMetadatas, reqAppHeadChild);
+        }
+
+        //填充localhead
+        getLocalHeadMetadata(serviceId, operationId, structName, allHeadMetadatas);
+
+        return allHeadMetadatas;
+    }
+
+    /**
+     * 插入对应的元数据
+     * @author yehu
+     * @param metadataList
+     * @param sda
+     */
+    public void inputMetadata(Set<String> metadataList, SDA sda){
+        metadataList.add(sda.getMetadataId());
+        List<SDA> children = sdaService.getChildren(sda);
+        if(null != children &&  0 < children.size()){
+            for(SDA child : children){
+                inputMetadata(metadataList, child);
+            }
+        }
+    }
+
+    /**
+     * 获取系统自己报文头元数据
+     * @author yehu
+     * @param serviceId
+     * @param operationId
+     * @param structName
+     * @param metadataList
+     */
+    public void getLocalHeadMetadata(String serviceId, String operationId, String structName, Set<String> metadataList){
+        //查询非标提供者
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.serviceId = ? and si.operationId=? and type = ? " +
+                "and isStandard = ?";
+        List interfaces = serviceInvokeService.find(hql, serviceId, operationId, Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if(null != interfaces && 0 < interfaces.size()){
+            //如果有多个非标借口提供者
+            log.warn("场景中存在非标提供者！");
+            for(Object inter : interfaces){
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if(null != relates && 0 < relates.size()){
+                    for(InterfaceHeadRelate interfaceHeadRelate : relates){
+                        String headId = interfaceHeadRelate.getHeadId();
+                        Map<String, String> params = new HashMap<String,String>();
+                        params.put("headId", headId);
+                        params.put("structName", structName);
+                        Ida ida = idaService.findUniqueBy(params);
+                        if(null != ida){
+                            String hql3 = " from Ida where _parentId = ? and structName is not null";
+                            List<Ida> children = idaService.find(hql3, ida.getId());
+                            for(Ida child : children){
+                                params.clear();
+                                params.put("headId", headId);
+                                params.put("xpath", child.getXpath());
+                                SDA sda = sdaService.findUniqueBy(params);
+                                if(null != sda && !Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())) {
+                                    inputMetadata(metadataList, sda);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void renderServiceSDAExistMetadata(Element parent, SDA sda, Set<String> allMetadatas){
+        if(null != sda){
+            if(!Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())){
+                Element element = parent.addElement(sda.getStructName());
+                if(allMetadatas.contains(sda.getMetadataId())){
+                    sda.setMetadataId(sda.getMetadataId()+"_C");
+                    allMetadatas.add(sda.getMetadataId()+"_C");
+                }
+                element.addAttribute("metadataid", sda.getMetadataId());
+                if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+                    element.addAttribute("type", "array");
+                    if("array".equalsIgnoreCase(sda.getType())){
+                        element.addAttribute("is_struct", "false");
+                        element.addAttribute("metadataid", sda.getMetadataId()+"_array");
+                    }
+                    if("struct".equalsIgnoreCase(sda.getType())){
+                        element.addAttribute("is_struct", "true");
+                    }
+                    List<SDA> children = sdaService.getChildren(sda);
+                    if(null != children && 0 < children.size()){
+                        Element sdoElemtn = element.addElement("sdo");
+                        for(SDA chid : children){
+                            renderServiceSDAExistMetadata(sdoElemtn, chid, allMetadatas);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    public List<String> interfaceLocalHeadDealWithList(String serviceId, String operationId, String structName, Element parentElement, Element localHeadElement ){
+        List<String> localHeadList = new ArrayList<String>();
+        //查询非标提供者
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.serviceId = ? and si.operationId=? and type = ? " +
+                "and isStandard = ?";
+        List interfaces = serviceInvokeService.find(hql, serviceId, operationId, Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if(null != interfaces && 0 < interfaces.size()){
+            //如果有多个非标借口提供者
+//            log.warn("场景中存在非标提供者！");
+            for(Object inter : interfaces){
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if(null != relates && 0 < relates.size()){
+                    for(InterfaceHeadRelate interfaceHeadRelate : relates){
+                        String headId = interfaceHeadRelate.getHeadId();
+                        Map<String, String> params = new HashMap<String,String>();
+                        params.put("headId", headId);
+                        params.put("structName", structName);
+                        Ida ida = idaService.findUniqueBy(params);
+                        if(null != ida){
+                            String hql3 = " from Ida where _parentId = ? and structName is not null";
+                            List<Ida> children = idaService.find(hql3, ida.getId());
+                            for(Ida child : children){
+//                                params.clear();
+//                                params.put("headId", headId);
+//                                params.put("xpath", child.getXpath());
+                                String sdaId = child.getSdaId();
+                                SDA sda = null;
+                                if(null != sdaId){
+                                    sda = sdaService.getById(child.getSdaId());
+                                }
+                                if(null != sda && !Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())) {
+                                    if(sda.getConstraint().trim().equalsIgnoreCase("local_head")){
+                                        localHeadList = renderServiceSDAWithList(localHeadElement, sda);
+                                    }else{
+                                        parentElement.remove(localHeadElement);
+                                    }
+                                }else{
+                                    parentElement.remove(localHeadElement);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return localHeadList;
+    }
+
+
+    public List<String> interfaceHeadDealWithList(String serviceId, String operationId, String structName, Element bodyElement ){
+        //查询非标提供者
+        List<String> list = new ArrayList<String>();
+        String hql = "select distinct si.interfaceId from ServiceInvoke si where si.serviceId = ? and si.operationId=? and type = ? " +
+                "and isStandard = ?";
+        List interfaces = serviceInvokeService.find(hql, serviceId, operationId, Constants.INVOKE_TYPE_PROVIDER, Constants.INVOKE_TYPE_STANDARD_N);
+        if(null != interfaces && 0 < interfaces.size()){
+            //如果有多个非标借口提供者
+//            log.warn("场景中存在非标提供者！");
+            for(Object inter : interfaces){
+                String interfaceId = inter.toString();
+                List<InterfaceHeadRelate> relates = interfaceHeadRelateService.findBy("interfaceId", interfaceId);
+                if(null != relates && 0 < relates.size()){
+                    for(InterfaceHeadRelate interfaceHeadRelate : relates){
+                        String headId = interfaceHeadRelate.getHeadId();
+                        Map<String, String> params = new HashMap<String,String>();
+                        params.put("headId", headId);
+                        params.put("structName", structName);
+//                    String hql2 = " from Ida where headId = ? and structName = ?";
+                        Ida ida = idaService.findUniqueBy(params);
+                        if(null != ida){
+                            String hql3 = " from Ida where _parentId = ? and structName is not null";
+                            List<Ida> children = idaService.find(hql3, ida.getId());
+                            for(Ida child : children){
+//                                params.clear();
+//                                params.put("headId", headId);
+//                                params.put("xpath", child.getXpath());
+//                                SDA sda = sdaService.findUniqueBy(params);
+                                String sdaId = child.getSdaId();
+                                SDA sda = null;
+                                if(null != sdaId){
+                                    sda = sdaService.getById(child.getSdaId());
+                                }
+                                if(null != sda && !Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())) {
+                                    if(sda.getConstraint().trim().equalsIgnoreCase("body")){
+                                        list.addAll(renderServiceSDAWithList(bodyElement, sda));
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<String> renderServiceSDAWithList(Element parent, SDA sda){
+        List<String> list = new ArrayList<String>();
+        if(null != sda){
+            if(!Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && !Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())){
+                //            if(uniqueList.contains(sda.getStructName())){
+//                return;
+//            }
+//            uniqueList.add(sda.getStructName());
+                Element element = parent.addElement(sda.getStructName());
+                element.addAttribute("metadataid", sda.getMetadataId());
+                list.add(sda.getMetadataId());
+                if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
+                    element.addAttribute("type", "array");
+                    if("array".equalsIgnoreCase(sda.getType())){
+                        element.addAttribute("is_struct", "false");
+                        element.addAttribute("metadataid", sda.getMetadataId()+"_array");
+                        list.add(sda.getMetadataId());
+                    }
+                    if("struct".equalsIgnoreCase(sda.getType())){
+                        element.addAttribute("is_struct", "true");
+                    }
+                    List<SDA> children = sdaService.getChildren(sda);
+                    if(null != children && 0 < children.size()){
+                        Element sdoElemtn = element.addElement("sdo");
+                        for(SDA chid : children){
+                            renderServiceSDA(sdoElemtn, chid);
+                        }
+                    }
+                }
+            }
+
+        }
+        return list;
     }
 }

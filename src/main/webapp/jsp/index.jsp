@@ -27,9 +27,9 @@
         <li>
             <a href="javascript:;" mid="6.1">系统管理</a>
             <%--<ul>--%>
-                <%--<li><a href="javascript:;" mid="6.1">接口检索</a></li>--%>
-                <%--&lt;%&ndash;&lt;%&ndash;<li><a href="javascript:;" mid="13">接口检索</a></li>&ndash;%&gt;&ndash;%&gt;--%>
-                <%--&lt;%&ndash;<li><a href="javascript:;" mid="3">报文头管理</a></li>&ndash;%&gt;--%>
+                <%--<li><a href="javascript:;" mid="6">接口管理</a></li>--%>
+                <%--&lt;%&ndash;<li><a href="javascript:;" mid="13">接口检索</a></li>&ndash;%&gt;--%>
+                <%--<li><a href="javascript:;" mid="3">报文头管理</a></li>--%>
             <%--</ul>--%>
         </li>
         <li>
@@ -43,8 +43,6 @@
                 <shiro:hasPermission name="operation-get">
                 <li><a href="javascript:;" mid="14">服务检索</a></li>
                 </shiro:hasPermission>
-                <%--<li><a href="javascript:;" mid="17">服务识别</a></li>--%>
-                <li><a href="javascript:;" mid="18">调用地址查询</a></li>
             </ul>
         </li>
         <li>
@@ -60,7 +58,7 @@
         </li>
     </ul>
     <div id="header_toolsbar">
-        <a href="javascript:;" class="login_user"><shiro:principal/></a>
+        <a href="javascript:void(0);" onclick="userPage()" class="login_user"><shiro:principal/></a>
 
         <%--<a id="taskName" href="javascript:;" >当前任务:</a>--%>
         <%--<input id="serviceCategoryPermission" <shiro:hasPermission name="serviceCategory-add"> value="1" </shiro:hasPermission> style="display: none"></input>--%>
@@ -88,6 +86,7 @@
 <script type="text/javascript" src="<%=basePath%>/resources/js/app.js"></script>
 <script type="text/javascript" src="<%=basePath%>/resources/js/ui.js"></script>
 <script type="text/javascript" src="<%=basePath%>/js/sysadmin/sysManager.js"></script>
+<script type="text/javascript" src="/js/user/userManager.js"></script>
 <script type="text/javascript" src="<%=basePath%>/js/sysadmin/interfaceManager.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceManager.js"></script>
 <script type="text/javascript" src="<%=basePath%>/assets/service/js/serviceUIHelper.js"></script>

@@ -754,8 +754,21 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
      * @return
      */
     public List<SDA> getChildren(SDA sda){
-        List<SDA> children = sdaDAO.findBy("parentId", sda.getId());
-        return children;
+        String sql = "select s1.*, s2.sda_id isParentFlag" +
+                " from SDA s1 left join ( select a.sda_id from SDA a, SDA b where a.parent_id = ? and a.sda_id = b.parent_id group by a.sda_id ) s2" +
+                " on s1.sda_id = s2.sda_id where s1.parent_id = ?";
+        List list = sdaDAO.exeSQLGetList(sql, sda.getId(), sda.getId());
+
+
+        String sdaIdLen = null;
+        if(null != sda){
+            sdaIdLen = sda.getId();
+            if(sdaIdLen.length() > 4){//排除syshead和apphead中Id长度是4位的
+                List<SDA> children = sdaDAO.findBy("parentId", sdaIdLen);
+                return children;
+            }
+        }
+        return null;
     }
 
     /**
@@ -824,7 +837,7 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
         List<SDA> list = sdaDAO.findByHead(interfaceHeadId, structName);
         List<SDA> result = new ArrayList<SDA>();
         for(SDA sda : list){
-            if(StringUtils.isEmpty(sda.getConstraint())){
+            if(Constants.ServiceHead.DEFAULT_SYSHEAD_ID.equalsIgnoreCase(sda.getConstraint()) && Constants.ServiceHead.DEFAULT_APPHEAD_ID.equalsIgnoreCase(sda.getConstraint())){
                 result.add(sda);
             }
         }
@@ -843,4 +856,23 @@ public class SDAServiceImpl extends AbstractBaseService<SDA, String> implements 
     public boolean judgeAttr(String sdaId){
         return sdaAttrbuteService.judgeAttr(sdaId);
     }
+
+    public SDA findByXpath(String serviceId, String operationId, String xpath){
+        if(StringUtils.isNotEmpty(xpath)){
+            String hql = " from SDA where serviceId = ? and operationId = ? and xpath =?";
+            List<SDA> sdas = sdaDAO.find(hql, serviceId, operationId, xpath);
+            if(sdas.size() > 0){
+                return sdas.get(0);
+            }
+        }
+        return null;
+    }
+
+    public List<SDA> getLocalHeadByHeadId(String headId){
+        String hql = "from SDA where headId = ? and constraint = ?";
+        List<SDA> sdas = sdaDAO.find(hql,headId,"local_head");
+        return sdas;
+    }
+
+
 }

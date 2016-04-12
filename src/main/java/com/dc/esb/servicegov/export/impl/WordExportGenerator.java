@@ -110,11 +110,11 @@ public class WordExportGenerator {
             }
         }
         else{
-            String hql2 = " from " + com.dc.esb.servicegov.entity.Service.class.getName() +" where categoryId = ? order by serviceId asc";
-            List<com.dc.esb.servicegov.entity.Service> services = serviceService.find(hql2, serviceCategoryId);
+            String hql2 = " from " + Service.class.getName() +" where categoryId = ? order by serviceId asc";
+            List<Service> services = serviceService.find(hql2, serviceCategoryId);
             if(services.size() > 0){
                 for(int i = 0; i < services.size(); i++){
-                    com.dc.esb.servicegov.entity.Service service = services.get(i);
+                    Service service = services.get(i);
                     gennerateByService(service.getServiceId(), file, tab + "." + (i + 1));
                 }
             }
@@ -122,7 +122,7 @@ public class WordExportGenerator {
     }
 
     public void gennerateByService(String serviceId, File file, String tab) throws Exception{
-        com.dc.esb.servicegov.entity.Service service = serviceService.findUniqueBy("serviceId", serviceId);
+        Service service = serviceService.findUniqueBy("serviceId", serviceId);
         appendFile(file, getServiceStr(service, tab));
         String hql = " from " + Operation.class.getName() +" where serviceId = ? order by operationId asc";
         List<Operation> operations = operationService.find(hql, serviceId);
@@ -158,8 +158,8 @@ public class WordExportGenerator {
             //服务编号
             int i = 0;
             //填充模板
-            for (Map.Entry<com.dc.esb.servicegov.entity.Service, List<Operation>> entry : map.entrySet()) {
-                com.dc.esb.servicegov.entity.Service service = entry.getKey();
+            for (Map.Entry<Service, List<Operation>> entry : map.entrySet()) {
+                Service service = entry.getKey();
                 //填充服务信息
                 appendFile(destFile, getServiceStr(service, String.valueOf(++i)));
                 List<Operation> operations = entry.getValue();

@@ -37,7 +37,6 @@ public class GeneratorController {
         return generatorService.getAll();
     }
 
-    @RequiresRoles({"admin"})
     @RequestMapping(method = RequestMethod.GET, value = "/getAllGenerator", headers = "Accept=application/json")
     public
     @ResponseBody

@@ -112,7 +112,13 @@ public class InterfaceHeadServiceImpl extends AbstractBaseService<InterfaceHead,
         List<InterfaceHead> heads = interfaceHeadDAO.find(hql, param);
         return heads;
     }
-
+    public List<InterfaceHead> getBySystemIds(List<String> systemIds){
+        String hql = "select distinct ih from " + InterfaceHead.class.getName() + " ih where ih.systemId in (:systemIds)";
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("systemIds", systemIds);
+        List<InterfaceHead> heads = interfaceHeadDAO.find(hql, param);
+        return heads;
+    }
     public String getHeadNames(List<InterfaceHead> heads) {
         String headNames = "";
         if (heads != null) {

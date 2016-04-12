@@ -97,7 +97,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     }
     /**填充数据字典页**/
     public boolean fillDataSheet(HSSFSheet sheet){
-        String hql = " from " + Metadata.class.getName() +" m where ((m.type != ? and m.type != ?) or m.type is null) and m.status != ?";
+        String hql = " from " + Metadata.class.getName() +" m where ((lower(m.type) != ? and lower(m.type) != ?) or m.type is null) and m.status != ?";
         List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE, Constants.Metadata.STATUS_OUTDATED);
         for(int i = 0; i < list.size(); i++){
             Metadata metadata = list.get(i);
@@ -112,8 +112,8 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     }
     /**填充数据字典页**/
     public boolean fillOutdateSheet(HSSFSheet sheet){
-        String hql = " from " + Metadata.class.getName() +" m where ((m.type != ? and m.type != ?) or m.type is null) and m.status = ?";
-        List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE, Constants.Metadata.STATUS_OUTDATED);
+        String hql = " from " + Metadata.class.getName() +" m where  m.status = ?";
+        List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.STATUS_OUTDATED);
         for(int i = 0; i < list.size(); i++){
             Metadata metadata = list.get(i);
             if(metadata != null){
@@ -127,7 +127,7 @@ public class ResourceExportServiceImpl  extends AbstractBaseService<String, Stri
     }
     /**填充数组页**/
     public boolean fillArraySheet(HSSFSheet sheet){
-        String hql = " from " + Metadata.class.getName() +" m where m.type = ? or m.type = ?";
+        String hql = " from " + Metadata.class.getName() +" m where lower(m.type) = ? or lower(m.type) = ?";
         List<Metadata> list = metadataDAO.find(hql, Constants.Metadata.ARRAY_TYPE, Constants.Metadata.STRUCT_TYPE);
         for(int i = 0; i < list.size(); i++){
             Metadata metadata = list.get(i);
