@@ -170,7 +170,7 @@
                  "
                 >
         </td>
-        <th><nobr>原始接口id</nobr></th>
+        <th><nobr>原始接口交易码</nobr></th>
         <td><input name="interfaceId" id="interfaceId"  class="easyui-textbox" style="width:150px">
         </td>
         <th><nobr>原始接口名称</nobr></th>

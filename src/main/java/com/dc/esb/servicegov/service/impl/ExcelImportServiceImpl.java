@@ -1411,8 +1411,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
         }
 
 
-        String parentId = null;
+        String parentId = requestId;
         String parentPath = "/request";
+        //记录array个数
+        Map<String,String> parentIDs = new HashMap<String, String>();
+        Map<String,String> parentPaths = new HashMap<String, String>();
+        int n = 0;
+        parentIDs.put(""+n,requestId);
+        parentPaths.put(""+n,parentPath);
         for (int i = 0; i < sdainput.size(); i++) {
             sda = sdainput.get(i);
 
@@ -1433,17 +1439,22 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
 //			}
 //            sda.setSdaId(UUID.randomUUID().toString());
             sda.setOperationId(operation.getOperationId());
-            sda.setParentId(requestId);
+            sda.setParentId(parentId);
             sda.setServiceId(service.getServiceId());
             sda.setXpath(parentPath + "/" + sda.getMetadataId());
-            if (parentId != null) {
-                sda.setParentId(parentId);
-            }
+//            if (parentId != null) {
+//                sda.setParentId(parentId);
+//            }
             if ("end".equalsIgnoreCase(sda.getRemark()) || "不映射".equalsIgnoreCase(sda.getRemark()) || sda.getStructName() == null || "".equals(sda.getStructName())) {
                 if ("end".equalsIgnoreCase(sda.getRemark())) {
-                    parentId = null;
-                    parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
-                    sda.setXpath(parentPath+"/");
+                    //TODO 逻辑错误改动
+//                    parentId = null;
+//                    parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
+//                    sda.setXpath(parentPath+"/");
+                    n--;
+                    parentId = parentIDs.get(""+n);
+                    parentPath = parentPaths.get(""+n);
+                    sda.setXpath(parentPath+ "/" + sda.getMetadataId());
                 }
 //                continue;
                 sda.setServiceId(null);
@@ -1459,28 +1470,44 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
             //包含子节点
             if ("start".equalsIgnoreCase(sda.getRemark())) {
-                parentId = sda.getSdaId();
-                parentPath = parentPath + "/" + sda.getMetadataId();
+                //TODO 逻辑错误改动
+//                parentId = sda.getSdaId();
+//                parentPath = parentPath + "/" + sda.getMetadataId();
+                n++;
+                parentIDs.put(""+n,sda.getSdaId());
+                parentPaths.put(""+n,parentPath + "/" + sda.getMetadataId());
+                parentId = parentIDs.get(""+n);
+                parentPath = parentPaths.get(""+n);
             }
         }
 
-        parentId = null;
-        parentPath = "/response";
+        parentId = responseId;
+        parentPath = "/response";//记录array个数
+        Map<String,String> resParentIDs = new HashMap<String, String>();
+        Map<String,String> resParentPaths = new HashMap<String, String>();
+        n = 0;
+        resParentIDs.put(""+n,responseId);
+        resParentPaths.put(""+n,parentPath);
         for (int i = 0; i < sdaoutput.size(); i++) {
             sda = sdaoutput.get(i);
 //            sda.setSdaId(UUID.randomUUID().toString());
             sda.setOperationId(operation.getOperationId());
-            sda.setParentId(responseId);
+            sda.setParentId(parentId);
             sda.setServiceId(service.getServiceId());
             sda.setXpath(parentPath + "/" + sda.getMetadataId());
-            if (parentId != null) {
-                sda.setParentId(parentId);
-            }
+//            if (parentId != null) {
+//                sda.setParentId(parentId);
+//            }
             if ("end".equalsIgnoreCase(sda.getRemark()) || "不映射".equalsIgnoreCase(sda.getRemark()) || sda.getStructName() == null || "".equals(sda.getStructName())) {
                 if ("end".equalsIgnoreCase(sda.getRemark())) {
-                    parentId = null;
-                    parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
-                    sda.setXpath(parentPath+"/");
+                    //TODO 逻辑错误改动
+//                    parentId = null;
+//                    parentPath = parentPath.substring(0, parentPath.lastIndexOf("/"));
+//                    sda.setXpath(parentPath+"/");
+                    n--;
+                    parentId = resParentIDs.get(""+n);
+                    parentPath = resParentPaths.get(""+n);
+                    sda.setXpath(parentPath + "/" + sda.getMetadataId());
                 }
 //                continue;
                 sda.setServiceId(null);
@@ -1496,8 +1523,14 @@ public class ExcelImportServiceImpl extends AbstractBaseService implements Excel
             }
             //包含子节点
             if ("start".equalsIgnoreCase(sda.getRemark())) {
-                parentId = sda.getSdaId();
-                parentPath = parentPath + "/" + sda.getMetadataId();
+                //TODO 逻辑错误改动
+//                parentId = sda.getSdaId();
+//                parentPath = parentPath + "/" + sda.getMetadataId();
+                n++;
+                resParentIDs.put(""+n,sda.getSdaId());
+                resParentPaths.put(""+n,parentPath + "/" + sda.getMetadataId());
+                parentId = resParentIDs.get(""+n);
+                parentPath = resParentPaths.get(""+n);
             }
         }
     }

@@ -241,6 +241,12 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     sda.setLength(isNull(cell));
                 }
             }
+            //约束条件
+            cellObj = sheetRow.getCell(10);
+            if(cellObj != null){
+                String cell = tools.getCellContent(cellObj);
+                sda.setConstraint(isNull(cell));
+            }
 
             cellObj = sheetRow.getCell(11);
             if (cellObj != null) {
@@ -338,6 +344,14 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     sda.setLength(isNull(cell));
                 }
             }
+
+            //约束条件
+            cellObj = sheetRow.getCell(10);
+            if(cellObj != null){
+                String cell = tools.getCellContent(cellObj);
+                sda.setConstraint(isNull(cell));
+            }
+
             cellObj = sheetRow.getCell(11);
             if (cellObj != null) {
                 String cell = tools.getCellContent(cellObj);
@@ -536,7 +550,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     String len = str[1];
                     sda.setType(str[0]);
                     String[] lenArr = len.split(",");
-                    sda.setLength(lenArr[0]);
+                    //TZB要求有double精度
+//                    sda.setLength(lenArr[0]);
+                    sda.setLength(len);
                 }else{
                     //STRUCT
                     sda.setType(isNull(cell));
@@ -738,7 +754,9 @@ public class TaizhouExcelImportServiceImpl extends ExcelImportServiceImpl {
                     String len = str[1];
                     sda.setType(str[0]);
                     String[] lenArr = len.split(",");
-                    sda.setLength(lenArr[0]);
+                    //TZB要求有double精度
+//                    sda.setLength(lenArr[0]);
+                    sda.setLength(len);
 
                 }else{
                     //STRUCT

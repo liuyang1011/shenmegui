@@ -572,11 +572,17 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
     public List<OperationExpVO> queryByCondition(Map<String, String[]> values, Page page) throws  Throwable{
         //by jq
         String interfaceIds = "";
-        if((values.get("interfaceName") != null && values.get("interfaceName").length > 0 && StringUtils.isNotEmpty(values.get("interfaceName")[0]))
-                || (values.get("interfaceId") != null && values.get("interfaceId").length > 0 && StringUtils.isNotEmpty(values.get("interfaceId")[0]))){
+        Boolean notNull = ((values.get("interfaceName") != null && values.get("interfaceName").length > 0 && StringUtils.isNotEmpty(values.get("interfaceName")[0]))
+                || (values.get("interfaceId") != null && values.get("interfaceId").length > 0 && StringUtils.isNotEmpty(values.get("interfaceId")[0])));
+
+        if(notNull){
             Map<String, String> params = new HashMap<String, String>();
-            params.put("interfaceName", URLDecoder.decode(values.get("interfaceName")[0]));
-            params.put("interfaceId", values.get("interfaceId")[0]);
+            if(values.get("interfaceName") != null && values.get("interfaceName").length > 0 && StringUtils.isNotEmpty(values.get("interfaceName")[0])){
+                params.put("interfaceName", URLDecoder.decode(values.get("interfaceName")[0]));
+            }
+            if(values.get("interfaceId") != null && values.get("interfaceId").length > 0 && StringUtils.isNotEmpty(values.get("interfaceId")[0])){
+                params.put("ecode", values.get("interfaceId")[0]);
+            }
             //接口
             List<Interface> interfaceList = interfaceDAOImpl.findLike(params, MatchMode.ANYWHERE);
             for (int i = 0; i < interfaceList.size(); i++) {
@@ -590,10 +596,12 @@ public class OperationServiceImpl extends AbstractBaseService<Operation, Operati
         StringBuffer hql = new StringBuffer("select a.serviceId, a.operationId from " +  Operation.class.getName() +" as a ");
         if((values.get("providerId") != null && values.get("providerId").length > 0) && StringUtils.isNotEmpty(values.get("providerId")[0])
                 || (values.get("consumerId") != null && values.get("consumerId").length > 0 && StringUtils.isNotEmpty(values.get("consumerId")[0]) )
-                ||(values.get("interfaceName") != null && values.get("interfaceName").length > 0 && StringUtils.isNotEmpty(values.get("interfaceName")[0]))
-                || (values.get("interfaceId") != null && values.get("interfaceId").length > 0 && StringUtils.isNotEmpty(values.get("interfaceId")[0]))){
+                || notNull){
             hql.append( ", " + InterfaceInvoke.class.getName() + " as ii  where a.serviceId = ii.provider.serviceId and a.operationId = ii.provider.operationId");
-            if (!interfaceIds.equals("")){
+            if (notNull && interfaceIds.equals("")){
+                //no result
+                hql.append(" and ii.provider.inter.interfaceId in ('1') ");
+            }else if (!interfaceIds.equals("")){
                 hql.append(" and ii.provider.inter.interfaceId in ("+interfaceIds+") ");
             }
         }else{

@@ -421,8 +421,11 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
                 if(xpath.endsWith("/")){
                     sda = sdaDao.findUniqueBy("sdaId", ida.getSdaId());
                 }else{
-                    String hql = " from SDA where serviceId = ? and operationId = ? and xpath =?";
-                    List<SDA> sdas = sdaDao.find(hql, serviceId, operationId, ida.getXpath());
+                    //能否根据sdaid查
+                    String hql = " from SDA where sdaId = ? ";
+                    List<SDA> sdas = sdaDao.find(hql, ida.getSdaId());
+//                    String hql = " from SDA where serviceId = ? and operationId = ? and xpath =?";
+//                    List<SDA> sdas = sdaDao.find(hql, serviceId, operationId, ida.getXpath());
                     if(sdas.size() > 0){
                         sda = sdas.get(0);
                     }
@@ -454,12 +457,12 @@ public class ExcelExportServiceImpl extends AbstractBaseService {
             typeLength = "";
         }
         if("array".equalsIgnoreCase(sda.getType()) || "struct".equalsIgnoreCase(sda.getType())){
-            if(sda.getXpath() != null && !sda.getXpath().endsWith("/")){
-                sda.setRemark("start");
-            }
-            else{
-                sda.setRemark("end");
-            }
+//            if(sda.getXpath() != null && sda.getXpath().endsWith("/")){
+//                sda.setRemark("start");
+//            }
+//            else{
+//                sda.setRemark("end");
+//            }
             typeLength = sda.getType();
             commonStyle = arrayStyle;
         }
